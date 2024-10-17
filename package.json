@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate --no-hints"
   },
   "dependencies": {
     "@emotion/cache": "^11.13.1",

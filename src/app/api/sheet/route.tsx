@@ -9,7 +9,7 @@ export async function GET() {
     where: { userId: session?.user.id },
   });
 
-  return sheets;
+  return NextResponse.json(sheets);
 }
 
 type CreateQueryParam = {
