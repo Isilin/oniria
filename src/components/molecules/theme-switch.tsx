@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Typography,
 } from '@mui/material';
 import { useColorScheme } from '@mui/material/styles';
 
@@ -28,6 +29,9 @@ const ThemeSwitch = () => {
         minHeight: '56px',
       }}
     >
+      <Typography variant="body1" paddingRight={2}>
+        Thème :
+      </Typography>
       <FormControl>
         <RadioGroup
           aria-labelledby="demo-theme-toggle"
@@ -38,9 +42,13 @@ const ThemeSwitch = () => {
             setMode(event.target.value as 'system' | 'light' | 'dark')
           }
         >
-          <FormControlLabel value="system" control={<Radio />} label="System" />
-          <FormControlLabel value="light" control={<Radio />} label="Light" />
-          <FormControlLabel value="dark" control={<Radio />} label="Dark" />
+          <FormControlLabel
+            value="system"
+            control={<Radio />}
+            label="Système"
+          />
+          <FormControlLabel value="light" control={<Radio />} label="Clair" />
+          <FormControlLabel value="dark" control={<Radio />} label="Sombre" />
         </RadioGroup>
       </FormControl>
     </Box>

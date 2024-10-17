@@ -1,4 +1,4 @@
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 import { Role } from '@prisma/client';
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Google from 'next-auth/providers/google';
@@ -9,6 +9,15 @@ declare module 'next-auth' {
     user: {
       role: Role;
     } & DefaultSession['user'];
+  }
+  interface User {
+    role?: Role;
+  }
+}
+
+declare module '@auth/core/adapters' {
+  interface AdapterUser {
+    role: Role;
   }
 }
 

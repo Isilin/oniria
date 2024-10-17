@@ -2,9 +2,11 @@
 
 import AddIcon from '@mui/icons-material/Add';
 import { Button, CircularProgress } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const WhitelistAddButton = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -13,6 +15,7 @@ const WhitelistAddButton = () => {
       method: 'POST',
     });
     setLoading(false);
+    router.refresh();
   };
 
   return (

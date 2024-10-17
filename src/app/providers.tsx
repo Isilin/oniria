@@ -15,7 +15,7 @@ const theme = createTheme({
   },
 });
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }) {
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme} defaultMode="dark">
