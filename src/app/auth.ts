@@ -15,12 +15,6 @@ declare module 'next-auth' {
   }
 }
 
-declare module '@auth/core/adapters' {
-  interface AdapterUser {
-    role: Role;
-  }
-}
-
 export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ profile }) {
