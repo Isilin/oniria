@@ -1,16 +1,26 @@
 'use client';
 
-import GoogleIcon from '@mui/icons-material/Google';
-import { Button, Typography } from '@mui/material';
-import { signOut } from 'next-auth/react';
+import { Avatar, Button, Typography } from '@mui/material';
+import { signOut, useSession } from 'next-auth/react';
 
 const GoogleSignoutButton = () => {
   const handleClick = () => {
     signOut();
   };
 
+  const { data: session } = useSession();
+
   return (
-    <Button onClick={handleClick} startIcon={<GoogleIcon />} variant="outlined">
+    <Button
+      onClick={handleClick}
+      startIcon={
+        <Avatar
+          src={session.user.image}
+          sx={{ width: '20px', height: '20px' }}
+        />
+      }
+      variant="outlined"
+    >
       <Typography variant="button">Déconnexion</Typography>
     </Button>
   );

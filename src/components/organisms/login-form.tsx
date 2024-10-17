@@ -4,10 +4,10 @@ import { useSession } from 'next-auth/react';
 import GoogleSigninButton from '../molecules/google-signin-button';
 import GoogleSignoutButton from '../molecules/google-signout-button';
 
-const Navbar = () => {
+const LoginForm = () => {
   const { data: session } = useSession();
 
   return <>{session ? <GoogleSignoutButton /> : <GoogleSigninButton />}</>;
 };
 
-export default Navbar;
+export default LoginForm;

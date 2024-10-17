@@ -23,6 +23,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
+    "typeRoots": ["types"],
     "plugins": [
       {
         "name": "next"
@@ -30,14 +31,16 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/hooks/*": ["./src/lib/hooks/*"],
-      "@/contexts/*": ["./src/lib/contexts/*"],
-      "@/api/*": ["./src/lib/api/*"],
-      "@/components/*": ["./src/components/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "types/next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"],
   "watchOptions": {
     // Use a dynamic polling instead of system’s native events for file changes.

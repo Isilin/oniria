@@ -1,10 +1,15 @@
 'use client';
 
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
 
-const darkTheme = createTheme({
+const theme = createTheme({
+  colorSchemes: { light: true, dark: true },
+  cssVariables: {
+    colorSchemeSelector: 'class',
+  },
   palette: {
     mode: 'dark',
   },
@@ -13,7 +18,7 @@ const darkTheme = createTheme({
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AppRouterCacheProvider>
-      <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={theme} defaultMode="dark">
         <SessionProvider>
           <CssBaseline />
           {children}

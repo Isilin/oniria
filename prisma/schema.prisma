@@ -8,11 +8,10 @@ generator client {
   provider = "prisma-client-js"
 }
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String  @map("user_id")
+  userId             String
   type               String
   provider           String
-  providerAccountId  String  @map("provider_account_id")
+  providerAccountId  String
   refresh_token      String?
   access_token       String?
   expires_at         Int?
@@ -20,8 +19,9 @@ model Account {
   scope              String?
   id_token           String?
   session_state      String?
-  oauth_token_secret String?
-  oauth_token        String?
+ 
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -30,11 +30,13 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("sessions")
 }
@@ -45,10 +47,12 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   accounts      Account[]
   sessions      Session[]
+
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+
   role          Role      @default(USER)
   sheets        Sheet[]
 
@@ -72,24 +76,40 @@ enum Role {
 model Sheet {
   id                  String   @id @default(cuid())
   userId              String   @map("user_id")
-
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name                String
-  age                 Int
-  mai                 Int      // maï
-  current_mai         Int
-  aspect              String
-  become              String   // Devenir
-  strength            Int      @default(25) // force
-  agility             Int      @default(25) // agilité
-  vivacity            Int      @default(25) // vivacité
-  vigour              Int      @default(25) // vigueur
-  thinking            Int      @default(25) // thinking
-  perception          Int      @default(25) // perception
-  concentration       Int      @default(25) // concentration
-  understanding       Int      @default(25) // entendement
-  charisma            Int      @default(25) // charisma
-  empathy             Int      @default(25) // empathie
-  ego                 Int      @default(25) // ego
-  will                Int      @default(25) // volonté
+  teamId              String   @map("team_id")
+  team                Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  name                String?
+  avatar              String?
+  age                 Int?
+  current_mai         Int?
+  aspect              String?
+  become              String?  // Devenir
+  strength            Int?     @default(25) // force
+  agility             Int?     @default(25) // agilité
+  vivacity            Int?     @default(25) // vivacité
+  vigour              Int?     @default(25) // vigueur
+  thinking            Int?     @default(25) // thinking
+  perception          Int?     @default(25) // perception
+  concentration       Int?     @default(25) // concentration
+  understanding       Int?     @default(25) // entendement
+  charisma            Int?     @default(25) // charisma
+  empathy             Int?     @default(25) // empathie
+  ego                 Int?     @default(25) // ego
+  will                Int?     @default(25) // volonté
+  current_health      Int?
+  current_stability   Int?
+  current_radiance    Int?
+}
+
+model Whitelist {
+  id                  String   @id @default(cuid())
+  email               String?  @unique
+}
+
+model Team {
+  id                  String   @id @default(cuid())
+  name                String?  @unique
+  members             Sheet[]
 }
