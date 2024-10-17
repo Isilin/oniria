@@ -1,7 +1,7 @@
 import { auth } from '@/app/auth';
 import WhitelistAddButton from '@/components/molecules/whitelist-add-button';
 import WhitelistElement from '@/components/molecules/whitelist-element';
-import { db } from '@/lib/helpers/db';
+import db from '@/lib/helpers/db';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';

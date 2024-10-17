@@ -1,5 +1,5 @@
 import { auth } from '@/app/auth';
-import { db } from '@/lib/helpers/db';
+import db from '@/lib/helpers/db';
 import { Grid } from '@mui/material';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';

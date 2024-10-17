@@ -1,7 +1,7 @@
 import { auth } from '@/app/auth';
 import Attribute from '@/components/molecules/attribute';
 import DeleteSheetButton from '@/components/molecules/delete-sheet-button';
-import { db } from '@/lib/helpers/db';
+import db from '@/lib/helpers/db';
 import { ability } from '@/lib/helpers/skills';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
