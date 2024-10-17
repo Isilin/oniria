@@ -18,12 +18,12 @@ type CreateQueryParam = {
 };
 
 export async function POST(req: NextRequest) {
-  const data: CreateQueryParam = await req.json();
+  const params: CreateQueryParam = await req.json();
 
   const sheet = await db.sheet.create({
     data: {
-      user: { connect: { id: data.userId } },
-      name: data.name,
+      user: { connect: { id: params.userId } },
+      name: params.name,
     },
   });
 

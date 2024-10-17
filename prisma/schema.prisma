@@ -78,7 +78,7 @@ model Sheet {
   userId              String   @map("user_id")
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   teamId              String   @map("team_id")
-  team                Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team                Team?     @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   name                String?
   avatar              String?

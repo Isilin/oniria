@@ -11,9 +11,9 @@ import {
   CardContent,
   CardMedia,
   Divider,
-  Grid,
   Typography,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
