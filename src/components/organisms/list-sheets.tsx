@@ -1,37 +1,26 @@
-import { auth } from '@/app/auth';
-import prisma from '@/lib/db/prisma';
-import { SheetWithUser } from '@/lib/db/sheet';
-import { sanitize } from '@/lib/helpers/sanitize';
-import { Container, Divider, Typography } from '@mui/material';
+'use client';
+
+import { useSheets } from '@/lib/hooks/use-sheet';
+import {
+  CircularProgress,
+  Container,
+  Divider,
+  Typography,
+} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';
 
-const ListSheets = async () => {
-  const session = await auth();
+const ListSheets = () => {
+  const { sheets, isLoading } = useSheets();
 
-  const sheets: SheetWithUser[] = await prisma.sheet
-    .findMany({
-      where: { userId: session?.user.id },
-      include: { user: true },
-    })
-    .then((res) => sanitize(res));
-  const others: SheetWithUser[] = await prisma.sheet
-    .findMany({
-      where: {
-        userId: {
-          not: session?.user.id,
-        },
-      },
-      include: { user: true },
-    })
-    .then((res) => sanitize(res));
+  if (isLoading) return <CircularProgress />;
 
   return (
     <Container>
       <Typography variant="h4">Mes fiches</Typography>
       <Grid container spacing={2} columns={12} gap={4}>
-        {[...sheets].map((sheet, index) => (
+        {[...sheets.own].map((sheet, index) => (
           <SheetCard key={index} sheet={sheet} userVisible={false} />
         ))}
         <AddSheetCard />
@@ -39,7 +28,7 @@ const ListSheets = async () => {
       <Divider sx={{ my: 2 }} variant="middle" />
       <Typography variant="h4">Autres fiches</Typography>
       <Grid container spacing={2} columns={12} gap={4}>
-        {[...others].map((sheet, index) => (
+        {[...sheets.others].map((sheet, index) => (
           <SheetCard key={index} sheet={sheet} userVisible={true} />
         ))}
       </Grid>

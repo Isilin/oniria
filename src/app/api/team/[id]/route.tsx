@@ -16,7 +16,7 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },
 ) {
-  await prisma.whitelist.delete({
+  await prisma.team.delete({
     where: { id: params.id },
   });
 

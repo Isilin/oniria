@@ -1,3 +1,4 @@
+import { useSheets } from '@/lib/hooks/use-sheet';
 import {
   Button,
   CircularProgress,
@@ -17,6 +18,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { createSheet } = useSheets();
 
   return (
     <Dialog
@@ -29,17 +31,17 @@ const CreateSheetDialog = ({ open, onClose }) => {
           const formData = new FormData(e.currentTarget);
           const formJson = Object.fromEntries(formData.entries());
           setLoading(true);
-          const sheet = await fetch('/api/sheet', {
-            method: 'POST',
-            body: JSON.stringify({
-              userId: session?.user.id,
-              name: formJson.name.toString(),
-            }),
-          }).then((res) => res.json());
-          setLoading(false);
-          onClose();
-          enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
-          router.push(`/sheet/${sheet.id}`);
+          createSheet({
+            userId: session?.user.id,
+            name: formJson.name.toString(),
+          }).then(async (res) => {
+            const sheet = await res.json();
+
+            setLoading(false);
+            onClose();
+            enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
+            router.push(`/sheet/${sheet.id}`);
+          });
         },
       }}
     >

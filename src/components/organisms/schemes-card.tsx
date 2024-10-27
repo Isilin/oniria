@@ -1,4 +1,3 @@
-import { useSheet } from '@/lib/hooks/use-sheet';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
@@ -6,8 +5,6 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 
 const SchemesCard = ({ id }) => {
-  const { sheet } = useSheet(id);
-
   return (
     <Card>
       <CardContent>

@@ -6,11 +6,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { FormEvent, useState } from 'react';
 
 const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { createTeam } = useTeams();
 
@@ -25,10 +27,13 @@ const CreateTeamDialog = ({ open, onClose }) => {
           const formData = new FormData(e.currentTarget);
           const formJson = Object.fromEntries(formData.entries());
           setLoading(true);
-          createTeam({ name: formJson.name.toString() }).then(() => {
+          createTeam({ name: formJson.name.toString() }).then(async (res) => {
+            const team = await res.json();
+
             setLoading(false);
             onClose();
             enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
+            router.push(`/team/${team.id}`);
           });
         },
       }}
