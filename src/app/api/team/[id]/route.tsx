@@ -1,6 +1,17 @@
 import prisma from '@/lib/db/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const team = await prisma.team.findUnique({
+    where: { id: params.id },
+    include: { members: true },
+  });
+  return NextResponse.json(team);
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },
@@ -9,18 +20,5 @@ export async function DELETE(
     where: { id: params.id },
   });
 
-  return NextResponse.json(null, { status: 200 });
-}
-
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const data = await req.json();
-
-  await prisma.whitelist.update({
-    where: { id: params.id },
-    data,
-  });
   return NextResponse.json(null, { status: 200 });
 }

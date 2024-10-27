@@ -1,15 +1,16 @@
 import { auth } from '@/app/auth';
-import DeleteSheetButton from '@/components/molecules/delete-sheet-button';
-import Sheet from '@/components/organisms/sheet';
+import DeleteTeamButton from '@/components/molecules/delete-team-button';
+import TeamCard from '@/components/organisms/team-card';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user || session?.user.role !== 'ADMIN') redirect('/');
 
   return (
     <Suspense>
@@ -21,14 +22,14 @@ const Page = async ({ params }: { params: { id: string } }) => {
           width: '100%',
         }}
       >
-        <Link href="/">
+        <Link href="/team">
           <Button>
             <ArrowBackIcon />
           </Button>
         </Link>
-        <DeleteSheetButton id={params.id} />
+        <DeleteTeamButton id={params.id} />
       </Box>
-      <Sheet id={params.id} />
+      <TeamCard id={params.id} />
     </Suspense>
   );
 };

@@ -1,18 +1,18 @@
 'use client';
 
-import { useWhitelistEmail } from '@/lib/hooks/use-whitelist';
+import { useTeam } from '@/lib/hooks/use-team';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from '@mui/material';
-import { useSnackbar } from 'notistack';
+import Button from '@mui/material/Button';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DeleteConfirmation from './delete-confirmation';
 
-const WhitelistDeleteButton = ({ id }) => {
-  const { deleteFromWhitelist } = useWhitelistEmail(id);
-  const { enqueueSnackbar } = useSnackbar();
+const DeleteTeamButton = ({ id }) => {
+  const router = useRouter();
+  const { deleteTeam } = useTeam(id);
   const handleClick = () => {
-    deleteFromWhitelist(id);
-    enqueueSnackbar('Suppression de la whitelist.', { variant: 'info' });
+    deleteTeam();
+    router.push('/team');
   };
 
   const [open, setOpen] = useState(false);
@@ -31,4 +31,4 @@ const WhitelistDeleteButton = ({ id }) => {
   );
 };
 
-export default WhitelistDeleteButton;
+export default DeleteTeamButton;

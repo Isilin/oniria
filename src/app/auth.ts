@@ -1,8 +1,8 @@
+import prisma from '@/lib/db/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { Role } from '@prisma/client';
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Google from 'next-auth/providers/google';
-import db from '../lib/helpers/db';
 
 declare module 'next-auth' {
   interface Session {
@@ -18,7 +18,7 @@ declare module 'next-auth' {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ profile }) {
-      const dbUser = await db.whitelist.findUnique({
+      const dbUser = await prisma.whitelist.findUnique({
         where: { email: profile.email },
       });
 
@@ -38,6 +38,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: 'database',
   },
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(prisma),
   providers: [Google],
 });

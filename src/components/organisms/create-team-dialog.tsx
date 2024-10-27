@@ -1,22 +1,18 @@
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useTeams } from '@/lib/hooks/use-team';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 import { useSnackbar } from 'notistack';
 import { FormEvent, useState } from 'react';
 
-const CreateSheetDialog = ({ open, onClose }) => {
-  const { data: session } = useSession();
-  const router = useRouter();
+const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { createTeam } = useTeams();
 
   return (
     <Dialog
@@ -24,26 +20,20 @@ const CreateSheetDialog = ({ open, onClose }) => {
       onClose={onClose}
       PaperProps={{
         component: 'form',
-        onSubmit: async (e: FormEvent<HTMLFormElement>) => {
+        onSubmit: (e: FormEvent<HTMLFormElement>) => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
           const formJson = Object.fromEntries(formData.entries());
           setLoading(true);
-          const sheet = await fetch('/api/sheet', {
-            method: 'POST',
-            body: JSON.stringify({
-              userId: session?.user.id,
-              name: formJson.name.toString(),
-            }),
-          }).then((res) => res.json());
-          setLoading(false);
-          onClose();
-          enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
-          router.push(`/sheet/${sheet.id}`);
+          createTeam({ name: formJson.name.toString() }).then(() => {
+            setLoading(false);
+            onClose();
+            enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
+          });
         },
       }}
     >
-      <DialogTitle>Nouveau personnage</DialogTitle>
+      <DialogTitle>Nouvelle table de jeu</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -62,11 +52,11 @@ const CreateSheetDialog = ({ open, onClose }) => {
           Annuler
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Créer'}
+          {loading ? <CircularProgress /> : 'Ajouter'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default CreateSheetDialog;
+export default CreateTeamDialog;

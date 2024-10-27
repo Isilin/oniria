@@ -2,32 +2,26 @@
 
 import { DEFAULT_REDIRECT } from '@/app/routes';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import LoadingButton from '../atoms/loading-button';
 
 const GoogleSigninButton = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleClick = async () => {
     signIn('google', { callbackUrl: DEFAULT_REDIRECT });
   };
 
   return (
-    <Button
+    <LoadingButton
       variant="outlined"
       onClick={() => {
-        setIsLoading(true);
         handleClick();
       }}
-      startIcon={!isLoading && <GoogleIcon />}
+      startIcon={<GoogleIcon />}
+      sx={{ width: 'fit-content' }}
     >
-      {isLoading ? (
-        <CircularProgress size={24.5} />
-      ) : (
-        <Typography variant="button">Continue with Google</Typography>
-      )}
-    </Button>
+      <Typography variant="button">Continuer avec Google</Typography>
+    </LoadingButton>
   );
 };
 

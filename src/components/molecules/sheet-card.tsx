@@ -1,9 +1,15 @@
 'use client';
 
+import { SheetWithUser } from '@/lib/db/sheet';
 import { Card, CardActionArea, CardHeader, CardMedia } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-const SheetCard = ({ sheet, userVisible }) => {
+interface Props {
+  sheet: SheetWithUser;
+  userVisible: boolean;
+}
+
+const SheetCard = ({ sheet, userVisible }: Props) => {
   const router = useRouter();
 
   return (
@@ -16,7 +22,7 @@ const SheetCard = ({ sheet, userVisible }) => {
           />
           <CardMedia
             component="img"
-            image={sheet.avatar || '/public/default.png'}
+            image={sheet.avatar || '/default.png'}
             width="100%"
             height={150}
             sx={{ objectPosition: 'top' }}

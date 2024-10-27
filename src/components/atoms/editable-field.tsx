@@ -2,9 +2,14 @@
 
 import EditIcon from '@mui/icons-material/Edit';
 import { TextField, Typography } from '@mui/material';
-import { ChangeEvent, FocusEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
-const EditableField = ({ value, onChange }) => {
+interface Props {
+  value: string | number;
+  onChange?: (value: string | number) => void;
+}
+
+const EditableField = ({ value, onChange }: Props) => {
   const [currentValue, setCurrentValue] = useState(value);
   const [focused, setFocused] = useState(false);
 
@@ -12,9 +17,20 @@ const EditableField = ({ value, onChange }) => {
     setCurrentValue(e.target.value);
   };
 
-  const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+  const handleBlur = () => {
     setFocused(false);
-    onChange(e.target.value);
+    if (value !== currentValue) {
+      onChange?.(currentValue);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setFocused(false);
+      if (value !== currentValue) {
+        onChange?.(currentValue);
+      }
+    }
   };
 
   return (
@@ -24,7 +40,11 @@ const EditableField = ({ value, onChange }) => {
           display="inline"
           onClick={() => setFocused(true)}
           variant="body1"
-          sx={{ cursor: 'pointer' }}
+          sx={{
+            cursor: 'pointer',
+            ':hover': { borderBottom: '2px solid white' },
+          }}
+          color="textSecondary"
         >
           {currentValue}{' '}
           <EditIcon sx={{ fontSize: 10, verticalAlign: 'top' }} />
@@ -38,9 +58,15 @@ const EditableField = ({ value, onChange }) => {
           value={currentValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          onKeyDown={handleKeyPress}
           variant="standard"
-          inputProps={{ style: { padding: 0 } }}
-          sx={{ width: 30, height: 10 }}
+          slotProps={{ htmlInput: { style: { padding: 0 } } }}
+          sx={{
+            width:
+              (typeof currentValue === 'string' ? currentValue.length + 1 : 3) *
+              7,
+            height: 10,
+          }}
         />
       )}
     </>

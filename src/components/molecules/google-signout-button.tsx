@@ -20,6 +20,7 @@ const GoogleSignoutButton = () => {
         />
       }
       variant="outlined"
+      sx={{ width: 'fit-content' }}
     >
       <Typography variant="button">Déconnexion</Typography>
     </Button>

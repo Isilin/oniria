@@ -29,13 +29,14 @@
 .main {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   width: 80%;
+  align-items: center;
 }
 
 @media (max-width: 600px) {
   .page {
-    padding: 32px;
+    padding: 24px;
     padding-bottom: 80px;
   }
 

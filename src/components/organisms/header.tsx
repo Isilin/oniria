@@ -5,7 +5,7 @@ import ThemeSwitch from '../molecules/theme-switch';
 
 const Header = () => {
   return (
-    <Box>
+    <Box sx={{ width: '100%', alignItems: 'end' }}>
       <ThemeSwitch />
     </Box>
   );

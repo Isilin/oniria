@@ -3,9 +3,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import CreateWhitelistDialog from '../organisms/create-whitelist-dialog';
+import CreateTeamDialog from '../organisms/create-team-dialog';
 
-const WhitelistAddButton = () => {
+const TeamAddButton = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -13,9 +13,9 @@ const WhitelistAddButton = () => {
       <Button onClick={() => setOpen(true)} fullWidth>
         <AddIcon />
       </Button>
-      <CreateWhitelistDialog open={open} onClose={() => setOpen(false)} />
+      <CreateTeamDialog open={open} onClose={() => setOpen(false)} />
     </>
   );
 };
 
-export default WhitelistAddButton;
+export default TeamAddButton;

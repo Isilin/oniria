@@ -77,8 +77,7 @@ model Sheet {
   id                  String   @id @default(cuid())
   userId              String   @map("user_id")
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teamId              String?   @map("team_id")
-  team                Team?     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teams               Team[]
 
   name                String?
   avatar              String?
@@ -101,6 +100,12 @@ model Sheet {
   current_health      Int?
   current_stability   Int?
   current_radiance    Int?
+  feel_xp             Int?     @default(0)
+  to_spend_feel_xp    Int?     @default(0)
+  learn_xp            Int?     @default(0)
+  to_spend_learn_xp   Int?     @default(0)
+  live_xp             Int?     @default(0)
+  to_spend_live_xp    Int?     @default(0)
 }
 
 model Whitelist {

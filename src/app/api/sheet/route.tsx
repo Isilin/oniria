@@ -1,11 +1,11 @@
 import { auth } from '@/app/auth';
-import db from '@/lib/helpers/db';
+import prisma from '@/lib/db/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
   const session = await auth();
 
-  const sheets = await db.sheet.findMany({
+  const sheets = await prisma.sheet.findMany({
     where: { userId: session?.user.id },
   });
 
@@ -20,7 +20,7 @@ type CreateQueryParam = {
 export async function POST(req: NextRequest) {
   const params: CreateQueryParam = await req.json();
 
-  const sheet = await db.sheet.create({
+  const sheet = await prisma.sheet.create({
     data: {
       user: { connect: { id: params.userId } },
       name: params.name,

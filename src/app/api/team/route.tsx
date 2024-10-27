@@ -2,21 +2,21 @@ import prisma from '@/lib/db/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
-  const whitelist = await prisma.whitelist.findMany();
+  const teams = await prisma.team.findMany({
+    include: { members: true },
+  });
 
-  return NextResponse.json(whitelist);
+  return NextResponse.json(teams);
 }
 
 type CreateQueryParam = {
-  email: string;
+  name: string;
 };
 
 export async function POST(req: NextRequest) {
   const params: CreateQueryParam = await req.json();
 
-  const sheet = await prisma.whitelist.create({
-    data: { email: params.email },
-  });
+  const team = await prisma.team.create({ data: { name: params.name } });
 
-  return NextResponse.json(sheet);
+  return NextResponse.json(team);
 }

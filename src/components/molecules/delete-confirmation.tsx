@@ -1,22 +1,18 @@
 'use client';
 
 import {
-  Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { useState } from 'react';
+import LoadingButton from '../atoms/loading-button';
 
 const DeleteConfirmation = ({ open, onClose, onValidated }) => {
-  const [loading, setLoading] = useState(false);
   const handleClick = () => {
-    setLoading(true);
     onValidated();
-    setLoading(false);
+    onClose();
   };
 
   return (
@@ -29,9 +25,7 @@ const DeleteConfirmation = ({ open, onClose, onValidated }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClick}>
-          {loading ? <CircularProgress /> : 'Confirmer'}
-        </Button>
+        <LoadingButton onClick={handleClick}>Confirmer</LoadingButton>
       </DialogActions>
     </Dialog>
   );
