@@ -78,7 +78,7 @@ const Sheet = ({ id }) => {
         <Typography variant="h1">Traits</Typography>
       </TabContent>
       <TabContent index={2} active={value === 2}>
-        <SchemesCard id={id} />
+        <SchemesCard />
       </TabContent>
       <TabContent index={3} active={value === 3}>
         <Typography variant="h1">Inventaire</Typography>

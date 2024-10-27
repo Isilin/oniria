@@ -4,7 +4,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 
-const SchemesCard = ({ id }) => {
+const SchemesCard = () => {
   return (
     <Card>
       <CardContent>
