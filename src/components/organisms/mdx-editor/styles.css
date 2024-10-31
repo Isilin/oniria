@@ -1,4 +1,8 @@
-.mdx-editor-over {
+.mdxeditor {
   border: 1px solid var(--baseBg);
   border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+}
+
+.mdxeditor-popup-container div {
+  background-color: var(--baseBg);
 }

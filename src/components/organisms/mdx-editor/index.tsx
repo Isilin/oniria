@@ -85,7 +85,7 @@ export default function InitializedMDXEditor({
       ]}
       ref={editorRef}
       contentEditableClassName="prose"
-      className={`${theme} mdx-editor-over`}
+      className={theme}
     />
   );
 }
