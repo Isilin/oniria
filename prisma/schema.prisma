@@ -7,6 +7,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
 model Account {
   userId             String
   type               String
@@ -106,6 +107,21 @@ model Sheet {
   to_spend_learn_xp   Int?     @default(0)
   live_xp             Int?     @default(0)
   to_spend_live_xp    Int?     @default(0)
+
+  corpus              Corpus[]
+  spyree              Spyree[]
+  amee                Amee[]
+  traits              Trait[]
+  skills              Skill[]
+
+  spells              Spell[]
+  golems              Golem[]
+  armors              Armor[]
+  meleeWeapons        MeleeWeapon[]
+  rangeWeapons        RangeWeapon[]
+  items               Item[]
+
+  notes               String? @default("")
 }
 
 model Whitelist {
@@ -117,4 +133,186 @@ model Team {
   id                  String   @id @default(cuid())
   name                String?  @unique
   members             Sheet[]
+}
+
+model Corpus {
+  id                  String   @id @default(cuid())
+  name                String?
+  description         String?
+  stat                String?
+  bonus               Int?
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model Potential {
+  id                  String   @id @default(cuid())
+  category            String?
+  name                String?
+  description         String?
+  spyrees             Spyree[]
+}
+
+model Spyree {
+  id                  String    @id @default(cuid())
+  level               Int?
+  sheetId             String    @map("sheet_id")
+  sheet               Sheet     @relation(fields: [sheetId], references: [id])
+  potentialId         String    @map("potential_id")
+  potential           Potential @relation(fields: [potentialId], references: [id])
+}
+
+model Amee {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model Trait {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  balance             Int?
+  inborn              Boolean
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+enum SkillType {
+  GENERAL
+  SPYRAL
+  MARTIAL
+}
+
+enum SkillDegree {
+  BASE
+  PRINCIPLE
+  MASTERY
+  TECHNIQUE
+  SEQUENCE
+}
+
+model Skill {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  type                SkillType
+  category            String
+  degree              SkillDegree
+  prerequisiteId      String?  @map("prerequisite_id")
+  prerequisite        Skill?   @relation("SkillDependencies", fields: [prerequisiteId], references: [id])
+  dependencies        Skill[]  @relation("SkillDependencies")
+
+  sheets              Sheet[]
+}
+
+model Spell {
+  id                  String   @id @default(cuid())
+  name                String?
+  incantation         String?
+  targeting           String?
+  duration            String?
+  effect              String?
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model Golem {
+  id                  String   @id @default(cuid())
+  name                String?
+  artefact            String?
+  symbiosis           String?
+  heart               String?
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model Property {
+  id                  String   @id @default(cuid())
+  name                String?
+  description         String?
+
+  armors              Armor[]
+  meleeWeapons        MeleeWeapon[]
+  rangeWeapons        RangeWeapon[]
+}
+
+enum ArmorType {
+  LOW
+  PARTIAL
+  FULL
+}
+
+model Armor {
+  id                  String   @id @default(cuid())
+  name                String?
+  protection          Int?
+  current_protection  Int?
+  index               Int?
+  type                ArmorType
+  bulk                Int?
+  strength            Int?
+  prerequisite_stat   String?
+  prerequisite_value  Int?
+  properties          Property[]
+  quality             Int?
+  equipped            Boolean  @default(false)
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model MeleeWeapon {
+  id                  String   @id @default(cuid())
+  name                String?
+  damage              Int?
+  extend              Int?
+  bulk                Int?
+  strength            Int?
+  prerequisite_stat   String?
+  prerequisite_value  Int?
+  properties          Property[]
+  quality             Int?
+  equipped            Boolean  @default(false)
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model RangeWeapon {
+  id                  String   @id @default(cuid())
+  name                String?
+  damage              Int?
+  penetration_damage  Int?
+  velocity            Int?
+  rate                Int?
+  reload_rate         Int?
+  range               String?
+  low_range           Int?
+  medium_range        Int?
+  long_range          Int?
+  bulk                Int?
+  strength            Int?
+  prerequisite_stat   String?
+  prerequisite_value  Int?
+  properties          Property[]
+  quality             Int?
+  equipped            Boolean  @default(false)
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+}
+
+model Item {
+  id                  String   @id @default(cuid())
+  name                String?
+  description         String?
+  quantity            Int?
+  
+  sheetId             String   @map("sheet_id")
+  sheet               Sheet    @relation(fields: [sheetId], references: [id])
 }

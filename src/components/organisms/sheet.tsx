@@ -7,10 +7,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import TabContent from '../atoms/tab-content';
+import NotesCard from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
 import AvatarCard from './avatar-card';
 import CharactersCard from './characters-card';
@@ -18,10 +18,6 @@ import ExistencesCard from './existences-card';
 import ExperienceCard from './experience-card';
 import FaceCard from './face-card';
 import SchemesCard from './schemes-card';
-
-const MarkdownEditor = dynamic(() => import('../organisms/mdx-editor'), {
-  ssr: false,
-});
 
 const Sheet = ({ id }) => {
   const router = useRouter();
@@ -84,8 +80,7 @@ const Sheet = ({ id }) => {
         <Typography variant="h1">Inventaire</Typography>
       </TabContent>
       <TabContent index={4} active={value === 4}>
-        <Typography variant="h1">Notes</Typography>
-        <MarkdownEditor markdown="Hello **world**!" />
+        <NotesCard />
       </TabContent>
     </>
   );

@@ -9,10 +9,10 @@ export const useTeams = () => {
     data: teams,
     error,
     isLoading,
-  } = useSWR<Team[]>('/api/team', fetcher);
+  } = useSWR<Team[]>('/api/teams', fetcher);
 
   const { trigger: createTeam } = useSWRMutation(
-    '/api/team',
+    '/api/teams',
     (url, { arg }: { arg: Partial<Team> }) => {
       return fetch(url, {
         method: 'POST',
@@ -36,14 +36,11 @@ export const useTeam = (id) => {
     data: team,
     error,
     isLoading,
-  } = useSWR<TeamWithMembers>(`/api/team/${id}`, fetcher);
+  } = useSWR<TeamWithMembers>(`/api/teams/${id}`, fetcher);
 
-  const { trigger: deleteTeam } = useSWRMutation(`/api/team/${id}`, (url) => {
+  const { trigger: deleteTeam } = useSWRMutation(`/api/teams/${id}`, (url) => {
     return fetch(url, {
       method: 'DELETE',
-      body: JSON.stringify({
-        id,
-      }),
     }).then((res) => {
       mutate('/api/team');
       return res.json();
@@ -55,5 +52,25 @@ export const useTeam = (id) => {
     error,
     isLoading,
     deleteTeam,
+  };
+};
+
+export const useTeamMembers = (teamId, memberId) => {
+  const { mutate } = useSWRConfig();
+
+  const { trigger: deleteFromTeam } = useSWRMutation(
+    `/api/teams/${teamId}/members/${memberId}`,
+    (url) => {
+      return fetch(url, {
+        method: 'PATCH',
+      }).then((res) => {
+        mutate(`/api/team/${teamId}`);
+        return res.json();
+      });
+    },
+  );
+
+  return {
+    deleteFromTeam,
   };
 };

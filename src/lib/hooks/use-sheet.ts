@@ -1,6 +1,6 @@
 'use client';
 
-import { SheetGetResult } from '@/app/api/sheet/route';
+import { SheetGetResult } from '@/app/api/sheets/route';
 import { Sheet } from '@prisma/client';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
@@ -12,10 +12,10 @@ export const useSheets = () => {
     data: sheets,
     error,
     isLoading,
-  } = useSWR<SheetGetResult>('/api/sheet', fetcher);
+  } = useSWR<SheetGetResult>('/api/sheets', fetcher);
 
   const { trigger: createSheet } = useSWRMutation(
-    '/api/sheet',
+    '/api/sheets',
     (url, { arg }: { arg: Partial<Sheet> }) => {
       return fetch(url, {
         method: 'POST',
@@ -37,10 +37,10 @@ export const useSheet = (id) => {
     data: sheet,
     error,
     isLoading,
-  } = useSWR<ExtendedSheetWithUser>(`/api/sheet/${id}`, fetcher);
+  } = useSWR<ExtendedSheetWithUser>(`/api/sheets/${id}`, fetcher);
 
   const { trigger: mutate } = useSWRMutation(
-    `/api/sheet/${id}`,
+    `/api/sheets/${id}`,
     (url, { arg }: { arg: Partial<SheetWithUser> }) => {
       return fetch(url, {
         method: 'PATCH',

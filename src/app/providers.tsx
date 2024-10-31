@@ -27,6 +27,7 @@ export default function Providers({ children }) {
             autoHideDuration={2000}
             disableWindowBlurListener={true}
             maxSnack={5}
+            preventDuplicate={true}
             action={(id) => (
               <Button onClick={() => closeSnackbar(id)}>
                 <DeleteIcon />

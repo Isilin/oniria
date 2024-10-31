@@ -18,6 +18,8 @@ const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
         flexDirection: 'row',
         gap: 1,
         border: 'none',
+        justifyContent: 'center',
+        width: '80%',
       }}
       variant="outlined"
     >
