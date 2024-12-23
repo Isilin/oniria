@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import DeleteConfirmation from './delete-confirmation';
+import DeleteConfirmation from './_shared/delete-confirmation';
 
 const WhitelistDeleteButton = ({ id }) => {
   const { deleteFromWhitelist } = useWhitelistEmail(id);

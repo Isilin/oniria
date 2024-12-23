@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import DeleteConfirmation from './delete-confirmation';
+import DeleteConfirmation from './_shared/delete-confirmation';
 
 const DeleteTeamButton = ({ id }) => {
   const router = useRouter();

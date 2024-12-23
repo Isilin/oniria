@@ -12,12 +12,18 @@ import { useState } from 'react';
 import TabContent from '../atoms/tab-content';
 import NotesCard from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
+import ArmorsCard from './armors-card';
 import AvatarCard from './avatar-card';
 import CharactersCard from './characters-card';
 import ExistencesCard from './existences-card';
 import ExperienceCard from './experience-card';
 import FaceCard from './face-card';
+import GolemsCard from './golems-card';
+import ItemsCard from './items-card';
+import MeleeWeaponsCard from './melee-weapons-card';
+import RangeWeaponsCard from './range-weapons-card';
 import SchemesCard from './schemes-card';
+import SpellsCard from './spells-card';
 
 const Sheet = ({ id }) => {
   const router = useRouter();
@@ -30,6 +36,8 @@ const Sheet = ({ id }) => {
   };
 
   if (isLoading) return <CircularProgress />;
+
+  // TODO : Passer sa souris sur une stat primaire met en surbrillance les stats secondaires concernées (pas la même couleur si c'est la 1ere ou la 2nde ?)
 
   return (
     <>
@@ -77,7 +85,14 @@ const Sheet = ({ id }) => {
         <SchemesCard />
       </TabContent>
       <TabContent index={3} active={value === 3}>
-        <Typography variant="h1">Inventaire</Typography>
+        <Box display="flex" flexDirection="column" gap={1}>
+          <ArmorsCard />
+          <MeleeWeaponsCard />
+          <RangeWeaponsCard />
+          <GolemsCard />
+          <SpellsCard />
+          <ItemsCard />
+        </Box>
       </TabContent>
       <TabContent index={4} active={value === 4}>
         <NotesCard />

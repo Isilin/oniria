@@ -4,7 +4,7 @@ import { SheetGetResult } from '@/app/api/sheets/route';
 import { Sheet } from '@prisma/client';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { ExtendedSheetWithUser, SheetWithUser } from '../db/sheet';
+import { ExtendedSheetWithUser, Schemas, SheetWithUser } from '../db/sheet';
 import fetcher from '../helpers/swr';
 
 export const useSheets = () => {
@@ -54,5 +54,19 @@ export const useSheet = (id) => {
     error,
     isLoading,
     mutate,
+  };
+};
+
+export const useSchemas = (id) => {
+  const {
+    data: schemas,
+    error,
+    isLoading,
+  } = useSWR<Schemas>(`/api/sheets/${id}/schemas`, fetcher);
+
+  return {
+    schemas,
+    error,
+    isLoading,
   };
 };

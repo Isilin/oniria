@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 
-const TeamAddMemberButton = (/*{ id }*/) => {
+const TeamAddMemberButton = () => {
   const [, setOpen] = useState(false);
 
   return (

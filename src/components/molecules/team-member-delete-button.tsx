@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import DeleteConfirmation from './delete-confirmation';
+import DeleteConfirmation from './_shared/delete-confirmation';
 
 const TeamMemberDeleteButton = ({ id }) => {
   const { id: teamId } = useParams<{ id: string }>();

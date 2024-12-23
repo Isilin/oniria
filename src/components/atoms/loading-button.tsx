@@ -18,6 +18,7 @@ const LoadingButton = ({ ...props }) => {
       disabled={loading}
       variant={loading ? 'outlined' : props?.variant}
       startIcon={!loading && props?.startIcon}
+      sx={{ minWidth: 'fit-content' }}
     >
       {loading ? (
         <CircularProgress

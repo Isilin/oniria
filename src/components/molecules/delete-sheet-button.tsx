@@ -1,10 +1,10 @@
 'use client';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import DeleteConfirmation from './delete-confirmation';
+import IconAction from '../atoms/icon-action';
+import DeleteConfirmation from './_shared/delete-confirmation';
 
 const DeleteSheetButton = ({ id }) => {
   const router = useRouter();
@@ -18,9 +18,7 @@ const DeleteSheetButton = ({ id }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
-        <DeleteIcon />
-      </Button>
+      <IconAction icon={DeleteIcon} onClick={() => setOpen(true)} />
       <DeleteConfirmation
         open={open}
         onClose={() => setOpen(false)}

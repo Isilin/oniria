@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
-const MarkdownEditor = dynamic(() => import('../organisms/mdx-editor'), {
+const MarkdownEditor = dynamic(() => import('./_shared/mdx-editor'), {
   ssr: false,
 });
 

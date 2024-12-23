@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Amee, Corpus, Golem, Item, Prisma, Spell } from '@prisma/client';
 
 export type SheetWithUser = Prisma.SheetGetPayload<{
   include: { user: true };
@@ -45,3 +45,36 @@ export type ExtendedSheetWithUser = SheetWithUser & {
   spent_learn_xp: number;
   spent_live_xp: number;
 };
+
+export type SpyreeWithPotential = Prisma.SpyreeGetPayload<{
+  include: {
+    potential: { include: { type: { include: { category: true } } } };
+  };
+}>;
+
+export interface Schemas {
+  corpus: Corpus[];
+  spyree: SpyreeWithPotential[];
+  amee: Amee[];
+}
+
+export type ArmorWithProperties = Prisma.ArmorGetPayload<{
+  include: { properties: true };
+}>;
+
+export type MeleeWeaponWithProperties = Prisma.MeleeWeaponGetPayload<{
+  include: { properties: true };
+}>;
+
+export type RangeWeaponWithProperties = Prisma.RangeWeaponGetPayload<{
+  include: { properties: true };
+}>;
+
+export interface Inventory {
+  armors: ArmorWithProperties[];
+  meleeWeapons: MeleeWeaponWithProperties[];
+  rangeWeapons: RangeWeaponWithProperties[];
+  items: Item[];
+  golems: Golem[];
+  spells: Spell[];
+}

@@ -1,15 +1,26 @@
 'use client';
 
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import LoadingButton from '../atoms/loading-button';
+import LoadingButton from '../../atoms/loading-button';
 
-const DeleteConfirmation = ({ open, onClose, onValidated }) => {
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  onValidated: () => void;
+}
+
+const DeleteConfirmation = ({ open, onClose, onValidated }: Props) => {
+  const handleCancel = () => {
+    onClose();
+  };
+
   const handleClick = () => {
     onValidated();
     onClose();
@@ -20,11 +31,11 @@ const DeleteConfirmation = ({ open, onClose, onValidated }) => {
       <DialogTitle>Confirmer</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Voulez-vous vraiment supprimer cette fiche de personnage ? Cette
-          action est irréversible.
+          Confirmez-vous la suppression ? Cette action est irréversible.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
+        <Button onClick={handleCancel}>Annuler</Button>
         <LoadingButton onClick={handleClick}>Confirmer</LoadingButton>
       </DialogActions>
     </Dialog>

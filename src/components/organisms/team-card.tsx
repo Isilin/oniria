@@ -21,7 +21,7 @@ const TeamCard = ({ id }: Props) => {
       <Typography variant="h1">{team.name}</Typography>
       <Typography variant="subtitle1">{team.members.length} joueurs</Typography>
       <TeamMembersList id={id} />
-      <TeamAddMemberButton id={id} />
+      <TeamAddMemberButton />
     </>
   );
 };
