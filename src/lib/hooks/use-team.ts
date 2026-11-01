@@ -1,76 +1,66 @@
-import { Team } from '@prisma/client';
-import useSWR, { useSWRConfig } from 'swr';
-import useSWRMutation from 'swr/mutation';
-import { TeamWithMembers } from '../db/team';
-import fetcher from '../helpers/swr';
+'use client';
+
+import { Prisma } from '@prisma/client';
+import { useSnackbar } from 'notistack';
+import useSWR from 'swr';
+import { SHEET_INCLUDE } from '../db/sheet';
+import fetcher, { request } from '../helpers/swr';
+
+export type TeamSummary = Prisma.TeamGetPayload<{
+  include: { members: { select: { id: true; name: true } } };
+}>;
+
+export type TeamWithMembers = Prisma.TeamGetPayload<{
+  include: { members: { include: typeof SHEET_INCLUDE } };
+}>;
 
 export const useTeams = () => {
   const {
     data: teams,
     error,
     isLoading,
-  } = useSWR<Team[]>('/api/teams', fetcher);
+    mutate,
+  } = useSWR<TeamSummary[]>('/api/teams', fetcher);
 
-  const { trigger: createTeam } = useSWRMutation(
-    '/api/teams',
-    (url, { arg }: { arg: Partial<Team> }) => {
-      return fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(arg),
-      });
-    },
-  );
-
-  return {
-    teams,
-    error,
-    isLoading,
-    createTeam,
+  const createTeam = async (name: string) => {
+    const team = await request<TeamSummary>('POST', '/api/teams', { name });
+    await mutate();
+    return team;
   };
+
+  return { teams, error, isLoading, createTeam };
 };
 
-export const useTeam = (id) => {
-  const { mutate } = useSWRConfig();
-
+export const useTeam = (id: string) => {
+  const url = `/api/teams/${id}`;
+  const { enqueueSnackbar } = useSnackbar();
   const {
     data: team,
     error,
     isLoading,
-  } = useSWR<TeamWithMembers>(`/api/teams/${id}`, fetcher);
+    mutate,
+  } = useSWR<TeamWithMembers>(url, fetcher);
 
-  const { trigger: deleteTeam } = useSWRMutation(`/api/teams/${id}`, (url) => {
-    return fetch(url, {
-      method: 'DELETE',
-    }).then((res) => {
-      mutate('/api/team');
-      return res.json();
-    });
-  });
+  const run = async (fn: () => Promise<unknown>) => {
+    try {
+      await fn();
+      await mutate();
+      return true;
+    } catch (e) {
+      enqueueSnackbar((e as Error).message, { variant: 'error' });
+      return false;
+    }
+  };
 
   return {
     team,
     error,
     isLoading,
-    deleteTeam,
-  };
-};
-
-export const useTeamMembers = (teamId, memberId) => {
-  const { mutate } = useSWRConfig();
-
-  const { trigger: deleteFromTeam } = useSWRMutation(
-    `/api/teams/${teamId}/members/${memberId}`,
-    (url) => {
-      return fetch(url, {
-        method: 'PATCH',
-      }).then((res) => {
-        mutate(`/api/team/${teamId}`);
-        return res.json();
-      });
-    },
-  );
-
-  return {
-    deleteFromTeam,
+    rename: (name: string) => run(() => request('PATCH', url, { name })),
+    addMember: (sheetId: string) =>
+      run(() => request('POST', `${url}/members`, { sheetId })),
+    removeMember: (sheetId: string) =>
+      run(() => request('DELETE', `${url}/members/${sheetId}`)),
+    deleteTeam: () => run(() => request('DELETE', url)),
   };
 };

@@ -2,74 +2,114 @@
 
 import EditIcon from '@mui/icons-material/Edit';
 import { TextField, Typography } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { KeyboardEvent, useEffect, useState } from 'react';
+
+export type EditableValue = string | number | null | undefined;
 
 interface Props {
-  value: string | number;
-  onChange?: (value: string | number) => void;
+  value: EditableValue;
+  onChange?: (value: string) => void;
+  type?: 'text' | 'number' | 'multiline';
+  placeholder?: string;
+  /** Si faux, la valeur est affichée en lecture seule. */
+  editable?: boolean;
+  /** Affichage (ex. chiffres romains) quand le champ n'est pas en édition. */
+  display?: string;
+  minWidth?: number;
+  fullWidth?: boolean;
+  'aria-label'?: string;
 }
 
-const EditableField = ({ value, onChange }: Props) => {
-  const [currentValue, setCurrentValue] = useState(value);
+const EditableField = ({
+  value,
+  onChange,
+  type = 'text',
+  placeholder = '-',
+  editable = true,
+  display,
+  minWidth,
+  fullWidth,
+  'aria-label': ariaLabel,
+}: Props) => {
+  const asString = value === null || value === undefined ? '' : `${value}`;
+  const [currentValue, setCurrentValue] = useState(asString);
   const [focused, setFocused] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentValue(e.target.value);
-  };
+  // Resynchronise quand la valeur change ailleurs (autre onglet, recalcul…).
+  useEffect(() => {
+    if (!focused) setCurrentValue(asString);
+  }, [asString, focused]);
 
-  const handleBlur = () => {
+  const commit = () => {
     setFocused(false);
-    if (value !== currentValue) {
-      onChange?.(currentValue);
-    }
+    if (currentValue !== asString) onChange?.(currentValue);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      setFocused(false);
-      if (value !== currentValue) {
-        onChange?.(currentValue);
-      }
-    }
+  const cancel = () => {
+    setFocused(false);
+    setCurrentValue(asString);
   };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') cancel();
+    if (e.key === 'Enter' && (type !== 'multiline' || e.ctrlKey)) commit();
+  };
+
+  const shown = display ?? (asString || placeholder);
+
+  if (!editable) {
+    return (
+      <Typography
+        variant="body1"
+        component="span"
+        sx={{ whiteSpace: type === 'multiline' ? 'pre-line' : undefined }}
+      >
+        {shown}
+      </Typography>
+    );
+  }
+
+  if (!focused) {
+    return (
+      <Typography
+        variant="body1"
+        component="span"
+        role="button"
+        tabIndex={0}
+        aria-label={ariaLabel}
+        onClick={() => setFocused(true)}
+        onFocus={() => setFocused(true)}
+        color={asString ? 'textPrimary' : 'textSecondary'}
+        sx={{
+          cursor: 'pointer',
+          borderBottom: '1px dashed transparent',
+          whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+          ':hover': { borderBottomColor: 'text.secondary' },
+        }}
+      >
+        {shown}{' '}
+        <EditIcon sx={{ fontSize: 10, verticalAlign: 'top', opacity: 0.6 }} />
+      </Typography>
+    );
+  }
 
   return (
-    <>
-      {!focused ? (
-        <Typography
-          display="inline"
-          onClick={() => setFocused(true)}
-          variant="body1"
-          sx={{
-            cursor: 'pointer',
-            ':hover': { borderBottom: '2px solid white' },
-          }}
-          color="textSecondary"
-        >
-          {currentValue}{' '}
-          <EditIcon sx={{ fontSize: 10, verticalAlign: 'top' }} />
-        </Typography>
-      ) : (
-        <TextField
-          autoFocus
-          id="value"
-          name="value"
-          type="text"
-          value={currentValue}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyPress}
-          variant="standard"
-          slotProps={{ htmlInput: { style: { padding: 0 } } }}
-          sx={{
-            width:
-              (typeof currentValue === 'string' ? currentValue.length + 1 : 3) *
-              7,
-            height: 10,
-          }}
-        />
-      )}
-    </>
+    <TextField
+      autoFocus
+      value={currentValue}
+      onChange={(e) => setCurrentValue(e.target.value)}
+      onBlur={commit}
+      onKeyDown={handleKeyDown}
+      variant="standard"
+      type={type === 'number' ? 'number' : 'text'}
+      multiline={type === 'multiline'}
+      fullWidth={fullWidth}
+      slotProps={{ htmlInput: { 'aria-label': ariaLabel } }}
+      sx={{
+        minWidth: minWidth ?? (type === 'number' ? 60 : 120),
+        maxWidth: fullWidth ? undefined : 400,
+      }}
+    />
   );
 };
 

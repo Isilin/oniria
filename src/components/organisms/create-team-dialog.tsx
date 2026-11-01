@@ -16,27 +16,27 @@ const CreateTeamDialog = ({ open, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { createTeam } = useTeams();
 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const name = new FormData(e.currentTarget).get('name')?.toString() ?? '';
+    setLoading(true);
+    try {
+      const team = await createTeam(name);
+      onClose();
+      enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
+      router.push(`/team/${team.id}`);
+    } catch (error) {
+      enqueueSnackbar((error as Error).message, { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          createTeam({ name: formJson.name.toString() }).then(async (res) => {
-            const team = await res.json();
-
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
-            router.push(`/team/${team.id}`);
-          });
-        },
-      }}
+      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
     >
       <DialogTitle>Nouvelle table de jeu</DialogTitle>
       <DialogContent>
@@ -57,7 +57,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
           Annuler
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Ajouter'}
+          {loading ? <CircularProgress size={20} /> : 'Ajouter'}
         </Button>
       </DialogActions>
     </Dialog>

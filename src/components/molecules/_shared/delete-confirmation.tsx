@@ -8,19 +8,20 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import LoadingButton from '../../atoms/loading-button';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onValidated: () => void;
+  message?: string;
 }
 
-const DeleteConfirmation = ({ open, onClose, onValidated }: Props) => {
-  const handleCancel = () => {
-    onClose();
-  };
-
+const DeleteConfirmation = ({
+  open,
+  onClose,
+  onValidated,
+  message = 'Confirmez-vous la suppression ? Cette action est irréversible.',
+}: Props) => {
   const handleClick = () => {
     onValidated();
     onClose();
@@ -30,13 +31,13 @@ const DeleteConfirmation = ({ open, onClose, onValidated }: Props) => {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Confirmer</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Confirmez-vous la suppression ? Cette action est irréversible.
-        </DialogContentText>
+        <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel}>Annuler</Button>
-        <LoadingButton onClick={handleClick}>Confirmer</LoadingButton>
+        <Button onClick={onClose}>Annuler</Button>
+        <Button onClick={handleClick} color="error">
+          Supprimer
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -26,6 +26,7 @@ const WhitelistDeleteButton = ({ id }) => {
         open={open}
         onClose={() => setOpen(false)}
         onValidated={handleClick}
+        message="Retirer cet email de la whitelist ? La personne ne pourra plus se connecter."
       />
     </>
   );

@@ -5,17 +5,24 @@ import path from 'path';
 
 const prisma = new PrismaClient();
 
+/**
+ * Remplit les catalogues de règles (types de Corpus, potentiels,
+ * compétences). Chaque seed utilise des upsert : on peut le relancer sans
+ * créer de doublons ni toucher aux fiches.
+ */
 async function main() {
   const seedsPath = path.join(__dirname, 'seeds');
   const files = fs
     .readdirSync(seedsPath)
-    .filter((file) => file.endsWith('.seed.ts'));
+    .filter((file) => file.endsWith('.seed.ts'))
+    .sort();
 
-  files.forEach(async (file) => {
-    const seedFile = path.join(seedsPath, file);
-    const { default: seedFn } = require(seedFile);
+  // Séquentiel : chaque fichier attend la fin du précédent.
+  for (const file of files) {
+    const { default: seedFn } = require(path.join(seedsPath, file));
     await seedFn(prisma);
-  });
+    console.log(`✔ ${file}`);
+  }
 }
 
 main()

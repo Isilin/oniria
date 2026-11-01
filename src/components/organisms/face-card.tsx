@@ -1,52 +1,67 @@
 'use client';
 
 import { useSheet } from '@/lib/hooks/use-sheet';
-import Grid from '@mui/material/Grid2';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import CustomCard from '../atoms/custom-card';
 import SheetField from '../molecules/sheet-field';
 
-const FaceCard = ({ id }) => {
-  const { sheet, mutate } = useSheet(id);
+const FaceCard = ({ id }: { id: string }) => {
+  const { sheet, computed, canEdit, update } = useSheet(id);
 
   return (
-    <CustomCard name="Visage">
-      <Grid display="flex" flexDirection="column">
+    <Card>
+      <CardContent>
+        <Typography variant="h4" align="center" gutterBottom>
+          Visage
+        </Typography>
         <Typography variant="h5">Le Soi</Typography>
         <SheetField
-          label="Âge"
-          value={sheet.age ? `${sheet.age}` : '?'}
-          postValue="ans"
-          onEdit={(newVal) => {
-            mutate({ age: Number(newVal) });
-          }}
+          label="Nom"
+          type="text"
+          value={sheet.name}
+          editable={canEdit}
+          onEdit={(newVal) => update({ name: newVal || 'Sans nom' })}
         />
-        <Typography variant="h5">L&apos;Autre</Typography>
+        <SheetField
+          label="Âge"
+          value={sheet.age}
+          postValue={sheet.age ? 'ans' : undefined}
+          editable={canEdit}
+          onEdit={(newVal) => update({ age: newVal ? Number(newVal) : null })}
+        />
+        <Typography variant="h5" sx={{ mt: 1 }}>
+          L&apos;Autre
+        </Typography>
         <SheetField
           label="Maï"
-          value={sheet.current_mai}
-          postValue={`/ ${sheet.mai}`}
-          onEdit={(newVal) => {
-            mutate({ current_mai: Number(newVal) });
-          }}
+          value={sheet.current_mai ?? computed.mai}
+          tooltip="Maximum : Âme / 10"
+          postValue={`/ ${computed.mai}`}
+          editable={canEdit}
+          onEdit={(newVal) =>
+            update({ current_mai: newVal === '' ? null : Number(newVal) })
+          }
         />
-        <Typography variant="h5">Le Monde</Typography>
+        <Typography variant="h5" sx={{ mt: 1 }}>
+          Le Monde
+        </Typography>
         <SheetField
           label="Aspect"
+          type="text"
           value={sheet.aspect}
-          onEdit={(newVal) => {
-            mutate({ aspect: String(newVal) });
-          }}
+          editable={canEdit}
+          onEdit={(newVal) => update({ aspect: newVal })}
         />
         <SheetField
           label="Devenir"
+          type="text"
           value={sheet.become}
-          onEdit={(newVal) => {
-            mutate({ become: String(newVal) });
-          }}
+          editable={canEdit}
+          onEdit={(newVal) => update({ become: newVal })}
         />
-      </Grid>
-    </CustomCard>
+      </CardContent>
+    </Card>
   );
 };
 

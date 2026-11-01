@@ -20,6 +20,7 @@ const ThemeSwitch = () => {
     <Box
       sx={{
         display: 'flex',
+        flexWrap: 'wrap',
         width: '100%',
         alignItems: 'center',
         justifyContent: 'end',

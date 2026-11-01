@@ -32,6 +32,7 @@ interface EditorProps {
   onChange?: (markdown: string) => void;
   onBlur?: () => void;
   changed: boolean;
+  readOnly?: boolean;
   editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
 }
 
@@ -40,6 +41,7 @@ export default function InitializedMDXEditor({
   onChange,
   onBlur,
   changed,
+  readOnly,
   editorRef,
 }: EditorProps) {
   const { mode, systemMode } = useColorScheme();
@@ -53,6 +55,7 @@ export default function InitializedMDXEditor({
       onChange={onChange}
       onBlur={onBlur}
       markdown={markdown}
+      readOnly={readOnly}
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (

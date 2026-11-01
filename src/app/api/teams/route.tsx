@@ -1,22 +1,23 @@
 import prisma from '@/lib/db/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { handle, HttpError, readJson, requireAdmin } from '@/lib/server/api';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
-  const teams = await prisma.team.findMany({
-    include: { members: true },
+export const GET = () =>
+  handle(async () => {
+    await requireAdmin();
+    return prisma.team.findMany({
+      include: { members: { select: { id: true, name: true } } },
+      orderBy: { name: 'asc' },
+    });
   });
 
-  return NextResponse.json(teams);
-}
+export const POST = (req: NextRequest) =>
+  handle(async () => {
+    await requireAdmin();
+    const { name } = await readJson(req);
+    if (!name) throw new HttpError(400, 'Nom manquant.');
+    return prisma.team.create({ data: { name: String(name) } });
+  });
 
-type CreateQueryParam = {
-  name: string;
-};
-
-export async function POST(req: NextRequest) {
-  const params: CreateQueryParam = await req.json();
-
-  const team = await prisma.team.create({ data: { name: params.name } });
-
-  return NextResponse.json(team);
-}
+// Réponses propres à l'utilisateur·ice connecté·e : jamais mises en cache.
+export const dynamic = 'force-dynamic';

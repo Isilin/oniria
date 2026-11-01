@@ -1,22 +1,25 @@
 import prisma from '@/lib/db/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { handle, HttpError, readJson, requireAdmin } from '@/lib/server/api';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
-  const whitelist = await prisma.whitelist.findMany();
-
-  return NextResponse.json(whitelist);
-}
-
-type CreateQueryParam = {
-  email: string;
-};
-
-export async function POST(req: NextRequest) {
-  const params: CreateQueryParam = await req.json();
-
-  const sheet = await prisma.whitelist.create({
-    data: { email: params.email },
+export const GET = () =>
+  handle(async () => {
+    await requireAdmin();
+    return prisma.whitelist.findMany({ orderBy: { email: 'asc' } });
   });
 
-  return NextResponse.json(sheet);
-}
+export const POST = (req: NextRequest) =>
+  handle(async () => {
+    await requireAdmin();
+    const { email } = await readJson(req);
+    const normalized = String(email ?? '')
+      .trim()
+      .toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+$/.test(normalized)) {
+      throw new HttpError(400, 'Adresse email invalide.');
+    }
+    return prisma.whitelist.create({ data: { email: normalized } });
+  });
+
+// Réponses propres à l'utilisateur·ice connecté·e : jamais mises en cache.
+export const dynamic = 'force-dynamic';

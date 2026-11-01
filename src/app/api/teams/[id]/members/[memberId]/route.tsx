@@ -1,20 +1,15 @@
 import prisma from '@/lib/db/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { handle, requireAdmin } from '@/lib/server/api';
+import { NextRequest } from 'next/server';
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string; memberId: string } },
-) {
-  const team = await prisma.team.update({
-    data: {
-      members: {
-        disconnect: [{ id: params.memberId }],
-      },
-    },
-    where: {
-      id: params.id,
-    },
+type Params = { params: { id: string; memberId: string } };
+
+/** Retire une fiche de la table (la fiche n'est pas supprimée). */
+export const DELETE = (req: NextRequest, { params }: Params) =>
+  handle(async () => {
+    await requireAdmin();
+    return prisma.team.update({
+      where: { id: params.id },
+      data: { members: { disconnect: [{ id: params.memberId }] } },
+    });
   });
-
-  return NextResponse.json(team);
-}

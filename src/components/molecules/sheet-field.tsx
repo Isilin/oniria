@@ -1,78 +1,67 @@
 'use client';
-import { useSheet } from '@/lib/hooks/use-sheet';
-import { CircularProgress } from '@mui/material';
+
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { useSession } from 'next-auth/react';
-import { useParams } from 'next/navigation';
-import { useSnackbar } from 'notistack';
-import EditableField from '../atoms/editable-field';
+import { ReactNode } from 'react';
+import EditableField, { EditableValue } from '../atoms/editable-field';
 
 interface Props {
   label: string;
-  value: string | number;
-  tooltip?: string;
-  onEdit?: (newVal: string | number) => void;
-  postValue?: string | number;
+  value: EditableValue;
+  tooltip?: ReactNode;
+  /** Si fourni (et si la fiche est modifiable), la valeur est éditable. */
+  onEdit?: (newVal: string) => void;
+  editable?: boolean;
+  type?: 'text' | 'number' | 'multiline';
+  postValue?: ReactNode;
+  hint?: ReactNode;
 }
 
-const SheetField = ({ label, value, tooltip, onEdit, postValue }: Props) => {
-  const { data: session } = useSession();
-  const { id } = useParams<{ id: string }>();
-  const { sheet } = useSheet(id);
-  const { enqueueSnackbar } = useSnackbar();
-
-  if (!session) return <CircularProgress />;
-
-  const editable =
-    session.user.role === 'ADMIN' || session.user.id === sheet.user.id;
-
-  const handleChange = (newVal: string | number) => {
-    onEdit?.(newVal);
-    enqueueSnackbar(`${label} modifié.`, { variant: 'info' });
-  };
+const SheetField = ({
+  label,
+  value,
+  tooltip,
+  onEdit,
+  editable = false,
+  type = 'number',
+  postValue,
+  hint,
+}: Props) => {
+  const labelNode = (
+    <Typography
+      variant="body1"
+      component="span"
+      sx={tooltip ? { textDecoration: 'underline dotted', cursor: 'help' } : {}}
+    >
+      {`${label} :`}
+    </Typography>
+  );
 
   return (
-    <Box display="flex" gap="4px">
+    <Box display="flex" gap="4px" alignItems="baseline" flexWrap="wrap">
       {tooltip ? (
-        <Tooltip
-          title={tooltip}
-          arrow
-          PopperProps={{ disablePortal: true }}
-          slotProps={{
-            popper: {
-              modifiers: [
-                {
-                  name: 'offset',
-                  options: {
-                    offset: [0, -10],
-                  },
-                },
-              ],
-            },
-          }}
-        >
-          <Typography
-            variant="body1"
-            sx={{ textDecoration: 'underline dotted' }}
-          >
-            {`${label} :`}
-          </Typography>
+        <Tooltip title={tooltip} arrow>
+          {labelNode}
         </Tooltip>
       ) : (
-        <Typography variant="body1" component="span">{`${label} :`}</Typography>
+        labelNode
       )}
-      {editable && onEdit ? (
-        <EditableField value={value} onChange={handleChange} />
-      ) : (
-        <Typography variant="body1" component="span">
-          {value}
-        </Typography>
-      )}
-      {postValue && (
+      <EditableField
+        value={value}
+        onChange={onEdit}
+        editable={editable && !!onEdit}
+        type={type}
+        aria-label={label}
+      />
+      {postValue !== undefined && postValue !== null && (
         <Typography variant="body1" component="span">
           {postValue}
+        </Typography>
+      )}
+      {hint && (
+        <Typography variant="caption" color="textSecondary" component="span">
+          {hint}
         </Typography>
       )}
     </Box>

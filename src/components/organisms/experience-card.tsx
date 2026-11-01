@@ -1,50 +1,58 @@
+'use client';
+
 import { useSheet } from '@/lib/hooks/use-sheet';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
-import CustomCard from '../atoms/custom-card';
 import SheetField from '../molecules/sheet-field';
 
-const ExperienceCard = ({ id }) => {
-  const { sheet, mutate } = useSheet(id);
+const XP_TYPES = [
+  { label: 'Éprouver', gained: 'feel_xp', left: 'to_spend_feel_xp' },
+  { label: 'Apprendre', gained: 'learn_xp', left: 'to_spend_learn_xp' },
+  { label: 'Vivre', gained: 'live_xp', left: 'to_spend_live_xp' },
+] as const;
+
+const ExperienceCard = ({ id }: { id: string }) => {
+  const { sheet, canEdit, update } = useSheet(id);
 
   return (
-    <CustomCard name="Experiences">
-      <Grid display="flex" flexDirection="row" justifyContent="space-evenly">
-        <Grid>
-          <Typography variant="h5">Eprouver</Typography>
-          <SheetField label="Dépensé" value={sheet.spent_feel_xp} />
-          <SheetField
-            label="A dépenser"
-            value={sheet.to_spend_feel_xp}
-            onEdit={(newVal) => {
-              mutate({ to_spend_feel_xp: Number(newVal) });
-            }}
-          />
+    <Card>
+      <CardContent>
+        <Typography variant="h4" align="center" gutterBottom>
+          Expériences
+        </Typography>
+        <Grid
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-evenly"
+          gap={4}
+          flexWrap="wrap"
+        >
+          {XP_TYPES.map((xp) => (
+            <Grid key={xp.label}>
+              <Typography variant="h5">{xp.label}</Typography>
+              <SheetField
+                label="Gagnée"
+                value={sheet[xp.gained] ?? 0}
+                editable={canEdit}
+                onEdit={(newVal) => update({ [xp.gained]: Number(newVal) })}
+              />
+              <SheetField
+                label="Restante"
+                value={sheet[xp.left] ?? 0}
+                editable={canEdit}
+                onEdit={(newVal) => update({ [xp.left]: Number(newVal) })}
+              />
+              <SheetField
+                label="Dépensée"
+                value={(sheet[xp.gained] ?? 0) - (sheet[xp.left] ?? 0)}
+              />
+            </Grid>
+          ))}
         </Grid>
-        <Grid>
-          <Typography variant="h5">Apprendre</Typography>
-          <SheetField label="Dépensé" value={sheet.spent_learn_xp} />
-          <SheetField
-            label="A dépenser"
-            value={sheet.to_spend_learn_xp}
-            onEdit={(newVal) => {
-              mutate({ to_spend_learn_xp: Number(newVal) });
-            }}
-          />
-        </Grid>
-        <Grid>
-          <Typography variant="h5">Vivre</Typography>
-          <SheetField label="Dépensé" value={sheet.spent_live_xp} />
-          <SheetField
-            label="A dépenser"
-            value={sheet.to_spend_live_xp}
-            onEdit={(newVal) => {
-              mutate({ to_spend_live_xp: Number(newVal) });
-            }}
-          />
-        </Grid>
-      </Grid>
-    </CustomCard>
+      </CardContent>
+    </Card>
   );
 };
 

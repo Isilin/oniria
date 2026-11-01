@@ -3,17 +3,20 @@
 import { useTeams } from '@/lib/hooks/use-team';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid2';
+import Typography from '@mui/material/Typography';
 import TeamListElement from '../molecules/team-list-element';
 
 const TeamsList = () => {
   const { teams, isLoading } = useTeams();
 
   if (isLoading) return <CircularProgress />;
+  if (!teams?.length)
+    return <Typography color="textSecondary">Aucune table de jeu.</Typography>;
 
   return (
-    <Grid container spacing={2}>
-      {teams.map((team, index) => (
-        <TeamListElement team={team} key={index} />
+    <Grid container spacing={2} justifyContent="center">
+      {teams.map((team) => (
+        <TeamListElement team={team} key={team.id} />
       ))}
     </Grid>
   );

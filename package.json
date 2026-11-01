@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
     "prisma:push": "npx prisma db push",
     "prisma:seed": "npx prisma db seed",
     "prisma:studio": "npx prisma studio",
@@ -22,10 +23,9 @@
     "@mui/icons-material": "^6.1.4",
     "@mui/material": "^6.1.4",
     "@mui/material-nextjs": "^6.1.4",
-    "@mui/x-data-grid": "^7.22.2",
     "@prisma/client": "^5.22.0",
     "font-awesome": "^4.7.0",
-    "next": "14.2.15",
+    "next": "14.2.35",
     "next-auth": "^5.0.0-beta.22",
     "notistack": "^3.0.1",
     "react": "^18.3.1",
@@ -37,12 +37,13 @@
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "eslint": "8.57.1",
-    "eslint-config-next": "14.2.15",
+    "eslint-config-next": "14.2.35",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.3",
     "prisma": "^5.22.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "2.1.9"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
