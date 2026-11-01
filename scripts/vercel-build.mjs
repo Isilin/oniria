@@ -6,6 +6,8 @@
  * pour l'environnement concerné (à activer volontairement dans Vercel, par
  * exemple pour l'aperçu branché sur la copie de test Neon).
  *
+ * SEED_CATALOG=true remplit/complète les catalogues de règles (upsert).
+ *
  * Avant, la commande de build du projet lançait `prisma db push` à chaque
  * déploiement, ce qui modifiait le schéma de la base de l'environnement,
  * y compris depuis une branche d'aperçu.
@@ -28,6 +30,11 @@ if (process.env.RUN_MIGRATIONS === 'true') {
   console.log(
     `Base de données non modifiée pendant le build (${environment}, RUN_MIGRATIONS ≠ true).`,
   );
+}
+
+// Catalogues de règles (upsert uniquement : n'écrase ni ne supprime rien).
+if (process.env.SEED_CATALOG === 'true') {
+  run('npx prisma db seed');
 }
 
 run('npx next build');

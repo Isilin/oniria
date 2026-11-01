@@ -82,6 +82,32 @@ Pour devenir MJ : ajouter son email dans la table `Whitelist`, se connecter une
 première fois, puis passer `role` à `ADMIN` dans la table `users`
 (`yarn prisma:studio`).
 
+## Déploiement (Vercel)
+
+La commande de build est définie dans [`vercel.json`](vercel.json)
+([`scripts/vercel-build.mjs`](scripts/vercel-build.mjs)). Par défaut, **un
+build ne modifie jamais la base de données**. Variables d'environnement
+(à définir par environnement dans Vercel) :
+
+| Variable                   | Effet                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| `POSTGRES_PRISMA_URL`      | Connexion de l'application (pooler).                                                      |
+| `POSTGRES_URL_NON_POOLING` | Connexion directe, utilisée par les migrations.                                           |
+| `RUN_MIGRATIONS=true`      | Applique les migrations Prisma pendant le build (`prisma migrate deploy`).                |
+| `SEED_CATALOG=true`        | Remplit/complète les catalogues de règles (upsert, ne supprime rien).                     |
+| `ENABLE_TEST_LOGIN=true`   | Aperçu uniquement : boutons de connexion avec des comptes fictifs (ignoré en production). |
+
+### Connexion et données de test
+
+Sur un aperçu avec `ENABLE_TEST_LOGIN=true`, la page d'accueil propose de se
+connecter en « MJ de test », « Joueuse de test » ou « Joueur de test », sans
+Google. À la première connexion, des personnages fictifs (Lyse, Corwin, un
+PNJ) et une « Table de test » sont créés. En local :
+
+```bash
+yarn prisma:seed-test
+```
+
 ## Catalogues de règles
 
 Les types de Corpus, les potentiels de la Spyrée (catégorie › type ›
