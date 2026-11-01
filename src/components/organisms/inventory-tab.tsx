@@ -2,7 +2,7 @@
 
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { CHARACTERISTICS, meetsPrerequisite } from '@/lib/rules';
+import { CHARACTERISTICS, meetsPrerequisite, normalizeStat } from '@/lib/rules';
 import WarningIcon from '@mui/icons-material/WarningAmber';
 import {
   Autocomplete,
@@ -145,7 +145,9 @@ const Prerequisite = ({
     row.prerequisite_stat,
     row.prerequisite_value,
   );
-  const stat = CHARACTERISTICS.find((c) => c.key === row.prerequisite_stat);
+  const stat = CHARACTERISTICS.find(
+    (c) => c.key === normalizeStat(row.prerequisite_stat),
+  );
 
   return (
     <Box
@@ -160,7 +162,7 @@ const Prerequisite = ({
           <Select
             size="small"
             variant="standard"
-            value={row.prerequisite_stat ?? ''}
+            value={stat?.key ?? ''}
             displayEmpty
             onChange={(e) =>
               onChange({ prerequisite_stat: e.target.value || null })

@@ -354,5 +354,7 @@ describe('utilitaires', () => {
     expect(meetsPrerequisite(values, 'strength', 40)).toBe(true);
     expect(meetsPrerequisite(values, 'vigour', 30)).toBe(false);
     expect(meetsPrerequisite(values, null, null)).toBe(true);
+    expect(meetsPrerequisite(values, 'Vigueur', 30)).toBe(false);
+    expect(meetsPrerequisite(values, 'For', 40)).toBe(true);
   });
 });

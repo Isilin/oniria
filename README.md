@@ -97,6 +97,21 @@ build ne modifie jamais la base de données**. Variables d'environnement
 | `SEED_CATALOG=true`        | Remplit/complète les catalogues de règles (upsert, ne supprime rien).                     |
 | `ENABLE_TEST_LOGIN=true`   | Aperçu uniquement : boutons de connexion avec des comptes fictifs (ignoré en production). |
 
+### Migrations
+
+Le schéma évolue par migrations Prisma (`prisma/migrations`), qui transforment
+les données existantes au lieu de les écraser. `0_baseline` correspond au
+schéma déjà en place sur une base existante : avant la première migration, on
+le marque comme appliqué **une seule fois** par base :
+
+```bash
+npx prisma migrate resolve --applied 0_baseline
+```
+
+Sans ce marquage, `prisma migrate deploy` refuse de toucher une base non vide
+(erreur P3005) : aucune modification accidentelle n'est possible. En
+développement : `yarn prisma:migrate` crée une nouvelle migration.
+
 ### Connexion et données de test
 
 Sur un aperçu avec `ENABLE_TEST_LOGIN=true`, la page d'accueil propose de se

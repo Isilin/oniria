@@ -31,6 +31,8 @@ export interface Column<R extends Row> {
   options?: { value: string; label: string }[];
   /** Pour un `select` : pas de choix vide. */
   required?: boolean;
+  /** Pour un `select` : ramène une valeur stockée vers une option. */
+  normalize?: (value: unknown) => string | null;
   /** Affichage personnalisé (en lecture seule). */
   render?: (row: R) => ReactNode;
   /** Texte affiché à la place de la valeur brute (ex. chiffres romains). */
@@ -95,13 +97,16 @@ function CollectionTable<R extends Row>({
     }
 
     if (column.type === 'select') {
-      const option = column.options?.find((o) => o.value === value);
+      const selected = column.normalize
+        ? column.normalize(value)
+        : (value as string);
+      const option = column.options?.find((o) => o.value === selected);
       if (!editable) return option?.label ?? '-';
       return (
         <Select
           size="small"
           variant="standard"
-          value={(value as string) ?? ''}
+          value={option ? selected : ''}
           displayEmpty
           onChange={(e) =>
             onUpdate(row.id, {

@@ -602,10 +602,7 @@ export const meetsPrerequisite = (
   stat: string | null | undefined,
   value: number | null | undefined,
 ) => {
-  if (!stat || !value) return true;
-  const characteristic = CHARACTERISTICS.find(
-    (c) => c.key === stat || c.abbr.toLowerCase() === stat.toLowerCase(),
-  );
-  if (!characteristic) return true;
-  return values[characteristic.key] >= value;
+  const key = normalizeStat(stat);
+  if (!key || key === 'health' || !value) return true;
+  return values[key] >= value;
 };

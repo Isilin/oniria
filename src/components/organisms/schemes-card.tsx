@@ -3,7 +3,7 @@
 import { CatalogPotential } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { CHARACTERISTICS, toRoman } from '@/lib/rules';
+import { CHARACTERISTICS, normalizeStat, toRoman } from '@/lib/rules';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Autocomplete,
@@ -123,6 +123,7 @@ const SchemesCard = ({ id }: { id: string }) => {
                   label: 'Bonus',
                   type: 'select',
                   options: STAT_OPTIONS,
+                  normalize: (v) => normalizeStat(v as string),
                   tooltip:
                     "Le bonus s'ajoute à la marge des facultés dont ce caractère est le majeur (ou à la santé maximale).",
                 },
