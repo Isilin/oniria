@@ -1,9 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/vercel-build.mjs",
-  "git": {
-    "deploymentEnabled": {
-      "claude/gallant-planck-12je0q": false
-    }
-  }
+  "buildCommand": "node scripts/vercel-build.mjs"
 }
