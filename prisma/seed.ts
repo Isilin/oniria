@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({
+    connectionString:
+      process.env.POSTGRES_URL_NON_POOLING ?? process.env.POSTGRES_PRISMA_URL,
+  }),
+});
 
 /**
  * Remplit les catalogues de règles (types de Corpus, potentiels,

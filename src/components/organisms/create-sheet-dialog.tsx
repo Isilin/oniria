@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const CreateSheetDialog = ({ open, onClose }) => {
   const router = useRouter();
@@ -18,9 +18,12 @@ const CreateSheetDialog = ({ open, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { createSheet } = useSheets();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
     e.preventDefault();
-    const name = new FormData(e.currentTarget).get('name')?.toString() ?? '';
+    const name =
+      new FormData(e.currentTarget as HTMLFormElement)
+        .get('name')
+        ?.toString() ?? '';
     setLoading(true);
     try {
       const sheet = await createSheet(name);
@@ -38,7 +41,9 @@ const CreateSheetDialog = ({ open, onClose }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{
+        paper: { component: 'form', onSubmit: handleSubmit },
+      }}
     >
       <DialogTitle>Nouveau personnage</DialogTitle>
       <DialogContent>

@@ -8,8 +8,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import TabContent from '../atoms/tab-content';
 import NotesCard from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
@@ -33,14 +31,9 @@ const TABS = [
 ];
 
 const Sheet = ({ id }: { id: string }) => {
-  const router = useRouter();
   const anchor = useAnchor();
-  const [value, setValue] = useState(anchor || 0);
+  const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
   const { sheet, isLoading, error, canEdit } = useSheet(id);
-
-  useEffect(() => {
-    if (anchor >= 0 && anchor < TABS.length) setValue(anchor);
-  }, [anchor]);
 
   if (isLoading) return <CircularProgress />;
   if (error || !sheet)
@@ -50,7 +43,11 @@ const Sheet = ({ id }: { id: string }) => {
 
   return (
     <>
-      <Box textAlign="center">
+      <Box
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         <Typography
           variant="h2"
           component="h1"
@@ -71,8 +68,8 @@ const Sheet = ({ id }: { id: string }) => {
       <Tabs
         value={value}
         onChange={(e, newVal) => {
-          setValue(newVal);
-          router.replace(`#${newVal}`, { scroll: false });
+          // L'onglet est dans l'URL (#2…) : partageable et compatible retour.
+          window.location.hash = String(newVal);
         }}
         variant="scrollable"
         scrollButtons="auto"
@@ -91,15 +88,25 @@ const Sheet = ({ id }: { id: string }) => {
       </Tabs>
       <TabContent index={0} active={value === 0}>
         <Box
-          display="flex"
-          flexDirection="column"
-          gap={1.5}
-          sx={{ width: { xs: '100%', md: 300 }, flexShrink: 0 }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5,
+            width: { xs: '100%', md: 300 },
+            flexShrink: 0,
+          }}
         >
           <AvatarCard id={id} />
           <FaceCard id={id} />
         </Box>
-        <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            flexGrow: 1,
+          }}
+        >
           <CharactersCard id={id} />
           <AbilitiesCard id={id} />
           <ExistencesCard id={id} />
@@ -110,7 +117,14 @@ const Sheet = ({ id }: { id: string }) => {
         <TraitsTab id={id} />
       </TabContent>
       <TabContent index={2} active={value === 2}>
-        <Box display="flex" flexDirection="column" gap={2} width="100%">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: '100%',
+          }}
+        >
           <SchemesCard id={id} />
           <SkillsCard id={id} />
           <MagicCard id={id} />
@@ -120,7 +134,11 @@ const Sheet = ({ id }: { id: string }) => {
         <InventoryTab id={id} />
       </TabContent>
       <TabContent index={4} active={value === 4}>
-        <Box width="100%">
+        <Box
+          sx={{
+            width: '100%',
+          }}
+        >
           <NotesCard id={id} />
         </Box>
       </TabContent>

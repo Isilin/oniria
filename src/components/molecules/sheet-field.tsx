@@ -39,7 +39,14 @@ const SheetField = ({
   );
 
   return (
-    <Box display="flex" gap="4px" alignItems="baseline" flexWrap="wrap">
+    <Box
+      sx={{
+        display: 'flex',
+        gap: '4px',
+        alignItems: 'baseline',
+        flexWrap: 'wrap',
+      }}
+    >
       {tooltip ? (
         <Tooltip title={tooltip} arrow>
           {labelNode}

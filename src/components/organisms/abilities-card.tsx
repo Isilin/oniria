@@ -10,7 +10,7 @@ import {
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import SheetField from '../molecules/sheet-field';
 
@@ -24,10 +24,12 @@ const AbilitiesCard = ({ id }: { id: string }) => {
           Facultés
         </Typography>
         <Grid
-          display="flex"
-          justifyContent="space-evenly"
-          gap={4}
-          flexWrap="wrap"
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            gap: 4,
+            flexWrap: 'wrap',
+          }}
         >
           {FACULTY_COLUMNS.map((column) => (
             <Grid key={column.key}>
@@ -62,7 +64,13 @@ const AbilitiesCard = ({ id }: { id: string }) => {
           ))}
         </Grid>
         <Divider flexItem sx={{ my: 2 }} />
-        <Grid display="flex" justifyContent="space-evenly" flexWrap="wrap">
+        <Grid
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            flexWrap: 'wrap',
+          }}
+        >
           <Grid>
             <SheetField
               label="Dégâts"

@@ -13,15 +13,18 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const AvatarCard = ({ id }: { id: string }) => {
   const { sheet, canEdit, update } = useSheet(id);
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLElement>) => {
     e.preventDefault();
-    const url = new FormData(e.currentTarget).get('avatar')?.toString() ?? '';
+    const url =
+      new FormData(e.currentTarget as HTMLFormElement)
+        .get('avatar')
+        ?.toString() ?? '';
     update({ avatar: url.trim() || null });
     setOpen(false);
   };
@@ -53,8 +56,10 @@ const AvatarCard = ({ id }: { id: string }) => {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{ component: 'form', onSubmit: handleSubmit }}
         fullWidth
+        slotProps={{
+          paper: { component: 'form', onSubmit: handleSubmit },
+        }}
       >
         <DialogTitle>Image du personnage</DialogTitle>
         <DialogContent>

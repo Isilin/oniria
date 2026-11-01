@@ -3,10 +3,11 @@ import { SHEET_INCLUDE } from '@/lib/db/sheet';
 import { handle, HttpError, readJson, requireAdmin } from '@/lib/server/api';
 import { NextRequest } from 'next/server';
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
-export const GET = (req: NextRequest, { params }: Params) =>
+export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireAdmin();
     const team = await prisma.team.findUnique({
       where: { id: params.id },
@@ -18,8 +19,9 @@ export const GET = (req: NextRequest, { params }: Params) =>
     return team;
   });
 
-export const PATCH = (req: NextRequest, { params }: Params) =>
+export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireAdmin();
     const { name } = await readJson(req);
     if (!name) throw new HttpError(400, 'Nom manquant.');
@@ -29,8 +31,9 @@ export const PATCH = (req: NextRequest, { params }: Params) =>
     });
   });
 
-export const DELETE = (req: NextRequest, { params }: Params) =>
+export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireAdmin();
     await prisma.team.delete({ where: { id: params.id } });
     return null;

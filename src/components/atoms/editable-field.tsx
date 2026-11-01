@@ -2,7 +2,7 @@
 
 import EditIcon from '@mui/icons-material/Edit';
 import { TextField, Typography } from '@mui/material';
-import { KeyboardEvent, useEffect, useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 
 export type EditableValue = string | number | null | undefined;
 
@@ -32,23 +32,20 @@ const EditableField = ({
   'aria-label': ariaLabel,
 }: Props) => {
   const asString = value === null || value === undefined ? '' : `${value}`;
-  const [currentValue, setCurrentValue] = useState(asString);
-  const [focused, setFocused] = useState(false);
-
-  // Resynchronise quand la valeur change ailleurs (autre onglet, recalcul…).
-  useEffect(() => {
-    if (!focused) setCurrentValue(asString);
-  }, [asString, focused]);
+  // Brouillon pendant l'édition ; null = on affiche la valeur reçue, qui
+  // reste donc à jour si elle change ailleurs (recalcul, autre onglet…).
+  const [draft, setDraft] = useState<string | null>(null);
+  const focused = draft !== null;
+  const currentValue = draft ?? asString;
+  const setFocused = (on: boolean) => setDraft(on ? asString : null);
+  const setCurrentValue = setDraft;
 
   const commit = () => {
-    setFocused(false);
-    if (currentValue !== asString) onChange?.(currentValue);
+    if (draft !== null && draft !== asString) onChange?.(draft);
+    setDraft(null);
   };
 
-  const cancel = () => {
-    setFocused(false);
-    setCurrentValue(asString);
-  };
+  const cancel = () => setDraft(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') cancel();

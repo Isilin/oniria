@@ -9,7 +9,14 @@ const TraitsTab = ({ id }: { id: string }) => {
   const balance = computed.inbornTraitsBalance;
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} width="100%">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+      }}
+    >
       <Card>
         <CardContent>
           <SheetCollection

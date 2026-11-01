@@ -62,7 +62,13 @@ const Properties = ({
 
   if (!canEdit) {
     return value.length ? (
-      <Box display="flex" gap={0.5} flexWrap="wrap">
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 0.5,
+          flexWrap: 'wrap',
+        }}
+      >
         {value.map((p) => (
           <Tooltip key={p.id} title={p.description ?? ''}>
             <Chip size="small" label={p.name} />
@@ -103,7 +109,13 @@ const Properties = ({
           {...params}
           variant="standard"
           placeholder={value.length ? '' : '-'}
-          inputProps={{ ...params.inputProps, 'aria-label': 'Propriétés' }}
+          slotProps={{
+            ...params.slotProps,
+            htmlInput: {
+              ...params.slotProps.htmlInput,
+              'aria-label': 'Propriétés',
+            },
+          }}
         />
       )}
       noOptionsText={
@@ -136,7 +148,13 @@ const Prerequisite = ({
   const stat = CHARACTERISTICS.find((c) => c.key === row.prerequisite_stat);
 
   return (
-    <Box display="flex" alignItems="center" gap={0.5}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 0.5,
+      }}
+    >
       {canEdit ? (
         <>
           <Select
@@ -241,10 +259,24 @@ const InventoryTab = ({ id }: { id: string }) => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} width="100%">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+      }}
+    >
       <Card>
         <CardContent>
-          <Box display="flex" gap={4} justifyContent="center" flexWrap="wrap">
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 4,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             <SheetField label="Dégâts (Force)" value={computed.damage} />
             <SheetField
               label="Protection"

@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -16,9 +16,12 @@ const CreateTeamDialog = ({ open, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { createTeam } = useTeams();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
     e.preventDefault();
-    const name = new FormData(e.currentTarget).get('name')?.toString() ?? '';
+    const name =
+      new FormData(e.currentTarget as HTMLFormElement)
+        .get('name')
+        ?.toString() ?? '';
     setLoading(true);
     try {
       const team = await createTeam(name);
@@ -36,7 +39,9 @@ const CreateTeamDialog = ({ open, onClose }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ component: 'form', onSubmit: handleSubmit }}
+      slotProps={{
+        paper: { component: 'form', onSubmit: handleSubmit },
+      }}
     >
       <DialogTitle>Nouvelle table de jeu</DialogTitle>
       <DialogContent>

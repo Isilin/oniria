@@ -5,7 +5,7 @@ import { useCatalog } from '@/lib/hooks/use-catalog';
 import { CollectionItem, useSheet } from '@/lib/hooks/use-sheet';
 import { SKILL_DEGREES, SKILL_TYPES } from '@/lib/sheet/fields';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import {
   Autocomplete,
@@ -22,7 +22,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
@@ -100,11 +100,14 @@ const SkillNode = ({
   return (
     <Box>
       <Box
-        display="flex"
-        alignItems="center"
-        gap={1}
-        flexWrap="wrap"
-        sx={{ pl: depth * 3, py: 0.25 }}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          flexWrap: 'wrap',
+          pl: depth * 3,
+          py: 0.25,
+        }}
       >
         {depth > 0 && (
           <SubdirectoryArrowRightIcon fontSize="small" color="disabled" />
@@ -220,7 +223,14 @@ const AddSkill = ({
   };
 
   return (
-    <Box display="flex" gap={1} alignItems="center" mt={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1,
+        alignItems: 'center',
+        mt: 1,
+      }}
+    >
       <Autocomplete
         size="small"
         sx={{ flexGrow: 1, maxWidth: 360 }}
@@ -316,7 +326,12 @@ const SkillsCard = ({ id }: { id: string }) => {
                   </Typography>
                 )}
                 {categories.map((category) => (
-                  <Box key={category} mb={1}>
+                  <Box
+                    key={category}
+                    sx={{
+                      mb: 1,
+                    }}
+                  >
                     <Typography variant="subtitle2" color="textSecondary">
                       {category}
                     </Typography>

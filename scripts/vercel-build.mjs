@@ -19,15 +19,15 @@ const run = (command) => {
 
 const environment = process.env.VERCEL_ENV ?? 'local';
 
-run('prisma generate');
+run('npx prisma generate');
 
 if (process.env.RUN_MIGRATIONS === 'true') {
   console.log(`Migrations activées pour l'environnement « ${environment} ».`);
-  run('prisma migrate deploy');
+  run('npx prisma migrate deploy');
 } else {
   console.log(
     `Base de données non modifiée pendant le build (${environment}, RUN_MIGRATIONS ≠ true).`,
   );
 }
 
-run('next build');
+run('npx next build');

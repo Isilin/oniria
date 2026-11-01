@@ -1,7 +1,7 @@
 'use client';
 
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {
   Box,
   Button,
@@ -87,7 +87,9 @@ function CollectionTable<R extends Row>({
           onChange={(e) =>
             onUpdate(row.id, { [column.key]: e.target.checked } as Partial<R>)
           }
-          inputProps={{ 'aria-label': column.label }}
+          slotProps={{
+            input: { 'aria-label': column.label },
+          }}
         />
       );
     }
@@ -140,7 +142,14 @@ function CollectionTable<R extends Row>({
   };
 
   return (
-    <Box display="flex" flexDirection="column" gap={1} width="100%">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        width: '100%',
+      }}
+    >
       {title &&
         (typeof title === 'string' ? (
           <Typography variant="h5">{title}</Typography>

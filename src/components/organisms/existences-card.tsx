@@ -4,7 +4,7 @@ import { FullSheet } from '@/lib/db/sheet';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import SheetField from '../molecules/sheet-field';
@@ -59,15 +59,22 @@ const ExistencesCard = ({ id }: { id: string }) => {
           Existences
         </Typography>
         <Grid
-          display="flex"
-          justifyContent="space-evenly"
-          gap={4}
-          flexWrap="wrap"
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            gap: 4,
+            flexWrap: 'wrap',
+          }}
         >
           {existences.map((e) => {
             const current = (sheet as FullSheet)[e.field] ?? e.max;
             return (
-              <Grid key={e.field} minWidth={140}>
+              <Grid
+                key={e.field}
+                sx={{
+                  minWidth: 140,
+                }}
+              >
                 <SheetField
                   label={e.label}
                   value={current}

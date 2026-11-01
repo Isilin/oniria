@@ -1,10 +1,8 @@
 import { auth } from '@/app/auth';
+import BackButton from '@/components/atoms/back-button';
 import TeamAddButton from '@/components/molecules/team-add-button';
 import TeamsList from '@/components/organisms/teams-list';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -14,15 +12,21 @@ const Page = async () => {
 
   return (
     <Suspense>
-      <Link href="/">
-        <Button>
-          <ArrowBackIcon />
-        </Button>
-      </Link>
-      <Typography variant="h1" textAlign="center">
+      <BackButton href="/" />
+      <Typography
+        variant="h1"
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         ONIRIA
       </Typography>
-      <Typography variant="h3" textAlign="center">
+      <Typography
+        variant="h3"
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         Tables de jeu
       </Typography>
       <TeamsList />

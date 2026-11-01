@@ -10,10 +10,11 @@ import {
 import { SHEET_FIELDS, sanitizeFields } from '@/lib/sheet/fields';
 import { NextRequest } from 'next/server';
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
-export const GET = (req: NextRequest, { params }: Params) =>
+export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireUser();
     const sheet = await prisma.sheet.findUnique({
       where: { id: params.id },
@@ -23,8 +24,9 @@ export const GET = (req: NextRequest, { params }: Params) =>
     return sheet;
   });
 
-export const PATCH = (req: NextRequest, { params }: Params) =>
+export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireSheetEditor(params.id);
     const data = sanitizeFields(SHEET_FIELDS, await readJson(req));
 
@@ -35,8 +37,9 @@ export const PATCH = (req: NextRequest, { params }: Params) =>
     });
   });
 
-export const DELETE = (req: NextRequest, { params }: Params) =>
+export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireSheetEditor(params.id);
     await prisma.sheet.delete({ where: { id: params.id } });
     return null;

@@ -5,7 +5,7 @@ import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
 import SheetField from '../molecules/sheet-field';
@@ -20,10 +20,12 @@ const CharactersCard = ({ id }: { id: string }) => {
           Caractères
         </Typography>
         <Grid
-          display="flex"
-          justifyContent="space-evenly"
-          gap={4}
-          flexWrap="wrap"
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            gap: 4,
+            flexWrap: 'wrap',
+          }}
         >
           {GROUPS.map((group, index) => (
             <Fragment key={group.key}>

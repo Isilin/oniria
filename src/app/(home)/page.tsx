@@ -10,7 +10,12 @@ const Home = async () => {
 
   return (
     <Suspense>
-      <Typography variant="h1" textAlign="center">
+      <Typography
+        variant="h1"
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         ONIRIA
       </Typography>
       {!!session?.user && session?.user.role == 'ADMIN' && <AdminPanel />}

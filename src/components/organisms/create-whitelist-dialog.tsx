@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const CreateWhitelistDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -18,18 +18,20 @@ const CreateWhitelistDialog = ({ open, onClose }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          addToWhitelist({ email: formJson.email.toString() }).then(() => {
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Ajout à la whitelist.', { variant: 'info' });
-          });
+      slotProps={{
+        paper: {
+          component: 'form',
+          onSubmit: (e: SyntheticEvent<HTMLElement>) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget as HTMLFormElement);
+            const formJson = Object.fromEntries(formData.entries());
+            setLoading(true);
+            addToWhitelist({ email: formJson.email.toString() }).then(() => {
+              setLoading(false);
+              onClose();
+              enqueueSnackbar('Ajout à la whitelist.', { variant: 'info' });
+            });
+          },
         },
       }}
     >

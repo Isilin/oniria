@@ -4,8 +4,8 @@ Application de gestion des fiches de personnages et des tables de jeu pour le
 JdR **Oniria**. Elle reprend les règles du tableur de référence
 « Lunes d'Oniria - Fiches de personnages » (onglet _Modèle_).
 
-Stack : Next.js 14 (App Router), MUI, Prisma + PostgreSQL, Auth.js (Google),
-SWR.
+Stack : Node.js 26, Next.js 16 (App Router), React 19, MUI 9, Prisma 7 +
+PostgreSQL, Auth.js v5 (Google), SWR.
 
 ## Fonctionnalités
 
@@ -52,7 +52,9 @@ des facultés dont le Charisme est le majeur ; un bonus de +1 en Santé ajoute 1
 
 ## Développement
 
-Prérequis : Node 20+, PostgreSQL, Yarn 4 (`corepack enable`).
+Prérequis : Node.js 26, PostgreSQL. Yarn 4 est fourni par le dépôt
+(`.yarn/releases`, déclaré dans `.yarnrc.yml`) : n'importe quel `yarn` installé
+l'utilise automatiquement.
 
 ```bash
 yarn install

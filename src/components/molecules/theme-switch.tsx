@@ -30,7 +30,12 @@ const ThemeSwitch = () => {
         minHeight: '56px',
       }}
     >
-      <Typography variant="body1" paddingRight={2}>
+      <Typography
+        variant="body1"
+        sx={{
+          paddingRight: 2,
+        }}
+      >
         Thème :
       </Typography>
       <FormControl>

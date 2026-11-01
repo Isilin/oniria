@@ -48,7 +48,13 @@ const MemberRow = ({
         <MuiLink component={Link} href={`/sheet/${sheet.id}`}>
           {sheet.name}
         </MuiLink>
-        <Typography variant="caption" display="block" color="textSecondary">
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{
+            display: 'block',
+          }}
+        >
           {sheet.user.name}
         </Typography>
       </TableCell>
@@ -114,8 +120,19 @@ const TeamCard = ({ id }: { id: string }) => {
   );
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} width="100%">
-      <Box textAlign="center">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+      }}
+    >
+      <Box
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         <Typography variant="h2" component="h1">
           {team.name}
         </Typography>

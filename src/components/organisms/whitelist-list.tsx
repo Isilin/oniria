@@ -2,7 +2,7 @@
 
 import { useWhitelist } from '@/lib/hooks/use-whitelist';
 import { CircularProgress } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import WhitelistElement from '../molecules/whitelist-element';
 
 const WhitelistList = () => {

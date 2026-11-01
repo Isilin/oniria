@@ -2,10 +2,13 @@ import { handle, readJson, requireSheetEditor } from '@/lib/server/api';
 import { deleteItem, updateItem } from '@/lib/server/collections';
 import { NextRequest } from 'next/server';
 
-type Params = { params: { id: string; collection: string; itemId: string } };
+type Params = {
+  params: Promise<{ id: string; collection: string; itemId: string }>;
+};
 
-export const PATCH = (req: NextRequest, { params }: Params) =>
+export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireSheetEditor(params.id);
     return updateItem(
       params.id,
@@ -15,8 +18,9 @@ export const PATCH = (req: NextRequest, { params }: Params) =>
     );
   });
 
-export const DELETE = (req: NextRequest, { params }: Params) =>
+export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
+    const params = await paramsPromise;
     await requireSheetEditor(params.id);
     await deleteItem(params.id, params.collection, params.itemId);
     return null;

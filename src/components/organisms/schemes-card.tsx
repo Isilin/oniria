@@ -15,7 +15,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import SheetCollection from './sheet-collection';
 
@@ -34,7 +34,14 @@ const AddPotential = ({ id }: { id: string }) => {
   const owned = new Set(sheet.spyree.map((s) => s.potentialId));
 
   return (
-    <Box display="flex" gap={1} alignItems="center" mt={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1,
+        alignItems: 'center',
+        mt: 1,
+      }}
+    >
       <Autocomplete
         size="small"
         sx={{ flexGrow: 1, maxWidth: 360 }}
@@ -126,9 +133,11 @@ const SchemesCard = ({ id }: { id: string }) => {
           </Grid>
           <Grid
             size={{ xs: 12, lg: 6 }}
-            display="flex"
-            flexDirection="column"
-            gap={3}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3,
+            }}
           >
             <SheetCollection
               id={id}
