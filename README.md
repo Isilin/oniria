@@ -101,7 +101,8 @@ build ne modifie jamais la base de données**. Variables d'environnement
 
 Le schéma évolue par migrations Prisma (`prisma/migrations`), qui transforment
 les données existantes au lieu de les écraser. `0_baseline` correspond au
-schéma déjà en place sur une base existante (branche develop, copié dans
+schéma déjà en place sur une base existante (celui de la production, branche
+main, créé par Prisma 5 ; copié dans
 `prisma/baseline/schema.prisma`).
 
 Avec `RUN_MIGRATIONS=true`, le build :

@@ -1,6 +1,6 @@
-// Schéma de référence (branche develop) : celui de la migration 0_baseline.
-// Sert au build à vérifier qu’une base existante y correspond exactement
-// avant de la marquer comme « baseline ». Ne pas modifier.
+// Schéma de référence : celui de la production avant ce projet (branche main),
+// décrit par la migration 0_baseline. Sert au build à vérifier qu’une base
+// existante y correspond avant de la marquer comme « baseline ». Ne pas modifier.
 
 datasource db {
   provider = "postgresql"
@@ -86,8 +86,8 @@ model Sheet {
   avatar              String?
   age                 Int?
   current_mai         Int?
-  aspect              String?  @default("Type")
-  become              String?  @default("10")
+  aspect              String?
+  become              String?  // Devenir
   strength            Int?     @default(25) // force
   agility             Int?     @default(25) // agilité
   vivacity            Int?     @default(25) // vivacité
@@ -100,9 +100,9 @@ model Sheet {
   empathy             Int?     @default(25) // empathie
   ego                 Int?     @default(25) // ego
   will                Int?     @default(25) // volonté
-  current_health      Int?     @default(0)
-  current_stability   Int?     @default(0)
-  current_radiance    Int?     @default(0)
+  current_health      Int?
+  current_stability   Int?
+  current_radiance    Int?
   feel_xp             Int?     @default(0)
   to_spend_feel_xp    Int?     @default(0)
   learn_xp            Int?     @default(0)
@@ -114,7 +114,7 @@ model Sheet {
   spyree              Spyree[]
   amee                Amee[]
   traits              Trait[]
-  skills              SheetSkill[]
+  skills              Skill[]
 
   spells              Spell[]
   golems              Golem[]
@@ -128,7 +128,7 @@ model Sheet {
 
 model Whitelist {
   id                  String   @id @default(cuid())
-  email               String   @unique
+  email               String?  @unique
 }
 
 model Team {
@@ -137,16 +137,8 @@ model Team {
   members             Sheet[]
 }
 
-model CorpusType {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-  corpus              Corpus[]
-}
-
 model Corpus {
   id                  String   @id @default(cuid())
-  typeId              String   @map("type_id")
-  type                CorpusType @relation(fields: [typeId], references: [id])
   name                String?
   description         String?
   stat                String?
@@ -155,28 +147,11 @@ model Corpus {
   sheet               Sheet    @relation(fields: [sheetId], references: [id])
 }
 
-model PotentialCategory {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-
-  types           PotentialType[]
-}
-
-model PotentialType {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-  
-  categoryId          String   @map("category_id")
-  category            PotentialCategory @relation(fields: [categoryId], references: [id])
-  potentials          Potential[]
-}
-
 model Potential {
   id                  String   @id @default(cuid())
-  typeId              String   @map("type_id")
-  type                PotentialType @relation(fields: [typeId], references: [id])
-  name                String   @unique
-  description         String
+  category            String?
+  name                String?
+  description         String?
   spyrees             Spyree[]
 }
 
@@ -228,24 +203,11 @@ model Skill {
   type                SkillType
   category            String
   degree              SkillDegree
-  prerequisites       Skill[]   @relation("SkillDependencies")
+  prerequisiteId      String?  @map("prerequisite_id")
+  prerequisite        Skill?   @relation("SkillDependencies", fields: [prerequisiteId], references: [id])
   dependencies        Skill[]  @relation("SkillDependencies")
 
-  sheets              SheetSkill[] @relation("sheets")
-  prerequisiteSheet   SheetSkill[] @relation("prerequisiteSheet")
-
-  @@unique([name, category])
-}
-
-model SheetSkill {
-  id                  String   @id @default(cuid())
-  suffixe             String?
-  prerequisiteId      String?  @map("prerequisite_id")
-  prerequisite        Skill?   @relation("prerequisiteSheet", fields: [prerequisiteId], references: [id])
-  skillId             String   @map("skill_id")
-  skill               Skill    @relation("sheets", fields: [skillId], references: [id])
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  sheets              Sheet[]
 }
 
 model Spell {
@@ -293,7 +255,7 @@ model Armor {
   protection          Int?
   current_protection  Int?
   index               Int?
-  type                ArmorType?
+  type                ArmorType
   bulk                Int?
   strength            Int?
   prerequisite_stat   String?

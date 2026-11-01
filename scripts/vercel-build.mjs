@@ -79,6 +79,30 @@ const describeDatabase = async () => {
   }
 };
 
+/**
+ * La base de production a été créée par Prisma 5, qui indexe les tables de
+ * liaison (« _AToB ») par un index unique là où Prisma 7 attend une clé
+ * primaire. C'est le seul écart toléré : la migration le corrige.
+ */
+const onlyJoinTableStyle = (diffSql) => {
+  const statements = diffSql
+    .split('\n')
+    .filter((line) => line.trim() && !line.trim().startsWith('--'))
+    .join(' ')
+    .split(';')
+    .map((statement) => statement.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+  return (
+    statements.length > 0 &&
+    statements.every(
+      (statement) =>
+        /^ALTER TABLE "(_\w+)" ADD CONSTRAINT "\1_AB_pkey" PRIMARY KEY \("A", ?"B"\)$/.test(
+          statement,
+        ) || /^DROP INDEX "_\w+_AB_unique"$/.test(statement),
+    )
+  );
+};
+
 /** Pose la baseline uniquement si la base correspond au schéma de référence. */
 const ensureBaseline = ({ empty, tracked }) => {
   if (empty || tracked) return;
@@ -105,7 +129,7 @@ const ensureBaseline = ({ empty, tracked }) => {
     { encoding: 'utf8' },
   );
 
-  if (check.status === 0) {
+  if (check.status === 0 || onlyJoinTableStyle(check.stdout)) {
     console.log('La base correspond au schéma de référence : baseline posée.');
     run('npx prisma migrate resolve --applied 0_baseline');
     return;

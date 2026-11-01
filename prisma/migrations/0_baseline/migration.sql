@@ -1,5 +1,6 @@
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
+-- Schéma de la production avant ce projet (branche main, créé par
+-- `prisma db push` avec Prisma 5). Sur une base existante, cette migration
+-- est seulement marquée comme appliquée (« baseline »).
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
@@ -68,8 +69,8 @@ CREATE TABLE "Sheet" (
     "avatar" TEXT,
     "age" INTEGER,
     "current_mai" INTEGER,
-    "aspect" TEXT DEFAULT 'Type',
-    "become" TEXT DEFAULT '10',
+    "aspect" TEXT,
+    "become" TEXT,
     "strength" INTEGER DEFAULT 25,
     "agility" INTEGER DEFAULT 25,
     "vivacity" INTEGER DEFAULT 25,
@@ -82,9 +83,9 @@ CREATE TABLE "Sheet" (
     "empathy" INTEGER DEFAULT 25,
     "ego" INTEGER DEFAULT 25,
     "will" INTEGER DEFAULT 25,
-    "current_health" INTEGER DEFAULT 0,
-    "current_stability" INTEGER DEFAULT 0,
-    "current_radiance" INTEGER DEFAULT 0,
+    "current_health" INTEGER,
+    "current_stability" INTEGER,
+    "current_radiance" INTEGER,
     "feel_xp" INTEGER DEFAULT 0,
     "to_spend_feel_xp" INTEGER DEFAULT 0,
     "learn_xp" INTEGER DEFAULT 0,
@@ -99,7 +100,7 @@ CREATE TABLE "Sheet" (
 -- CreateTable
 CREATE TABLE "Whitelist" (
     "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
 
     CONSTRAINT "Whitelist_pkey" PRIMARY KEY ("id")
 );
@@ -113,17 +114,8 @@ CREATE TABLE "Team" (
 );
 
 -- CreateTable
-CREATE TABLE "CorpusType" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-
-    CONSTRAINT "CorpusType_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Corpus" (
     "id" TEXT NOT NULL,
-    "type_id" TEXT NOT NULL,
     "name" TEXT,
     "description" TEXT,
     "stat" TEXT,
@@ -134,28 +126,11 @@ CREATE TABLE "Corpus" (
 );
 
 -- CreateTable
-CREATE TABLE "PotentialCategory" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-
-    CONSTRAINT "PotentialCategory_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "PotentialType" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "category_id" TEXT NOT NULL,
-
-    CONSTRAINT "PotentialType_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Potential" (
     "id" TEXT NOT NULL,
-    "type_id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "category" TEXT,
+    "name" TEXT,
+    "description" TEXT,
 
     CONSTRAINT "Potential_pkey" PRIMARY KEY ("id")
 );
@@ -200,19 +175,9 @@ CREATE TABLE "Skill" (
     "type" "SkillType" NOT NULL,
     "category" TEXT NOT NULL,
     "degree" "SkillDegree" NOT NULL,
+    "prerequisite_id" TEXT,
 
     CONSTRAINT "Skill_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "SheetSkill" (
-    "id" TEXT NOT NULL,
-    "suffixe" TEXT,
-    "prerequisite_id" TEXT,
-    "skill_id" TEXT NOT NULL,
-    "sheet_id" TEXT NOT NULL,
-
-    CONSTRAINT "SheetSkill_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -256,7 +221,7 @@ CREATE TABLE "Armor" (
     "protection" INTEGER,
     "current_protection" INTEGER,
     "index" INTEGER,
-    "type" "ArmorType",
+    "type" "ArmorType" NOT NULL,
     "bulk" INTEGER,
     "strength" INTEGER,
     "prerequisite_stat" TEXT,
@@ -323,41 +288,31 @@ CREATE TABLE "Item" (
 -- CreateTable
 CREATE TABLE "_SheetToTeam" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_SheetToTeam_AB_pkey" PRIMARY KEY ("A","B")
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_SkillDependencies" (
+CREATE TABLE "_SheetToSkill" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_SkillDependencies_AB_pkey" PRIMARY KEY ("A","B")
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_PropertyToRangeWeapon" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_PropertyToRangeWeapon_AB_pkey" PRIMARY KEY ("A","B")
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_ArmorToProperty" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_ArmorToProperty_AB_pkey" PRIMARY KEY ("A","B")
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_MeleeWeaponToProperty" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_MeleeWeaponToProperty_AB_pkey" PRIMARY KEY ("A","B")
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -382,31 +337,31 @@ CREATE UNIQUE INDEX "Whitelist_email_key" ON "Whitelist"("email");
 CREATE UNIQUE INDEX "Team_name_key" ON "Team"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CorpusType_name_key" ON "CorpusType"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "PotentialCategory_name_key" ON "PotentialCategory"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "PotentialType_name_key" ON "PotentialType"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Potential_name_key" ON "Potential"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Skill_name_category_key" ON "Skill"("name", "category");
+CREATE UNIQUE INDEX "_SheetToTeam_AB_unique" ON "_SheetToTeam"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_SheetToTeam_B_index" ON "_SheetToTeam"("B");
 
 -- CreateIndex
-CREATE INDEX "_SkillDependencies_B_index" ON "_SkillDependencies"("B");
+CREATE UNIQUE INDEX "_SheetToSkill_AB_unique" ON "_SheetToSkill"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_SheetToSkill_B_index" ON "_SheetToSkill"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_PropertyToRangeWeapon_AB_unique" ON "_PropertyToRangeWeapon"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_PropertyToRangeWeapon_B_index" ON "_PropertyToRangeWeapon"("B");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "_ArmorToProperty_AB_unique" ON "_ArmorToProperty"("A", "B");
+
+-- CreateIndex
 CREATE INDEX "_ArmorToProperty_B_index" ON "_ArmorToProperty"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_MeleeWeaponToProperty_AB_unique" ON "_MeleeWeaponToProperty"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_MeleeWeaponToProperty_B_index" ON "_MeleeWeaponToProperty"("B");
@@ -421,16 +376,7 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "Sheet" ADD CONSTRAINT "Sheet_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Corpus" ADD CONSTRAINT "Corpus_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "CorpusType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Corpus" ADD CONSTRAINT "Corpus_sheet_id_fkey" FOREIGN KEY ("sheet_id") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PotentialType" ADD CONSTRAINT "PotentialType_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "PotentialCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Potential" ADD CONSTRAINT "Potential_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "PotentialType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Spyree" ADD CONSTRAINT "Spyree_sheet_id_fkey" FOREIGN KEY ("sheet_id") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -445,13 +391,7 @@ ALTER TABLE "Amee" ADD CONSTRAINT "Amee_sheet_id_fkey" FOREIGN KEY ("sheet_id") 
 ALTER TABLE "Trait" ADD CONSTRAINT "Trait_sheet_id_fkey" FOREIGN KEY ("sheet_id") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SheetSkill" ADD CONSTRAINT "SheetSkill_prerequisite_id_fkey" FOREIGN KEY ("prerequisite_id") REFERENCES "Skill"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SheetSkill" ADD CONSTRAINT "SheetSkill_skill_id_fkey" FOREIGN KEY ("skill_id") REFERENCES "Skill"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SheetSkill" ADD CONSTRAINT "SheetSkill_sheet_id_fkey" FOREIGN KEY ("sheet_id") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_prerequisite_id_fkey" FOREIGN KEY ("prerequisite_id") REFERENCES "Skill"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Spell" ADD CONSTRAINT "Spell_sheet_id_fkey" FOREIGN KEY ("sheet_id") REFERENCES "Sheet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -478,10 +418,10 @@ ALTER TABLE "_SheetToTeam" ADD CONSTRAINT "_SheetToTeam_A_fkey" FOREIGN KEY ("A"
 ALTER TABLE "_SheetToTeam" ADD CONSTRAINT "_SheetToTeam_B_fkey" FOREIGN KEY ("B") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_SkillDependencies" ADD CONSTRAINT "_SkillDependencies_A_fkey" FOREIGN KEY ("A") REFERENCES "Skill"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_SheetToSkill" ADD CONSTRAINT "_SheetToSkill_A_fkey" FOREIGN KEY ("A") REFERENCES "Sheet"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_SkillDependencies" ADD CONSTRAINT "_SkillDependencies_B_fkey" FOREIGN KEY ("B") REFERENCES "Skill"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_SheetToSkill" ADD CONSTRAINT "_SheetToSkill_B_fkey" FOREIGN KEY ("B") REFERENCES "Skill"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PropertyToRangeWeapon" ADD CONSTRAINT "_PropertyToRangeWeapon_A_fkey" FOREIGN KEY ("A") REFERENCES "Property"("id") ON DELETE CASCADE ON UPDATE CASCADE;
