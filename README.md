@@ -101,16 +101,24 @@ build ne modifie jamais la base de données**. Variables d'environnement
 
 Le schéma évolue par migrations Prisma (`prisma/migrations`), qui transforment
 les données existantes au lieu de les écraser. `0_baseline` correspond au
-schéma déjà en place sur une base existante : avant la première migration, on
-le marque comme appliqué **une seule fois** par base :
+schéma déjà en place sur une base existante (branche develop, copié dans
+`prisma/baseline/schema.prisma`).
+
+Avec `RUN_MIGRATIONS=true`, le build :
+
+1. décrit la base dans les logs (nombre de lignes par table, aucun contenu) ;
+2. sur une base existante pas encore suivie, pose la baseline **seulement si
+   la base correspond exactement au schéma de référence** et **jamais en
+   production** ; sinon il s'arrête sans rien modifier et affiche l'écart ;
+3. applique les migrations (`prisma migrate deploy`).
+
+En production, la baseline se pose une fois, à la main :
 
 ```bash
 npx prisma migrate resolve --applied 0_baseline
 ```
 
-Sans ce marquage, `prisma migrate deploy` refuse de toucher une base non vide
-(erreur P3005) : aucune modification accidentelle n'est possible. En
-développement : `yarn prisma:migrate` crée une nouvelle migration.
+En développement : `yarn prisma:migrate` crée une nouvelle migration.
 
 ### Connexion et données de test
 
