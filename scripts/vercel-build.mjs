@@ -52,6 +52,7 @@ const TABLES = [
   'Amee',
   'Spell',
   'Golem',
+  'XpEntry',
 ];
 
 /** Décrit la base sans rien en montrer de sensible. */

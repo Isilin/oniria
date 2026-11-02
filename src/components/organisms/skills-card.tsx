@@ -3,6 +3,7 @@
 import { CatalogSkill } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { CollectionItem, useSheet } from '@/lib/hooks/use-sheet';
+import { SKILL_COSTS, skillScope } from '@/lib/rules/xp';
 import { SKILL_DEGREES, SKILL_TYPES } from '@/lib/sheet/fields';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -25,6 +26,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import ScopeLock from '../atoms/scope-lock';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 
 type SheetSkill = CollectionItem<'skills'>;
@@ -72,6 +74,9 @@ interface NodeProps {
   childrenOf: Map<string, SheetSkill[]>;
   ownedIds: Set<string>;
   editable: boolean;
+  /** Partie validée : seul le MJ retire, via le dialogue de reprise. */
+  isLocked: (skill: CatalogSkill | SheetSkill['skill']) => boolean;
+  isAdmin: boolean;
   depth: number;
   onUpdate: (owned: SheetSkill, patch: Record<string, unknown>) => void;
   onDelete: (owned: SheetSkill) => void;
@@ -83,12 +88,15 @@ const SkillNode = ({
   childrenOf,
   ownedIds,
   editable,
+  isLocked,
+  isAdmin,
   depth,
   onUpdate,
   onDelete,
 }: NodeProps) => {
   const [confirm, setConfirm] = useState(false);
   const skill = byId.get(owned.skillId) ?? owned.skill;
+  const locked = isLocked(skill);
   const prerequisites =
     byId
       .get(owned.skillId)
@@ -158,11 +166,11 @@ const SkillNode = ({
             ))}
           </Select>
         )}
-        {editable && (
+        {editable && (!locked || isAdmin) && (
           <IconButton
             size="small"
             aria-label={`Retirer ${name}`}
-            onClick={() => setConfirm(true)}
+            onClick={() => (locked ? onDelete(owned) : setConfirm(true))}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -182,6 +190,8 @@ const SkillNode = ({
           childrenOf={childrenOf}
           ownedIds={ownedIds}
           editable={editable}
+          isLocked={isLocked}
+          isAdmin={isAdmin}
           depth={depth + 1}
           onUpdate={onUpdate}
           onDelete={onDelete}
@@ -236,7 +246,9 @@ const AddSkill = ({
         sx={{ flexGrow: 1, maxWidth: 360 }}
         options={skills}
         groupBy={(s) => s.category}
-        getOptionLabel={(s) => `${skillName(s)} (${DEGREE_LABELS[s.degree]})`}
+        getOptionLabel={(s) =>
+          `${skillName(s)} (${DEGREE_LABELS[s.degree]}, ${SKILL_COSTS[s.degree]} XP)`
+        }
         getOptionDisabled={(s) => ownedIds.has(s.id) || missing(s)}
         renderOption={(props, s) => {
           const { key, ...rest } = props as typeof props & { key: string };
@@ -246,7 +258,7 @@ const AddSkill = ({
                 <Typography variant="body2">
                   {skillName(s)}{' '}
                   <Typography component="span" variant="caption">
-                    · {DEGREE_LABELS[s.degree]}
+                    · {DEGREE_LABELS[s.degree]} · {SKILL_COSTS[s.degree]} XP
                   </Typography>
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
@@ -279,7 +291,15 @@ const AddSkill = ({
 
 const SkillsCard = ({ id }: { id: string }) => {
   const { catalog, isLoading } = useCatalog();
-  const { sheet, canEdit, createItem, updateItem, deleteItem } = useSheet(id);
+  const {
+    sheet,
+    canEdit,
+    isAdmin,
+    isLocked,
+    createItem,
+    updateItem,
+    deleteItem,
+  } = useSheet(id);
 
   if (isLoading || !catalog) return <CircularProgress />;
 
@@ -304,6 +324,8 @@ const SkillsCard = ({ id }: { id: string }) => {
   const onUpdate = (owned: SheetSkill, patch: Record<string, unknown>) =>
     updateItem('skills', owned.id, patch);
   const onDelete = (owned: SheetSkill) => deleteItem('skills', owned.id);
+  const skillLocked = (skill: { type: SkillType }) =>
+    isLocked(skillScope(skill.type));
 
   return (
     <Card>
@@ -319,7 +341,10 @@ const SkillsCard = ({ id }: { id: string }) => {
             ];
             return (
               <Grid key={type} size={{ xs: 12, md: 4 }}>
-                <Typography variant="h5">{TYPE_LABELS[type]}</Typography>
+                <Typography variant="h5">
+                  {TYPE_LABELS[type]}
+                  <ScopeLock locked={isLocked(skillScope(type))} />
+                </Typography>
                 {categories.length === 0 && (
                   <Typography variant="body2" color="textSecondary">
                     Aucune compétence.
@@ -345,6 +370,8 @@ const SkillsCard = ({ id }: { id: string }) => {
                           childrenOf={childrenOf}
                           ownedIds={ownedIds}
                           editable={canEdit}
+                          isLocked={skillLocked}
+                          isAdmin={isAdmin}
                           depth={0}
                           onUpdate={onUpdate}
                           onDelete={onDelete}

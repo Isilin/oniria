@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TEST_ACCOUNTS } from './test-login';
+import { validateSheet } from './xp';
 
 /**
  * Données de test (personnages fictifs) pour l'aperçu. Les éléments des
@@ -10,16 +11,14 @@ import { TEST_ACCOUNTS } from './test-login';
  * d'autres.
  */
 
-type Db = Pick<
-  PrismaClient,
-  | 'user'
-  | 'sheet'
-  | 'skill'
-  | 'sheetSkill'
-  | 'potential'
-  | 'corpusType'
-  | 'team'
->;
+type Db = PrismaClient;
+
+interface DemoGrant {
+  label: string;
+  feel?: number;
+  learn?: number;
+  live?: number;
+}
 
 interface DemoCharacter {
   name: string;
@@ -27,7 +26,12 @@ interface DemoCharacter {
   aspect?: string;
   become?: string;
   stats: Record<string, number>;
-  xp: [number, number, number, number, number, number];
+  /** XP attribuée par le MJ avant la validation de la fiche. */
+  xp: DemoGrant[];
+  /** Validée (l'XP est dépensée) ou encore en création. */
+  validated: boolean;
+  /** XP attribuée après la validation, à dépenser. */
+  xpAfter?: DemoGrant[];
   corpus: {
     type: string;
     name: string;
@@ -66,7 +70,12 @@ const LYSE: DemoCharacter = {
     ego: 50,
     will: 50,
   },
-  xp: [165, 0, 200, 0, 915, 0],
+  xp: [
+    { label: 'Création', live: 700 },
+    { label: 'Sessions 1 à 6', feel: 165, learn: 200, live: 215 },
+  ],
+  validated: true,
+  xpAfter: [{ label: 'Session 7', feel: 15, learn: 20 }],
   corpus: [
     { type: 'Origine', name: "l'Abîme", description: 'Costume' },
     { type: 'Adaptation', name: "l'Astral", stat: 'charisma', bonus: 1 },
@@ -137,7 +146,12 @@ const CORWIN: DemoCharacter = {
     ego: 50,
     will: 50,
   },
-  xp: [120, 10, 150, 0, 940, 20],
+  xp: [
+    { label: 'Création', live: 700 },
+    { label: 'Sessions 1 à 6', feel: 120, learn: 150, live: 240 },
+  ],
+  validated: true,
+  xpAfter: [{ label: 'Session 7', feel: 30, learn: 10, live: 10 }],
   corpus: [
     { type: 'Origine', name: 'Hybride', description: 'Humanité' },
     { type: 'Stature', name: 'Guerrière', stat: 'strength', bonus: 1 },
@@ -219,7 +233,9 @@ const COLOSSE: DemoCharacter = {
     ego: 45,
     will: 70,
   },
-  xp: [0, 0, 0, 0, 0, 0],
+  // PNJ : resté en création, sans XP (le dépassement s'affiche).
+  xp: [],
+  validated: false,
   corpus: [{ type: 'Stature', name: 'Gigantesque', stat: 'vigour', bonus: 1 }],
   spyree: [{ potential: 'Roche', level: 3 }],
   amee: [],
@@ -255,12 +271,6 @@ const createCharacter = async (db: Db, userId: string, c: DemoCharacter) => {
       aspect: c.aspect,
       become: c.become,
       ...c.stats,
-      feel_xp: c.xp[0],
-      to_spend_feel_xp: c.xp[1],
-      learn_xp: c.xp[2],
-      to_spend_learn_xp: c.xp[3],
-      live_xp: c.xp[4],
-      to_spend_live_xp: c.xp[5],
       notes: c.notes ?? '',
       corpus: {
         create: c.corpus
@@ -302,6 +312,25 @@ const createCharacter = async (db: Db, userId: string, c: DemoCharacter) => {
       },
     });
     owned.add(skill.id);
+  }
+
+  // Expérience : attribuée par le MJ, puis dépensée à la validation.
+  const grant = (grants: DemoGrant[]) =>
+    db.xpEntry.createMany({
+      data: grants.map(({ label, ...amounts }) => ({
+        sheetId: sheet.id,
+        authorId: 'test-user-mj',
+        kind: 'GAIN' as const,
+        label,
+        ...amounts,
+      })),
+    });
+  await grant(c.xp);
+  if (c.validated) {
+    await db.$transaction((tx) =>
+      validateSheet(tx, sheet.id, { id: userId, role: 'USER' }),
+    );
+    await grant(c.xpAfter ?? []);
   }
 
   return sheet;

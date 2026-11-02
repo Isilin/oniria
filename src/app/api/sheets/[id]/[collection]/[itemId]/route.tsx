@@ -9,19 +9,23 @@ type Params = {
 export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
-    await requireSheetEditor(params.id);
+    const { user } = await requireSheetEditor(params.id);
     return updateItem(
       params.id,
       params.collection,
       params.itemId,
       await readJson(req),
+      user,
     );
   });
 
+/** `?refund=false` : le MJ retire un élément validé sans rembourser l'XP. */
 export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
-    await requireSheetEditor(params.id);
-    await deleteItem(params.id, params.collection, params.itemId);
+    const { user } = await requireSheetEditor(params.id);
+    await deleteItem(params.id, params.collection, params.itemId, user, {
+      refund: req.nextUrl.searchParams.get('refund') !== 'false',
+    });
     return null;
   });

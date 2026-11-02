@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
+import { XpDialogProvider } from '@/components/organisms/xp-dialogs';
 
 const theme = createTheme({
   colorSchemes: { light: true, dark: true },
@@ -35,7 +36,7 @@ export default function Providers({ children }) {
             )}
           >
             <CssBaseline />
-            {children}
+            <XpDialogProvider>{children}</XpDialogProvider>
           </SnackbarProvider>
         </SessionProvider>
       </ThemeProvider>

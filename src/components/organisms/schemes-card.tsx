@@ -4,6 +4,7 @@ import { CatalogPotential } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, normalizeStat, toRoman } from '@/lib/rules';
+import { corpusAspectCost, SPYREE_STEPS, spyreeCost } from '@/lib/rules/xp';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Autocomplete,
@@ -17,7 +18,12 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
+import ScopeLock from '../atoms/scope-lock';
 import SheetCollection from './sheet-collection';
+
+const SPYREE_TOOLTIP = `Prix de chaque passage de rang : ${SPYREE_STEPS.map(
+  (step, i) => `${toRoman(i + 1)} ${step}`,
+).join(', ')} XP.`;
 
 const STAT_OPTIONS = [
   ...CHARACTERISTICS.map((c) => ({ value: c.key, label: c.label })),
@@ -76,7 +82,7 @@ const AddPotential = ({ id }: { id: string }) => {
             setValue(null);
         }}
       >
-        Ajouter
+        Ajouter ({spyreeCost(1)} XP)
       </Button>
     </Box>
   );
@@ -84,7 +90,9 @@ const AddPotential = ({ id }: { id: string }) => {
 
 const SchemesCard = ({ id }: { id: string }) => {
   const { catalog } = useCatalog();
-  const { sheet } = useSheet(id);
+  const { sheet, isLocked, isAdmin } = useSheet(id);
+  const corpusLocked = isLocked('corpus');
+  const spyreeLocked = isLocked('spyree');
   const corpusTypes = catalog?.corpusTypes ?? [];
   const usedTypes = new Set(sheet.corpus.map((c) => c.typeId));
   const nextType =
@@ -101,9 +109,16 @@ const SchemesCard = ({ id }: { id: string }) => {
             <SheetCollection
               id={id}
               collection="corpus"
-              title="Le Corpus"
+              title={
+                <Typography variant="h5">
+                  Le Corpus
+                  <ScopeLock locked={corpusLocked} />
+                </Typography>
+              }
               defaults={nextType ? { typeId: nextType.id } : undefined}
-              addLabel="Ajouter un aspect"
+              addLabel={`Ajouter un aspect (${corpusAspectCost(sheet.corpus.length + 1)} XP)`}
+              deletable={!corpusLocked || isAdmin}
+              confirmDelete={!corpusLocked}
               emptyLabel="Aucun aspect."
               itemLabel={(c) => `${c.type?.name ?? ''} : ${c.name ?? ''}`}
               columns={[
@@ -143,8 +158,15 @@ const SchemesCard = ({ id }: { id: string }) => {
             <SheetCollection
               id={id}
               collection="spyree"
-              title="La Spyrée"
+              title={
+                <Typography variant="h5">
+                  La Spyrée
+                  <ScopeLock locked={spyreeLocked} />
+                </Typography>
+              }
               emptyLabel="Aucun potentiel."
+              deletable={!spyreeLocked || isAdmin}
+              confirmDelete={!spyreeLocked}
               addControl={<AddPotential id={id} />}
               itemLabel={(s) => s.potential?.name ?? ''}
               columns={[
@@ -164,6 +186,7 @@ const SchemesCard = ({ id }: { id: string }) => {
                   label: 'Rang',
                   type: 'number',
                   width: 80,
+                  tooltip: SPYREE_TOOLTIP,
                   display: (row) => toRoman(row.level),
                 },
               ]}

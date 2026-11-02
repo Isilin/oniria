@@ -30,6 +30,10 @@ export const SHEET_INCLUDE = {
   meleeWeapons: { ...byCreation, include: { properties: true } },
   rangeWeapons: { ...byCreation, include: { properties: true } },
   items: byCreation,
+  xpEntries: {
+    orderBy: { seq: 'asc' },
+    include: { author: { select: PUBLIC_USER_SELECT } },
+  },
 } satisfies Prisma.SheetInclude;
 
 export const SHEET_SUMMARY_INCLUDE = {

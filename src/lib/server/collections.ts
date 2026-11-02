@@ -1,15 +1,33 @@
 import prisma from '@/lib/db/prisma';
-import { HttpError } from '@/lib/server/api';
+import { HttpError } from '@/lib/server/errors';
+import {
+  CORPUS_TARGET,
+  corpusChange,
+  skillChange,
+  skillTarget,
+  SPYREE_MAX,
+  spyreeChange,
+  spyreeTarget,
+  XpChange,
+} from '@/lib/rules/xp';
 import {
   COLLECTIONS,
   CollectionKey,
   isCollection,
   sanitizeFields,
 } from '@/lib/sheet/fields';
+import {
+  Actor,
+  chargeChange,
+  lockSheet,
+  readXpPayload,
+  Tx,
+  XpPayload,
+} from './xp';
 
 /** Délégué Prisma générique. */
 interface Delegate {
-  create(args: { data: Record<string, unknown> }): Promise<unknown>;
+  create(args: { data: Record<string, unknown> }): Promise<{ id: string }>;
   findFirst(args: { where: Record<string, unknown> }): Promise<unknown>;
   update(args: {
     where: { id: string };
@@ -30,14 +48,14 @@ const ITEM_INCLUDE: Partial<Record<CollectionKey, Record<string, unknown>>> = {
   rangeWeapons: { properties: true },
 };
 
-export const collectionOf = (key: string) => {
+export const collectionOf = (key: string, db: Tx = prisma) => {
   if (!isCollection(key)) throw new HttpError(404, 'Liste inconnue.');
   const config = COLLECTIONS[key];
   return {
     key: key as CollectionKey,
     fields: config.fields,
     include: ITEM_INCLUDE[key],
-    delegate: prisma[config.model] as unknown as Delegate,
+    delegate: db[config.model] as unknown as Delegate,
   };
 };
 
@@ -57,24 +75,28 @@ const toPropertiesRelation = (
  * a un). Si plusieurs prérequis sont possibles, on retient celui choisi, ou
  * le premier possédé.
  */
-const checkSkill = async (sheetId: string, data: Record<string, unknown>) => {
+const checkSkill = async (
+  tx: Tx,
+  sheetId: string,
+  data: Record<string, unknown>,
+) => {
   if (!data.skillId) throw new HttpError(400, 'Compétence manquante.');
-  const skill = await prisma.skill.findUnique({
+  const skill = await tx.skill.findUnique({
     where: { id: String(data.skillId) },
     include: { prerequisites: { select: { id: true } } },
   });
   if (!skill) throw new HttpError(400, 'Compétence inconnue.');
 
-  const already = await prisma.sheetSkill.findFirst({
+  const already = await tx.sheetSkill.findFirst({
     where: { sheetId, skillId: skill.id },
   });
   if (already) throw new HttpError(409, 'Compétence déjà acquise.');
 
   if (skill.prerequisites.length === 0) {
     data.prerequisiteId = null;
-    return;
+    return skill;
   }
-  const owned = await prisma.sheetSkill.findMany({
+  const owned = await tx.sheetSkill.findMany({
     where: {
       sheetId,
       skillId: { in: skill.prerequisites.map((p) => p.id) },
@@ -89,33 +111,96 @@ const checkSkill = async (sheetId: string, data: Record<string, unknown>) => {
     throw new HttpError(400, 'Prérequis non acquis.');
   }
   data.prerequisiteId = data.prerequisiteId ?? ownedIds[0];
+  return skill;
 };
+
+const checkLevel = (level: unknown) => {
+  if (
+    typeof level !== 'number' ||
+    !Number.isInteger(level) ||
+    level < 1 ||
+    level > SPYREE_MAX
+  ) {
+    throw new HttpError(400, `Le rang doit aller de I à ${SPYREE_MAX}.`);
+  }
+  return level;
+};
+
+const charge = (
+  tx: Tx,
+  sheetId: string,
+  change: XpChange | null,
+  target: string,
+  actor: Actor,
+  payload: XpPayload,
+) =>
+  change
+    ? chargeChange(tx, sheetId, { ...change, target }, actor, payload)
+    : null;
 
 export const createItem = async (
   sheetId: string,
   key: string,
   body: unknown,
+  actor: Actor,
 ) => {
-  const { key: collection, fields, include, delegate } = collectionOf(key);
+  const { fields } = collectionOf(key);
   const data = sanitizeFields(fields, body);
+  const payload = readXpPayload(body);
 
-  if (collection === 'skills') await checkSkill(sheetId, data);
-  if (collection === 'corpus' && !data.typeId) {
-    throw new HttpError(400, 'Type de Corpus manquant.');
-  }
-  if (collection === 'spyree' && !data.potentialId) {
-    throw new HttpError(400, 'Potentiel manquant.');
-  }
-  toPropertiesRelation(data, 'connect');
+  return prisma.$transaction(async (tx) => {
+    await lockSheet(tx, sheetId);
+    const { key: collection, include, delegate } = collectionOf(key, tx);
+    let change: XpChange | null = null;
 
-  return delegate.create({
-    data: { ...data, sheetId },
-    ...(include ? { include } : {}),
-  } as { data: Record<string, unknown> });
+    if (collection === 'skills') {
+      change = skillChange(await checkSkill(tx, sheetId, data), false);
+    }
+    if (collection === 'corpus') {
+      if (!data.typeId) throw new HttpError(400, 'Type de Corpus manquant.');
+      change = corpusChange(
+        await tx.corpus.count({ where: { sheetId } }),
+        false,
+      );
+    }
+    if (collection === 'spyree') {
+      if (!data.potentialId) throw new HttpError(400, 'Potentiel manquant.');
+      const potential = await tx.potential.findUnique({
+        where: { id: String(data.potentialId) },
+      });
+      if (!potential) throw new HttpError(400, 'Potentiel inconnu.');
+      const owned = await tx.spyree.count({
+        where: { sheetId, potentialId: potential.id },
+      });
+      if (owned) throw new HttpError(409, 'Potentiel déjà acquis.');
+      data.level = checkLevel(data.level ?? 1);
+      change = spyreeChange(potential.name, 0, data.level as number);
+    }
+    toPropertiesRelation(data, 'connect');
+
+    const item = await delegate.create({
+      data: { ...data, sheetId },
+      ...(include ? { include } : {}),
+    } as { data: Record<string, unknown> });
+
+    const target =
+      collection === 'skills'
+        ? skillTarget(item.id)
+        : collection === 'spyree'
+          ? spyreeTarget(item.id)
+          : CORPUS_TARGET;
+    await charge(tx, sheetId, change, target, actor, payload);
+    return item;
+  });
 };
 
-const findItem = async (sheetId: string, key: string, itemId: string) => {
-  const collection = collectionOf(key);
+const findItem = async (
+  tx: Tx,
+  sheetId: string,
+  key: string,
+  itemId: string,
+) => {
+  const collection = collectionOf(key, tx);
   const item = await collection.delegate.findFirst({
     where: { id: itemId, sheetId },
   });
@@ -128,66 +213,134 @@ export const updateItem = async (
   key: string,
   itemId: string,
   body: unknown,
+  actor: Actor,
 ) => {
-  const {
-    key: collection,
-    fields,
-    include,
-    delegate,
-  } = await findItem(sheetId, key, itemId);
+  const { fields } = collectionOf(key);
   const data = sanitizeFields(fields, body);
+  const payload = readXpPayload(body);
 
-  if (collection === 'skills') {
-    // On ne change pas la compétence elle-même, seulement son détail.
-    delete data.skillId;
-    if (data.prerequisiteId) {
-      const sheetSkill = await prisma.sheetSkill.findUnique({
-        where: { id: itemId },
-        include: { skill: { include: { prerequisites: true } } },
-      });
-      const allowed = sheetSkill.skill.prerequisites.map((p) => p.id);
-      const owned = await prisma.sheetSkill.count({
-        where: { sheetId, skillId: String(data.prerequisiteId) },
-      });
-      if (!allowed.includes(String(data.prerequisiteId)) || !owned) {
-        throw new HttpError(400, 'Prérequis invalide.');
+  return prisma.$transaction(async (tx) => {
+    await lockSheet(tx, sheetId);
+    const {
+      key: collection,
+      include,
+      delegate,
+    } = await findItem(tx, sheetId, key, itemId);
+
+    if (collection === 'skills') {
+      // On ne change pas la compétence elle-même, seulement son détail.
+      delete data.skillId;
+      if (data.prerequisiteId) {
+        const sheetSkill = await tx.sheetSkill.findUnique({
+          where: { id: itemId },
+          include: { skill: { include: { prerequisites: true } } },
+        });
+        const allowed = sheetSkill.skill.prerequisites.map((p) => p.id);
+        const owned = await tx.sheetSkill.count({
+          where: { sheetId, skillId: String(data.prerequisiteId) },
+        });
+        if (!allowed.includes(String(data.prerequisiteId)) || !owned) {
+          throw new HttpError(400, 'Prérequis invalide.');
+        }
       }
     }
-  }
-  toPropertiesRelation(data, 'set');
 
-  return delegate.update({
-    where: { id: itemId },
-    data,
-    ...(include ? { include } : {}),
-  } as { where: { id: string }; data: Record<string, unknown> });
+    if (collection === 'spyree') {
+      // Le potentiel ne change pas : on en ajoute un autre.
+      delete data.potentialId;
+      if ('level' in data) {
+        const current = await tx.spyree.findUnique({
+          where: { id: itemId },
+          include: { potential: true },
+        });
+        const level = checkLevel(data.level);
+        await charge(
+          tx,
+          sheetId,
+          spyreeChange(current.potential.name, current.level, level, itemId),
+          spyreeTarget(itemId),
+          actor,
+          payload,
+        );
+      }
+    }
+    toPropertiesRelation(data, 'set');
+
+    return delegate.update({
+      where: { id: itemId },
+      data,
+      ...(include ? { include } : {}),
+    } as { where: { id: string }; data: Record<string, unknown> });
+  });
 };
 
 export const deleteItem = async (
   sheetId: string,
   key: string,
   itemId: string,
-) => {
-  const { key: collection, delegate } = await findItem(sheetId, key, itemId);
+  actor: Actor,
+  payload: XpPayload,
+) =>
+  prisma.$transaction(async (tx) => {
+    await lockSheet(tx, sheetId);
+    const { key: collection, delegate } = await findItem(
+      tx,
+      sheetId,
+      key,
+      itemId,
+    );
 
-  if (collection === 'skills') {
-    // On ne retire pas une compétence dont dépendent d'autres compétences.
-    const sheetSkill = await prisma.sheetSkill.findUnique({
-      where: { id: itemId },
-    });
-    const dependents = await prisma.sheetSkill.findMany({
-      where: { sheetId, prerequisiteId: sheetSkill.skillId },
-      include: { skill: true },
-    });
-    if (dependents.length) {
-      throw new HttpError(
-        409,
-        `D'autres compétences en dépendent : ${dependents
-          .map((d) => d.skill.name)
-          .join(', ')}.`,
+    if (collection === 'skills') {
+      // On ne retire pas une compétence dont dépendent d'autres compétences.
+      const sheetSkill = await tx.sheetSkill.findUnique({
+        where: { id: itemId },
+        include: { skill: true },
+      });
+      const dependents = await tx.sheetSkill.findMany({
+        where: { sheetId, prerequisiteId: sheetSkill.skillId },
+        include: { skill: true },
+      });
+      if (dependents.length) {
+        throw new HttpError(
+          409,
+          `D'autres compétences en dépendent : ${dependents
+            .map((d) => d.skill.name)
+            .join(', ')}.`,
+        );
+      }
+      await charge(
+        tx,
+        sheetId,
+        skillChange(sheetSkill.skill, true, itemId),
+        skillTarget(itemId),
+        actor,
+        payload,
       );
     }
-  }
+    if (collection === 'corpus') {
+      await charge(
+        tx,
+        sheetId,
+        corpusChange(await tx.corpus.count({ where: { sheetId } }), true),
+        CORPUS_TARGET,
+        actor,
+        payload,
+      );
+    }
+    if (collection === 'spyree') {
+      const spyree = await tx.spyree.findUnique({
+        where: { id: itemId },
+        include: { potential: true },
+      });
+      await charge(
+        tx,
+        sheetId,
+        spyreeChange(spyree.potential.name, spyree.level, 0, itemId),
+        spyreeTarget(itemId),
+        actor,
+        payload,
+      );
+    }
 
-  await delegate.delete({ where: { id: itemId } });
-};
+    await delegate.delete({ where: { id: itemId } });
+  });
