@@ -27,8 +27,8 @@ const ListSheets = () => {
           gap: 4,
         }}
       >
-        {[...sheets.own].map((sheet, index) => (
-          <SheetCard key={index} sheet={sheet} userVisible={false} />
+        {sheets.own.map((sheet) => (
+          <SheetCard key={sheet.id} sheet={sheet} userVisible={false} />
         ))}
         <AddSheetCard />
       </Grid>
@@ -42,8 +42,8 @@ const ListSheets = () => {
           gap: 4,
         }}
       >
-        {[...sheets.others].map((sheet, index) => (
-          <SheetCard key={index} sheet={sheet} userVisible={true} />
+        {sheets.others.map((sheet) => (
+          <SheetCard key={sheet.id} sheet={sheet} userVisible={true} />
         ))}
       </Grid>
     </Container>

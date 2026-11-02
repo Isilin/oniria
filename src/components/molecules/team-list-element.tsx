@@ -2,18 +2,16 @@
 
 import { TeamSummary } from '@/lib/hooks/use-team';
 import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Props {
   team: TeamSummary;
 }
 
 const TeamListElement = ({ team }: Props) => {
-  const router = useRouter();
-
   return (
     <Card sx={{ width: 250 }}>
-      <CardActionArea onClick={() => router.push(`/team/${team.id}`)}>
+      <CardActionArea component={Link} href={`/team/${team.id}`}>
         <CardContent>
           <Typography variant="h5">{team.name}</Typography>
           <Typography variant="body2" color="textSecondary">
