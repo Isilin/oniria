@@ -143,8 +143,14 @@ première fois, puis passer `role` à `ADMIN` dans la table `users`
 
 La commande de build est définie dans [`vercel.json`](vercel.json)
 ([`scripts/vercel-build.mjs`](scripts/vercel-build.mjs)). Par défaut, **un
-build ne modifie jamais la base de données**. Variables d'environnement
-(à définir par environnement dans Vercel) :
+build ne modifie jamais la base de données**.
+
+Les fonctions tournent à Francfort (`"regions": ["fra1"]` dans
+`vercel.json`), dans la même région que la base Neon (`eu-central-1`) :
+chaque requête SQL est un aller-retour entre les deux, ils doivent rester
+côte à côte. Si la base change de région, changer `regions` en même temps.
+
+Variables d'environnement (à définir par environnement dans Vercel) :
 
 | Variable                   | Effet                                                                                     |
 | -------------------------- | ----------------------------------------------------------------------------------------- |
