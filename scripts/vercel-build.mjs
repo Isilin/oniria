@@ -8,8 +8,10 @@
  *   table, rien de leur contenu) puis applique les migrations Prisma. Sur une
  *   base existante pas encore suivie par les migrations, la « baseline » n'est
  *   posée automatiquement que si la base correspond EXACTEMENT au schéma de
- *   référence (prisma/baseline/schema.prisma), et jamais en production.
- *   Sinon le build s'arrête sans rien modifier et affiche l'écart.
+ *   référence (prisma/baseline/schema.prisma) ; en production, il faut en
+ *   plus ALLOW_PRODUCTION_BASELINE=true (à n'activer que pour le premier
+ *   déploiement). Sinon le build s'arrête sans rien modifier et affiche
+ *   l'écart.
  * - SEED_CATALOG=true : remplit/complète les catalogues de règles (upsert).
  *
  * Avant, la commande de build du projet lançait `prisma db push` à chaque
@@ -107,10 +109,14 @@ const onlyJoinTableStyle = (diffSql) => {
 const ensureBaseline = ({ empty, tracked }) => {
   if (empty || tracked) return;
 
-  if (environment === 'production') {
+  if (
+    environment === 'production' &&
+    process.env.ALLOW_PRODUCTION_BASELINE !== 'true'
+  ) {
     throw new Error(
-      'Base de production non suivie par les migrations : la baseline doit ' +
-        'être posée manuellement (voir README). Rien n’a été modifié.',
+      'Base de production non suivie par les migrations : ajouter ' +
+        'ALLOW_PRODUCTION_BASELINE=true pour ce déploiement (voir README). ' +
+        'Rien n’a été modifié.',
     );
   }
 

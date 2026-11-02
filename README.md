@@ -113,7 +113,9 @@ Avec `RUN_MIGRATIONS=true`, le build :
    production** ; sinon il s'arrête sans rien modifier et affiche l'écart ;
 3. applique les migrations (`prisma migrate deploy`).
 
-En production, la baseline se pose une fois, à la main :
+En production, la baseline n'est posée que si, en plus,
+`ALLOW_PRODUCTION_BASELINE=true` est défini (pour le premier déploiement
+seulement ; à retirer ensuite). On peut aussi la poser à la main :
 
 ```bash
 npx prisma migrate resolve --applied 0_baseline
