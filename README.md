@@ -11,8 +11,8 @@ PostgreSQL, Auth.js v5 (Google), SWR.
 
 - **Fiche de personnage** en 5 onglets :
   - _Caractéristiques_ : Visage (nom, âge, Maï, aspect, devenir), Caractères,
-    Facultés, Existences (santé, équilibre, éclat), Expériences (éprouver,
-    apprendre, vivre).
+    Facultés, Existences (santé, équilibre, éclat), Expérience (éprouver,
+    apprendre, vivre ; voir [Expérience](#expérience)).
   - _Traits_ : innés (avec balance et contrôle d'équilibre) et acquis.
   - _Schémas & Compétences_ : Corpus, Spyrée, Âmée, compétences Générales /
     Spyrales / Martiales en arbre (compétence › base › principe › maîtrise ou
@@ -21,8 +21,9 @@ PostgreSQL, Auth.js v5 (Google), SWR.
   - _Notes_ : éditeur Markdown.
 - **Droits** : chacun·e modifie ses fiches, consulte celles des autres en
   lecture seule ; les MJ (rôle `ADMIN`) modifient tout.
-- **Tables de jeu** (MJ) : ajout/retrait de personnages et vue d'ensemble
-  (santé, équilibre, éclat, Maï, initiative, protection, encombrement…).
+- **Tables de jeu** (MJ) : ajout/retrait de personnages, vue d'ensemble
+  (santé, équilibre, éclat, Maï, initiative, protection, encombrement, XP
+  restante…) et distribution d'XP à plusieurs personnages.
 - **Whitelist** (MJ) : seules les adresses whitelistées peuvent se connecter.
 
 ## Règles calculées
@@ -49,6 +50,62 @@ Chaque aspect du Corpus peut porter un bonus sur un caractère ou sur la santé
 (colonnes « Bonus » et « + »). Un bonus de +1 en Charisme ajoute 1 à la marge
 des facultés dont le Charisme est le majeur ; un bonus de +1 en Santé ajoute 1
 à la santé maximale, comme les effets « Cha +1 » ou « Santé +1 » du tableur.
+
+## Expérience
+
+Les règles sont dans [`src/lib/rules/xp.ts`](src/lib/rules/xp.ts) (testées
+dans [`xp.test.ts`](src/lib/rules/xp.test.ts)).
+
+**Trois catégories.** Chaque partie de la fiche se paie avec certaines
+catégories ; une dépense peut en combiner plusieurs.
+
+| Catégorie | Paie                                                        |
+| --------- | ----------------------------------------------------------- |
+| Éprouver  | Corps et Âme, compétences martiales et générales, le Corpus |
+| Apprendre | Esprit et Âme, compétences spyrales et générales, la Spyrée |
+| Vivre     | tout                                                        |
+
+**Coûts.**
+
+| Élément         | Coût                                                                   |
+| --------------- | ---------------------------------------------------------------------- |
+| Caractéristique | par point : 1 XP jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, 8 jusqu'à 100 |
+| Compétence      | base ou principe 10, maîtrise 30, technique 10, enchaînement 20        |
+| Corpus          | 5 XP le 1er aspect, 10 le 2e, 15 le 3e…                                |
+| Spyrée          | passage au rang I : 10, II : 30, III : 70, IV : 150, V : 310           |
+
+**Déroulement.**
+
+1. Une nouvelle fiche est _en création_ : tout s'y modifie librement. Le MJ
+   attribue l'XP de création (raccourci « Création : 700 Vivre »), depuis la
+   fiche ou pour toute une table. Le coût de la fiche est calculé en continu ;
+   on peut dépasser, mais pas valider tant qu'il manque de l'XP.
+2. Le joueur ou le MJ **valide** : le coût est payé (répartition qui garde
+   Vivre pour la fin) et la fiche est figée.
+3. Ensuite, chaque amélioration est un **achat** : une fenêtre propose une
+   répartition entre les catégories autorisées, que le joueur peut changer.
+   La dépense est définitive.
+4. Le MJ distribue l'XP de chaque session (fiche ou table), et peut :
+   - **offrir** un achat (aucune XP dépensée) ;
+   - **baisser ou retirer** un élément validé, en remboursant l'XP (dans les
+     catégories qui l'avaient payée, la dernière dépense en premier) ou en la
+     déclarant perdue ;
+   - accorder un **reset**, complet ou d'une partie de la fiche (Corps,
+     Esprit, Âme, compétences générales / spyrales / martiales, Corpus,
+     Spyrée) : l'XP payée est rendue, la partie redevient libre jusqu'à la
+     prochaine validation, et ce qui avait été offert le reste ;
+   - retirer de l'XP (montant négatif) ou supprimer une attribution erronée.
+
+Tout est consigné dans l'**historique** de la fiche (attributions, achats,
+remboursements, XP perdue, éléments offerts). La fiche signale quand le compte
+n'est pas bon, c'est-à-dire quand la valeur des parties validées diffère de
+l'XP enregistrée pour elles (par exemple une fiche reprise de l'ancienne
+version, dont les dépenses ne sont pas détaillées) ; un reset complet
+recalcule tout.
+
+Les fiches existantes avant ce système sont reprises telles quelles et
+considérées comme validées : l'XP gagnée et l'XP restante saisies à la main
+sont conservées (« XP reprise » et « Dépenses antérieures »).
 
 ## Développement
 
@@ -127,8 +184,9 @@ En développement : `yarn prisma:migrate` crée une nouvelle migration.
 
 Sur un aperçu avec `ENABLE_TEST_LOGIN=true`, la page d'accueil propose de se
 connecter en « MJ de test », « Joueuse de test » ou « Joueur de test », sans
-Google. À la première connexion, des personnages fictifs (Lyse, Corwin, un
-PNJ) et une « Table de test » sont créés. En local :
+Google. À la première connexion, des personnages fictifs (Lyse et Corwin,
+validés avec de l'XP à dépenser ; un PNJ resté en création) et une « Table de
+test » sont créés. En local :
 
 ```bash
 yarn prisma:seed-test
