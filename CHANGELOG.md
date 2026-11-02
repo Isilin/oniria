@@ -38,6 +38,18 @@ Première version complète des fiches de personnages d'Oniria.
   la·au propriétaire et aux MJ.
 - L'XP n'est plus saisie à la main : les montants existants sont repris dans
   l'historique et les fiches existantes sont considérées comme validées.
+- Application nettement plus rapide : fonctions Vercel à Francfort, à côté
+  de la base ; une fiche se lit en 2 requêtes SQL au lieu de 26, une
+  modification en 3 au lieu de 32 ; un achat d'XP renvoie seulement
+  l'écriture ajoutée au journal, sans recharger la fiche ; les pages
+  arrivent avec leurs données ; seul l'onglet ouvert est affiché et
+  l'éditeur des Notes n'est chargé qu'à son ouverture.
+
+### Corrigé
+
+- Une modification pouvait disparaître de l'écran quand un autre
+  enregistrement se terminait juste après (ex. modifier un objet puis
+  cliquer aussitôt sur « Ajouter »).
 
 ### Sécurité
 
