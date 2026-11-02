@@ -1,8 +1,7 @@
 'use client';
 
-import { SheetGetResult } from '@/app/api/sheets/route';
 import { XpAnswer, useXpDialogs } from '@/components/organisms/xp-dialogs';
-import { CharacteristicKey, computeSheet } from '@/lib/rules';
+import { CharacteristicKey, ComputedSheet, computeSheet } from '@/lib/rules';
 import {
   characteristicChange,
   corpusChange,
@@ -19,7 +18,7 @@ import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
-import { FullSheet } from '../db/sheet';
+import { FullSheet, SheetGetResult } from '../db/sheet';
 import fetcher, { request } from '../helpers/swr';
 import { useCatalog } from './use-catalog';
 
@@ -58,11 +57,44 @@ type Paid = { xp?: Record<string, unknown> } | null;
 const toWire = (answer: XpAnswer) =>
   answer.split ? { ...answer.split } : { ...answer };
 
+type Fields = Record<string, unknown>;
+type Item = { id: string } & Fields;
+
 /** Les listes d'identifiants ne sont pas appliquées en optimiste. */
-const scalarPart = (patch: Record<string, unknown>) =>
+const scalarPart = (patch: Fields) =>
   Object.fromEntries(
     Object.entries(patch).filter(([, v]) => !Array.isArray(v)),
   );
+
+/** Valeurs actuelles des champs qu'on s'apprête à modifier (pour annuler). */
+const previousValues = (current: Fields, patch: Fields) =>
+  Object.fromEntries(Object.keys(patch).map((k) => [k, current[k]]));
+
+/**
+ * Ce que le serveur confirme : les champs envoyés et les relations (type,
+ * propriétés, journal d'XP…). Une autre modification encore en cours reste
+ * affichée.
+ */
+const confirmed = (saved: Fields, patch: Fields) =>
+  Object.fromEntries(
+    Object.entries(saved ?? {}).filter(
+      ([k, v]) => k in patch || (v !== null && typeof v === 'object'),
+    ),
+  );
+
+/**
+ * Valeurs calculées, partagées par toutes les cartes de la fiche : calculées
+ * une seule fois par version de la fiche.
+ */
+const computedCache = new WeakMap<FullSheet, ComputedSheet>();
+const computeOnce = (sheet: FullSheet) => {
+  let computed = computedCache.get(sheet);
+  if (!computed) {
+    computed = computeSheet(sheet);
+    computedCache.set(sheet, computed);
+  }
+  return computed;
+};
 
 export const useSheet = (id: string) => {
   const url = `/api/sheets/${id}`;
@@ -78,7 +110,7 @@ export const useSheet = (id: string) => {
   const { catalog } = useCatalog();
   const dialogs = useXpDialogs();
 
-  const computed = useMemo(() => (sheet ? computeSheet(sheet) : null), [sheet]);
+  const computed = useMemo(() => (sheet ? computeOnce(sheet) : null), [sheet]);
   const xp = useMemo(() => (sheet ? xpSummary(sheet) : null), [sheet]);
 
   const isAdmin = session?.user?.role === 'ADMIN';
@@ -98,6 +130,35 @@ export const useSheet = (id: string) => {
       });
     },
     [enqueueSnackbar],
+  );
+
+  /**
+   * Applique un changement à la fiche affichée, toujours sur sa version la
+   * plus récente : deux enregistrements qui se croisent ne s'écrasent pas.
+   *
+   * La fiche envoyée avec la page n'est pas dans le cache de SWR : tant que
+   * rien n'y est écrit, on part de celle qui est affichée.
+   */
+  const apply = useCallback(
+    (change: (current: FullSheet) => FullSheet) =>
+      mutate(
+        (current) => {
+          const base = current ?? sheet;
+          return base ? change(base) : base;
+        },
+        { revalidate: false },
+      ),
+    [mutate, sheet],
+  );
+
+  /** En cas d'erreur : on annule à l'écran, puis on relit l'état réel. */
+  const fail = useCallback(
+    async (e: unknown, undo?: (current: FullSheet) => FullSheet) => {
+      notifyError(e);
+      if (undo) await apply(undo);
+      await mutate();
+    },
+    [apply, mutate, notifyError],
   );
 
   /**
@@ -137,7 +198,7 @@ export const useSheet = (id: string) => {
     [sheet, xp, isAdmin, isLocked, dialogs, enqueueSnackbar],
   );
 
-  /** Met à jour des champs de la fiche (mise à jour optimiste). */
+  /** Met à jour des champs de la fiche (affichés tout de suite). */
   const update = useCallback(
     async (patch: Partial<FullSheet>) => {
       const key = STAT_KEYS.find(
@@ -147,22 +208,24 @@ export const useSheet = (id: string) => {
         key && sheet ? characteristicChange(key, sheet[key], patch[key]) : null,
       );
       if (!paid) return false;
+      let previous: Fields = {};
+      await apply((current) => {
+        previous = previousValues(current, patch);
+        return { ...current, ...patch };
+      });
       try {
-        await mutate(
-          () => request<FullSheet>('PATCH', url, { ...patch, ...paid }),
-          {
-            optimisticData: (current) => ({ ...current, ...patch }),
-            rollbackOnError: true,
-            revalidate: false,
-          },
-        );
+        const saved = await request<Fields>('PATCH', url, {
+          ...patch,
+          ...paid,
+        });
+        await apply((current) => ({ ...current, ...confirmed(saved, patch) }));
         return true;
       } catch (e) {
-        notifyError(e);
+        await fail(e, (current) => ({ ...current, ...previous }));
         return false;
       }
     },
-    [mutate, url, notifyError, payFor, sheet],
+    [apply, fail, payFor, sheet, url],
   );
 
   /** Coût d'un nouvel élément d'une liste. */
@@ -220,29 +283,24 @@ export const useSheet = (id: string) => {
       );
       if (!paid) return null;
       try {
-        let created: CollectionItem<K>;
-        await mutate(
-          async (current) => {
-            created = await request<CollectionItem<K>>(
-              'POST',
-              `${url}/${collection}`,
-              { ...data, ...paid },
-            );
-            return {
-              ...current,
-              [collection]: [...current[collection], created],
-            };
-          },
-          // Le journal d'XP a changé : on recharge la fiche.
-          { revalidate: XP_COLLECTIONS.includes(collection) },
+        const created = await request<CollectionItem<K>>(
+          'POST',
+          `${url}/${collection}`,
+          { ...data, ...paid },
         );
+        await apply((current) => ({
+          ...current,
+          [collection]: [...current[collection], created],
+        }));
+        // Le journal d'XP a changé : on recharge la fiche.
+        if (XP_COLLECTIONS.includes(collection)) await mutate();
         return created;
       } catch (e) {
         notifyError(e);
         return null;
       }
     },
-    [mutate, url, notifyError, payFor, changeForNew],
+    [apply, changeForNew, mutate, notifyError, payFor, url],
   );
 
   const updateItem = useCallback(
@@ -251,13 +309,7 @@ export const useSheet = (id: string) => {
       itemId: string,
       patch: ItemPatch<K>,
     ) => {
-      const replace = (current: FullSheet, item: Record<string, unknown>) => ({
-        ...current,
-        [collection]: (current[collection] as { id: string }[]).map((i) =>
-          i.id === itemId ? { ...i, ...item } : i,
-        ),
-      });
-      const fields = patch as Record<string, unknown>;
+      const fields = patch as Fields;
       const spyree =
         collection === 'spyree' && 'level' in fields
           ? sheet?.spyree.find((s) => s.id === itemId)
@@ -273,75 +325,86 @@ export const useSheet = (id: string) => {
           : null,
       );
       if (!paid) return false;
+      const replace =
+        (values: (item: Item) => Fields) =>
+        (current: FullSheet): FullSheet => ({
+          ...current,
+          [collection]: (current[collection] as Item[]).map((i) =>
+            i.id === itemId ? { ...i, ...values(i) } : i,
+          ),
+        });
+      const optimistic = scalarPart(fields);
+      let previous: Fields = {};
+      await apply(
+        replace((item) => {
+          previous = previousValues(item, optimistic);
+          return optimistic;
+        }),
+      );
       try {
-        await mutate(
-          async (current) =>
-            replace(
-              current,
-              await request<Record<string, unknown>>(
-                'PATCH',
-                `${url}/${collection}/${itemId}`,
-                { ...fields, ...paid },
-              ),
-            ),
-          {
-            optimisticData: (current) => replace(current, scalarPart(fields)),
-            rollbackOnError: true,
-            revalidate: !!spyree,
-          },
+        const saved = await request<Fields>(
+          'PATCH',
+          `${url}/${collection}/${itemId}`,
+          { ...fields, ...paid },
         );
+        await apply(replace(() => confirmed(saved, fields)));
+        // Le journal d'XP a changé : on recharge la fiche.
+        if (spyree) await mutate();
         return true;
       } catch (e) {
-        notifyError(e);
+        await fail(
+          e,
+          replace(() => previous),
+        );
         return false;
       }
     },
-    [mutate, url, notifyError, payFor, sheet],
+    [apply, fail, mutate, payFor, sheet, url],
   );
 
   const deleteItem = useCallback(
     async (collection: CollectionKey, itemId: string) => {
-      const remove = (current: FullSheet) => ({
-        ...current,
-        [collection]: (current[collection] as { id: string }[]).filter(
-          (i) => i.id !== itemId,
-        ),
-      });
       const paid = await payFor(changeForRemoval(collection, itemId));
       if (!paid) return false;
       const query = paid.xp?.refund === false ? '?refund=false' : '';
+      let removed: { item: Item; index: number } | null = null;
+      await apply((current) => {
+        const list = current[collection] as Item[];
+        const index = list.findIndex((i) => i.id === itemId);
+        if (index >= 0) removed = { item: list[index], index };
+        return {
+          ...current,
+          [collection]: list.filter((i) => i.id !== itemId),
+        };
+      });
       try {
-        await mutate(
-          async (current) => {
-            await request('DELETE', `${url}/${collection}/${itemId}${query}`);
-            return remove(current);
-          },
-          {
-            optimisticData: remove,
-            rollbackOnError: true,
-            // Le journal d'XP a changé : on recharge la fiche.
-            revalidate: XP_COLLECTIONS.includes(collection),
-          },
-        );
+        await request('DELETE', `${url}/${collection}/${itemId}${query}`);
+        // Le journal d'XP a changé : on recharge la fiche.
+        if (XP_COLLECTIONS.includes(collection)) await mutate();
         return true;
       } catch (e) {
-        notifyError(e);
+        await fail(e, (current) => {
+          if (!removed) return current;
+          const list = [...(current[collection] as Item[])];
+          list.splice(Math.min(removed.index, list.length), 0, removed.item);
+          return { ...current, [collection]: list };
+        });
         return false;
       }
     },
-    [mutate, url, notifyError, payFor, changeForRemoval],
+    [apply, changeForRemoval, fail, mutate, payFor, url],
   );
 
   /** Actions d'XP qui renvoient la fiche à jour. */
   const xpAction = useCallback(
     async (path: string, body?: unknown, success?: string) => {
       try {
-        await mutate(
-          () => request<FullSheet>('POST', `${url}/xp${path}`, body),
-          {
-            revalidate: false,
-          },
+        const updated = await request<FullSheet>(
+          'POST',
+          `${url}/xp${path}`,
+          body,
         );
+        await apply(() => updated);
         if (success) enqueueSnackbar(success, { variant: 'success' });
         return true;
       } catch (e) {
@@ -349,7 +412,7 @@ export const useSheet = (id: string) => {
         return false;
       }
     },
-    [mutate, url, notifyError, enqueueSnackbar],
+    [apply, url, notifyError, enqueueSnackbar],
   );
 
   const deleteGrant = useCallback(

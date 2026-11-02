@@ -1,14 +1,12 @@
 import prisma from '@/lib/db/prisma';
 import { handle, HttpError, readJson, requireAdmin } from '@/lib/server/api';
+import { listTeams } from '@/lib/server/queries';
 import { NextRequest } from 'next/server';
 
 export const GET = () =>
   handle(async () => {
     await requireAdmin();
-    return prisma.team.findMany({
-      include: { members: { select: { id: true, name: true } } },
-      orderBy: { name: 'asc' },
-    });
+    return listTeams();
   });
 
 export const POST = (req: NextRequest) =>

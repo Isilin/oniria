@@ -1,5 +1,5 @@
 import prisma from '@/lib/db/prisma';
-import { SHEET_INCLUDE } from '@/lib/db/sheet';
+import { XP_ENTRIES_ARGS } from '@/lib/db/sheet';
 import { CharacteristicKey } from '@/lib/rules';
 import {
   CHARACTERISTIC_MAX,
@@ -13,6 +13,7 @@ import {
   requireSheetEditor,
   requireUser,
 } from '@/lib/server/api';
+import { findSheet } from '@/lib/server/queries';
 import { chargeChange, lockSheet, readXpPayload } from '@/lib/server/xp';
 import { SHEET_FIELDS, sanitizeFields, STAT_KEYS } from '@/lib/sheet/fields';
 import { NextRequest } from 'next/server';
@@ -23,10 +24,7 @@ export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
     await requireUser();
-    const sheet = await prisma.sheet.findUnique({
-      where: { id: params.id },
-      include: SHEET_INCLUDE,
-    });
+    const sheet = await findSheet(params.id);
     if (!sheet) throw new HttpError(404, 'Fiche introuvable.');
     return sheet;
   });
@@ -35,6 +33,10 @@ export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
  * Modifie la fiche. Changer une caractéristique d'une partie validée est un
  * achat (ou, pour le MJ, une baisse avec remboursement ou perte) : son
  * paiement est dans `xp`.
+ *
+ * Renvoie seulement les champs de la fiche (pas ses listes) : le client les
+ * fusionne avec ce qu'il a déjà. Le journal d'XP n'est joint que s'il a
+ * changé.
  */
 export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
@@ -89,11 +91,13 @@ export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
           payload,
         );
       }
-      return tx.sheet.update({
-        where: { id: params.id },
-        data,
-        include: SHEET_INCLUDE,
+      const sheet = await tx.sheet.update({ where: { id: params.id }, data });
+      if (changes.length === 0) return sheet;
+      const xpEntries = await tx.xpEntry.findMany({
+        where: { sheetId: params.id },
+        ...XP_ENTRIES_ARGS,
       });
+      return { ...sheet, xpEntries };
     });
   });
 

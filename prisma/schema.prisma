@@ -5,7 +5,10 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  // Charge une fiche et toutes ses listes en une requête SQL (JOIN) au lieu
+  // d'une requête par relation : 2 requêtes au lieu de 24 pour une fiche.
+  previewFeatures = ["relationJoins"]
 }
 
 model Account {

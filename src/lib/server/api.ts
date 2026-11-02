@@ -53,11 +53,15 @@ export const requireAdmin = async () => {
 
 /** Seul·e le·a propriétaire de la fiche ou un·e admin peut la modifier. */
 export const requireSheetEditor = async (sheetId: string) => {
-  const user = await requireUser();
-  const sheet = await prisma.sheet.findUnique({
-    where: { id: sheetId },
-    select: { id: true, userId: true },
-  });
+  // Session et propriétaire lus en parallèle : un aller-retour en base de
+  // moins à chaque modification. La session reste vérifiée en premier.
+  const [user, sheet] = await Promise.all([
+    requireUser(),
+    prisma.sheet.findUnique({
+      where: { id: sheetId },
+      select: { id: true, userId: true },
+    }),
+  ]);
   if (!sheet) throw new HttpError(404, 'Fiche introuvable.');
   if (sheet.userId !== user.id && user.role !== 'ADMIN') {
     throw new HttpError(403, "Cette fiche ne t'appartient pas.");

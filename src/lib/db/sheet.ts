@@ -7,11 +7,21 @@ export const PUBLIC_USER_SELECT = {
   image: true,
 } satisfies Prisma.UserSelect;
 
-const byCreation = { orderBy: { createdAt: 'asc' } } as const;
+// L'id départage les éléments créés au même instant : ordre stable d'un
+// chargement à l'autre.
+const byCreation = {
+  orderBy: [{ createdAt: 'asc' as const }, { id: 'asc' as const }],
+};
 
 export const POTENTIAL_INCLUDE = {
   type: { include: { category: true } },
 } satisfies Prisma.PotentialInclude;
+
+/** Journal d'XP d'une fiche, dans l'ordre, avec l'auteur de chaque écriture. */
+export const XP_ENTRIES_ARGS = {
+  orderBy: { seq: 'asc' as const },
+  include: { author: { select: PUBLIC_USER_SELECT } },
+} satisfies Prisma.Sheet$xpEntriesArgs;
 
 export const SHEET_INCLUDE = {
   user: { select: PUBLIC_USER_SELECT },
@@ -30,10 +40,7 @@ export const SHEET_INCLUDE = {
   meleeWeapons: { ...byCreation, include: { properties: true } },
   rangeWeapons: { ...byCreation, include: { properties: true } },
   items: byCreation,
-  xpEntries: {
-    orderBy: { seq: 'asc' },
-    include: { author: { select: PUBLIC_USER_SELECT } },
-  },
+  xpEntries: XP_ENTRIES_ARGS,
 } satisfies Prisma.SheetInclude;
 
 export const SHEET_SUMMARY_INCLUDE = {
@@ -46,6 +53,32 @@ export type FullSheet = Prisma.SheetGetPayload<{
 
 export type SheetWithUser = Prisma.SheetGetPayload<{
   include: typeof SHEET_SUMMARY_INCLUDE;
+}>;
+
+/** Fiches de l'accueil : les siennes, puis celles des autres. */
+export interface SheetGetResult {
+  own: SheetWithUser[];
+  others: SheetWithUser[];
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Tables de jeu                                */
+/* -------------------------------------------------------------------------- */
+
+export const TEAM_SUMMARY_INCLUDE = {
+  members: { select: { id: true, name: true } },
+} satisfies Prisma.TeamInclude;
+
+export const TEAM_INCLUDE = {
+  members: { include: SHEET_INCLUDE, orderBy: { name: 'asc' } },
+} satisfies Prisma.TeamInclude;
+
+export type TeamSummary = Prisma.TeamGetPayload<{
+  include: typeof TEAM_SUMMARY_INCLUDE;
+}>;
+
+export type TeamWithMembers = Prisma.TeamGetPayload<{
+  include: typeof TEAM_INCLUDE;
 }>;
 
 /* -------------------------------------------------------------------------- */
