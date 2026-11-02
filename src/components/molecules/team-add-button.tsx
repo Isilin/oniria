@@ -10,7 +10,11 @@ const TeamAddButton = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} fullWidth>
+      <Button
+        onClick={() => setOpen(true)}
+        fullWidth
+        aria-label="Nouvelle table de jeu"
+      >
         <AddIcon />
       </Button>
       <CreateTeamDialog open={open} onClose={() => setOpen(false)} />

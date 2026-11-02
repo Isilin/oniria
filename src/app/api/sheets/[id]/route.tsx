@@ -1,39 +1,46 @@
 import prisma from '@/lib/db/prisma';
-import { revalidateTag } from 'next/cache';
-import { NextRequest, NextResponse } from 'next/server';
+import { SHEET_INCLUDE } from '@/lib/db/sheet';
+import {
+  handle,
+  HttpError,
+  readJson,
+  requireSheetEditor,
+  requireUser,
+} from '@/lib/server/api';
+import { SHEET_FIELDS, sanitizeFields } from '@/lib/sheet/fields';
+import { NextRequest } from 'next/server';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const sheet = await prisma.sheet.findUnique({
-    where: { id: params.id },
-    include: { user: true },
+type Params = { params: Promise<{ id: string }> };
+
+export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
+  handle(async () => {
+    const params = await paramsPromise;
+    await requireUser();
+    const sheet = await prisma.sheet.findUnique({
+      where: { id: params.id },
+      include: SHEET_INCLUDE,
+    });
+    if (!sheet) throw new HttpError(404, 'Fiche introuvable.');
+    return sheet;
   });
-  return NextResponse.json(sheet);
-}
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  await prisma.sheet.delete({
-    where: { id: params.id },
+export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
+  handle(async () => {
+    const params = await paramsPromise;
+    await requireSheetEditor(params.id);
+    const data = sanitizeFields(SHEET_FIELDS, await readJson(req));
+
+    return prisma.sheet.update({
+      where: { id: params.id },
+      data,
+      include: SHEET_INCLUDE,
+    });
   });
 
-  return NextResponse.json(null, { status: 200 });
-}
-
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const data = await req.json();
-
-  const sheet = await prisma.sheet.update({
-    where: { id: params.id },
-    data,
+export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
+  handle(async () => {
+    const params = await paramsPromise;
+    await requireSheetEditor(params.id);
+    await prisma.sheet.delete({ where: { id: params.id } });
+    return null;
   });
-  revalidateTag(`sheet-${params.id}`);
-  return NextResponse.json(sheet);
-}

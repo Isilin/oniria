@@ -1,0 +1,228 @@
+/**
+ * Description des champs modifiables d'une fiche et de ses listes.
+ * Partagé entre l'API (validation) et l'interface (formulaires).
+ */
+
+export type FieldType =
+  | 'string'
+  | 'text'
+  | 'int'
+  | 'boolean'
+  | 'enum'
+  | 'ref'
+  | 'refs';
+
+export interface FieldSpec {
+  type: FieldType;
+  /** Valeurs autorisées pour un champ `enum`. */
+  values?: readonly string[];
+}
+
+export type FieldSpecs = Record<string, FieldSpec>;
+
+const string: FieldSpec = { type: 'string' };
+const text: FieldSpec = { type: 'text' };
+const int: FieldSpec = { type: 'int' };
+const boolean: FieldSpec = { type: 'boolean' };
+const ref: FieldSpec = { type: 'ref' };
+/** Liste d'identifiants d'un catalogue (ex. propriétés d'une arme). */
+const refs: FieldSpec = { type: 'refs' };
+
+export const STAT_KEYS = [
+  'strength',
+  'agility',
+  'vivacity',
+  'vigour',
+  'thinking',
+  'perception',
+  'concentration',
+  'understanding',
+  'charisma',
+  'empathy',
+  'ego',
+  'will',
+] as const;
+
+/** Un bonus de Corpus porte sur un caractère ou sur la santé. */
+export const CORPUS_STATS = [...STAT_KEYS, 'health'] as const;
+
+export const SKILL_TYPES = ['GENERAL', 'SPYRAL', 'MARTIAL'] as const;
+export const SKILL_DEGREES = [
+  'BASE',
+  'PRINCIPLE',
+  'MASTERY',
+  'TECHNIQUE',
+  'SEQUENCE',
+] as const;
+export const ARMOR_TYPES = ['LOW', 'PARTIAL', 'FULL'] as const;
+
+export const SHEET_FIELDS: FieldSpecs = {
+  name: string,
+  avatar: string,
+  age: int,
+  current_mai: int,
+  aspect: string,
+  become: string,
+  ...Object.fromEntries(STAT_KEYS.map((key) => [key, int])),
+  current_health: int,
+  current_stability: int,
+  current_radiance: int,
+  feel_xp: int,
+  to_spend_feel_xp: int,
+  learn_xp: int,
+  to_spend_learn_xp: int,
+  live_xp: int,
+  to_spend_live_xp: int,
+  notes: text,
+};
+
+const prerequisite: FieldSpecs = {
+  prerequisite_stat: { type: 'enum', values: STAT_KEYS },
+  prerequisite_value: int,
+};
+
+/** Les listes d'une fiche, indexées par le nom de la relation Prisma. */
+export const COLLECTIONS = {
+  corpus: {
+    model: 'corpus',
+    fields: {
+      typeId: ref,
+      name: string,
+      description: text,
+      stat: { type: 'enum', values: CORPUS_STATS },
+      bonus: int,
+    },
+  },
+  spyree: { model: 'spyree', fields: { potentialId: ref, level: int } },
+  amee: { model: 'amee', fields: { name: string, description: text } },
+  traits: {
+    model: 'trait',
+    fields: { name: string, description: text, balance: int, inborn: boolean },
+  },
+  skills: {
+    model: 'sheetSkill',
+    fields: { skillId: ref, prerequisiteId: ref, suffixe: string },
+  },
+  spells: {
+    model: 'spell',
+    fields: {
+      name: string,
+      incantation: string,
+      targeting: string,
+      duration: string,
+      effect: text,
+    },
+  },
+  golems: {
+    model: 'golem',
+    fields: { name: string, artefact: text, symbiosis: text, heart: text },
+  },
+  armors: {
+    model: 'armor',
+    fields: {
+      name: string,
+      protection: int,
+      current_protection: int,
+      index: int,
+      type: { type: 'enum', values: ARMOR_TYPES },
+      bulk: int,
+      solidity: int,
+      ...prerequisite,
+      properties: refs,
+      quality: int,
+      equipped: boolean,
+    },
+  },
+  meleeWeapons: {
+    model: 'meleeWeapon',
+    fields: {
+      name: string,
+      damage: int,
+      extend: int,
+      bulk: int,
+      solidity: int,
+      ...prerequisite,
+      properties: refs,
+      quality: int,
+      equipped: boolean,
+    },
+  },
+  rangeWeapons: {
+    model: 'rangeWeapon',
+    fields: {
+      name: string,
+      damage: int,
+      penetration_damage: int,
+      velocity: int,
+      rate: int,
+      reload_rate: int,
+      low_range: int,
+      medium_range: int,
+      long_range: int,
+      bulk: int,
+      solidity: int,
+      ...prerequisite,
+      properties: refs,
+      quality: int,
+      equipped: boolean,
+    },
+  },
+  items: {
+    model: 'item',
+    fields: { name: string, description: string, quantity: int },
+  },
+} as const satisfies Record<string, { model: string; fields: FieldSpecs }>;
+
+export type CollectionKey = keyof typeof COLLECTIONS;
+
+export const isCollection = (key: string): key is CollectionKey =>
+  Object.prototype.hasOwnProperty.call(COLLECTIONS, key);
+
+export class ValidationError extends Error {}
+
+const coerce = (key: string, spec: FieldSpec, value: unknown) => {
+  if (spec.type === 'refs') {
+    if (!Array.isArray(value)) {
+      throw new ValidationError(`« ${key} » doit être une liste.`);
+    }
+    return value.map((v) => String(v));
+  }
+  if (value === null || value === undefined || value === '') {
+    return spec.type === 'boolean' ? false : null;
+  }
+  switch (spec.type) {
+    case 'string':
+    case 'text':
+    case 'ref':
+      return String(value);
+    case 'int': {
+      const number = Number(value);
+      if (!Number.isFinite(number)) {
+        throw new ValidationError(`« ${key} » doit être un nombre.`);
+      }
+      return Math.trunc(number);
+    }
+    case 'boolean':
+      return value === true || value === 'true';
+    case 'enum':
+      if (!spec.values?.includes(String(value))) {
+        throw new ValidationError(`Valeur invalide pour « ${key} ».`);
+      }
+      return String(value);
+  }
+};
+
+/** Ne garde que les champs connus et convertit leurs valeurs. */
+export const sanitizeFields = (
+  specs: FieldSpecs,
+  data: unknown,
+): Record<string, unknown> => {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new ValidationError('Données invalides.');
+  }
+  return Object.fromEntries(
+    Object.entries(data)
+      .filter(([key]) => Object.prototype.hasOwnProperty.call(specs, key))
+      .map(([key, value]) => [key, coerce(key, specs[key], value)]),
+  );
+};

@@ -10,7 +10,11 @@ const WhitelistAddButton = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} fullWidth>
+      <Button
+        onClick={() => setOpen(true)}
+        fullWidth
+        aria-label="Ajouter un email"
+      >
         <AddIcon />
       </Button>
       <CreateWhitelistDialog open={open} onClose={() => setOpen(false)} />

@@ -8,41 +8,41 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 const CreateSheetDialog = ({ open, onClose }) => {
-  const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const { createSheet } = useSheets();
 
+  const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
+    e.preventDefault();
+    const name =
+      new FormData(e.currentTarget as HTMLFormElement)
+        .get('name')
+        ?.toString() ?? '';
+    setLoading(true);
+    try {
+      const sheet = await createSheet(name);
+      onClose();
+      enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
+      router.push(`/sheet/${sheet.id}`);
+    } catch (error) {
+      enqueueSnackbar((error as Error).message, { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: async (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          createSheet({
-            userId: session?.user.id,
-            name: formJson.name.toString(),
-          }).then(async (res) => {
-            const sheet = await res.json();
-
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
-            router.push(`/sheet/${sheet.id}`);
-          });
-        },
+      slotProps={{
+        paper: { component: 'form', onSubmit: handleSubmit },
       }}
     >
       <DialogTitle>Nouveau personnage</DialogTitle>
@@ -64,7 +64,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
           Annuler
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Créer'}
+          {loading ? <CircularProgress size={20} /> : 'Créer'}
         </Button>
       </DialogActions>
     </Dialog>

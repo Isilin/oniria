@@ -1,7 +1,7 @@
+// Les URL de connexion sont dans prisma.config.ts (CLI) et
+// src/lib/db/prisma.ts (application).
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 generator client {
@@ -9,20 +9,20 @@ generator client {
 }
 
 model Account {
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
- 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -35,9 +35,9 @@ model Session {
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("sessions")
 }
@@ -51,11 +51,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  role          Role      @default(USER)
-  sheets        Sheet[]
+  role   Role    @default(USER)
+  sheets Sheet[]
 
   @@map(name: "users")
 }
@@ -75,134 +75,114 @@ enum Role {
 }
 
 model Sheet {
-  id                  String   @id @default(cuid())
-  userId              String   @map("user_id")
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teams               Team[]
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teams  Team[]
 
-  name                String?
-  avatar              String?
-  age                 Int?
-  current_mai         Int?
-  aspect              String?  @default("Type")
-  become              String?  @default("10")
-  strength            Int?     @default(25) // force
-  agility             Int?     @default(25) // agilité
-  vivacity            Int?     @default(25) // vivacité
-  vigour              Int?     @default(25) // vigueur
-  thinking            Int?     @default(25) // thinking
-  perception          Int?     @default(25) // perception
-  concentration       Int?     @default(25) // concentration
-  understanding       Int?     @default(25) // entendement
-  charisma            Int?     @default(25) // charisma
-  empathy             Int?     @default(25) // empathie
-  ego                 Int?     @default(25) // ego
-  will                Int?     @default(25) // volonté
-  current_health      Int?     @default(0)
-  current_stability   Int?     @default(0)
-  current_radiance    Int?     @default(0)
-  feel_xp             Int?     @default(0)
-  to_spend_feel_xp    Int?     @default(0)
-  learn_xp            Int?     @default(0)
-  to_spend_learn_xp   Int?     @default(0)
-  live_xp             Int?     @default(0)
-  to_spend_live_xp    Int?     @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  corpus              Corpus[]
-  spyree              Spyree[]
-  amee                Amee[]
-  traits              Trait[]
-  skills              SheetSkill[]
+  // Visage
+  name        String?
+  avatar      String?
+  age         Int?
+  current_mai Int?
+  aspect      String? @default("Type")
+  become      String? @default("10") // Devenir
 
-  spells              Spell[]
-  golems              Golem[]
-  armors              Armor[]
-  meleeWeapons        MeleeWeapon[]
-  rangeWeapons        RangeWeapon[]
-  items               Item[]
+  // Caractères
+  strength      Int? @default(25) // force
+  agility       Int? @default(25) // agilité
+  vivacity      Int? @default(25) // vivacité
+  vigour        Int? @default(25) // vigueur
+  thinking      Int? @default(25) // raisonnement
+  perception    Int? @default(25) // perception
+  concentration Int? @default(25) // concentration
+  understanding Int? @default(25) // entendement
+  charisma      Int? @default(25) // charisme
+  empathy       Int? @default(25) // empathie
+  ego           Int? @default(25) // ego
+  will          Int? @default(25) // volonté
 
-  notes               String? @default("")
+  // Existences : valeurs courantes (vide = au maximum, les maximums sont calculés)
+  current_health    Int?
+  current_stability Int?
+  current_radiance  Int?
+
+  // Expériences : *_xp = gagnée, to_spend_*_xp = restante
+  feel_xp           Int? @default(0) // éprouver
+  to_spend_feel_xp  Int? @default(0)
+  learn_xp          Int? @default(0) // apprendre
+  to_spend_learn_xp Int? @default(0)
+  live_xp           Int? @default(0) // vivre
+  to_spend_live_xp  Int? @default(0)
+
+  // Schémas
+  corpus Corpus[]
+  spyree Spyree[]
+  amee   Amee[]
+
+  traits Trait[]
+  skills SheetSkill[]
+  spells Spell[]
+  golems Golem[]
+
+  // Équipement
+  armors       Armor[]
+  meleeWeapons MeleeWeapon[]
+  rangeWeapons RangeWeapon[]
+  items        Item[]
+
+  notes String? @default("")
 }
 
 model Whitelist {
-  id                  String   @id @default(cuid())
-  email               String   @unique
+  id    String @id @default(cuid())
+  email String @unique
 }
 
 model Team {
-  id                  String   @id @default(cuid())
-  name                String?  @unique
-  members             Sheet[]
+  id      String  @id @default(cuid())
+  name    String? @unique
+  members Sheet[]
 }
 
+// ---------------------------------------------------------------------------
+// Catalogues de règles (remplis par prisma/seeds)
+// ---------------------------------------------------------------------------
+
+// Origine, Adaptation, Stature, Apparence…
 model CorpusType {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-  corpus              Corpus[]
+  id     String   @id @default(cuid())
+  name   String   @unique
+  corpus Corpus[]
 }
 
-model Corpus {
-  id                  String   @id @default(cuid())
-  typeId              String   @map("type_id")
-  type                CorpusType @relation(fields: [typeId], references: [id])
-  name                String?
-  description         String?
-  stat                String?
-  bonus               Int?
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
-}
-
+// Élément > Le Feu > Flamme…
 model PotentialCategory {
-  id                  String   @id @default(cuid())
-  name                String   @unique
+  id   String @id @default(cuid())
+  name String @unique
 
-  types           PotentialType[]
+  types PotentialType[]
 }
 
 model PotentialType {
-  id                  String   @id @default(cuid())
-  name                String   @unique
-  
-  categoryId          String   @map("category_id")
-  category            PotentialCategory @relation(fields: [categoryId], references: [id])
-  potentials          Potential[]
+  id   String @id @default(cuid())
+  name String @unique
+
+  categoryId String            @map("category_id")
+  category   PotentialCategory @relation(fields: [categoryId], references: [id])
+  potentials Potential[]
 }
 
 model Potential {
-  id                  String   @id @default(cuid())
-  typeId              String   @map("type_id")
-  type                PotentialType @relation(fields: [typeId], references: [id])
-  name                String   @unique
-  description         String
-  spyrees             Spyree[]
-}
-
-model Spyree {
-  id                  String    @id @default(cuid())
-  level               Int?
-  sheetId             String    @map("sheet_id")
-  sheet               Sheet     @relation(fields: [sheetId], references: [id])
-  potentialId         String    @map("potential_id")
-  potential           Potential @relation(fields: [potentialId], references: [id])
-}
-
-model Amee {
-  id                  String   @id @default(cuid())
-  name                String
-  description         String?
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
-}
-
-model Trait {
-  id                  String   @id @default(cuid())
-  name                String
-  description         String?
-  balance             Int?
-  inborn              Boolean
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id          String        @id @default(cuid())
+  typeId      String        @map("type_id")
+  type        PotentialType @relation(fields: [typeId], references: [id])
+  name        String        @unique
+  description String
+  spyrees     Spyree[]
 }
 
 enum SkillType {
@@ -219,64 +199,119 @@ enum SkillDegree {
   SEQUENCE
 }
 
+// Compétences : une catégorie (Athlétisme) contient des bases, des principes
+// et des maîtrises ; chacun peut exiger un des prérequis listés.
 model Skill {
-  id                  String   @id @default(cuid())
-  name                String
-  description         String?
-  type                SkillType
-  category            String
-  degree              SkillDegree
-  prerequisites       Skill[]   @relation("SkillDependencies")
-  dependencies        Skill[]  @relation("SkillDependencies")
+  id            String      @id @default(cuid())
+  name          String
+  description   String?
+  type          SkillType
+  category      String
+  degree        SkillDegree
+  prerequisites Skill[]     @relation("SkillDependencies")
+  dependencies  Skill[]     @relation("SkillDependencies")
 
-  sheets              SheetSkill[] @relation("sheets")
-  prerequisiteSheet   SheetSkill[] @relation("prerequisiteSheet")
+  sheets            SheetSkill[] @relation("sheets")
+  prerequisiteSheet SheetSkill[] @relation("prerequisiteSheet")
 
   @@unique([name, category])
 }
 
+// Propriétés d'équipement : Entravante, Pesante, Déployable…
+model Property {
+  id          String  @id @default(cuid())
+  name        String?
+  description String?
+
+  armors       Armor[]
+  meleeWeapons MeleeWeapon[]
+  rangeWeapons RangeWeapon[]
+}
+
+// ---------------------------------------------------------------------------
+// Contenu des fiches
+// ---------------------------------------------------------------------------
+
+// Le Corpus : un type (Origine…), un nom, et un bonus éventuel à un caractère
+// (ou à la santé : stat = "health") qui s'ajoute aux marges des facultés.
+model Corpus {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now()) @map("created_at")
+  typeId      String     @map("type_id")
+  type        CorpusType @relation(fields: [typeId], references: [id])
+  name        String?
+  description String?
+  stat        String?
+  bonus       Int?
+  sheetId     String     @map("sheet_id")
+  sheet       Sheet      @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+}
+
+model Spyree {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  level       Int?      @default(1)
+  sheetId     String    @map("sheet_id")
+  sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  potentialId String    @map("potential_id")
+  potential   Potential @relation(fields: [potentialId], references: [id])
+}
+
+model Amee {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  name        String?
+  description String?
+  sheetId     String   @map("sheet_id")
+  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+}
+
+model Trait {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  name        String?
+  description String?
+  balance     Int?
+  inborn      Boolean  @default(true) // inné ou acquis
+  sheetId     String   @map("sheet_id")
+  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+}
+
+// Compétence acquise par un personnage. `prerequisite` indique par quel
+// prérequis elle a été obtenue quand la compétence en accepte plusieurs.
 model SheetSkill {
-  id                  String   @id @default(cuid())
-  suffixe             String?
-  prerequisiteId      String?  @map("prerequisite_id")
-  prerequisite        Skill?   @relation("prerequisiteSheet", fields: [prerequisiteId], references: [id])
-  skillId             String   @map("skill_id")
-  skill               Skill    @relation("sheets", fields: [skillId], references: [id])
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now()) @map("created_at")
+  suffixe        String?
+  prerequisiteId String?  @map("prerequisite_id")
+  prerequisite   Skill?   @relation("prerequisiteSheet", fields: [prerequisiteId], references: [id])
+  skillId        String   @map("skill_id")
+  skill          Skill    @relation("sheets", fields: [skillId], references: [id])
+  sheetId        String   @map("sheet_id")
+  sheet          Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Spell {
-  id                  String   @id @default(cuid())
-  name                String?
-  incantation         String?
-  targeting           String?
-  duration            String?
-  effect              String?
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  name        String?
+  incantation String?
+  targeting   String?
+  duration    String?
+  effect      String?
+  sheetId     String   @map("sheet_id")
+  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Golem {
-  id                  String   @id @default(cuid())
-  name                String?
-  artefact            String?
-  symbiosis           String?
-  heart               String?
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
-}
-
-model Property {
-  id                  String   @id @default(cuid())
-  name                String?
-  description         String?
-
-  armors              Armor[]
-  meleeWeapons        MeleeWeapon[]
-  rangeWeapons        RangeWeapon[]
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  name      String?
+  artefact  String?
+  symbiosis String?
+  heart     String?
+  sheetId   String   @map("sheet_id")
+  sheet     Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 enum ArmorType {
@@ -286,71 +321,71 @@ enum ArmorType {
 }
 
 model Armor {
-  id                  String   @id @default(cuid())
-  name                String?
-  protection          Int?
-  current_protection  Int?
-  index               Int?
-  type                ArmorType?
-  bulk                Int?
-  strength            Int?
-  prerequisite_stat   String?
-  prerequisite_value  Int?
-  properties          Property[]
-  quality             Int?
-  equipped            Boolean  @default(false)
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id                 String     @id @default(cuid())
+  createdAt          DateTime   @default(now()) @map("created_at")
+  name               String?
+  protection         Int? // protection maximale
+  current_protection Int?
+  index              Int? // indice
+  type               ArmorType?
+  bulk               Int? // encombrement (%)
+  solidity           Int?       @map("strength")
+  prerequisite_stat  String?
+  prerequisite_value Int?
+  properties         Property[]
+  quality            Int?
+  equipped           Boolean    @default(true)
+  sheetId            String     @map("sheet_id")
+  sheet              Sheet      @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model MeleeWeapon {
-  id                  String   @id @default(cuid())
-  name                String?
-  damage              Int?
-  extend              Int?
-  bulk                Int?
-  strength            Int?
-  prerequisite_stat   String?
-  prerequisite_value  Int?
-  properties          Property[]
-  quality             Int?
-  equipped            Boolean  @default(false)
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id                 String     @id @default(cuid())
+  createdAt          DateTime   @default(now()) @map("created_at")
+  name               String?
+  damage             Int?
+  extend             Int? // allonge
+  bulk               Int? // encombrement (%)
+  solidity           Int?       @map("strength")
+  prerequisite_stat  String?
+  prerequisite_value Int?
+  properties         Property[]
+  quality            Int?
+  equipped           Boolean    @default(true)
+  sheetId            String     @map("sheet_id")
+  sheet              Sheet      @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model RangeWeapon {
-  id                  String   @id @default(cuid())
-  name                String?
-  damage              Int?
-  penetration_damage  Int?
-  velocity            Int?
-  rate                Int?
-  reload_rate         Int?
-  range               String?
-  low_range           Int?
-  medium_range        Int?
-  long_range          Int?
-  bulk                Int?
-  strength            Int?
-  prerequisite_stat   String?
-  prerequisite_value  Int?
-  properties          Property[]
-  quality             Int?
-  equipped            Boolean  @default(false)
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id                 String     @id @default(cuid())
+  createdAt          DateTime   @default(now()) @map("created_at")
+  name               String?
+  damage             Int?
+  penetration_damage Int?
+  velocity           Int?
+  rate               Int? // cadence
+  reload_rate        Int? // rechargement
+  range              String?
+  low_range          Int? // portée courte
+  medium_range       Int? // portée moyenne
+  long_range         Int? // portée longue
+  bulk               Int? // encombrement (%)
+  solidity           Int?       @map("strength")
+  prerequisite_stat  String?
+  prerequisite_value Int?
+  properties         Property[]
+  quality            Int?
+  equipped           Boolean    @default(true)
+  sheetId            String     @map("sheet_id")
+  sheet              Sheet      @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Item {
-  id                  String   @id @default(cuid())
-  name                String?
-  description         String?
-  quantity            Int?
-  
-  sheetId             String   @map("sheet_id")
-  sheet               Sheet    @relation(fields: [sheetId], references: [id])
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  name        String?
+  description String?
+  quantity    Int?     @default(1)
+  sheetId     String   @map("sheet_id")
+  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }

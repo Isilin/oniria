@@ -7,6 +7,7 @@
   --button-secondary-hover: #f2f2f2;
 
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 20px 1fr 20px;
   align-items: start;
   justify-items: center;
@@ -30,14 +31,15 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 80%;
+  width: 100%;
+  max-width: 1400px;
+  min-width: 0;
   align-items: center;
 }
 
 @media (max-width: 600px) {
   .page {
-    padding: 24px;
-    padding-bottom: 80px;
+    padding: 8px 12px 80px;
   }
 
   .main {

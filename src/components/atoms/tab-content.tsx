@@ -11,15 +11,15 @@ const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
     <Paper
       role="tabpanel"
       id={`tabpanel${index}`}
-      aria-labelledby={`tabpanel${index}`}
+      aria-labelledby={`tab${index}`}
       hidden={!active}
       sx={{
         display: active ? 'flex' : 'none',
-        flexDirection: 'row',
+        flexDirection: { xs: 'column', md: 'row' },
         gap: 1,
         border: 'none',
         justifyContent: 'center',
-        width: '80%',
+        width: '100%',
       }}
       variant="outlined"
     >

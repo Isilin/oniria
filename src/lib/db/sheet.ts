@@ -1,80 +1,68 @@
-import { Amee, Corpus, Golem, Item, Prisma, Spell } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
+/** Champs publics d'un·e utilisateur·ice (pas d'email ni de rôle). */
+export const PUBLIC_USER_SELECT = {
+  id: true,
+  name: true,
+  image: true,
+} satisfies Prisma.UserSelect;
+
+const byCreation = { orderBy: { createdAt: 'asc' } } as const;
+
+export const POTENTIAL_INCLUDE = {
+  type: { include: { category: true } },
+} satisfies Prisma.PotentialInclude;
+
+export const SHEET_INCLUDE = {
+  user: { select: PUBLIC_USER_SELECT },
+  teams: { select: { id: true, name: true } },
+  corpus: { ...byCreation, include: { type: true } },
+  spyree: {
+    ...byCreation,
+    include: { potential: { include: POTENTIAL_INCLUDE } },
+  },
+  amee: byCreation,
+  traits: byCreation,
+  skills: { ...byCreation, include: { skill: true } },
+  spells: byCreation,
+  golems: byCreation,
+  armors: { ...byCreation, include: { properties: true } },
+  meleeWeapons: { ...byCreation, include: { properties: true } },
+  rangeWeapons: { ...byCreation, include: { properties: true } },
+  items: byCreation,
+} satisfies Prisma.SheetInclude;
+
+export const SHEET_SUMMARY_INCLUDE = {
+  user: { select: PUBLIC_USER_SELECT },
+} satisfies Prisma.SheetInclude;
+
+export type FullSheet = Prisma.SheetGetPayload<{
+  include: typeof SHEET_INCLUDE;
+}>;
 
 export type SheetWithUser = Prisma.SheetGetPayload<{
-  include: { user: true };
+  include: typeof SHEET_SUMMARY_INCLUDE;
 }>;
 
-export type ExtendedSheetWithUser = SheetWithUser & {
-  body: number;
-  spirit: number;
-  soul: number;
-  mai: number;
-  directBlow: number;
-  subtleBlow: number;
-  deadlyBlow: number;
-  parade: number;
-  dodge: number;
-  discretion: number;
-  care: number;
-  reflexion: number;
-  improvisation: number;
-  shooting: number;
-  integrity: number;
-  focus: number;
-  spell: number;
-  ritual: number;
-  feeling: number;
-  persuasion: number;
-  charm: number;
-  intimidation: number;
-  fraud: number;
-  belief: number;
-  resolution: number;
-  damage: number;
-  initiative: number;
-  impact: number;
-  impulsion: number;
-  conduction: number;
-  health: number;
-  healthThreshold: number;
-  stability: number;
-  stabilityThreshold: number;
-  radiance: number;
-  radianceThreshold: number;
-  spent_feel_xp: number;
-  spent_learn_xp: number;
-  spent_live_xp: number;
-};
+/* -------------------------------------------------------------------------- */
+/*                                 Catalogues                                 */
+/* -------------------------------------------------------------------------- */
 
-export type SpyreeWithPotential = Prisma.SpyreeGetPayload<{
-  include: {
-    potential: { include: { type: { include: { category: true } } } };
-  };
+export const SKILL_CATALOG_INCLUDE = {
+  prerequisites: { select: { id: true } },
+} satisfies Prisma.SkillInclude;
+
+export type CatalogSkill = Prisma.SkillGetPayload<{
+  include: typeof SKILL_CATALOG_INCLUDE;
 }>;
 
-export interface Schemas {
-  corpus: Corpus[];
-  spyree: SpyreeWithPotential[];
-  amee: Amee[];
-}
-
-export type ArmorWithProperties = Prisma.ArmorGetPayload<{
-  include: { properties: true };
+export type CatalogPotential = Prisma.PotentialGetPayload<{
+  include: typeof POTENTIAL_INCLUDE;
 }>;
 
-export type MeleeWeaponWithProperties = Prisma.MeleeWeaponGetPayload<{
-  include: { properties: true };
-}>;
-
-export type RangeWeaponWithProperties = Prisma.RangeWeaponGetPayload<{
-  include: { properties: true };
-}>;
-
-export interface Inventory {
-  armors: ArmorWithProperties[];
-  meleeWeapons: MeleeWeaponWithProperties[];
-  rangeWeapons: RangeWeaponWithProperties[];
-  items: Item[];
-  golems: Golem[];
-  spells: Spell[];
+export interface Catalog {
+  corpusTypes: Prisma.CorpusTypeGetPayload<object>[];
+  potentials: CatalogPotential[];
+  skills: CatalogSkill[];
+  properties: Prisma.PropertyGetPayload<object>[];
 }

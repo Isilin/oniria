@@ -1,17 +1,84 @@
-import { useSheet } from '@/lib/hooks/use-sheet';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
+'use client';
 
-const AvatarCard = ({ id }) => {
-  const { sheet } = useSheet(id);
+import { useSheet } from '@/lib/hooks/use-sheet';
+import EditIcon from '@mui/icons-material/Edit';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
+import { SyntheticEvent, useState } from 'react';
+
+const AvatarCard = ({ id }: { id: string }) => {
+  const { sheet, canEdit, update } = useSheet(id);
+  const [open, setOpen] = useState(false);
+
+  const handleSubmit = (e: SyntheticEvent<HTMLElement>) => {
+    e.preventDefault();
+    const url =
+      new FormData(e.currentTarget as HTMLFormElement)
+        .get('avatar')
+        ?.toString() ?? '';
+    update({ avatar: url.trim() || null });
+    setOpen(false);
+  };
 
   return (
     <Card>
       <CardMedia
         component="img"
         image={sheet.avatar || '/default.png'}
-        sx={{ width: '100%', height: 'auto' }}
+        alt={sheet.name ?? 'Avatar'}
+        sx={{
+          width: '100%',
+          height: 'auto',
+          maxHeight: 400,
+          objectFit: 'cover',
+        }}
       />
+      {canEdit && (
+        <CardActions>
+          <Button
+            size="small"
+            startIcon={<EditIcon />}
+            onClick={() => setOpen(true)}
+          >
+            Changer l&apos;image
+          </Button>
+        </CardActions>
+      )}
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        slotProps={{
+          paper: { component: 'form', onSubmit: handleSubmit },
+        }}
+      >
+        <DialogTitle>Image du personnage</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="avatar"
+            label="Adresse (URL) de l'image"
+            placeholder="https://…"
+            defaultValue={sheet.avatar ?? ''}
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Annuler</Button>
+          <Button type="submit">Enregistrer</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
