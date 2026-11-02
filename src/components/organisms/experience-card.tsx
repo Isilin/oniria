@@ -1,7 +1,7 @@
 'use client';
 
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { ALL_SCOPES, POOLS, SCOPE_BY_KEY, Scope } from '@/lib/rules/xp';
+import { ALL_SCOPES, POOLS, SCOPE_BY_KEY, Scope, sum } from '@/lib/rules/xp';
 import HistoryIcon from '@mui/icons-material/History';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import LockOpenIcon from '@mui/icons-material/LockOpenOutlined';
@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
+import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
 import XpGrantDialog from './xp-grant-dialog';
 import XpJournal from './xp-journal';
@@ -30,27 +31,6 @@ import XpResetDialog from './xp-reset-dialog';
 
 const scopeList = (scopes: Scope[]) =>
   scopes.map((s) => SCOPE_BY_KEY[s].label).join(', ');
-
-const Line = ({
-  label,
-  value,
-  strong,
-}: {
-  label: string;
-  value: number;
-  strong?: boolean;
-}) => (
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-    <Typography variant="body2">{label}</Typography>
-    <Typography
-      variant="body2"
-      sx={{ fontWeight: strong ? 'bold' : undefined }}
-      color={value < 0 ? 'error' : undefined}
-    >
-      {value}
-    </Typography>
-  </Box>
-);
 
 const ExperienceCard = ({ id }: { id: string }) => {
   const { sheet, xp, canEdit, isAdmin, validate, reset, grantXp, deleteGrant } =
@@ -66,6 +46,12 @@ const ExperienceCard = ({ id }: { id: string }) => {
   const due = xp.dues.reduce((t, d) => t + d.amount, 0);
   const missing = Object.values(xp.missingByScope).reduce((t, m) => t + m, 0);
   const { consistency } = xp;
+  const legend: XpBarPart[] = [
+    'spent',
+    ...(sum(xp.allocation.total) > 0 ? (['pending'] as const) : []),
+    'left',
+    ...(POOLS.some((p) => xp.left[p.key] < 0) ? (['negative'] as const) : []),
+  ];
   const mismatches = Object.entries(consistency.byScope).filter(
     ([, s]) => s.expected !== s.recorded,
   );
@@ -96,29 +82,21 @@ const ExperienceCard = ({ id }: { id: string }) => {
           />
         </Box>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {POOLS.map((pool) => (
             <Grid key={pool.key} size={{ xs: 12, sm: 4 }}>
-              <Typography variant="h5">{pool.label}</Typography>
-              <Typography
-                variant="caption"
-                color="textSecondary"
-                sx={{ display: 'block', mb: 1, minHeight: { sm: 40 } }}
-              >
-                {pool.description}
-              </Typography>
-              <Line label="Gagnée" value={xp.gained[pool.key]} />
-              <Line label="Dépensée" value={xp.spent[pool.key]} />
-              <Line label="Restante" value={xp.left[pool.key]} strong />
-              {draft && xp.allocation.total[pool.key] > 0 && (
-                <Line
-                  label="Après validation"
-                  value={xp.afterValidation[pool.key]}
-                />
-              )}
+              <XpBar
+                label={pool.label}
+                description={pool.description}
+                gained={xp.gained[pool.key]}
+                spent={xp.spent[pool.key]}
+                left={xp.left[pool.key]}
+                pending={xp.allocation.total[pool.key]}
+              />
             </Grid>
           ))}
         </Grid>
+        <XpBarLegend parts={legend} />
 
         {draft && (
           <Alert
