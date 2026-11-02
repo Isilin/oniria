@@ -1,0 +1,44 @@
+# Journal des versions
+
+Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et les
+numéros de version suivent [SemVer](https://semver.org/lang/fr/). À chaque
+version, mettre à jour `version` dans `package.json` et ajouter une section
+ici : le tag `vX.Y.Z` et la release GitHub sont créés automatiquement quand
+cette version arrive sur `main` (voir `.github/workflows/release.yml`).
+
+## [1.0.0] - non publiée
+
+Première version complète des fiches de personnages d'Oniria.
+
+### Ajouté
+
+- Fiches complètes reprenant les règles du tableur « Lunes d'Oniria » :
+  caractères et coût en XP, facultés et marges (bonus du Corpus), santé,
+  équilibre, éclat, Maï, protection et encombrement calculés.
+- Onglets Traits (innés et acquis), Schémas & Compétences (Corpus typé,
+  Spyrée et compétences choisies dans les catalogues de règles, avec
+  prérequis), Inventaire (armes, armures et leurs propriétés, objets),
+  sortilèges et golems.
+- Catalogues de règles : types de Corpus, potentiels de la Spyrée,
+  compétences générales, spyrales et martiales.
+- Tables de jeu : ajout et retrait de personnages, vue d'ensemble pour le MJ.
+- Connexion de test et personnages fictifs, réservés aux aperçus.
+- Migrations Prisma, avec vérification de la base avant toute modification.
+
+### Modifié
+
+- Node.js 26, Next.js 16, React 19, MUI 9, Prisma 7, Auth.js v5 (bêta 32).
+- Fiches en lecture seule pour les autres joueur·euses ; édition réservée à
+  la·au propriétaire et aux MJ.
+
+### Sécurité
+
+- Toute l'API exige une session ; whitelist et tables réservées aux MJ ;
+  champs modifiables filtrés côté serveur.
+- Le build Vercel ne modifie plus la base de données (il lançait
+  `prisma db push` à chaque déploiement, aperçus compris).
+
+## [0.1.0]
+
+Prototype : connexion Google, whitelist, création de fiches (caractères,
+facultés, existences, expériences, notes) et tables de jeu.
