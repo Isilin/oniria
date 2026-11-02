@@ -24,6 +24,8 @@ import {
   UndoRedo,
   type MDXEditorMethods,
 } from '@mdxeditor/editor';
+// Styles chargés avec l'éditeur (onglet Notes), et non sur toutes les pages.
+import '@mdxeditor/editor/style.css';
 import { useColorScheme } from '@mui/material/styles';
 import './styles.css';
 

@@ -4,6 +4,8 @@ import { Catalog } from '@/lib/db/sheet';
 import useSWR from 'swr';
 import fetcher, { request } from '../helpers/swr';
 
+export const CATALOG_URL = '/api/catalog';
+
 /** Catalogues de règles, chargés une fois et partagés par toute l'appli. */
 export const useCatalog = () => {
   const {
@@ -11,7 +13,7 @@ export const useCatalog = () => {
     error,
     isLoading,
     mutate,
-  } = useSWR<Catalog>('/api/catalog', fetcher, { revalidateOnFocus: false });
+  } = useSWR<Catalog>(CATALOG_URL, fetcher, { revalidateOnFocus: false });
 
   const createProperty = async (name: string) => {
     const property = await request<Catalog['properties'][number]>(

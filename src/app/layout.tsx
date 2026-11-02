@@ -1,6 +1,5 @@
 import Footer from '@/components/organisms/footer';
 import Header from '@/components/organisms/header';
-import '@mdxeditor/editor/style.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';

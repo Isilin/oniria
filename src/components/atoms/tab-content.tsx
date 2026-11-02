@@ -6,6 +6,10 @@ interface Props {
   active: boolean;
 }
 
+/**
+ * Seul l'onglet ouvert est rendu : une modification ne redessine que lui, et
+ * l'éditeur des Notes n'est chargé qu'à l'ouverture de son onglet.
+ */
 const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
   return (
     <Paper
@@ -23,7 +27,7 @@ const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
       }}
       variant="outlined"
     >
-      {children}
+      {active && children}
     </Paper>
   );
 };
