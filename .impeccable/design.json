@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T00:00:00Z",
+  "title": "Design System: Oniria",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Bleu Primaire", "canonical": "#90caf9", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#42a5f5", "#64b5f6", "#90caf9", "#e3f2fd"] },
+      "primary-clair": { "role": "primary", "displayName": "Bleu Primaire (Clair)", "canonical": "#1976d2", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#42a5f5", "#64b5f6", "#90caf9", "#e3f2fd"] },
+      "secondary": { "role": "secondary", "displayName": "Mauve Secondaire", "canonical": "#ce93d8", "tonalRamp": ["#4a148c", "#6a1b9a", "#7b1fa2", "#9c27b0", "#ab47bc", "#ba68c8", "#ce93d8", "#f3e5f5"] },
+      "secondary-clair": { "role": "secondary", "displayName": "Mauve Secondaire (Clair)", "canonical": "#9c27b0", "tonalRamp": ["#4a148c", "#6a1b9a", "#7b1fa2", "#9c27b0", "#ab47bc", "#ba68c8", "#ce93d8", "#f3e5f5"] },
+      "success": { "role": "tertiary", "displayName": "Vert Succès", "canonical": "#66bb6a", "tonalRamp": ["#1b5e20", "#2e7d32", "#388e3c", "#43a047", "#4caf50", "#66bb6a", "#81c784", "#c8e6c9"] },
+      "success-clair": { "role": "tertiary", "displayName": "Vert Succès (Clair)", "canonical": "#2e7d32", "tonalRamp": ["#1b5e20", "#2e7d32", "#388e3c", "#43a047", "#4caf50", "#66bb6a", "#81c784", "#c8e6c9"] },
+      "info": { "role": "tertiary", "displayName": "Bleu Info (Équilibre)", "canonical": "#29b6f6", "tonalRamp": ["#01579b", "#0277bd", "#0288d1", "#039be5", "#03a9f4", "#29b6f6", "#4fc3f7", "#b3e5fc"] },
+      "info-clair": { "role": "tertiary", "displayName": "Bleu Info (Clair)", "canonical": "#0288d1", "tonalRamp": ["#01579b", "#0277bd", "#0288d1", "#039be5", "#03a9f4", "#29b6f6", "#4fc3f7", "#b3e5fc"] },
+      "warning": { "role": "tertiary", "displayName": "Orange Avertissement (Éclat, non réglé)", "canonical": "#ffa726", "tonalRamp": ["#e65100", "#ef6c00", "#f57c00", "#fb8c00", "#ff9800", "#ffa726", "#ffb74d", "#ffe0b2"] },
+      "warning-clair": { "role": "tertiary", "displayName": "Orange Avertissement (Clair)", "canonical": "#ed6c02", "tonalRamp": ["#e65100", "#ed6c02", "#f57c00", "#fb8c00", "#ff9800", "#ffa726", "#ffb74d", "#ffe0b2"] },
+      "error": { "role": "tertiary", "displayName": "Rouge Erreur (Santé, destruction)", "canonical": "#f44336", "tonalRamp": ["#b71c1c", "#c62828", "#d32f2f", "#e53935", "#f44336", "#ef5350", "#e57373", "#ffcdd2"] },
+      "error-clair": { "role": "tertiary", "displayName": "Rouge Erreur (Clair)", "canonical": "#d32f2f", "tonalRamp": ["#b71c1c", "#c62828", "#d32f2f", "#e53935", "#f44336", "#ef5350", "#e57373", "#ffcdd2"] },
+      "on-primary": { "role": "neutral", "displayName": "Texte sur Bleu Primaire", "canonical": "rgba(0, 0, 0, 0.87)" },
+      "background": { "role": "neutral", "displayName": "Fond Sombre", "canonical": "#121212", "tonalRamp": ["#121212", "#1e1e1e", "#282828", "#2e2e2e", "#393939", "#616161", "#9e9e9e", "#f5f5f5"] },
+      "surface-raised": { "role": "neutral", "displayName": "Surface Relevée", "canonical": "#1e1e1e" },
+      "surface-dialog": { "role": "neutral", "displayName": "Surface Dialogue", "canonical": "#393939" },
+      "background-clair": { "role": "neutral", "displayName": "Fond Clair", "canonical": "#ffffff" },
+      "text-primary": { "role": "neutral", "displayName": "Texte Principal", "canonical": "#ffffff" },
+      "text-secondary": { "role": "neutral", "displayName": "Texte Secondaire", "canonical": "rgba(255, 255, 255, 0.7)" },
+      "text-disabled": { "role": "neutral", "displayName": "Texte Désactivé", "canonical": "rgba(255, 255, 255, 0.5)" },
+      "action-disabled": { "role": "neutral", "displayName": "Action Désactivée", "canonical": "rgba(255, 255, 255, 0.3)" },
+      "divider": { "role": "neutral", "displayName": "Séparateur", "canonical": "rgba(255, 255, 255, 0.12)" },
+      "table-rule": { "role": "neutral", "displayName": "Filet de Table", "canonical": "#515151" },
+      "input-outline": { "role": "neutral", "displayName": "Contour de Champ", "canonical": "rgba(255, 255, 255, 0.23)" },
+      "chip-fill": { "role": "neutral", "displayName": "Fond de Puce", "canonical": "rgba(255, 255, 255, 0.16)" },
+      "xp-left": { "role": "primary", "displayName": "XP Restante", "canonical": "rgba(144, 202, 249, 0.22)" },
+      "alert-success-bg": { "role": "neutral", "displayName": "Fond Alerte Succès", "canonical": "#0c130d" },
+      "alert-success-text": { "role": "neutral", "displayName": "Texte Alerte Succès", "canonical": "#cce8cd" },
+      "text-primary-clair": { "role": "neutral", "displayName": "Texte Principal (Clair)", "canonical": "rgba(0, 0, 0, 0.87)" },
+      "text-secondary-clair": { "role": "neutral", "displayName": "Texte Secondaire (Clair)", "canonical": "rgba(0, 0, 0, 0.6)" },
+      "divider-clair": { "role": "neutral", "displayName": "Séparateur (Clair)", "canonical": "rgba(0, 0, 0, 0.12)" },
+      "tooltip-bg": { "role": "neutral", "displayName": "Fond Infobulle", "canonical": "rgba(97, 97, 97, 0.92)" },
+      "on-dark-surface": { "role": "neutral", "displayName": "Texte sur Fond Coloré", "canonical": "#ffffff" },
+      "snackbar-info": { "role": "neutral", "displayName": "Info Notistack", "canonical": "#2196f3", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#2196f3", "#64b5f6", "#90caf9", "#e3f2fd"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (h1)", "purpose": "ONIRIA on home and admin pages." },
+      "display-sheet": { "displayName": "Display sheet (h1, 2.25rem below 900px)", "purpose": "Character and table names." },
+      "headline": { "displayName": "Headline (h3)", "purpose": "Admin page titles such as Tables de jeu." },
+      "title": { "displayName": "Title (h4)", "purpose": "Centred titles of computed cards; Mes fiches / Autres fiches." },
+      "subtitle": { "displayName": "Subtitle (h5)", "purpose": "Triad group headings (with derived value in italics and a scope lock) and left-aligned list-card titles." },
+      "dialog-title": { "displayName": "Dialog title (h6)", "purpose": "Creation and XP dialogs." },
+      "byline": { "displayName": "Byline (subtitle1)", "purpose": "Joueur·euse · Table · lecture seule line under the name." },
+      "body": { "displayName": "Body (body1)", "purpose": "Stat lines: Label : valeur / max." },
+      "body-small": { "displayName": "Body small (body2)", "purpose": "Table cells and toasts." },
+      "table-head": { "displayName": "Table head", "purpose": "Column headers of collection tables." },
+      "label": { "displayName": "Label (button)", "purpose": "Uppercase buttons and tabs." },
+      "label-small": { "displayName": "Label small", "purpose": "Small buttons: Ajouter…, Attribuer de l'XP, Changer l'image." },
+      "caption": { "displayName": "Caption", "purpose": "Exp. lines, XP category descriptions, legends, helper hints." },
+      "tooltip": { "displayName": "Tooltip", "purpose": "Rules text and formulas on dotted-underlined labels." }
+    },
+    "shadows": [
+      { "name": "elevation-1", "value": "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)", "purpose": "Cards and sheet cards; visible in Clair, nearly invisible in Sombre where the overlay does the work." },
+      { "name": "overlay-1", "value": "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))", "purpose": "Dark-mode background-image on elevation-1 surfaces (cards)." },
+      { "name": "overlay-24", "value": "linear-gradient(rgba(255, 255, 255, 0.165), rgba(255, 255, 255, 0.165))", "purpose": "Dark-mode background-image on dialogs." }
+    ],
+    "motion": [
+      { "name": "mui-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "MUI default easing for hover tints, tab indicator and input underline." },
+      { "name": "mui-short", "value": "250ms", "purpose": "Button hover/background transitions." },
+      { "name": "xp-bar-width", "value": "width 0.3s", "purpose": "XP bar segments resize smoothly when XP changes." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "600px" },
+      { "name": "md", "value": "900px" },
+      { "name": "lg", "value": "1200px" },
+      { "name": "xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Existences Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Computed card: centred Title, triad columns, editable values with a 4px gauge coloured by palette role (Santé error, Équilibre info, Éclat warning).",
+      "html": "<div class=\"ds-card\"><h4 class=\"ds-card-title\">Existences</h4><div class=\"ds-triad\"><div><p class=\"ds-field\"><span class=\"ds-field-label\">La Santé :</span> <span class=\"ds-field-value\" tabindex=\"0\">3</span> / 3</p><div class=\"ds-gauge ds-gauge-sante\"><span style=\"width:100%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 6</p></div><div><p class=\"ds-field\"><span class=\"ds-field-label\">L'Équilibre :</span> <span class=\"ds-field-value\" tabindex=\"0\">2</span> / 4</p><div class=\"ds-gauge ds-gauge-equilibre\"><span style=\"width:50%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 8</p></div><div><p class=\"ds-field\"><span class=\"ds-field-label\">L'Éclat :</span> <span class=\"ds-field-value\" tabindex=\"0\">4</span> / 4</p><div class=\"ds-gauge ds-gauge-eclat\"><span style=\"width:100%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 9</p></div></div></div>",
+      "css": ".ds-card { background-color: var(--mui-palette-background-paper, #121212); background-image: var(--mui-overlays-1, linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.05))); color: var(--mui-palette-text-primary, #fff); border-radius: 4px; padding: 16px 16px 24px; box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12); font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-card-title { margin: 0 0 8px; text-align: center; font-size: 2.125rem; font-weight: 400; line-height: 1.235; letter-spacing: 0.00735em; } .ds-triad { display: flex; flex-wrap: wrap; justify-content: space-evenly; gap: 32px; } .ds-field { margin: 0; font-size: 1rem; line-height: 1.5; letter-spacing: 0.00938em; } .ds-field-label { text-decoration: underline dotted; } .ds-field-value { cursor: pointer; border-bottom: 1px dashed transparent; } .ds-field-value:hover, .ds-field-value:focus-visible { border-bottom-color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); outline: none; } .ds-gauge { width: 140px; height: 4px; overflow: hidden; margin: 2px 0 8px; } .ds-gauge span { display: block; height: 100%; } .ds-gauge-sante { background: #7a211b; } .ds-gauge-sante span { background: var(--mui-palette-error-main, #f44336); } .ds-gauge-equilibre { background: #145b7b; } .ds-gauge-equilibre span { background: var(--mui-palette-info-main, #29b6f6); } .ds-gauge-eclat { background: #7f5313; } .ds-gauge-eclat span { background: var(--mui-palette-warning-main, #ffa726); }"
+    },
+    {
+      "name": "Sheet Field",
+      "kind": "custom",
+      "refersTo": "sheet-field-value-editable",
+      "description": "One stat line: dotted-underlined label with the rules tooltip, value with a faint 10px pencil, dashed underline on hover, optional / max.",
+      "html": "<p class=\"ds-sheet-field\"><span class=\"ds-sheet-field-label\" tabindex=\"0\" title=\"[Vig] L'endurance physique, la solidité du corps…\">Vigueur :</span> <span class=\"ds-sheet-field-value\" tabindex=\"0\">30 <svg viewBox=\"0 0 24 24\" width=\"10\" height=\"10\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z\"/></svg></span></p>",
+      "css": ".ds-sheet-field { margin: 0; display: flex; gap: 4px; font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 1rem; line-height: 1.5; letter-spacing: 0.00938em; color: var(--mui-palette-text-primary, #fff); } .ds-sheet-field-label { text-decoration: underline dotted; cursor: help; } .ds-sheet-field-value { cursor: pointer; border-bottom: 1px dashed transparent; } .ds-sheet-field-value svg { vertical-align: top; opacity: 0.6; } .ds-sheet-field-value:hover { border-bottom-color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); } .ds-sheet-field-value:focus-visible, .ds-sheet-field-label:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: 2px; }"
+    },
+    {
+      "name": "XP Bar",
+      "kind": "custom",
+      "refersTo": "xp-bar",
+      "description": "One XP category: Subtitle label, Total, caption of what it pays, 16px segmented bar (spent primary, pending hatched, left primary 22%) whose segments brighten on hover.",
+      "html": "<div class=\"ds-xp\"><div class=\"ds-xp-head\"><h5>Éprouver</h5><span>Total : <strong>180</strong></span></div><p class=\"ds-xp-desc\">Corps et Âme, compétences martiales et générales, le Corpus.</p><div class=\"ds-xp-bar\" role=\"group\" aria-label=\"Éprouver : total 180 XP\"><span class=\"ds-xp-spent\" tabindex=\"0\" title=\"Dépensée : 120 XP\" style=\"width:66%\"></span><span class=\"ds-xp-pending\" tabindex=\"0\" title=\"À payer à la validation : 20 XP\" style=\"width:11%\"></span><span class=\"ds-xp-left\" tabindex=\"0\" title=\"Restante : 40 XP\" style=\"width:23%\"></span></div></div>",
+      "css": ".ds-xp { width: 280px; font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-xp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } .ds-xp-head h5 { margin: 0; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-xp-desc { margin: 0 0 8px; font-size: 0.75rem; line-height: 1.66; letter-spacing: 0.03333em; color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); } .ds-xp-bar { display: flex; height: 16px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.08); } .ds-xp-bar span { min-width: 4px; cursor: help; transition: width 0.3s; } .ds-xp-bar span:hover, .ds-xp-bar span:focus-visible { filter: brightness(1.25); outline: none; } .ds-xp-spent { background: var(--mui-palette-primary-main, #90caf9); } .ds-xp-pending { background-image: repeating-linear-gradient(45deg, #90caf9 0 5px, rgba(144,202,249,0.4) 5px 10px); } .ds-xp-left { background: rgba(144, 202, 249, 0.22); }"
+    },
+    {
+      "name": "Scope Lock and Status Chip",
+      "kind": "chip",
+      "refersTo": "chip-status",
+      "description": "Settled state is neutral grey (closed lock, Validée); unsettled state is warning (open lock, En création).",
+      "html": "<div class=\"ds-locks\"><h5 class=\"ds-group\">Le Corps <em>(18)</em> <svg class=\"ds-lock-closed\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-label=\"Validé\"><path fill=\"currentColor\" d=\"M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9zm9 14H6V10h12zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2\"/></svg></h5><span class=\"ds-chip\">Validée</span><span class=\"ds-chip ds-chip-warning\">En création</span></div>",
+      "css": ".ds-locks { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-group { margin: 0; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-lock-closed { vertical-align: middle; margin-left: 4px; color: rgba(255, 255, 255, 0.3); } .ds-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 16px; font-size: 0.8125rem; background: rgba(255, 255, 255, 0.16); color: #fff; } .ds-chip-warning { background: var(--mui-palette-warning-main, #ffa726); color: rgba(0, 0, 0, 0.87); }"
+    },
+    {
+      "name": "Skill Degree Chips",
+      "kind": "chip",
+      "refersTo": "chip-degree",
+      "description": "Small outlined chips marking a skill's degree in the tree: Base primary, Principe secondary, Maîtrise/Technique success, Enchaînement warning.",
+      "html": "<div class=\"ds-degrees\"><span class=\"ds-degree ds-degree-base\">Base</span><span class=\"ds-degree ds-degree-principe\">Principe</span><span class=\"ds-degree ds-degree-maitrise\">Maîtrise</span><span class=\"ds-degree ds-degree-enchainement\">Enchaînement</span></div>",
+      "css": ".ds-degrees { display: flex; gap: 8px; flex-wrap: wrap; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-degree { display: inline-flex; align-items: center; height: 24px; padding: 0 7px; border-radius: 16px; font-size: 0.8125rem; background: transparent; border: 1px solid; } .ds-degree-base { color: #90caf9; border-color: rgba(144, 202, 249, 0.7); } .ds-degree-principe { color: #ce93d8; border-color: rgba(206, 147, 216, 0.7); } .ds-degree-maitrise { color: #66bb6a; border-color: rgba(102, 187, 106, 0.7); } .ds-degree-enchainement { color: #ffa726; border-color: rgba(255, 167, 38, 0.7); }"
+    },
+    {
+      "name": "Collection Table",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "List card: left-aligned Subtitle, small table with inline-edit cells and a delete icon, one-line empty state, + Ajouter… underneath.",
+      "html": "<div class=\"ds-list\"><h5 class=\"ds-list-title\">Objets</h5><table class=\"ds-table\"><thead><tr><th>Objet</th><th>Quantité</th><th aria-label=\"Actions\"></th></tr></thead><tbody><tr><td>Besace</td><td>1</td><td><button class=\"ds-icon-btn\" type=\"button\" aria-label=\"Supprimer\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM8 9h8v10H8zm7.5-5-1-1h-5l-1 1H5v2h14V4z\"/></svg></button></td></tr></tbody></table><button class=\"ds-add\" type=\"button\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg>Ajouter un objet</button></div>",
+      "css": ".ds-list { font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-list-title { margin: 0 0 8px; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 1.43; letter-spacing: 0.01071em; } .ds-table th { text-align: left; font-weight: 700; padding: 6px 16px; border-bottom: 1px solid #515151; } .ds-table td { padding: 6px 16px; border-bottom: 1px solid #515151; } .ds-icon-btn { display: inline-flex; padding: 5px; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; } .ds-icon-btn:hover { background: rgba(255, 255, 255, 0.08); } .ds-icon-btn:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); } .ds-add { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 4px 5px; border: 0; border-radius: 4px; background: transparent; color: var(--mui-palette-primary-main, #90caf9); font: inherit; font-size: 0.8125rem; font-weight: 500; line-height: 1.75; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-add:hover { background: rgba(144, 202, 249, 0.08); } .ds-add:focus-visible { outline: none; background: rgba(144, 202, 249, 0.12); }"
+    },
+    {
+      "name": "Dialog Actions",
+      "kind": "button",
+      "refersTo": "button-contained",
+      "description": "XP dialog footer: Annuler as text, confirming action contained primary; destructive confirmation uses error text instead.",
+      "html": "<div class=\"ds-actions\"><button class=\"ds-btn-text\" type=\"button\">Annuler</button><button class=\"ds-btn-contained\" type=\"button\">Attribuer</button><button class=\"ds-btn-error\" type=\"button\">Supprimer</button></div>",
+      "css": ".ds-actions { display: flex; gap: 8px; justify-content: flex-end; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-actions button { border: 0; border-radius: 4px; font: inherit; font-size: 0.875rem; font-weight: 500; line-height: 1.75; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-text { background: transparent; color: var(--mui-palette-primary-main, #90caf9); padding: 6px 8px; } .ds-btn-text:hover { background: rgba(144, 202, 249, 0.08); } .ds-btn-contained { background: var(--mui-palette-primary-main, #90caf9); color: rgba(0, 0, 0, 0.87); padding: 6px 16px; box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12); } .ds-btn-contained:hover { background: #42a5f5; } .ds-btn-error { background: transparent; color: var(--mui-palette-error-main, #f44336); padding: 6px 8px; } .ds-btn-error:hover { background: rgba(244, 67, 54, 0.08); } .ds-actions button:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: 2px; }"
+    },
+    {
+      "name": "Sheet Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Centred tabs of the sheet, active tab in Bleu Primaire with a 2px indicator; index mirrored in the URL hash.",
+      "html": "<nav class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab ds-tab-active\" role=\"tab\" aria-selected=\"true\">Caractéristiques</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Traits</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Schémas &amp; Compétences</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Inventaire</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Notes</button></nav>",
+      "css": ".ds-tabs { display: flex; justify-content: center; flex-wrap: wrap; } .ds-tab { background: transparent; border: 0; border-bottom: 2px solid transparent; min-height: 48px; padding: 12px 16px; color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1.25; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 300ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-tab:hover { color: var(--mui-palette-text-primary, #fff); } .ds-tab:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: -2px; } .ds-tab-active { color: var(--mui-palette-primary-main, #90caf9); border-bottom-color: var(--mui-palette-primary-main, #90caf9); }"
+    },
+    {
+      "name": "Outlined Picker",
+      "kind": "input",
+      "refersTo": "input-outlined",
+      "description": "Outlined 40px field used for catalogue pickers and dialog amounts, next to a small add button that is disabled until a choice is made.",
+      "html": "<div class=\"ds-picker\"><label class=\"ds-outlined\"><span>Potentiel à ajouter</span><input type=\"text\" placeholder=\"Potentiel à ajouter\"></label><button class=\"ds-add-disabled\" type=\"button\" disabled>+ Ajouter (10 XP)</button></div>",
+      "css": ".ds-picker { display: flex; align-items: center; gap: 12px; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-outlined { position: relative; display: inline-flex; } .ds-outlined span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .ds-outlined input { height: 40px; box-sizing: border-box; width: 280px; padding: 8.5px 14px; border: 1px solid rgba(255, 255, 255, 0.23); border-radius: 4px; background: transparent; color: var(--mui-palette-text-primary, #fff); font: inherit; font-size: 1rem; } .ds-outlined input:hover { border-color: var(--mui-palette-text-primary, #fff); } .ds-outlined input:focus-visible { outline: none; border: 2px solid var(--mui-palette-primary-main, #90caf9); padding: 7.5px 13px; } .ds-add-disabled { border: 0; background: transparent; padding: 4px 5px; color: rgba(255, 255, 255, 0.3); font: inherit; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02857em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Save Snackbar",
+      "kind": "custom",
+      "refersTo": "snackbar-info",
+      "description": "notistack info toast confirming every save, creation or deletion, in French past tense.",
+      "html": "<div class=\"ds-snackbar\" role=\"status\"><span>Notes sauvegardées.</span><button class=\"ds-snackbar-close\" type=\"button\" aria-label=\"Fermer\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></button></div>",
+      "css": ".ds-snackbar { display: inline-flex; align-items: center; gap: 8px; min-width: 288px; padding: 6px 16px; border-radius: 4px; background-color: #2196f3; color: #fff; font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 0.875rem; line-height: 1.43; letter-spacing: 0.01071em; box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12); } .ds-snackbar span { flex: 1; padding: 8px 0; } .ds-snackbar-close { display: inline-flex; background: transparent; border: 0; color: inherit; border-radius: 4px; padding: 4px; cursor: pointer; } .ds-snackbar-close:hover { background-color: rgba(255,255,255,0.12); } .ds-snackbar-close:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Fiche Immersive",
+    "overview": "The sheet should be immersive, customisable and alive. It should feel like being inside the character, not like filling in a form. Everything visible today is a provisional base: Material UI v9 with its default theme, dark by default. It's documented here so that new screens stay consistent until Oniria gets its own identity. When that identity arrives, it goes through the theme (createTheme in src/app/providers.tsx), not through one-off overrides scattered across components.\n\nThe confirmed feel is feutré et immersif, avec une dose de vivant et réactif (muted and immersive, with a touch of lively and reactive). Surfaces stay calm, dark and low-contrast at rest. The liveliness shows up when you interact: each segment of an XP bar brightens on hover and gives its value in a tooltip; a lock tells you whether a part of the sheet is frozen or still free; editable values reveal a dashed underline; every save is answered with a toast.\n\nThe game's structure organises the screen. Computed groups (Caractères, Facultés, Existences, Expérience) are cards with a large centred title. Inside them, the game's triads (Corps / Esprit / Âme, Chair / Pensée / Lien, Santé / Équilibre / Éclat, Éprouver / Apprendre / Vivre) sit in three columns. Lists the player maintains (traits, Corpus, weapons, objects) are compact tables with a left-aligned title and an \"Ajouter…\" button underneath. Game meanings are carried by MUI's six semantic palette roles, never by custom colours.",
+    "keyCharacteristics": [
+      "Stock MUI v9 theme with CSS variables; dark (\"Sombre\") by default, plus \"Clair\" and \"Système\" modes chosen by the player.",
+      "Single centred column up to 1400px wide. Tab panels stack below 900px and sit side by side above it.",
+      "Typographic hierarchy that mirrors the game: section card → triad group or list → stat line.",
+      "Quiet editing: values look like plain text with a faint pencil, are saved on Enter or blur, and cancelled with Escape.",
+      "Game states expressed through the palette roles (error, info, warning, success, secondary) and the lock.",
+      "Depth in dark mode comes from MUI's white overlays, not from shadows."
+    ],
+    "rules": [
+      { "name": "The Palette-Role Rule", "body": "Game meanings use only the theme's semantic roles (error, info, warning, success, secondary, primary), written as color=\"warning\" or 'error.main', never as a hex value. This is what keeps Santé, Équilibre and Éclat correct in Clair mode (#d32f2f, #0288d1, #ed6c02) without extra code.", "section": "colors" },
+      { "name": "The Warning-Means-Unsettled Rule", "body": "Apart from the Éclat gauge, orange always means \"not settled yet\": free to change, waiting for validation, or about to cost something irreversible. A validated, settled state is neutral grey (the closed lock, the \"Validée\" chip).", "section": "colors" },
+      { "name": "The Game Hierarchy Rule", "body": "Typographic roles follow the game, not the page: a centred Title = a computed section of the sheet; a Subtitle = a triad group, or a list the player maintains; Body = one stat. Don't use Title or Subtitle for anything else.", "section": "typography" },
+      { "name": "The Overlay-Not-Shadow Rule", "body": "In dark mode, convey depth through elevation (which drives the overlay), never through custom shadows or hand-picked greys. A hard-coded #1e1e1e card is correct in Sombre and wrong in Clair.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do take every colour, radius and space from the MUI theme (theme.vars.palette.*, theme.spacing, shape.borderRadius 4px). The base is provisional, so the theme is the single place where Oniria's identity will be set.",
+      "Do reuse the established game mappings: Santé error, Équilibre info, Éclat warning; skill degrees Base primary, Principe secondary, Maîtrise and Technique success, Enchaînement warning; history entries Attribution success, Dépense primary, Remboursement info, XP perdue warning, Offert secondary.",
+      "Do mark anything unsettled (free to change, waiting for validation, about to cost XP irreversibly) with warning, and settled states with neutral grey.",
+      "Do check every new screen in Sombre, Clair and Système, and at mobile width, where tab panels stack and triads wrap.",
+      "Do keep the Label : valeur / max stat line, attach rules text and formulas as a tooltip on a dotted-underlined label, and show the XP cost in the label of any button that spends it.",
+      "Do build new lists with CollectionTable (small table, inline-edit cells, delete icon, \"+ Ajouter…\" underneath, a one-line empty state), and let wide tables scroll inside their card.",
+      "Do keep surfaces calm at rest and put the liveliness in interaction: hover, focus, edit, save, and tooltips that reveal values."
+    ],
+    "donts": [
+      "Don't treat stock MUI as Oniria's identity, and don't polish it piece by piece. It is a confirmed provisional base, and the identity will be defined as a whole, in the theme.",
+      "Don't hard-code white, black, rgba(255,255,255,…) or hex values in components. They break Clair mode. LoadingButton still does this.",
+      "Don't introduce a new colour for a game meaning. Map it to an existing palette role, or wait for the theme-level identity.",
+      "Don't let a player spend or lose XP without a dialog that shows the split, or delete anything without a confirmation that names the consequence.",
+      "Don't rely on Roboto's or Inter's metrics until the font stack is fixed in the theme."
+    ]
+  }
+}
