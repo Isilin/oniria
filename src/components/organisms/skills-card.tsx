@@ -180,7 +180,9 @@ const SkillNode = ({
         open={confirm}
         onClose={() => setConfirm(false)}
         onValidated={() => onDelete(owned)}
-        message={`Retirer « ${name} » de la fiche ?`}
+        title={`Retirer « ${name} » ?`}
+        message="La compétence est retirée de la fiche."
+        confirmLabel="Retirer"
       />
       {kids.map((child) => (
         <SkillNode

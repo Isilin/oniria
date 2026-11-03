@@ -33,7 +33,23 @@ interface Props {
   /** Contenu ajouté (ex. choix des personnages d'une table). */
   children?: ReactNode;
   disabled?: boolean;
+  /** Propose le raccourci « Création » : seulement pour une fiche en création. */
+  creationShortcut?: boolean;
+  /** Nombre de personnages concernés, repris dans le bouton (table). */
+  recipients?: number;
 }
+
+/** Le bouton dit ce qu'il fait : « Attribuer 30 XP à 2 personnages ». */
+const submitLabel = (amounts: Amounts, recipients?: number) => {
+  const total = amounts.feel + amounts.learn + amounts.live;
+  const verb = total < 0 ? 'Retirer' : 'Attribuer';
+  const xp = total === 0 ? '' : ` ${Math.abs(total)} XP`;
+  const who =
+    recipients === undefined
+      ? ''
+      : ` à ${recipients} personnage${recipients > 1 ? 's' : ''}`;
+  return `${verb}${xp}${who}`;
+};
 
 /** MJ : attribuer de l'XP (ou en retirer, avec des montants négatifs). */
 const XpGrantDialog = ({
@@ -43,6 +59,8 @@ const XpGrantDialog = ({
   title = "Attribuer de l'expérience",
   children,
   disabled,
+  creationShortcut = false,
+  recipients,
 }: Props) => {
   const [label, setLabel] = useState(`Session du ${today()}`);
   const [amounts, setAmounts] = useState<Amounts>(zero());
@@ -67,15 +85,17 @@ const XpGrantDialog = ({
         <DialogContentText variant="body2">
           Un montant négatif retire de l&apos;XP.
         </DialogContentText>
-        <Box sx={{ display: 'flex', gap: 1, my: 1, flexWrap: 'wrap' }}>
-          <Chip
-            label={`Création : ${CREATION_XP} Vivre`}
-            onClick={() => {
-              setLabel('Création');
-              setAmounts({ feel: 0, learn: 0, live: CREATION_XP });
-            }}
-          />
-        </Box>
+        {creationShortcut && (
+          <Box sx={{ display: 'flex', gap: 1, my: 1, flexWrap: 'wrap' }}>
+            <Chip
+              label={`Création : ${CREATION_XP} Vivre`}
+              onClick={() => {
+                setLabel('Création');
+                setAmounts({ feel: 0, learn: 0, live: CREATION_XP });
+              }}
+            />
+          </Box>
+        )}
         <TextField
           label="Libellé"
           value={label}
@@ -96,7 +116,11 @@ const XpGrantDialog = ({
           onClick={submit}
           disabled={loading || empty || disabled}
         >
-          {loading ? <CircularProgress size={20} /> : 'Attribuer'}
+          {loading ? (
+            <CircularProgress size={20} />
+          ) : (
+            submitLabel(amounts, recipients)
+          )}
         </Button>
       </DialogActions>
     </Dialog>

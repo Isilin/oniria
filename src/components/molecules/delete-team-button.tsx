@@ -1,17 +1,17 @@
 'use client';
 
 import { useTeam } from '@/lib/hooks/use-team';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSWRConfig } from 'swr';
 import DeleteConfirmation from './_shared/delete-confirmation';
+import MoreActions from './_shared/more-actions';
 
 const DeleteTeamButton = ({ id }: { id: string }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const { deleteTeam } = useTeam(id);
+  const { team, deleteTeam } = useTeam(id);
   const [open, setOpen] = useState(false);
 
   const handleClick = async () => {
@@ -23,18 +23,24 @@ const DeleteTeamButton = ({ id }: { id: string }) => {
 
   return (
     <>
-      <Button
-        color="error"
-        startIcon={<DeleteIcon />}
-        onClick={() => setOpen(true)}
-      >
-        Supprimer la table
-      </Button>
+      <MoreActions
+        label="Actions sur la table"
+        actions={[
+          {
+            label: 'Supprimer la table…',
+            icon: <DeleteIcon fontSize="small" />,
+            danger: true,
+            onClick: () => setOpen(true),
+          },
+        ]}
+      />
       <DeleteConfirmation
         open={open}
         onClose={() => setOpen(false)}
         onValidated={handleClick}
-        message="Supprimer cette table de jeu ? Les fiches des personnages sont conservées."
+        title={`Supprimer la table « ${team?.name ?? ''} » ?`}
+        message="Les fiches des personnages sont conservées ; seule la table disparaît."
+        confirmLabel="Supprimer la table"
       />
     </>
   );

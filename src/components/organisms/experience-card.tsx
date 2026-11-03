@@ -180,13 +180,16 @@ const ExperienceCard = ({ id }: { id: string }) => {
               <Button size="small" onClick={() => setGrantOpen(true)}>
                 Attribuer de l&apos;XP
               </Button>
-              <Button
-                size="small"
-                color="warning"
-                onClick={() => setResetOpen(true)}
-              >
-                Accorder un reset
-              </Button>
+              {/* En création, tout se modifie déjà librement : rien à remettre à zéro. */}
+              {!creation && (
+                <Button
+                  size="small"
+                  color="warning"
+                  onClick={() => setResetOpen(true)}
+                >
+                  Accorder un reset
+                </Button>
+              )}
             </>
           )}
           <Button
@@ -238,6 +241,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
             open={grantOpen}
             onClose={() => setGrantOpen(false)}
             onSubmit={grantXp}
+            creationShortcut={creation}
           />
           <XpResetDialog
             open={resetOpen}

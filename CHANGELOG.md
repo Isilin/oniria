@@ -44,12 +44,24 @@ Première version complète des fiches de personnages d'Oniria.
   l'écriture ajoutée au journal, sans recharger la fiche ; les pages
   arrivent avec leurs données ; seul l'onglet ouvert est affiché et
   l'éditeur des Notes n'est chargé qu'à son ouverture.
+- Whitelist : adresses affichées en entier et en lecture seule, correction
+  explicite (« Modifier », Entrée, Échap), ajout libellé, confirmation qui
+  nomme l'adresse retirée.
+- Les confirmations de suppression nomment ce qui disparaît (fiche, table,
+  adresse) et ce qui est conservé ; supprimer une fiche ou une table passe
+  par le menu « ⋯ », loin du bouton retour.
+- Attribution d'XP : le raccourci « Création : 700 Vivre » n'est proposé que
+  pour une fiche en création, le bouton dit ce qu'il fait (« Attribuer 30 XP
+  à 2 personnages ») et « Accorder un reset » disparaît d'une fiche encore
+  en création.
 
 ### Corrigé
 
 - Une modification pouvait disparaître de l'écran quand un autre
   enregistrement se terminait juste après (ex. modifier un objet puis
   cliquer aussitôt sur « Ajouter »).
+- Corriger une adresse de la whitelist ne faisait rien (la route `PATCH`
+  n'existait pas) ; un ajout refusé par le serveur s'affichait comme réussi.
 
 ### Sécurité
 
