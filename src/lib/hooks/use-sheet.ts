@@ -11,6 +11,7 @@ import {
   spyreeChange,
   suggestRefund,
   XpChange,
+  XpSummary,
   xpSummary,
 } from '@/lib/rules/xp';
 import { CollectionKey, STAT_KEYS } from '@/lib/sheet/fields';
@@ -48,9 +49,6 @@ export type CollectionItem<K extends CollectionKey> = FullSheet[K][number];
 export type ItemPatch<K extends CollectionKey> =
   Partial<CollectionItem<K>> | Record<string, unknown>;
 
-/** Listes dont les changements coûtent de l'XP. */
-const XP_COLLECTIONS: CollectionKey[] = ['skills', 'corpus', 'spyree'];
-
 /** Paiement envoyé à l'API (`xp`), ou null si l'utilisateur·ice annule. */
 type Paid = { xp?: Record<string, unknown> } | null;
 
@@ -59,6 +57,22 @@ const toWire = (answer: XpAnswer) =>
 
 type Fields = Record<string, unknown>;
 type Item = { id: string } & Fields;
+type Entry = FullSheet['xpEntries'][number];
+
+/**
+ * Quand une écriture coûte ou rend de l'XP (achat, remboursement…), le
+ * serveur renvoie avec sa réponse l'écriture ajoutée au journal : inutile de
+ * recharger la fiche.
+ */
+const splitEntry = (saved: Fields | null) => {
+  const { xpEntry, ...rest } = (saved ?? {}) as Fields & { xpEntry?: Entry };
+  return { entry: xpEntry, rest: rest as Fields };
+};
+
+const withEntry = (current: FullSheet, entry?: Entry): FullSheet =>
+  entry && !current.xpEntries.some((e) => e.id === entry.id)
+    ? { ...current, xpEntries: [...current.xpEntries, entry] }
+    : current;
 
 /** Les listes d'identifiants ne sont pas appliquées en optimiste. */
 const scalarPart = (patch: Fields) =>
@@ -86,15 +100,15 @@ const confirmed = (saved: Fields, patch: Fields) =>
  * Valeurs calculées, partagées par toutes les cartes de la fiche : calculées
  * une seule fois par version de la fiche.
  */
-const computedCache = new WeakMap<FullSheet, ComputedSheet>();
-const computeOnce = (sheet: FullSheet) => {
-  let computed = computedCache.get(sheet);
-  if (!computed) {
-    computed = computeSheet(sheet);
-    computedCache.set(sheet, computed);
-  }
-  return computed;
+const once = <T>(compute: (sheet: FullSheet) => T) => {
+  const cache = new WeakMap<FullSheet, T>();
+  return (sheet: FullSheet) => {
+    if (!cache.has(sheet)) cache.set(sheet, compute(sheet));
+    return cache.get(sheet) as T;
+  };
 };
+const computeOnce = once<ComputedSheet>(computeSheet);
+const summarizeOnce = once<XpSummary>(xpSummary);
 
 export const useSheet = (id: string) => {
   const url = `/api/sheets/${id}`;
@@ -111,7 +125,7 @@ export const useSheet = (id: string) => {
   const dialogs = useXpDialogs();
 
   const computed = useMemo(() => (sheet ? computeOnce(sheet) : null), [sheet]);
-  const xp = useMemo(() => (sheet ? xpSummary(sheet) : null), [sheet]);
+  const xp = useMemo(() => (sheet ? summarizeOnce(sheet) : null), [sheet]);
 
   const isAdmin = session?.user?.role === 'ADMIN';
   const canEdit =
@@ -214,11 +228,12 @@ export const useSheet = (id: string) => {
         return { ...current, ...patch };
       });
       try {
-        const saved = await request<Fields>('PATCH', url, {
-          ...patch,
-          ...paid,
-        });
-        await apply((current) => ({ ...current, ...confirmed(saved, patch) }));
+        const { entry, rest } = splitEntry(
+          await request<Fields>('PATCH', url, { ...patch, ...paid }),
+        );
+        await apply((current) =>
+          withEntry({ ...current, ...confirmed(rest, patch) }, entry),
+        );
         return true;
       } catch (e) {
         await fail(e, (current) => ({ ...current, ...previous }));
@@ -283,24 +298,23 @@ export const useSheet = (id: string) => {
       );
       if (!paid) return null;
       try {
-        const created = await request<CollectionItem<K>>(
-          'POST',
-          `${url}/${collection}`,
-          { ...data, ...paid },
-        );
+        const saved = await request<Fields>('POST', `${url}/${collection}`, {
+          ...data,
+          ...paid,
+        });
+        const { entry, rest } = splitEntry(saved);
+        const created = rest as CollectionItem<K>;
         await apply((current) => ({
-          ...current,
+          ...withEntry(current, entry),
           [collection]: [...current[collection], created],
         }));
-        // Le journal d'XP a changé : on recharge la fiche.
-        if (XP_COLLECTIONS.includes(collection)) await mutate();
         return created;
       } catch (e) {
         notifyError(e);
         return null;
       }
     },
-    [apply, changeForNew, mutate, notifyError, payFor, url],
+    [apply, changeForNew, notifyError, payFor, url],
   );
 
   const updateItem = useCallback(
@@ -347,9 +361,10 @@ export const useSheet = (id: string) => {
           `${url}/${collection}/${itemId}`,
           { ...fields, ...paid },
         );
-        await apply(replace(() => confirmed(saved, fields)));
-        // Le journal d'XP a changé : on recharge la fiche.
-        if (spyree) await mutate();
+        const { entry, rest } = splitEntry(saved);
+        await apply((current) =>
+          withEntry(replace(() => confirmed(rest, fields))(current), entry),
+        );
         return true;
       } catch (e) {
         await fail(
@@ -359,7 +374,7 @@ export const useSheet = (id: string) => {
         return false;
       }
     },
-    [apply, fail, mutate, payFor, sheet, url],
+    [apply, fail, payFor, sheet, url],
   );
 
   const deleteItem = useCallback(
@@ -378,9 +393,12 @@ export const useSheet = (id: string) => {
         };
       });
       try {
-        await request('DELETE', `${url}/${collection}/${itemId}${query}`);
-        // Le journal d'XP a changé : on recharge la fiche.
-        if (XP_COLLECTIONS.includes(collection)) await mutate();
+        const saved = await request<Fields | null>(
+          'DELETE',
+          `${url}/${collection}/${itemId}${query}`,
+        );
+        const { entry } = splitEntry(saved);
+        if (entry) await apply((current) => withEntry(current, entry));
         return true;
       } catch (e) {
         await fail(e, (current) => {
@@ -392,19 +410,22 @@ export const useSheet = (id: string) => {
         return false;
       }
     },
-    [apply, changeForRemoval, fail, mutate, payFor, url],
+    [apply, changeForRemoval, fail, payFor, url],
   );
 
-  /** Actions d'XP qui renvoient la fiche à jour. */
+  /**
+   * Actions d'XP : elles renvoient seulement ce qu'elles changent (parties
+   * débloquées et journal).
+   */
   const xpAction = useCallback(
     async (path: string, body?: unknown, success?: string) => {
       try {
-        const updated = await request<FullSheet>(
+        const state = await request<Pick<FullSheet, 'unlocked' | 'xpEntries'>>(
           'POST',
           `${url}/xp${path}`,
           body,
         );
-        await apply(() => updated);
+        await apply((current) => ({ ...current, ...state }));
         if (success) enqueueSnackbar(success, { variant: 'success' });
         return true;
       } catch (e) {
@@ -415,18 +436,36 @@ export const useSheet = (id: string) => {
     [apply, url, notifyError, enqueueSnackbar],
   );
 
+  /** MJ : retire une attribution (tout de suite à l'écran). */
   const deleteGrant = useCallback(
     async (entryId: string) => {
+      let removed: { entry: Entry; index: number } | null = null;
+      await apply((current) => {
+        const index = current.xpEntries.findIndex((e) => e.id === entryId);
+        if (index >= 0) removed = { entry: current.xpEntries[index], index };
+        return {
+          ...current,
+          xpEntries: current.xpEntries.filter((e) => e.id !== entryId),
+        };
+      });
       try {
         await request('DELETE', `${url}/xp/${entryId}`);
-        await mutate();
         return true;
       } catch (e) {
-        notifyError(e);
+        await fail(e, (current) => {
+          if (!removed) return current;
+          const xpEntries = [...current.xpEntries];
+          xpEntries.splice(
+            Math.min(removed.index, xpEntries.length),
+            0,
+            removed.entry,
+          );
+          return { ...current, xpEntries };
+        });
         return false;
       }
     },
-    [mutate, url, notifyError],
+    [apply, fail, url],
   );
 
   const deleteSheet = useCallback(async () => {

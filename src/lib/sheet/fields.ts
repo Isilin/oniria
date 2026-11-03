@@ -172,6 +172,13 @@ export type CollectionKey = keyof typeof COLLECTIONS;
 export const isCollection = (key: string): key is CollectionKey =>
   Object.prototype.hasOwnProperty.call(COLLECTIONS, key);
 
+/** Listes dont les ajouts et retraits coûtent (ou rendent) de l'XP. */
+export const XP_COLLECTIONS: readonly CollectionKey[] = [
+  'skills',
+  'corpus',
+  'spyree',
+];
+
 export class ValidationError extends Error {}
 
 const coerce = (key: string, spec: FieldSpec, value: unknown) => {

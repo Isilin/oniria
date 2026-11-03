@@ -15,6 +15,7 @@ import {
   CollectionKey,
   isCollection,
   sanitizeFields,
+  XP_COLLECTIONS,
 } from '@/lib/sheet/fields';
 import { Prisma } from '@prisma/client';
 import {
@@ -147,6 +148,30 @@ const checkLevel = (level: unknown) => {
   return level;
 };
 
+/**
+ * Une écriture qui peut coûter ou rendre de l'XP passe par une transaction
+ * qui verrouille la fiche (deux achats simultanés…). Les autres (inventaire,
+ * traits, détail d'une compétence…) s'en passent : moins d'allers-retours.
+ */
+const onSheet = <T>(
+  sheetId: string,
+  xp: boolean,
+  fn: (db: Tx) => Promise<T>,
+): Promise<T> =>
+  xp
+    ? prisma.$transaction(async (tx) => {
+        await lockSheet(tx, sheetId);
+        return fn(tx);
+      })
+    : fn(prisma);
+
+/**
+ * L'écriture ajoutée au journal d'XP (achat, remboursement…), jointe à la
+ * réponse : le client l'ajoute sans recharger la fiche.
+ */
+const withEntry = <T extends object>(result: T, xpEntry: unknown) =>
+  xpEntry ? { ...result, xpEntry } : result;
+
 const charge = (
   tx: Tx,
   sheetId: string,
@@ -165,13 +190,12 @@ export const createItem = async (
   body: unknown,
   actor: Actor,
 ) => {
-  const { fields } = collectionOf(key);
+  const { key: collection, fields } = collectionOf(key);
   const data = sanitizeFields(fields, body);
   const payload = readXpPayload(body);
 
-  return prisma.$transaction(async (tx) => {
-    await lockSheet(tx, sheetId);
-    const { key: collection, include, delegate } = collectionOf(key, tx);
+  return onSheet(sheetId, XP_COLLECTIONS.includes(collection), async (tx) => {
+    const { include, delegate } = collectionOf(key, tx);
     let change: XpChange | null = null;
 
     if (collection === 'skills') {
@@ -209,8 +233,8 @@ export const createItem = async (
         : collection === 'spyree'
           ? spyreeTarget(item.id)
           : CORPUS_TARGET;
-    await charge(tx, sheetId, change, target, actor, payload);
-    return item;
+    const charged = await charge(tx, sheetId, change, target, actor, payload);
+    return withEntry(item, charged);
   });
 };
 
@@ -221,13 +245,15 @@ export const updateItem = async (
   body: unknown,
   actor: Actor,
 ) => {
-  const { fields } = collectionOf(key);
+  const { key: collection, fields } = collectionOf(key);
   const data = sanitizeFields(fields, body);
   const payload = readXpPayload(body);
+  // Seul le rang d'un potentiel coûte de l'XP.
+  const levelChange = collection === 'spyree' && 'level' in data;
 
-  return prisma.$transaction(async (tx) => {
-    await lockSheet(tx, sheetId);
-    const { key: collection, include, delegate } = collectionOf(key, tx);
+  return onSheet(sheetId, levelChange, async (tx) => {
+    const { include, delegate } = collectionOf(key, tx);
+    let charged: unknown = null;
 
     if (collection === 'skills') {
       // On ne change pas la compétence elle-même, seulement son détail.
@@ -256,14 +282,14 @@ export const updateItem = async (
     if (collection === 'spyree') {
       // Le potentiel ne change pas : on en ajoute un autre.
       delete data.potentialId;
-      if ('level' in data) {
+      if (levelChange) {
         const current = await tx.spyree.findFirst({
           where: { id: itemId, sheetId },
           include: { potential: true },
         });
         if (!current) throw new HttpError(404, NOT_FOUND);
         const level = checkLevel(data.level);
-        await charge(
+        charged = await charge(
           tx,
           sheetId,
           spyreeChange(current.potential.name, current.level, level, itemId),
@@ -275,13 +301,14 @@ export const updateItem = async (
     }
     toPropertiesRelation(data, 'set');
 
-    return delegate
+    const item = await delegate
       .update({
         where: { id: itemId, sheetId },
         data,
         ...(include ? { include } : {}),
       } as { where: ItemWhere; data: Record<string, unknown> })
       .catch(notFound);
+    return withEntry(item as object, charged);
   });
 };
 
@@ -291,10 +318,11 @@ export const deleteItem = async (
   itemId: string,
   actor: Actor,
   payload: XpPayload,
-) =>
-  prisma.$transaction(async (tx) => {
-    await lockSheet(tx, sheetId);
-    const { key: collection, delegate } = collectionOf(key, tx);
+) => {
+  const { key: collection } = collectionOf(key);
+  return onSheet(sheetId, XP_COLLECTIONS.includes(collection), async (tx) => {
+    const { delegate } = collectionOf(key, tx);
+    let charged: unknown = null;
 
     if (collection === 'skills') {
       // On ne retire pas une compétence dont dépendent d'autres compétences.
@@ -315,7 +343,7 @@ export const deleteItem = async (
             .join(', ')}.`,
         );
       }
-      await charge(
+      charged = await charge(
         tx,
         sheetId,
         skillChange(sheetSkill.skill, true, itemId),
@@ -327,7 +355,7 @@ export const deleteItem = async (
     if (collection === 'corpus') {
       // Si l'aspect n'est pas sur la fiche, la suppression échoue et
       // l'écriture d'XP est annulée avec la transaction.
-      await charge(
+      charged = await charge(
         tx,
         sheetId,
         corpusChange(await tx.corpus.count({ where: { sheetId } }), true),
@@ -342,7 +370,7 @@ export const deleteItem = async (
         include: { potential: true },
       });
       if (!spyree) throw new HttpError(404, NOT_FOUND);
-      await charge(
+      charged = await charge(
         tx,
         sheetId,
         spyreeChange(spyree.potential.name, spyree.level, 0, itemId),
@@ -353,4 +381,6 @@ export const deleteItem = async (
     }
 
     await delegate.delete({ where: { id: itemId, sheetId } }).catch(notFound);
+    return charged ? { xpEntry: charged } : null;
   });
+};

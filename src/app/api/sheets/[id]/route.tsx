@@ -1,5 +1,4 @@
 import prisma from '@/lib/db/prisma';
-import { XP_ENTRIES_ARGS } from '@/lib/db/sheet';
 import { CharacteristicKey } from '@/lib/rules';
 import {
   CHARACTERISTIC_MAX,
@@ -35,8 +34,7 @@ export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
  * paiement est dans `xp`.
  *
  * Renvoie seulement les champs de la fiche (pas ses listes) : le client les
- * fusionne avec ce qu'il a déjà. Le journal d'XP n'est joint que s'il a
- * changé.
+ * fusionne avec ce qu'il a déjà, plus l'écriture d'XP s'il y en a une.
  */
 export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
@@ -61,6 +59,11 @@ export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
       }
     }
 
+    // Sans caractéristique, rien ne coûte d'XP : ni transaction ni verrou.
+    if (!STAT_KEYS.some((key) => key in data)) {
+      return prisma.sheet.update({ where: { id: params.id }, data });
+    }
+
     return prisma.$transaction(async (tx) => {
       await lockSheet(tx, params.id);
       const current = await tx.sheet.findUnique({ where: { id: params.id } });
@@ -82,22 +85,19 @@ export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
           'Une seule caractéristique validée à la fois : chacune est un achat.',
         );
       }
-      for (const change of changes) {
-        await chargeChange(
-          tx,
-          params.id,
-          { ...change, target: change.target! },
-          user,
-          payload,
-        );
-      }
+      const [change] = changes;
+      const xpEntry = change
+        ? await chargeChange(
+            tx,
+            params.id,
+            { ...change, target: change.target! },
+            user,
+            payload,
+          )
+        : null;
       const sheet = await tx.sheet.update({ where: { id: params.id }, data });
-      if (changes.length === 0) return sheet;
-      const xpEntries = await tx.xpEntry.findMany({
-        where: { sheetId: params.id },
-        ...XP_ENTRIES_ARGS,
-      });
-      return { ...sheet, xpEntries };
+      // L'écriture ajoutée au journal, que le client ajoute à la suite.
+      return xpEntry ? { ...sheet, xpEntry } : sheet;
     });
   });
 

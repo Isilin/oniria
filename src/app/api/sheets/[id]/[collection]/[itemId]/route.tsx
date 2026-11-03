@@ -24,8 +24,8 @@ export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
     const { user } = await requireSheetEditor(params.id);
-    await deleteItem(params.id, params.collection, params.itemId, user, {
+    // L'écriture d'XP s'il y en a une (remboursement, perte), sinon null.
+    return deleteItem(params.id, params.collection, params.itemId, user, {
       refund: req.nextUrl.searchParams.get('refund') !== 'false',
     });
-    return null;
   });

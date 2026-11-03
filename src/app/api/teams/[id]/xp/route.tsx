@@ -12,13 +12,16 @@ type Params = { params: Promise<{ id: string }> };
 export const POST = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
-    const user = await requireAdmin();
+    // Droits et membres de la table lus en parallèle.
+    const [user, team] = await Promise.all([
+      requireAdmin(),
+      prisma.team.findUnique({
+        where: { id: params.id },
+        include: { members: { select: { id: true } } },
+      }),
+    ]);
     const body = await readJson(req);
     const grant = readGrant(body);
-    const team = await prisma.team.findUnique({
-      where: { id: params.id },
-      include: { members: { select: { id: true } } },
-    });
     if (!team) throw new HttpError(404, 'Table introuvable.');
     const members = team.members.map((m) => m.id);
     const sheetIds = Array.isArray(body.sheetIds)
@@ -27,6 +30,7 @@ export const POST = (req: NextRequest, { params: paramsPromise }: Params) =>
     if (sheetIds.length === 0) {
       throw new HttpError(400, 'Aucun personnage choisi.');
     }
-    await prisma.$transaction((tx) => grantXp(tx, sheetIds, user, grant));
+    // Une seule écriture (createMany), atomique à elle seule.
+    await grantXp(prisma, sheetIds, user, grant);
     return { count: sheetIds.length };
   });

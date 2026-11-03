@@ -1,8 +1,6 @@
 'use client';
 
-import fetcher from '@/lib/helpers/swr';
 import useAnchor from '@/lib/hooks/use-anchor';
-import { CATALOG_URL } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -10,8 +8,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import { useEffect } from 'react';
-import { preload, useSWRConfig } from 'swr';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
@@ -39,15 +35,6 @@ const Sheet = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
   const { sheet, isLoading, error, canEdit } = useSheet(id);
-
-  // Le catalogue sert aux onglets Schémas et Inventaire : on le charge en
-  // arrière-plan pour qu'il soit prêt quand on les ouvre.
-  const { cache } = useSWRConfig();
-  useEffect(() => {
-    if (cache.get(CATALOG_URL)?.data === undefined) {
-      preload(CATALOG_URL, fetcher);
-    }
-  }, [cache]);
 
   if (isLoading) return <CircularProgress />;
   if (error || !sheet)
