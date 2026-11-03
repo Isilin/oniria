@@ -33,8 +33,19 @@ const scopeList = (scopes: Scope[]) =>
   scopes.map((s) => SCOPE_BY_KEY[s].label).join(', ');
 
 const ExperienceCard = ({ id }: { id: string }) => {
-  const { sheet, xp, canEdit, isAdmin, validate, reset, grantXp, deleteGrant } =
-    useSheet(id);
+  const {
+    sheet,
+    xp: saved,
+    // Avec les points en attente : ce qu'il resterait à payer à la validation.
+    xpPreview: xp,
+    points,
+    canEdit,
+    isAdmin,
+    validate,
+    reset,
+    grantXp,
+    deleteGrant,
+  } = useSheet(id);
   const [grantOpen, setGrantOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [confirmValidate, setConfirmValidate] = useState(false);
@@ -45,10 +56,12 @@ const ExperienceCard = ({ id }: { id: string }) => {
   const creation = xp.unlocked.length === ALL_SCOPES.length;
   const due = xp.dues.reduce((t, d) => t + d.amount, 0);
   const missing = Object.values(xp.missingByScope).reduce((t, m) => t + m, 0);
-  const { consistency } = xp;
+  const waiting = points.plan.lines.length > 0;
+  const { consistency } = saved;
   const legend: XpBarPart[] = [
     'spent',
     ...(sum(xp.allocation.total) > 0 ? (['pending'] as const) : []),
+    ...(sum(points.plan.spending) > 0 ? (['draft'] as const) : []),
     'left',
     ...(POOLS.some((p) => xp.left[p.key] < 0) ? (['negative'] as const) : []),
   ];
@@ -92,6 +105,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
                 spent={xp.spent[pool.key]}
                 left={xp.left[pool.key]}
                 pending={xp.allocation.total[pool.key]}
+                draft={points.plan.spending[pool.key]}
               />
             </Grid>
           ))}
@@ -107,7 +121,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
                 <Button
                   color="inherit"
                   size="small"
-                  disabled={!xp.allocation.feasible}
+                  disabled={!xp.allocation.feasible || waiting}
                   onClick={() => setConfirmValidate(true)}
                 >
                   Valider
@@ -133,6 +147,13 @@ const ExperienceCard = ({ id }: { id: string }) => {
                   .map(([s, m]) => `${SCOPE_BY_KEY[s as Scope].label} ${m}`)
                   .join(', ')}
                 .
+              </>
+            )}
+            {waiting && (
+              <>
+                {' '}
+                Ces montants comptent les points en attente : validez-les ou
+                annulez-les avant de valider la fiche.
               </>
             )}
           </Alert>

@@ -9,7 +9,9 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
+import PreviewValue from '../atoms/preview-value';
 import ScopeLock from '../atoms/scope-lock';
+import PointStepper from '../molecules/point-stepper';
 import SheetField from '../molecules/sheet-field';
 
 /** Prix du prochain point : 1 jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, puis 8. */
@@ -19,7 +21,7 @@ const nextPointCost = (value: number) =>
     : characteristicCost(value + 1) - characteristicCost(value);
 
 const CharactersCard = ({ id }: { id: string }) => {
-  const { sheet, computed, canEdit, update, isLocked } = useSheet(id);
+  const { computed, base, canEdit, isLocked, points } = useSheet(id);
 
   return (
     <Card>
@@ -42,27 +44,62 @@ const CharactersCard = ({ id }: { id: string }) => {
               )}
               <Grid>
                 <Typography variant="h5">
-                  {group.label} <em>({computed.groups[group.key]})</em>
+                  {group.label}{' '}
+                  <em>
+                    (
+                    <PreviewValue
+                      before={base.groups[group.key]}
+                      delta={
+                        computed.groups[group.key] - base.groups[group.key]
+                      }
+                    >
+                      {computed.groups[group.key]}
+                    </PreviewValue>
+                    )
+                  </em>
                   <ScopeLock locked={isLocked(group.key)} />
                 </Typography>
                 {CHARACTERISTICS.filter((c) => c.group === group.key).map(
-                  (c) => (
-                    <SheetField
-                      key={c.key}
-                      label={c.label}
-                      value={sheet[c.key]}
-                      tooltip={`${c.description} (valeur : ${characteristicCost(computed.values[c.key])} XP${
-                        nextPointCost(computed.values[c.key]) !== null
-                          ? ` ; point suivant : ${nextPointCost(computed.values[c.key])} XP`
-                          : ''
-                      })`}
-                      editable={canEdit}
-                      onEdit={(newVal) => update({ [c.key]: Number(newVal) })}
-                    />
-                  ),
+                  (c) => {
+                    const value = computed.values[c.key];
+                    const pending = value - base.values[c.key];
+                    const { min, max } = points.bounds(c.key);
+                    const next = nextPointCost(value);
+                    return (
+                      <SheetField
+                        key={c.key}
+                        label={c.label}
+                        value={value}
+                        preview={{ before: base.values[c.key], delta: pending }}
+                        tooltip={`${c.description} (valeur : ${characteristicCost(value)} XP${
+                          next !== null ? ` ; point suivant : ${next} XP` : ''
+                        })`}
+                        postValue={
+                          canEdit ? (
+                            <PointStepper
+                              label={c.label}
+                              points={pending}
+                              canAdd={value < max}
+                              canRemove={value > min}
+                              onStep={(step) => points.step(c.key, step)}
+                            />
+                          ) : undefined
+                        }
+                      />
+                    );
+                  },
                 )}
                 <Typography variant="caption" color="textSecondary">
-                  Exp. : {computed.groupCosts[group.key]}
+                  Exp. :{' '}
+                  <PreviewValue
+                    before={base.groupCosts[group.key]}
+                    delta={
+                      computed.groupCosts[group.key] -
+                      base.groupCosts[group.key]
+                    }
+                  >
+                    {computed.groupCosts[group.key]}
+                  </PreviewValue>
                 </Typography>
               </Grid>
             </Fragment>
@@ -75,8 +112,13 @@ const CharactersCard = ({ id }: { id: string }) => {
           sx={{ mt: 2 }}
         >
           Expérience investie dans les caractères :{' '}
-          {computed.characteristicsCost} (1 XP par point jusqu’à 25, 2 jusqu’à
-          50, 4 jusqu’à 75, 8 au-delà)
+          <PreviewValue
+            before={base.characteristicsCost}
+            delta={computed.characteristicsCost - base.characteristicsCost}
+          >
+            {computed.characteristicsCost}
+          </PreviewValue>{' '}
+          (1 XP par point jusqu’à 25, 2 jusqu’à 50, 4 jusqu’à 75, 8 au-delà)
         </Typography>
       </CardContent>
     </Card>

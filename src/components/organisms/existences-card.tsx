@@ -7,6 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
+import PreviewValue from '../atoms/preview-value';
 import SheetField from '../molecules/sheet-field';
 
 interface Existence {
@@ -14,13 +15,15 @@ interface Existence {
   field: 'current_health' | 'current_stability' | 'current_radiance';
   max: number;
   threshold: number;
+  /** Maximum et seuil de la fiche enregistrée (aperçu des points). */
+  before: { max: number; threshold: number };
   maxHint: string;
   thresholdHint: string;
   color: 'error' | 'info' | 'warning';
 }
 
 const ExistencesCard = ({ id }: { id: string }) => {
-  const { sheet, computed, canEdit, update } = useSheet(id);
+  const { sheet, computed, base, canEdit, update } = useSheet(id);
 
   const existences: Existence[] = [
     {
@@ -28,6 +31,7 @@ const ExistencesCard = ({ id }: { id: string }) => {
       field: 'current_health',
       max: computed.health,
       threshold: computed.healthThreshold,
+      before: { max: base.health, threshold: base.healthThreshold },
       maxHint: 'Vigueur / 10, plus les bonus « Santé +N » du Corpus',
       thresholdHint: 'Vigueur / 5',
       color: 'error',
@@ -37,6 +41,7 @@ const ExistencesCard = ({ id }: { id: string }) => {
       field: 'current_stability',
       max: computed.stability,
       threshold: computed.stabilityThreshold,
+      before: { max: base.stability, threshold: base.stabilityThreshold },
       maxHint: 'Entendement / 10',
       thresholdHint: 'Entendement / 5',
       color: 'info',
@@ -46,6 +51,7 @@ const ExistencesCard = ({ id }: { id: string }) => {
       field: 'current_radiance',
       max: computed.radiance,
       threshold: computed.radianceThreshold,
+      before: { max: base.radiance, threshold: base.radianceThreshold },
       maxHint: 'Âme / 10',
       thresholdHint: 'Âme / 5',
       color: 'warning',
@@ -83,7 +89,17 @@ const ExistencesCard = ({ id }: { id: string }) => {
                   onEdit={(newVal) =>
                     update({ [e.field]: newVal === '' ? null : Number(newVal) })
                   }
-                  postValue={`/ ${e.max}`}
+                  postValue={
+                    <>
+                      /{' '}
+                      <PreviewValue
+                        before={e.before.max}
+                        delta={e.max - e.before.max}
+                      >
+                        {e.max}
+                      </PreviewValue>
+                    </>
+                  }
                 />
                 <LinearProgress
                   variant="determinate"
@@ -98,6 +114,10 @@ const ExistencesCard = ({ id }: { id: string }) => {
                 <SheetField
                   label="Seuil"
                   value={e.threshold}
+                  preview={{
+                    before: e.before.threshold,
+                    delta: e.threshold - e.before.threshold,
+                  }}
                   tooltip={e.thresholdHint}
                 />
               </Grid>

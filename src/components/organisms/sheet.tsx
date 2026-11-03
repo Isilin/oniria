@@ -1,6 +1,7 @@
 'use client';
 
 import useAnchor from '@/lib/hooks/use-anchor';
+import { PointsDraftProvider } from '@/lib/hooks/use-points-draft';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -18,6 +19,7 @@ import ExperienceCard from './experience-card';
 import FaceCard from './face-card';
 import InventoryTab from './inventory-tab';
 import MagicCard from './magic-card';
+import PointsBar from './points-bar';
 import SchemesCard from './schemes-card';
 import SkillsCard from './skills-card';
 import TraitsTab from './traits-tab';
@@ -43,7 +45,8 @@ const Sheet = ({ id }: { id: string }) => {
     );
 
   return (
-    <>
+    // Les points en attente sont propres à cette fiche.
+    <PointsDraftProvider key={id}>
       <Box
         sx={{
           textAlign: 'center',
@@ -148,7 +151,8 @@ const Sheet = ({ id }: { id: string }) => {
           <NotesCard id={id} />
         </Box>
       </TabContent>
-    </>
+      {canEdit && <PointsBar id={id} />}
+    </PointsDraftProvider>
   );
 };
 
