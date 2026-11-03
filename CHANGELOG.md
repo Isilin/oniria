@@ -33,6 +33,11 @@ Première version complète des fiches de personnages d'Oniria.
 
 ### Modifié
 
+- Les caractères se montent point par point, comme dans un jeu vidéo :
+  « + » ajoute un point, « − n + » montre les points en attente, puis on
+  valide ou on annule. Le reste de la fiche (facultés, existences, Maï, XP…)
+  se met à jour en aperçu. Plusieurs caractères s'achètent ensemble, avec une
+  répartition par partie, seulement si l'XP suffit.
 - Node.js 26, Next.js 16, React 19, MUI 9, Prisma 7, Auth.js v5 (bêta 32).
 - Fiches en lecture seule pour les autres joueur·euses ; édition réservée à
   la·au propriétaire et aux MJ.

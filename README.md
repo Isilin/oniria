@@ -96,6 +96,26 @@ catégories ; une dépense peut en combiner plusieurs.
      prochaine validation, et ce qui avait été offert le reste ;
    - retirer de l'XP (montant négatif) ou supprimer une attribution erronée.
 
+**Caractères, point par point.** Comme dans un jeu vidéo, on ne saisit pas la
+valeur d'un caractère : « + » lui ajoute un point (Maj+clic : 5, maintenir :
+répète) et devient « − n + » tant que des points sont en attente. Le reste de
+la fiche se met à jour en aperçu (Corps / Esprit / Âme, facultés et marges,
+dégâts, initiative…, maximums et seuils des existences, Maï, prérequis
+d'équipement, barres d'XP) : une valeur qui change est en vert si elle monte,
+en orange si elle baisse, l'ancienne en infobulle. Une barre en bas de l'écran
+résume les points et leur coût, avec **Valider** et **Annuler** :
+
+- dans une partie débloquée (création, reset), Valider enregistre sans rien
+  payer et « − » descend jusqu'à 0 ;
+- dans une partie validée, Valider est un achat groupé : la fenêtre propose
+  une répartition pour chaque partie (Corps, Esprit, Âme), modifiable, et
+  n'est possible qu'avec l'XP correspondante. Le MJ peut l'offrir, et lui seul
+  peut descendre sous la valeur actuelle (remboursement ou perte). Le journal
+  garde une écriture par caractère.
+
+Tant que des points sont en attente, la fiche ne peut pas être validée, et
+quitter la page demande confirmation.
+
 Tout est consigné dans l'**historique** de la fiche (attributions, achats,
 remboursements, XP perdue, éléments offerts). La fiche signale quand le compte
 n'est pas bon, c'est-à-dire quand la valeur des parties validées diffère de
