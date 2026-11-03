@@ -67,12 +67,6 @@ export const SHEET_FIELDS: FieldSpecs = {
   current_health: int,
   current_stability: int,
   current_radiance: int,
-  feel_xp: int,
-  to_spend_feel_xp: int,
-  learn_xp: int,
-  to_spend_learn_xp: int,
-  live_xp: int,
-  to_spend_live_xp: int,
   notes: text,
 };
 

@@ -3,15 +3,9 @@ import prisma from '@/lib/db/prisma';
 import { ValidationError } from '@/lib/sheet/fields';
 import { Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
+import { HttpError } from './errors';
 
-export class HttpError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+export { HttpError };
 
 /** Exécute un handler d'API et convertit les erreurs en réponses JSON. */
 export const handle = async (fn: () => Promise<unknown>) => {
@@ -48,7 +42,7 @@ export const handle = async (fn: () => Promise<unknown>) => {
 export const requireUser = async () => {
   const session = await auth();
   if (!session?.user?.id) throw new HttpError(401, 'Non connecté.');
-  return session.user;
+  return { ...session.user, id: session.user.id };
 };
 
 export const requireAdmin = async () => {

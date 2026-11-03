@@ -7,6 +7,6 @@ type Params = { params: Promise<{ id: string; collection: string }> };
 export const POST = (req: NextRequest, { params: paramsPromise }: Params) =>
   handle(async () => {
     const params = await paramsPromise;
-    await requireSheetEditor(params.id);
-    return createItem(params.id, params.collection, await readJson(req));
+    const { user } = await requireSheetEditor(params.id);
+    return createItem(params.id, params.collection, await readJson(req), user);
   });

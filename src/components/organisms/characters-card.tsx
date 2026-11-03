@@ -2,16 +2,24 @@
 
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
+import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
+import ScopeLock from '../atoms/scope-lock';
 import SheetField from '../molecules/sheet-field';
 
+/** Prix du prochain point : 1 jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, puis 8. */
+const nextPointCost = (value: number) =>
+  value >= CHARACTERISTIC_MAX
+    ? null
+    : characteristicCost(value + 1) - characteristicCost(value);
+
 const CharactersCard = ({ id }: { id: string }) => {
-  const { sheet, computed, canEdit, update } = useSheet(id);
+  const { sheet, computed, canEdit, update, isLocked } = useSheet(id);
 
   return (
     <Card>
@@ -35,6 +43,7 @@ const CharactersCard = ({ id }: { id: string }) => {
               <Grid>
                 <Typography variant="h5">
                   {group.label} <em>({computed.groups[group.key]})</em>
+                  <ScopeLock locked={isLocked(group.key)} />
                 </Typography>
                 {CHARACTERISTICS.filter((c) => c.group === group.key).map(
                   (c) => (
@@ -42,7 +51,11 @@ const CharactersCard = ({ id }: { id: string }) => {
                       key={c.key}
                       label={c.label}
                       value={sheet[c.key]}
-                      tooltip={`${c.description} (coût : ${characteristicCost(computed.values[c.key])} XP)`}
+                      tooltip={`${c.description} (valeur : ${characteristicCost(computed.values[c.key])} XP${
+                        nextPointCost(computed.values[c.key]) !== null
+                          ? ` ; point suivant : ${nextPointCost(computed.values[c.key])} XP`
+                          : ''
+                      })`}
                       editable={canEdit}
                       onEdit={(newVal) => update({ [c.key]: Number(newVal) })}
                     />

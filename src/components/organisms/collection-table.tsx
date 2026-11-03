@@ -54,6 +54,10 @@ interface Props<R extends Row> {
   emptyLabel?: string;
   footer?: ReactNode;
   itemLabel?: (row: R) => string;
+  /** Faux : pas de bouton de suppression (ex. élément validé, joueur·euse). */
+  deletable?: boolean;
+  /** Faux : pas de confirmation (un autre dialogue s'en charge). */
+  confirmDelete?: boolean;
 }
 
 const toValue = (type: Column<Row>['type'], raw: string) => {
@@ -73,6 +77,8 @@ function CollectionTable<R extends Row>({
   emptyLabel = 'Rien pour le moment.',
   footer,
   itemLabel,
+  deletable = true,
+  confirmDelete = true,
 }: Props<R>) {
   const [toDelete, setToDelete] = useState<R | null>(null);
 
@@ -182,7 +188,7 @@ function CollectionTable<R extends Row>({
                   )}
                 </TableCell>
               ))}
-              {editable && <TableCell sx={{ width: 40 }} />}
+              {editable && deletable && <TableCell sx={{ width: 40 }} />}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -202,12 +208,14 @@ function CollectionTable<R extends Row>({
                     {renderCell(row, column)}
                   </TableCell>
                 ))}
-                {editable && (
+                {editable && deletable && (
                   <TableCell padding="none">
                     <IconButton
                       size="small"
                       aria-label="Supprimer"
-                      onClick={() => setToDelete(row)}
+                      onClick={() =>
+                        confirmDelete ? setToDelete(row) : onDelete(row.id)
+                      }
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>

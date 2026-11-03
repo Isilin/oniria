@@ -21,6 +21,12 @@ Première version complète des fiches de personnages d'Oniria.
   sortilèges et golems.
 - Catalogues de règles : types de Corpus, potentiels de la Spyrée,
   compétences générales, spyrales et martiales.
+- Système d'expérience : trois catégories (Éprouver, Apprendre, Vivre)
+  attribuées par le MJ, coûts des caractéristiques, compétences, Corpus et
+  Spyrée, création libre puis validation, achats avec répartition entre
+  catégories, éléments offerts, retraits avec remboursement ou perte, reset
+  complet ou partiel, historique et contrôle du compte. Distribution d'XP à
+  toute une table.
 - Tables de jeu : ajout et retrait de personnages, vue d'ensemble pour le MJ.
 - Connexion de test et personnages fictifs, réservés aux aperçus.
 - Migrations Prisma, avec vérification de la base avant toute modification.
@@ -30,6 +36,8 @@ Première version complète des fiches de personnages d'Oniria.
 - Node.js 26, Next.js 16, React 19, MUI 9, Prisma 7, Auth.js v5 (bêta 32).
 - Fiches en lecture seule pour les autres joueur·euses ; édition réservée à
   la·au propriétaire et aux MJ.
+- L'XP n'est plus saisie à la main : les montants existants sont repris dans
+  l'historique et les fiches existantes sont considérées comme validées.
 
 ### Sécurité
 

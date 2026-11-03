@@ -19,6 +19,8 @@ interface Props<K extends CollectionKey> {
   emptyLabel?: string;
   footer?: ReactNode;
   itemLabel?: (item: CollectionItem<K> & Record<string, unknown>) => string;
+  deletable?: boolean;
+  confirmDelete?: boolean;
 }
 
 /** Tableau éditable branché sur une liste de la fiche (Corpus, armes…). */

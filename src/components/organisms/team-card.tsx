@@ -4,12 +4,16 @@ import { FullSheet } from '@/lib/db/sheet';
 import { useSheets } from '@/lib/hooks/use-sheet';
 import { useTeam } from '@/lib/hooks/use-team';
 import { computeSheet, FACULTIES, formatFaculty } from '@/lib/rules';
+import { xpSummary } from '@/lib/rules/xp';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import {
   Alert,
   Autocomplete,
   Box,
+  Button,
   Card,
+  Checkbox,
+  Chip,
   CardContent,
   CircularProgress,
   IconButton,
@@ -23,11 +27,15 @@ import {
   TextField,
   Tooltip,
   Typography,
+  FormControlLabel,
+  FormGroup,
 } from '@mui/material';
 import Link from 'next/link';
 import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
+import { formatAmounts } from './xp-dialogs';
+import XpGrantDialog from './xp-grant-dialog';
 
 const gauge = (current: number | null, max: number, threshold: number) =>
   `${current ?? max}/${max} (seuil ${threshold})`;
@@ -41,6 +49,7 @@ const MemberRow = ({
 }) => {
   const [confirm, setConfirm] = useState(false);
   const c = computeSheet(sheet);
+  const xp = xpSummary(sheet);
 
   return (
     <TableRow hover>
@@ -76,6 +85,29 @@ const MemberRow = ({
       </TableCell>
       <TableCell>{c.bulk} %</TableCell>
       <TableCell>{c.damage}</TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+        {formatAmounts(xp.left)}
+        {xp.unlocked.length > 0 && (
+          <Chip
+            size="small"
+            color="warning"
+            variant="outlined"
+            label={xp.allocation.feasible ? 'à valider' : 'en création'}
+            sx={{ ml: 1 }}
+          />
+        )}
+        {xp.consistency.diff !== 0 && (
+          <Tooltip title="Le compte d'XP de la fiche n'est pas bon : voir la fiche.">
+            <Chip
+              size="small"
+              color="error"
+              variant="outlined"
+              label="écart"
+              sx={{ ml: 1 }}
+            />
+          </Tooltip>
+        )}
+      </TableCell>
       <TableCell>
         <Tooltip
           title={FACULTIES.map(
@@ -104,9 +136,11 @@ const MemberRow = ({
 };
 
 const TeamCard = ({ id }: { id: string }) => {
-  const { team, isLoading, error, rename, addMember, removeMember } =
+  const { team, isLoading, error, rename, addMember, removeMember, grantXp } =
     useTeam(id);
   const { sheets } = useSheets();
+  const [grantOpen, setGrantOpen] = useState(false);
+  const [recipients, setRecipients] = useState<string[] | null>(null);
 
   if (isLoading) return <CircularProgress />;
   if (error || !team)
@@ -115,6 +149,7 @@ const TeamCard = ({ id }: { id: string }) => {
     );
 
   const memberIds = new Set(team.members.map((m) => m.id));
+  const chosen = recipients ?? team.members.map((m) => m.id);
   const candidates = [...(sheets?.own ?? []), ...(sheets?.others ?? [])].filter(
     (s) => !memberIds.has(s.id),
   );
@@ -150,9 +185,30 @@ const TeamCard = ({ id }: { id: string }) => {
       </Box>
       <Card>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Vue d&apos;ensemble
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Vue d&apos;ensemble
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={team.members.length === 0}
+              onClick={() => {
+                setRecipients(null);
+                setGrantOpen(true);
+              }}
+            >
+              Distribuer de l&apos;XP
+            </Button>
+          </Box>
           <TableContainer>
             <Table size="small">
               <TableHead>
@@ -166,6 +222,7 @@ const TeamCard = ({ id }: { id: string }) => {
                   <TableCell>Protection</TableCell>
                   <TableCell>Encombrement</TableCell>
                   <TableCell>Dégâts</TableCell>
+                  <TableCell>XP restante</TableCell>
                   <TableCell>Facultés</TableCell>
                   <TableCell />
                 </TableRow>
@@ -173,7 +230,7 @@ const TeamCard = ({ id }: { id: string }) => {
               <TableBody>
                 {team.members.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11}>
+                    <TableCell colSpan={12}>
                       <Typography color="textSecondary">
                         Aucun personnage à cette table.
                       </Typography>
@@ -208,6 +265,38 @@ const TeamCard = ({ id }: { id: string }) => {
           />
         </CardContent>
       </Card>
+      <XpGrantDialog
+        open={grantOpen}
+        onClose={() => setGrantOpen(false)}
+        title="Distribuer de l'expérience"
+        disabled={chosen.length === 0}
+        onSubmit={(grant) => grantXp({ ...grant, sheetIds: chosen })}
+      >
+        <FormGroup sx={{ mt: 2 }}>
+          <Typography variant="subtitle2" color="textSecondary">
+            Personnages
+          </Typography>
+          {team.members.map((m) => (
+            <FormControlLabel
+              key={m.id}
+              control={
+                <Checkbox
+                  size="small"
+                  checked={chosen.includes(m.id)}
+                  onChange={(e) =>
+                    setRecipients(
+                      e.target.checked
+                        ? [...chosen, m.id]
+                        : chosen.filter((c) => c !== m.id),
+                    )
+                  }
+                />
+              }
+              label={`${m.name} (${m.user.name ?? '?'})`}
+            />
+          ))}
+        </FormGroup>
+      </XpGrantDialog>
     </Box>
   );
 };

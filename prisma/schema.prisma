@@ -54,8 +54,9 @@ model User {
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  role   Role    @default(USER)
-  sheets Sheet[]
+  role      Role      @default(USER)
+  sheets    Sheet[]
+  xpEntries XpEntry[]
 
   @@map(name: "users")
 }
@@ -110,13 +111,11 @@ model Sheet {
   current_stability Int?
   current_radiance  Int?
 
-  // Expériences : *_xp = gagnée, to_spend_*_xp = restante
-  feel_xp           Int? @default(0) // éprouver
-  to_spend_feel_xp  Int? @default(0)
-  learn_xp          Int? @default(0) // apprendre
-  to_spend_learn_xp Int? @default(0)
-  live_xp           Int? @default(0) // vivre
-  to_spend_live_xp  Int? @default(0)
+  // Expérience : journal des XP (attribuées, dépensées, remboursées…) et
+  // parties de la fiche encore modifiables librement (création ou reset du
+  // MJ), payées à la validation. Voir src/lib/rules/xp.ts.
+  xpEntries XpEntry[]
+  unlocked  String[]  @default(["body", "spirit", "soul", "general", "spyral", "martial", "corpus", "spyree"]) @map("xp_unlocked")
 
   // Schémas
   corpus Corpus[]
@@ -135,6 +134,40 @@ model Sheet {
   items        Item[]
 
   notes String? @default("")
+}
+
+// Journal d'expérience d'une fiche. Montants positifs ; leur effet dépend
+// du type d'écriture.
+enum XpKind {
+  GAIN // XP attribuée par le MJ (négative s'il en retire)
+  SPEND // achat
+  REFUND // remboursement d'un élément baissé ou retiré
+  LOSS // élément retiré sans remboursement : l'XP est perdue
+  GIFT // élément offert par le MJ (valeur dans `offered`)
+}
+
+model XpEntry {
+  id        String   @id @default(cuid())
+  seq       Int      @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  sheetId   String   @map("sheet_id")
+  sheet     Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  authorId  String?  @map("author_id")
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  kind      XpKind
+  feel      Int      @default(0) // éprouver
+  learn     Int      @default(0) // apprendre
+  live      Int      @default(0) // vivre
+  offered   Int      @default(0)
+  // Élément concerné : char:strength, skill:<id>, corpus, spyree:<id>, legacy
+  target    String?
+  // Partie de la fiche : body, spirit, soul, general, spyral, martial, corpus, spyree
+  scope     String?
+  label     String
+  // Écritures faites ensemble (validation, reset, distribution…)
+  batch     String?
+
+  @@index([sheetId])
 }
 
 model Whitelist {

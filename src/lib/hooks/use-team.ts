@@ -62,5 +62,13 @@ export const useTeam = (id: string) => {
     removeMember: (sheetId: string) =>
       run(() => request('DELETE', `${url}/members/${sheetId}`)),
     deleteTeam: () => run(() => request('DELETE', url)),
+    /** MJ : la même XP à plusieurs personnages de la table. */
+    grantXp: (grant: {
+      label: string;
+      feel: number;
+      learn: number;
+      live: number;
+      sheetIds: string[];
+    }) => run(() => request('POST', `${url}/xp`, grant)),
   };
 };
