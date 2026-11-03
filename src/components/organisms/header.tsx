@@ -5,7 +5,10 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import ThemeSwitch from '../molecules/theme-switch';
 
-/** Barre fine en haut de chaque page : le nom du jeu et l'affichage. */
+/**
+ * Barre fine en haut de chaque page : retour (posé par la page), le nom du
+ * jeu, l'affichage et les actions de la page (⋯). Voir HeaderSlot.
+ */
 const Header = () => {
   return (
     <Box
@@ -15,12 +18,13 @@ const Header = () => {
         maxWidth: 1400,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        gap: 1,
         minHeight: 52,
         borderBottom: 1,
         borderColor: 'rule',
       }}
     >
+      <Box id="header-start" sx={{ display: 'flex', alignItems: 'center' }} />
       <Typography
         component={Link}
         href="/"
@@ -34,7 +38,9 @@ const Header = () => {
       >
         Oniria
       </Typography>
+      <Box sx={{ flexGrow: 1 }} />
       <ThemeSwitch />
+      <Box id="header-end" sx={{ display: 'flex', alignItems: 'center' }} />
     </Box>
   );
 };

@@ -24,6 +24,9 @@ const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
         border: 'none',
         justifyContent: 'center',
         width: '100%',
+        alignSelf: 'stretch',
+        // Le contenu se pose sur le fond, comme les colonnes d'une page.
+        bgcolor: 'transparent',
       }}
       variant="outlined"
     >

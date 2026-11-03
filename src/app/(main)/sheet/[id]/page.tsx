@@ -1,10 +1,10 @@
 import BackButton from '@/components/atoms/back-button';
+import HeaderSlot from '@/components/atoms/header-slot';
 import SWRFallback from '@/components/atoms/swr-fallback';
 import DeleteSheetButton from '@/components/molecules/delete-sheet-button';
 import Sheet from '@/components/organisms/sheet';
 import { asJson, findSheet } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
-import { Box } from '@mui/material';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -24,17 +24,12 @@ const Page = async ({
   return (
     <Suspense>
       <SWRFallback fallback={fallback}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}
-        >
+        <HeaderSlot side="start">
           <BackButton href="/" />
+        </HeaderSlot>
+        <HeaderSlot side="end">
           <DeleteSheetButton id={params.id} />
-        </Box>
+        </HeaderSlot>
         <Sheet id={params.id} />
       </SWRFallback>
     </Suspense>

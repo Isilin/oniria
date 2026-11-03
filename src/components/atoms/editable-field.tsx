@@ -95,7 +95,13 @@ const EditableField = ({
           '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
           ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
           ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
-          '@media (hover: none)': { '& .edit-mark': { opacity: 0.45 } },
+          // Au toucher, pas de crayon : un pointillé discret signale la valeur modifiable.
+          '@media (hover: none)': {
+            '& .edit-mark': { display: 'none' },
+            borderBottom: '1px dotted',
+            borderBottomColor:
+              'color-mix(in srgb, var(--mui-palette-text-secondary) 40%, transparent)',
+          },
         }}
       >
         {shown}

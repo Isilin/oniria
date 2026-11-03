@@ -72,12 +72,16 @@ const CharacterPlate = ({ id }: { id: string }) => {
         ...theme.applyStyles('light', { '--tint': tint.day }),
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: { xs: 'auto 1fr', md: 'auto minmax(0, 1fr) auto' },
+        gridTemplateColumns: 'auto minmax(0, 1fr)',
+        // Dès 520 px (demi-écran à côté de Discord), tout tient sur une ligne.
+        '@media (min-width: 520px)': {
+          gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+        },
         alignItems: 'center',
         columnGap: { xs: 2, md: 3 },
         rowGap: 2,
         px: { xs: 2, md: 2.5 },
-        py: { xs: 2, md: 1.75 },
+        py: { xs: 1.25, md: 1.75 },
         border: 1,
         borderColor: 'rule',
         borderTop: '2px solid',
@@ -87,11 +91,11 @@ const CharacterPlate = ({ id }: { id: string }) => {
         borderRadius: 0.5,
       })}
     >
-      <Box sx={{ position: 'relative', width: { xs: 72, md: 96 } }}>
+      <Box sx={{ position: 'relative', width: { xs: 56, md: 88 } }}>
         <Portrait
           avatar={sheet.avatar}
           name={sheet.name}
-          size={{ xs: 72, md: 96 }}
+          size={{ xs: 56, md: 88 }}
           sx={{
             bgcolor: sheet.avatar ? 'raised' : undefined,
             border: '2px solid',
@@ -130,7 +134,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
             variant="h2"
             component="h1"
             sx={{
-              fontSize: { xs: '1.875rem', md: '2.5rem' },
+              fontSize: { xs: '1.625rem', md: '2.5rem' },
               overflowWrap: 'anywhere',
             }}
           >
@@ -169,10 +173,11 @@ const CharacterPlate = ({ id }: { id: string }) => {
 
       <Box
         sx={{
-          gridColumn: { xs: '1 / -1', md: 'auto' },
+          gridColumn: '1 / -1',
+          '@media (min-width: 520px)': { gridColumn: 'auto' },
           display: 'grid',
           gridTemplateColumns: 'repeat(3, auto)',
-          columnGap: 3,
+          columnGap: { xs: 2, md: 3 },
           justifyContent: { xs: 'start', md: 'end' },
         }}
       >

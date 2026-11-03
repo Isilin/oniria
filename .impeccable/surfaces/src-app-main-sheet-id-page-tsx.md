@@ -23,6 +23,6 @@ STORY: Le joueur ouvre sa fiche et voit d'un coup sa lune (portrait, Aspect, Dev
 
 FIRST VIEWPORT: Barre fine (retour, ONIRIA, thème, ⋯). Plaque du personnage : portrait cerclé de sa teinte, nom en Spectral, joueur·euse et table, Aspect et Devenir en colonnes d'éphéméride. Bande d'éphéméride collée en haut : Santé, Équilibre, Éclat, Maï en disques de phase entourés d'un arc de traits (un trait par point), valeur / max, seuil, −/+. Dessous, onglets ; à gauche Caractères en grand (trois colonnes, valeur du groupe, verrou), Facultés en tableau serré ; à droite la colonne combat.
 
-FORM: Éphémérides des Lunes, rang 1 de ma liste (choisi par l'utilisateur comme carte « choix d'Impeccable »), avec la correction utilisateur : arcs de traits de la ligne claire autour des lunes. seed: e5fa620fd594e6e0
+FORM: Éphémérides des Lunes, rang 1 de ma liste (choisi par l'utilisateur comme carte « choix d'Impeccable »), avec la correction utilisateur : arcs de traits de la ligne claire autour des lunes. seed:e5fa620fd594e6e0
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

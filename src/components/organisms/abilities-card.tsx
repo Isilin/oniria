@@ -15,7 +15,12 @@ const AbilitiesCard = ({ id }: { id: string }) => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(146px, 1fr))',
+          // Trois colonnes fixes dès 520 px (demi-écran) : jamais de groupe
+          // renvoyé sous un autre.
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          '@media (min-width: 520px)': {
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          },
           columnGap: 2,
           rowGap: 2,
         }}

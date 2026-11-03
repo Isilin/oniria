@@ -3,7 +3,7 @@
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
 import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import EditableField from '../atoms/editable-field';
 import ScopeLock from '../atoms/scope-lock';
@@ -25,7 +25,12 @@ const CharactersCard = ({ id }: { id: string }) => {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(156px, 1fr))',
+          // Trois colonnes fixes dès 520 px (demi-écran) : jamais de groupe
+          // renvoyé sous un autre.
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          '@media (min-width: 520px)': {
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          },
           columnGap: 2,
           rowGap: 2,
         }}
@@ -47,12 +52,23 @@ const CharactersCard = ({ id }: { id: string }) => {
                 {group.label}
               </Typography>
               <ScopeLock locked={isLocked(group.key)} />
-              <Typography
-                variant="numeral"
-                sx={{ ml: 'auto', fontSize: '1.75rem', fontStyle: 'italic' }}
+              <Tooltip
+                title={`Expérience investie : ${computed.groupCosts[group.key]} XP`}
+                describeChild
               >
-                {computed.groups[group.key]}
-              </Typography>
+                <Typography
+                  variant="numeral"
+                  tabIndex={0}
+                  sx={{
+                    ml: 'auto',
+                    fontSize: '1.75rem',
+                    fontStyle: 'italic',
+                    cursor: 'help',
+                  }}
+                >
+                  {computed.groups[group.key]}
+                </Typography>
+              </Tooltip>
             </Box>
             {CHARACTERISTICS.filter((c) => c.group === group.key).map((c) => {
               const value = computed.values[c.key];
@@ -78,26 +94,9 @@ const CharactersCard = ({ id }: { id: string }) => {
                 </StatRow>
               );
             })}
-            <Typography
-              variant="caption"
-              color="textSecondary"
-              component="p"
-              sx={{ mt: 0.5 }}
-            >
-              Exp. : {computed.groupCosts[group.key]}
-            </Typography>
           </Box>
         ))}
       </Box>
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        component="p"
-        sx={{ mt: 1.5 }}
-      >
-        Expérience investie dans les caractères : {computed.characteristicsCost}{' '}
-        (1 XP par point jusqu’à 25, 2 jusqu’à 50, 4 jusqu’à 75, 8 au-delà)
-      </Typography>
     </SectionCard>
   );
 };

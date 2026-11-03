@@ -54,7 +54,9 @@ const Sheet = ({ id }: { id: string }) => {
         variant="scrollable"
         scrollButtons="auto"
         allowScrollButtonsMobile
-        sx={{ maxWidth: '100%' }}
+        // Étirés sur toute la largeur : le filet court sous toute la page et
+        // la lecture commence à la marge gauche.
+        sx={{ alignSelf: 'stretch', width: '100%', maxWidth: '100%' }}
       >
         {TABS.map((label, index) => (
           <Tab
@@ -91,15 +93,32 @@ const Sheet = ({ id }: { id: string }) => {
               lg: '"car fac com" "xp xp xp"',
             },
             '& > *': { minWidth: 0 },
+            columnGap: { md: 0 },
+            rowGap: 3,
+            pt: 2,
           }}
         >
-          <Box sx={{ gridArea: 'car' }}>
+          <Box sx={{ gridArea: 'car', pr: { md: 3 } }}>
             <CharactersCard id={id} />
           </Box>
-          <Box sx={{ gridArea: 'fac' }}>
+          {/* Colonnes séparées par un filet d'un pixel, comme une table. */}
+          <Box
+            sx={{
+              gridArea: 'fac',
+              pr: { lg: 3 },
+              pl: { lg: 3 },
+              borderLeft: { lg: '1px solid var(--mui-palette-rule)' },
+            }}
+          >
             <AbilitiesCard id={id} />
           </Box>
-          <Box sx={{ gridArea: 'com' }}>
+          <Box
+            sx={{
+              gridArea: 'com',
+              pl: { md: 3 },
+              borderLeft: { md: '1px solid var(--mui-palette-rule)' },
+            }}
+          >
             <CombatCard id={id} />
           </Box>
           <Box sx={{ gridArea: 'xp' }}>

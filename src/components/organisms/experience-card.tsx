@@ -10,8 +10,6 @@ import {
   AlertTitle,
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Collapse,
   Dialog,
@@ -33,8 +31,17 @@ const scopeList = (scopes: Scope[]) =>
   scopes.map((s) => SCOPE_BY_KEY[s].label).join(', ');
 
 const ExperienceCard = ({ id }: { id: string }) => {
-  const { sheet, xp, canEdit, isAdmin, validate, reset, grantXp, deleteGrant } =
-    useSheet(id);
+  const {
+    sheet,
+    computed,
+    xp,
+    canEdit,
+    isAdmin,
+    validate,
+    reset,
+    grantXp,
+    deleteGrant,
+  } = useSheet(id);
   const [grantOpen, setGrantOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [confirmValidate, setConfirmValidate] = useState(false);
@@ -57,8 +64,8 @@ const ExperienceCard = ({ id }: { id: string }) => {
   );
 
   return (
-    <Card>
-      <CardContent>
+    <Box component="section" sx={{ minWidth: 0 }}>
+      <Box>
         <Box
           sx={{
             display: 'flex',
@@ -79,7 +86,20 @@ const ExperienceCard = ({ id }: { id: string }) => {
               !draft ? 'Validée' : creation ? 'En création' : 'Reset en cours'
             }
           />
+          <Box
+            aria-hidden
+            sx={{ flex: 1, minWidth: 24, height: '1px', bgcolor: 'rule' }}
+          />
         </Box>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          component="p"
+          sx={{ mb: 1.5 }}
+        >
+          Investie dans les caractères : {computed.characteristicsCost} XP (1 XP
+          par point jusqu’à 25, 2 jusqu’à 50, 4 jusqu’à 75, 8 au-delà).
+        </Typography>
 
         <Grid container spacing={3}>
           {POOLS.map((pool) => (
@@ -208,7 +228,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
             />
           </Box>
         </Collapse>
-      </CardContent>
+      </Box>
 
       <Dialog open={confirmValidate} onClose={() => setConfirmValidate(false)}>
         <DialogTitle>Valider la fiche ?</DialogTitle>
@@ -250,7 +270,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
           />
         </>
       )}
-    </Card>
+    </Box>
   );
 };
 
