@@ -1,11 +1,12 @@
 import prisma from '@/lib/db/prisma';
 import { handle, HttpError, readJson, requireAdmin } from '@/lib/server/api';
+import { listWhitelist } from '@/lib/server/queries';
 import { NextRequest } from 'next/server';
 
 export const GET = () =>
   handle(async () => {
     await requireAdmin();
-    return prisma.whitelist.findMany({ orderBy: { email: 'asc' } });
+    return listWhitelist();
   });
 
 export const POST = (req: NextRequest) =>

@@ -1,31 +1,13 @@
 import prisma from '@/lib/db/prisma';
-import { SHEET_SUMMARY_INCLUDE, SheetWithUser } from '@/lib/db/sheet';
+import { SheetGetResult } from '@/lib/db/sheet';
 import { handle, readJson, requireUser } from '@/lib/server/api';
+import { listSheets } from '@/lib/server/queries';
 import { NextRequest } from 'next/server';
-
-export interface SheetGetResult {
-  own: SheetWithUser[];
-  others: SheetWithUser[];
-}
 
 export const GET = () =>
   handle(async (): Promise<SheetGetResult> => {
     const user = await requireUser();
-
-    const [own, others] = await Promise.all([
-      prisma.sheet.findMany({
-        where: { userId: user.id },
-        include: SHEET_SUMMARY_INCLUDE,
-        orderBy: { createdAt: 'asc' },
-      }),
-      prisma.sheet.findMany({
-        where: { userId: { not: user.id } },
-        include: SHEET_SUMMARY_INCLUDE,
-        orderBy: { createdAt: 'asc' },
-      }),
-    ]);
-
-    return { own, others };
+    return listSheets(user.id);
   });
 
 export const POST = (req: NextRequest) =>

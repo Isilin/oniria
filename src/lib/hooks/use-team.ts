@@ -1,18 +1,11 @@
 'use client';
 
-import { Prisma } from '@prisma/client';
 import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
-import { SHEET_INCLUDE } from '../db/sheet';
+import { TeamSummary, TeamWithMembers } from '../db/sheet';
 import fetcher, { request } from '../helpers/swr';
 
-export type TeamSummary = Prisma.TeamGetPayload<{
-  include: { members: { select: { id: true; name: true } } };
-}>;
-
-export type TeamWithMembers = Prisma.TeamGetPayload<{
-  include: { members: { include: typeof SHEET_INCLUDE } };
-}>;
+export type { TeamSummary, TeamWithMembers };
 
 export const useTeams = () => {
   const {

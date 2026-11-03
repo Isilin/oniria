@@ -1,4 +1,5 @@
 import prisma from '@/lib/db/prisma';
+import { XP_ENTRIES_ARGS } from '@/lib/db/sheet';
 import { HttpError } from '@/lib/server/errors';
 import {
   ALL_SCOPES,
@@ -75,6 +76,20 @@ export const readXpPayload = (body: unknown): XpPayload => {
   };
 };
 
+/**
+ * Ce que l'XP change sur une fiche : parties débloquées et journal. Renvoyé
+ * par la validation, le reset et l'attribution, pour ne pas recharger toute
+ * la fiche.
+ */
+export const readXpState = async (db: Tx, sheetId: string) => {
+  const state = await db.sheet.findUnique({
+    where: { id: sheetId },
+    select: { unlocked: true, xpEntries: XP_ENTRIES_ARGS },
+  });
+  if (!state) throw new HttpError(404, 'Fiche introuvable.');
+  return state;
+};
+
 /** Une seule modification à la fois par fiche (deux achats simultanés…). */
 export const lockSheet = async (tx: Tx, sheetId: string) => {
   const rows = await tx.$queryRaw<
@@ -94,13 +109,17 @@ const ENTRY_SELECT = {
   seq: true,
 } satisfies Prisma.XpEntrySelect;
 
+/** Une écriture telle qu'elle figure dans le journal de la fiche. */
+const ENTRY_AUTHOR = XP_ENTRIES_ARGS.include;
+
 /**
  * Enregistre le coût d'un changement de la fiche : achat (ou cadeau du MJ)
  * s'il est positif, remboursement (ou perte) s'il est négatif. Rien n'est
  * enregistré quand la partie concernée est débloquée : son coût sera payé à
  * la validation.
  *
- * À appeler dans une transaction, après `lockSheet`.
+ * À appeler dans une transaction, après `lockSheet`. Renvoie l'écriture
+ * ajoutée au journal (avec son auteur), que l'API renvoie au client.
  */
 export const chargeChange = async (
   tx: Tx,
@@ -131,6 +150,7 @@ export const chargeChange = async (
       }
       return tx.xpEntry.create({
         data: { ...base, kind: 'GIFT', offered: change.delta },
+        include: ENTRY_AUTHOR,
       });
     }
     const balance = xpTotals(sheet.xpEntries).left;
@@ -152,7 +172,10 @@ export const chargeChange = async (
         `${change.label} (${change.delta} XP) : ${error}`,
       );
     }
-    return tx.xpEntry.create({ data: { ...base, kind: 'SPEND', ...split } });
+    return tx.xpEntry.create({
+      data: { ...base, kind: 'SPEND', ...split },
+      include: ENTRY_AUTHOR,
+    });
   }
 
   if (!isAdmin(actor)) {
@@ -167,6 +190,7 @@ export const chargeChange = async (
     -change.delta,
   );
   return tx.xpEntry.create({
+    include: ENTRY_AUTHOR,
     data: {
       ...base,
       kind: payload.refund === false ? 'LOSS' : 'REFUND',
@@ -404,16 +428,19 @@ export const resetSheet = async (
   await tx.sheet.update({ where: { id: sheetId }, data: { unlocked } });
 };
 
+/** Supprime une attribution d'XP (en une requête quand tout va bien). */
 export const deleteGrant = async (sheetId: string, entryId: string) => {
+  const { count } = await prisma.xpEntry.deleteMany({
+    where: { id: entryId, sheetId, kind: 'GAIN' },
+  });
+  if (count) return;
   const entry = await prisma.xpEntry.findFirst({
     where: { id: entryId, sheetId },
+    select: { id: true },
   });
   if (!entry) throw new HttpError(404, 'Écriture introuvable.');
-  if (entry.kind !== 'GAIN') {
-    throw new HttpError(
-      400,
-      "Seules les attributions d'XP peuvent être supprimées : pour un achat, retirer l'élément ou faire un reset.",
-    );
-  }
-  await prisma.xpEntry.delete({ where: { id: entryId } });
+  throw new HttpError(
+    400,
+    "Seules les attributions d'XP peuvent être supprimées : pour un achat, retirer l'élément ou faire un reset.",
+  );
 };

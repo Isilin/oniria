@@ -1,26 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 const getAnchor = () =>
-  typeof window !== 'undefined'
-    ? Number(decodeURIComponent(window.location.hash.replace('#', '')))
-    : 0;
+  Number(decodeURIComponent(window.location.hash.replace('#', '')));
 
-const useAnchor = () => {
-  const [anchor, setAnchor] = useState(getAnchor());
-
-  useEffect(() => {
-    const handleAnchorChange = () => {
-      setAnchor(getAnchor());
-    };
-
-    window.addEventListener('hashchange', handleAnchorChange);
-
-    return () => window.removeEventListener('hashchange', handleAnchorChange);
-  }, []);
-
-  return anchor;
+const subscribe = (onChange: () => void) => {
+  window.addEventListener('hashchange', onChange);
+  return () => window.removeEventListener('hashchange', onChange);
 };
+
+/**
+ * Numéro dans l'URL (#2…). Côté serveur et à l'hydratation, on part de 0 :
+ * la page rendue par le serveur correspond au premier rendu du navigateur.
+ */
+const useAnchor = () => useSyncExternalStore(subscribe, getAnchor, () => 0);
 
 export default useAnchor;

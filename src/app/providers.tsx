@@ -1,13 +1,15 @@
 'use client';
 
+import { XpDialogProvider } from '@/components/organisms/xp-dialogs';
 import DeleteIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
-import { XpDialogProvider } from '@/components/organisms/xp-dialogs';
+import { PropsWithChildren } from 'react';
 
 const theme = createTheme({
   colorSchemes: { light: true, dark: true },
@@ -19,11 +21,19 @@ const theme = createTheme({
   },
 });
 
-export default function Providers({ children }) {
+interface Props {
+  /** Session lue par le serveur : le navigateur n'a pas à la redemander. */
+  session: Session | null;
+}
+
+export default function Providers({
+  session,
+  children,
+}: PropsWithChildren<Props>) {
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme} defaultMode="dark">
-        <SessionProvider>
+        <SessionProvider session={session} refetchOnWindowFocus={false}>
           <SnackbarProvider
             autoHideDuration={2000}
             disableWindowBlurListener={true}

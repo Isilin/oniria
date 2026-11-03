@@ -1,4 +1,7 @@
+'use client';
+
 import { Link, List, ListItem } from '@mui/material';
+import NextLink from 'next/link';
 
 const AdminPanel = () => {
   return (
@@ -9,10 +12,14 @@ const AdminPanel = () => {
       }}
     >
       <ListItem sx={{ width: 'auto' }}>
-        <Link href="/whitelist">Whitelist</Link>
+        <Link component={NextLink} href="/whitelist">
+          Whitelist
+        </Link>
       </ListItem>
       <ListItem sx={{ width: 'auto' }}>
-        <Link href="/team">Tables de jeu</Link>
+        <Link component={NextLink} href="/team">
+          Tables de jeu
+        </Link>
       </ListItem>
     </List>
   );

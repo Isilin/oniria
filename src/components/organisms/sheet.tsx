@@ -9,7 +9,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import TabContent from '../atoms/tab-content';
-import NotesCard from '../molecules/notes-card';
+import NotesCard, { preloadEditor } from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
 import AvatarCard from './avatar-card';
 import CharactersCard from './characters-card';
@@ -29,6 +29,7 @@ const TABS = [
   'Inventaire',
   'Notes',
 ];
+const NOTES_TAB = 4;
 
 const Sheet = ({ id }: { id: string }) => {
   const anchor = useAnchor();
@@ -83,6 +84,11 @@ const Sheet = ({ id }: { id: string }) => {
             aria-controls={`tabpanel${index}`}
             value={index}
             label={label}
+            {...(index === NOTES_TAB && {
+              onMouseEnter: preloadEditor,
+              onFocus: preloadEditor,
+              onTouchStart: preloadEditor,
+            })}
           />
         ))}
       </Tabs>
@@ -133,7 +139,7 @@ const Sheet = ({ id }: { id: string }) => {
       <TabContent index={3} active={value === 3}>
         <InventoryTab id={id} />
       </TabContent>
-      <TabContent index={4} active={value === 4}>
+      <TabContent index={NOTES_TAB} active={value === NOTES_TAB}>
         <Box
           sx={{
             width: '100%',
