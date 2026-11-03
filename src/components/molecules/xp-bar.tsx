@@ -158,7 +158,7 @@ export const XpBarLegend = ({ parts }: { parts: XpBarPart[] }) => (
       <Box key={part} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Box
           sx={[
-            { width: 14, height: 10, borderRadius: 0.5 },
+            { width: 14, height: 10, borderRadius: 1 },
             XP_BAR_PARTS[part].sx,
           ]}
         />

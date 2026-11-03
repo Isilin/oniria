@@ -88,7 +88,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
         borderTopColor: `color-mix(in srgb, var(--tint) ${ring}%, transparent)`,
         bgcolor: 'background.paper',
         backgroundImage: `linear-gradient(color-mix(in srgb, var(--tint) ${wash}%, transparent), color-mix(in srgb, var(--tint) ${wash}%, transparent))`,
-        borderRadius: 0.5,
+        borderRadius: 1,
       })}
     >
       <Box sx={{ position: 'relative', width: { xs: 56, md: 88 } }}>

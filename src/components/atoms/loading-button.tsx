@@ -23,8 +23,7 @@ const LoadingButton = ({ ...props }) => {
       {loading ? (
         <CircularProgress
           size={24.5}
-          color="secondary"
-          sx={{ color: 'rgba(255, 255, 255, 0.12)' }}
+          sx={{ color: 'action.disabled' }}
         />
       ) : (
         props.children

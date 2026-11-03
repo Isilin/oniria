@@ -1,191 +1,1108 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-03T00:00:00Z",
+  "generatedAt": "2026-11-04T00:00:00Z",
   "title": "Design System: Oniria",
   "extensions": {
     "colorMeta": {
-      "primary": { "role": "primary", "displayName": "Bleu Primaire", "canonical": "#90caf9", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#42a5f5", "#64b5f6", "#90caf9", "#e3f2fd"] },
-      "primary-clair": { "role": "primary", "displayName": "Bleu Primaire (Clair)", "canonical": "#1976d2", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#42a5f5", "#64b5f6", "#90caf9", "#e3f2fd"] },
-      "secondary": { "role": "secondary", "displayName": "Mauve Secondaire", "canonical": "#ce93d8", "tonalRamp": ["#4a148c", "#6a1b9a", "#7b1fa2", "#9c27b0", "#ab47bc", "#ba68c8", "#ce93d8", "#f3e5f5"] },
-      "secondary-clair": { "role": "secondary", "displayName": "Mauve Secondaire (Clair)", "canonical": "#9c27b0", "tonalRamp": ["#4a148c", "#6a1b9a", "#7b1fa2", "#9c27b0", "#ab47bc", "#ba68c8", "#ce93d8", "#f3e5f5"] },
-      "success": { "role": "tertiary", "displayName": "Vert Succès", "canonical": "#66bb6a", "tonalRamp": ["#1b5e20", "#2e7d32", "#388e3c", "#43a047", "#4caf50", "#66bb6a", "#81c784", "#c8e6c9"] },
-      "success-clair": { "role": "tertiary", "displayName": "Vert Succès (Clair)", "canonical": "#2e7d32", "tonalRamp": ["#1b5e20", "#2e7d32", "#388e3c", "#43a047", "#4caf50", "#66bb6a", "#81c784", "#c8e6c9"] },
-      "info": { "role": "tertiary", "displayName": "Bleu Info (Équilibre)", "canonical": "#29b6f6", "tonalRamp": ["#01579b", "#0277bd", "#0288d1", "#039be5", "#03a9f4", "#29b6f6", "#4fc3f7", "#b3e5fc"] },
-      "info-clair": { "role": "tertiary", "displayName": "Bleu Info (Clair)", "canonical": "#0288d1", "tonalRamp": ["#01579b", "#0277bd", "#0288d1", "#039be5", "#03a9f4", "#29b6f6", "#4fc3f7", "#b3e5fc"] },
-      "warning": { "role": "tertiary", "displayName": "Orange Avertissement (Éclat, non réglé)", "canonical": "#ffa726", "tonalRamp": ["#e65100", "#ef6c00", "#f57c00", "#fb8c00", "#ff9800", "#ffa726", "#ffb74d", "#ffe0b2"] },
-      "warning-clair": { "role": "tertiary", "displayName": "Orange Avertissement (Clair)", "canonical": "#ed6c02", "tonalRamp": ["#e65100", "#ed6c02", "#f57c00", "#fb8c00", "#ff9800", "#ffa726", "#ffb74d", "#ffe0b2"] },
-      "error": { "role": "tertiary", "displayName": "Rouge Erreur (Santé, destruction)", "canonical": "#f44336", "tonalRamp": ["#b71c1c", "#c62828", "#d32f2f", "#e53935", "#f44336", "#ef5350", "#e57373", "#ffcdd2"] },
-      "error-clair": { "role": "tertiary", "displayName": "Rouge Erreur (Clair)", "canonical": "#d32f2f", "tonalRamp": ["#b71c1c", "#c62828", "#d32f2f", "#e53935", "#f44336", "#ef5350", "#e57373", "#ffcdd2"] },
-      "on-primary": { "role": "neutral", "displayName": "Texte sur Bleu Primaire", "canonical": "rgba(0, 0, 0, 0.87)" },
-      "background": { "role": "neutral", "displayName": "Fond Sombre", "canonical": "#121212", "tonalRamp": ["#121212", "#1e1e1e", "#282828", "#2e2e2e", "#393939", "#616161", "#9e9e9e", "#f5f5f5"] },
-      "surface-raised": { "role": "neutral", "displayName": "Surface Relevée", "canonical": "#1e1e1e" },
-      "surface-dialog": { "role": "neutral", "displayName": "Surface Dialogue", "canonical": "#393939" },
-      "background-clair": { "role": "neutral", "displayName": "Fond Clair", "canonical": "#ffffff" },
-      "text-primary": { "role": "neutral", "displayName": "Texte Principal", "canonical": "#ffffff" },
-      "text-secondary": { "role": "neutral", "displayName": "Texte Secondaire", "canonical": "rgba(255, 255, 255, 0.7)" },
-      "text-disabled": { "role": "neutral", "displayName": "Texte Désactivé", "canonical": "rgba(255, 255, 255, 0.5)" },
-      "action-disabled": { "role": "neutral", "displayName": "Action Désactivée", "canonical": "rgba(255, 255, 255, 0.3)" },
-      "divider": { "role": "neutral", "displayName": "Séparateur", "canonical": "rgba(255, 255, 255, 0.12)" },
-      "table-rule": { "role": "neutral", "displayName": "Filet de Table", "canonical": "#515151" },
-      "input-outline": { "role": "neutral", "displayName": "Contour de Champ", "canonical": "rgba(255, 255, 255, 0.23)" },
-      "chip-fill": { "role": "neutral", "displayName": "Fond de Puce", "canonical": "rgba(255, 255, 255, 0.16)" },
-      "xp-left": { "role": "primary", "displayName": "XP Restante", "canonical": "rgba(144, 202, 249, 0.22)" },
-      "alert-success-bg": { "role": "neutral", "displayName": "Fond Alerte Succès", "canonical": "#0c130d" },
-      "alert-success-text": { "role": "neutral", "displayName": "Texte Alerte Succès", "canonical": "#cce8cd" },
-      "text-primary-clair": { "role": "neutral", "displayName": "Texte Principal (Clair)", "canonical": "rgba(0, 0, 0, 0.87)" },
-      "text-secondary-clair": { "role": "neutral", "displayName": "Texte Secondaire (Clair)", "canonical": "rgba(0, 0, 0, 0.6)" },
-      "divider-clair": { "role": "neutral", "displayName": "Séparateur (Clair)", "canonical": "rgba(0, 0, 0, 0.12)" },
-      "tooltip-bg": { "role": "neutral", "displayName": "Fond Infobulle", "canonical": "rgba(97, 97, 97, 0.92)" },
-      "on-dark-surface": { "role": "neutral", "displayName": "Texte sur Fond Coloré", "canonical": "#ffffff" },
-      "snackbar-info": { "role": "neutral", "displayName": "Info Notistack", "canonical": "#2196f3", "tonalRamp": ["#0d47a1", "#1565c0", "#1976d2", "#1e88e5", "#2196f3", "#64b5f6", "#90caf9", "#e3f2fd"] }
+      "encre-de-nuit": {
+        "role": "neutral",
+        "displayName": "Encre de nuit",
+        "canonical": "#11131c",
+        "oklch": "oklch(18.9% 0.019 274.8)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#23252a",
+          "#40424a",
+          "#5e616b",
+          "#7f828d",
+          "#a2a5ae",
+          "#c7c9d0",
+          "#edeef4"
+        ]
+      },
+      "nuit-voilee": {
+        "role": "neutral",
+        "displayName": "Nuit voilée",
+        "canonical": "#161925",
+        "oklch": "oklch(21.6% 0.024 273.4)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#23252c",
+          "#3f424c",
+          "#5d616e",
+          "#7e8290",
+          "#a1a5b1",
+          "#c6c9d3",
+          "#eceef5"
+        ]
+      },
+      "nuit-relevee": {
+        "role": "neutral",
+        "displayName": "Nuit relevée",
+        "canonical": "#1d2130",
+        "oklch": "oklch(25.1% 0.029 272.6)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#090b10",
+          "#22252e",
+          "#3e414e",
+          "#5c6171",
+          "#7d8293",
+          "#a0a4b3",
+          "#c5c9d5",
+          "#ebeef7"
+        ]
+      },
+      "os": {
+        "role": "neutral",
+        "displayName": "Os",
+        "canonical": "#e8e2d3",
+        "oklch": "oklch(91.3% 0.021 88.7)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0d0b07",
+          "#27251e",
+          "#454239",
+          "#666155",
+          "#878275",
+          "#a9a59a",
+          "#ccc9c0",
+          "#f1eee8"
+        ]
+      },
+      "argent": {
+        "role": "neutral",
+        "displayName": "Argent",
+        "canonical": "#a9b1c2",
+        "oklch": "oklch(75.9% 0.026 265.5)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#090b10",
+          "#21252d",
+          "#3d424d",
+          "#5b616f",
+          "#7b8291",
+          "#9fa5b2",
+          "#c4c9d3",
+          "#ebeef6"
+        ]
+      },
+      "filet-nuit": {
+        "role": "neutral",
+        "displayName": "Filet de nuit",
+        "canonical": "rgba(232, 226, 211, 0.12)",
+        "oklch": "oklch(91.3% 0.021 88.7)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0d0b07",
+          "#27251e",
+          "#454239",
+          "#666155",
+          "#878275",
+          "#a9a59a",
+          "#ccc9c0",
+          "#f1eee8"
+        ]
+      },
+      "or-de-lampe": {
+        "role": "primary",
+        "displayName": "Or de lampe",
+        "canonical": "#d9a441",
+        "oklch": "oklch(75.1% 0.130 79.8)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#170700",
+          "#381f00",
+          "#5c3a00",
+          "#845700",
+          "#a77918",
+          "#c59e5b",
+          "#e3c491",
+          "#ffebc6"
+        ]
+      },
+      "meche": {
+        "role": "primary",
+        "displayName": "Mèche",
+        "canonical": "#1a1406",
+        "oklch": "oklch(19.4% 0.027 87.4)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0d0b06",
+          "#28251c",
+          "#474236",
+          "#676151",
+          "#898272",
+          "#aaa597",
+          "#cdc9be",
+          "#f2eee6"
+        ]
+      },
+      "lilas": {
+        "role": "secondary",
+        "displayName": "Lilas",
+        "canonical": "#b49ad9",
+        "oklch": "oklch(73.2% 0.094 303.1)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0f0718",
+          "#2a1e3b",
+          "#4a3861",
+          "#6b5589",
+          "#8d76ad",
+          "#ae9bca",
+          "#d0c1e7",
+          "#f4e9ff"
+        ]
+      },
+      "braise": {
+        "role": "error",
+        "displayName": "Braise",
+        "canonical": "#e06a5a",
+        "oklch": "oklch(66.3% 0.151 29.5)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#1f0000",
+          "#470d08",
+          "#72231b",
+          "#a13b2f",
+          "#c75e4f",
+          "#e3897b",
+          "#fdb4a8",
+          "#ffe0d6"
+        ]
+      },
+      "cuivre": {
+        "role": "warning",
+        "displayName": "Cuivre",
+        "canonical": "#e8894a",
+        "oklch": "oklch(72.0% 0.140 52.2)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#1d0200",
+          "#421500",
+          "#6b2d00",
+          "#984700",
+          "#bd6930",
+          "#d99266",
+          "#f5bb98",
+          "#ffe4cb"
+        ]
+      },
+      "bleu-de-veille": {
+        "role": "info",
+        "displayName": "Bleu de veille",
+        "canonical": "#8fb3d9",
+        "oklch": "oklch(75.4% 0.068 250.1)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#030c17",
+          "#162638",
+          "#2d445c",
+          "#466483",
+          "#6686a7",
+          "#8ea8c4",
+          "#b6cce3",
+          "#e1f0ff"
+        ]
+      },
+      "sauge": {
+        "role": "success",
+        "displayName": "Sauge",
+        "canonical": "#7fb38a",
+        "oklch": "oklch(71.9% 0.081 150.5)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#020f05",
+          "#122b19",
+          "#284b31",
+          "#406d4b",
+          "#618f6b",
+          "#8ab092",
+          "#b4d2ba",
+          "#dff5e3"
+        ]
+      },
+      "papier-os": {
+        "role": "neutral",
+        "displayName": "Papier os",
+        "canonical": "#f4efe3",
+        "oklch": "oklch(95.3% 0.017 88.0)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0c0b08",
+          "#272520",
+          "#45423b",
+          "#656157",
+          "#868278",
+          "#a8a59c",
+          "#ccc9c2",
+          "#f0eee9"
+        ]
+      },
+      "papier": {
+        "role": "neutral",
+        "displayName": "Papier",
+        "canonical": "#faf7ef",
+        "oklch": "oklch(97.6% 0.011 89.7)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0c0b09",
+          "#262522",
+          "#44423d",
+          "#63615b",
+          "#85827c",
+          "#a7a59f",
+          "#cbc9c4",
+          "#f0eeeb"
+        ]
+      },
+      "velin": {
+        "role": "neutral",
+        "displayName": "Vélin",
+        "canonical": "#fffdf7",
+        "oklch": "oklch(99.4% 0.008 91.5)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262522",
+          "#43423e",
+          "#63615c",
+          "#84827d",
+          "#a6a5a1",
+          "#cac9c6",
+          "#efeeec"
+        ]
+      },
+      "encre": {
+        "role": "neutral",
+        "displayName": "Encre",
+        "canonical": "#1d1f2b",
+        "oklch": "oklch(24.3% 0.023 277.2)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#23252c",
+          "#3f414b",
+          "#5e606e",
+          "#7f818f",
+          "#a2a4b0",
+          "#c7c8d2",
+          "#edeef5"
+        ]
+      },
+      "ardoise": {
+        "role": "neutral",
+        "displayName": "Ardoise",
+        "canonical": "#555b6b",
+        "oklch": "oklch(47.2% 0.027 269.1)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#090b10",
+          "#22252d",
+          "#3d424d",
+          "#5b6170",
+          "#7c8292",
+          "#a0a5b2",
+          "#c5c9d4",
+          "#ebeef6"
+        ]
+      },
+      "filet-jour": {
+        "role": "neutral",
+        "displayName": "Filet du jour",
+        "canonical": "rgba(29, 31, 43, 0.14)",
+        "oklch": "oklch(24.3% 0.023 277.2)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#23252c",
+          "#3f414b",
+          "#5e606e",
+          "#7f818f",
+          "#a2a4b0",
+          "#c7c8d2",
+          "#edeef5"
+        ]
+      },
+      "or-bruni": {
+        "role": "primary",
+        "displayName": "Or bruni",
+        "canonical": "#8a5a12",
+        "oklch": "oklch(50.9% 0.103 70.8)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#160700",
+          "#371f00",
+          "#5b3a07",
+          "#825719",
+          "#a6783e",
+          "#c49d6f",
+          "#e3c39f",
+          "#ffead0"
+        ]
+      },
+      "violet-encre": {
+        "role": "secondary",
+        "displayName": "Violet d'encre",
+        "canonical": "#6a4fa3",
+        "oklch": "oklch(49.6% 0.131 296.1)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0e051f",
+          "#291b45",
+          "#473570",
+          "#68509d",
+          "#8972c2",
+          "#aa98dc",
+          "#cdc0f6",
+          "#f1e8ff"
+        ]
+      },
+      "vermillon": {
+        "role": "error",
+        "displayName": "Vermillon",
+        "canonical": "#b23a2a",
+        "oklch": "oklch(52.0% 0.159 30.7)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#200000",
+          "#480b05",
+          "#742116",
+          "#a43829",
+          "#ca5b4a",
+          "#e68777",
+          "#ffb3a5",
+          "#ffdfd4"
+        ]
+      },
+      "rouille": {
+        "role": "warning",
+        "displayName": "Rouille",
+        "canonical": "#b0561c",
+        "oklch": "oklch(55.5% 0.135 48.7)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1c0200",
+          "#421500",
+          "#6b2d01",
+          "#974711",
+          "#bd6939",
+          "#d9916b",
+          "#f5ba9c",
+          "#ffe4ce"
+        ]
+      },
+      "bleu-ardoise": {
+        "role": "info",
+        "displayName": "Bleu ardoise",
+        "canonical": "#3d6a99",
+        "oklch": "oklch(51.3% 0.090 250.9)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#010c1a",
+          "#0f263e",
+          "#254465",
+          "#3b648f",
+          "#5c86b2",
+          "#86a9cf",
+          "#b0cceb",
+          "#dcf1ff"
+        ]
+      },
+      "mousse": {
+        "role": "success",
+        "displayName": "Mousse",
+        "canonical": "#3f7a4f",
+        "oklch": "oklch(52.7% 0.092 151.0)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#010f04",
+          "#0e2c17",
+          "#234c2f",
+          "#3a6f48",
+          "#5b9168",
+          "#86b28f",
+          "#b1d4b8",
+          "#ddf6e2"
+        ]
+      },
+      "sante-nuit": {
+        "role": "tertiary",
+        "displayName": "Santé (nuit)",
+        "canonical": "#d97a6c",
+        "oklch": "oklch(68.1% 0.121 29.4)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#1c0201",
+          "#41150f",
+          "#6a2c24",
+          "#96453a",
+          "#bb675a",
+          "#d88f84",
+          "#f4b9af",
+          "#ffe3db"
+        ]
+      },
+      "equilibre-nuit": {
+        "role": "tertiary",
+        "displayName": "Équilibre (nuit)",
+        "canonical": "#8fb3d9",
+        "oklch": "oklch(75.4% 0.068 250.1)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#030c17",
+          "#162638",
+          "#2d445c",
+          "#466483",
+          "#6686a7",
+          "#8ea8c4",
+          "#b6cce3",
+          "#e1f0ff"
+        ]
+      },
+      "eclat-nuit": {
+        "role": "tertiary",
+        "displayName": "Éclat (nuit)",
+        "canonical": "#e9cf7a",
+        "oklch": "oklch(85.8% 0.109 92.9)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#120a00",
+          "#302300",
+          "#514000",
+          "#755f03",
+          "#978133",
+          "#b7a468",
+          "#d7c99a",
+          "#f9eecd"
+        ]
+      },
+      "mai-nuit": {
+        "role": "tertiary",
+        "displayName": "Maï (nuit)",
+        "canonical": "#c9b8e8",
+        "oklch": "oklch(81.3% 0.069 301.1)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0d0815",
+          "#282036",
+          "#473b59",
+          "#675980",
+          "#897aa3",
+          "#aa9ec1",
+          "#cdc4e0",
+          "#f1eaff"
+        ]
+      },
+      "sante-jour": {
+        "role": "tertiary",
+        "displayName": "Santé (jour)",
+        "canonical": "#a8432f",
+        "oklch": "oklch(51.6% 0.138 33.0)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1e0100",
+          "#441108",
+          "#6e281a",
+          "#9c412e",
+          "#c2634f",
+          "#de8d7b",
+          "#f9b7a8",
+          "#ffe1d6"
+        ]
+      },
+      "equilibre-jour": {
+        "role": "tertiary",
+        "displayName": "Équilibre (jour)",
+        "canonical": "#3d6a99",
+        "oklch": "oklch(51.3% 0.090 250.9)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#010c1a",
+          "#0f263e",
+          "#254465",
+          "#3b648f",
+          "#5c86b2",
+          "#86a9cf",
+          "#b0cceb",
+          "#dcf1ff"
+        ]
+      },
+      "eclat-jour": {
+        "role": "tertiary",
+        "displayName": "Éclat (jour)",
+        "canonical": "#8a6a10",
+        "oklch": "oklch(54.2% 0.106 86.5)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#130900",
+          "#322200",
+          "#543e00",
+          "#795d0b",
+          "#9c7e36",
+          "#bba26a",
+          "#dbc79b",
+          "#fcedce"
+        ]
+      },
+      "mai-jour": {
+        "role": "tertiary",
+        "displayName": "Maï (jour)",
+        "canonical": "#6a55a0",
+        "oklch": "oklch(50.5% 0.117 294.8)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0d061d",
+          "#281d42",
+          "#46376b",
+          "#665397",
+          "#8775bc",
+          "#a89ad7",
+          "#ccc1f2",
+          "#f0e9ff"
+        ]
+      },
+      "lune-argent-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune d'argent (nuit)",
+        "canonical": "#b9c3d6",
+        "oklch": "oklch(81.5% 0.029 263.4)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#090b10",
+          "#21252d",
+          "#3c424e",
+          "#596171",
+          "#7a8393",
+          "#9ea5b3",
+          "#c3c9d5",
+          "#eaeff7"
+        ]
+      },
+      "lune-argent-jour": {
+        "role": "tertiary",
+        "displayName": "Lune d'argent (jour)",
+        "canonical": "#5d6b85",
+        "oklch": "oklch(52.6% 0.045 262.7)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#070b13",
+          "#1e2532",
+          "#394254",
+          "#556279",
+          "#75839b",
+          "#9aa6bb",
+          "#c0cadb",
+          "#e8effb"
+        ]
+      },
+      "lune-ambre-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune d'ambre (nuit)",
+        "canonical": "#e0b25a",
+        "oklch": "oklch(78.8% 0.119 81.8)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#150800",
+          "#362000",
+          "#593c00",
+          "#805900",
+          "#a37b28",
+          "#c1a062",
+          "#e0c596",
+          "#ffecca"
+        ]
+      },
+      "lune-ambre-jour": {
+        "role": "tertiary",
+        "displayName": "Lune d'ambre (jour)",
+        "canonical": "#94640f",
+        "oklch": "oklch(54.1% 0.110 74.5)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#160700",
+          "#371f00",
+          "#5b3a00",
+          "#82570a",
+          "#a67936",
+          "#c49e6a",
+          "#e2c49b",
+          "#ffebcd"
+        ]
+      },
+      "lune-rousse-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune rousse (nuit)",
+        "canonical": "#d9825f",
+        "oklch": "oklch(69.2% 0.118 42.4)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#1b0300",
+          "#401705",
+          "#682f17",
+          "#93492b",
+          "#b86b4c",
+          "#d59378",
+          "#f1bba6",
+          "#ffe5d5"
+        ]
+      },
+      "lune-rousse-jour": {
+        "role": "tertiary",
+        "displayName": "Lune rousse (jour)",
+        "canonical": "#a24a28",
+        "oklch": "oklch(51.6% 0.126 40.7)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1c0300",
+          "#411504",
+          "#6a2d15",
+          "#964728",
+          "#bc684a",
+          "#d89177",
+          "#f4baa5",
+          "#ffe4d4"
+        ]
+      },
+      "lune-jade-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune de jade (nuit)",
+        "canonical": "#78c0a3",
+        "oklch": "oklch(75.2% 0.084 166.7)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#001008",
+          "#052d20",
+          "#194d3b",
+          "#2e6f58",
+          "#519178",
+          "#7eb29c",
+          "#acd4c2",
+          "#d9f7e9"
+        ]
+      },
+      "lune-jade-jour": {
+        "role": "tertiary",
+        "displayName": "Lune de jade (jour)",
+        "canonical": "#2e7a5c",
+        "oklch": "oklch(52.4% 0.089 164.1)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#001007",
+          "#042d1e",
+          "#174d38",
+          "#2c7055",
+          "#509275",
+          "#7db39a",
+          "#abd4c0",
+          "#d9f7e8"
+        ]
+      },
+      "lune-azur-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune d'azur (nuit)",
+        "canonical": "#82aee0",
+        "oklch": "oklch(73.8% 0.087 252.2)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#020c1a",
+          "#11263d",
+          "#274464",
+          "#3e648d",
+          "#5f85b1",
+          "#88a8cd",
+          "#b2ccea",
+          "#def1ff"
+        ]
+      },
+      "lune-azur-jour": {
+        "role": "tertiary",
+        "displayName": "Lune d'azur (jour)",
+        "canonical": "#2f6299",
+        "oklch": "oklch(48.8% 0.104 252.3)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#000b1d",
+          "#0c2642",
+          "#20446a",
+          "#366496",
+          "#5785ba",
+          "#81a9d5",
+          "#adccf1",
+          "#daf1ff"
+        ]
+      },
+      "lune-amethyste-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune d'améthyste (nuit)",
+        "canonical": "#ad94e0",
+        "oklch": "oklch(71.7% 0.111 298.7)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0e061c",
+          "#2a1d40",
+          "#483768",
+          "#695393",
+          "#8b74b7",
+          "#ac9ad3",
+          "#cec1ee",
+          "#f2e8ff"
+        ]
+      },
+      "lune-amethyste-jour": {
+        "role": "tertiary",
+        "displayName": "Lune d'améthyste (jour)",
+        "canonical": "#6747a6",
+        "oklch": "oklch(48.1% 0.147 295.9)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0e0421",
+          "#2a1949",
+          "#483275",
+          "#694da4",
+          "#8a6fc9",
+          "#ab96e3",
+          "#cebefb",
+          "#f1e7ff"
+        ]
+      },
+      "lune-corail-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune de corail (nuit)",
+        "canonical": "#e88e92",
+        "oklch": "oklch(74.1% 0.110 17.2)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#1a0305",
+          "#3f1619",
+          "#672d32",
+          "#91474c",
+          "#b7686c",
+          "#d49092",
+          "#f0b9ba",
+          "#ffe3e3"
+        ]
+      },
+      "lune-corail-jour": {
+        "role": "tertiary",
+        "displayName": "Lune de corail (jour)",
+        "canonical": "#ab3f47",
+        "oklch": "oklch(52.0% 0.142 19.2)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1e0003",
+          "#450e14",
+          "#70242a",
+          "#9d3c43",
+          "#c45e63",
+          "#e0898a",
+          "#fbb4b4",
+          "#ffdfdf"
+        ]
+      },
+      "lune-nacre-nuit": {
+        "role": "tertiary",
+        "displayName": "Lune de nacre (nuit)",
+        "canonical": "#e6dcc8",
+        "oklch": "oklch(89.7% 0.029 84.6)",
+        "scheme": "nuit",
+        "tonalRamp": [
+          "#0e0b06",
+          "#29251c",
+          "#474135",
+          "#686050",
+          "#8a8171",
+          "#aba496",
+          "#cec8bd",
+          "#f2eee6"
+        ]
+      },
+      "lune-nacre-jour": {
+        "role": "tertiary",
+        "displayName": "Lune de nacre (jour)",
+        "canonical": "#7a6a4a",
+        "oklch": "oklch(53.1% 0.051 84.2)",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0f0a03",
+          "#2c2414",
+          "#4c402a",
+          "#6e5f43",
+          "#908063",
+          "#b0a48a",
+          "#d2c8b4",
+          "#f5eedf"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display (h1)", "purpose": "ONIRIA on home and admin pages." },
-      "display-sheet": { "displayName": "Display sheet (h1, 2.25rem below 900px)", "purpose": "Character and table names." },
-      "headline": { "displayName": "Headline (h3)", "purpose": "Admin page titles such as Tables de jeu." },
-      "title": { "displayName": "Title (h4)", "purpose": "Centred titles of computed cards; Mes fiches / Autres fiches." },
-      "subtitle": { "displayName": "Subtitle (h5)", "purpose": "Triad group headings (with derived value in italics and a scope lock) and left-aligned list-card titles." },
-      "dialog-title": { "displayName": "Dialog title (h6)", "purpose": "Creation and XP dialogs." },
-      "byline": { "displayName": "Byline (subtitle1)", "purpose": "Joueur·euse · Table · lecture seule line under the name." },
-      "body": { "displayName": "Body (body1)", "purpose": "Stat lines: Label : valeur / max." },
-      "body-small": { "displayName": "Body small (body2)", "purpose": "Table cells and toasts." },
-      "table-head": { "displayName": "Table head", "purpose": "Column headers of collection tables." },
-      "label": { "displayName": "Label (button)", "purpose": "Uppercase buttons and tabs." },
-      "label-small": { "displayName": "Label small", "purpose": "Small buttons: Ajouter…, Attribuer de l'XP, Changer l'image." },
-      "caption": { "displayName": "Caption", "purpose": "Exp. lines, XP category descriptions, legends, helper hints." },
-      "tooltip": { "displayName": "Tooltip", "purpose": "Rules text and formulas on dotted-underlined labels." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "ONIRIA wordmark on home; top-level page titles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Character name on the plate (1.625rem phone, 2.5rem md+)."
+      },
+      "headline-sm": {
+        "displayName": "Headline small",
+        "purpose": "Secondary page titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Characteristic groups, XP pools, sheet-card names."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Small-caps sheet section headings, followed by a running rule."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Small-caps column captions, gauge labels, plate facts, popover labels."
+      },
+      "label-table": {
+        "displayName": "Table head",
+        "purpose": "Small-caps table header cells and subtitles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Interface text."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Stat-row labels, secondary lines."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Thresholds, margins, XP descriptions."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Buttons and tabs, sentence case."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Every game value: Spectral lining tabular figures; sized by importance."
+      }
     },
     "shadows": [
-      { "name": "elevation-1", "value": "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)", "purpose": "Cards and sheet cards; visible in Clair, nearly invisible in Sombre where the overlay does the work." },
-      { "name": "overlay-1", "value": "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))", "purpose": "Dark-mode background-image on elevation-1 surfaces (cards)." },
-      { "name": "overlay-24", "value": "linear-gradient(rgba(255, 255, 255, 0.165), rgba(255, 255, 255, 0.165))", "purpose": "Dark-mode background-image on dialogs." }
+      {
+        "name": "dialog",
+        "value": "0 24px 48px -12px rgba(0, 0, 0, 0.5)",
+        "purpose": "Modal dialogs only; nothing else casts a shadow."
+      },
+      {
+        "name": "transcendance-ring",
+        "value": "0 0 0 3px var(--mui-palette-background-paper), 0 0 0 4px var(--tint)",
+        "purpose": "Second ring detached from the portrait when Devenir exceeds 100. A stroke, not elevation."
+      },
+      {
+        "name": "xp-remaining-outline",
+        "value": "inset 0 0 0 1.5px var(--mui-palette-primary-main)",
+        "purpose": "Outline of the remaining XP segment. A stroke, not elevation."
+      }
     ],
     "motion": [
-      { "name": "mui-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "MUI default easing for hover tints, tab indicator and input underline." },
-      { "name": "mui-short", "value": "250ms", "purpose": "Button hover/background transitions." },
-      { "name": "xp-bar-width", "value": "width 0.3s", "purpose": "XP bar segments resize smoothly when XP changes." }
+      {
+        "name": "state-quick",
+        "value": "120ms ease-out",
+        "purpose": "Color, background and opacity on hover/focus (stepper, edit pencil)."
+      },
+      {
+        "name": "chevron",
+        "value": "160ms ease-out",
+        "purpose": "Section collapse chevron rotation (-90deg)."
+      },
+      {
+        "name": "collapse",
+        "value": "180ms",
+        "purpose": "Section content collapse."
+      },
+      {
+        "name": "moon-stroke",
+        "value": "200ms ease-out",
+        "purpose": "Arc stroke color when a point is gained or lost."
+      },
+      {
+        "name": "moon-phase",
+        "value": "260ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Lit phase and arc glide to the new value. Off under prefers-reduced-motion."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "600px" },
-      { "name": "md", "value": "900px" },
-      { "name": "lg", "value": "1200px" },
-      { "name": "xl", "value": "1536px" }
-    ]
+      {
+        "name": "demi-ecran",
+        "value": "520px"
+      },
+      {
+        "name": "sm",
+        "value": "600px"
+      },
+      {
+        "name": "md",
+        "value": "900px"
+      },
+      {
+        "name": "lg",
+        "value": "1200px"
+      },
+      {
+        "name": "xl",
+        "value": "1536px"
+      }
+    ],
+    "densities": [
+      {
+        "name": "confort",
+        "spacingUnit": "8px",
+        "cardPadding": "20px",
+        "controlSize": "medium"
+      },
+      {
+        "name": "compact",
+        "spacingUnit": "6px",
+        "cardPadding": "12px",
+        "controlSize": "small"
+      }
+    ],
+    "tintIntensity": {
+      "devenirFull": 100,
+      "plateWash": "6%-18%",
+      "ringAndTopRule": "35%-100%",
+      "missingDevenirLevel": 0.5,
+      "transcendance": "> 100: second detached ring"
+    }
   },
   "components": [
     {
-      "name": "Existences Card",
-      "kind": "card",
-      "refersTo": "card",
-      "description": "Computed card: centred Title, triad columns, editable values with a 4px gauge coloured by palette role (Santé error, Équilibre info, Éclat warning).",
-      "html": "<div class=\"ds-card\"><h4 class=\"ds-card-title\">Existences</h4><div class=\"ds-triad\"><div><p class=\"ds-field\"><span class=\"ds-field-label\">La Santé :</span> <span class=\"ds-field-value\" tabindex=\"0\">3</span> / 3</p><div class=\"ds-gauge ds-gauge-sante\"><span style=\"width:100%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 6</p></div><div><p class=\"ds-field\"><span class=\"ds-field-label\">L'Équilibre :</span> <span class=\"ds-field-value\" tabindex=\"0\">2</span> / 4</p><div class=\"ds-gauge ds-gauge-equilibre\"><span style=\"width:50%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 8</p></div><div><p class=\"ds-field\"><span class=\"ds-field-label\">L'Éclat :</span> <span class=\"ds-field-value\" tabindex=\"0\">4</span> / 4</p><div class=\"ds-gauge ds-gauge-eclat\"><span style=\"width:100%\"></span></div><p class=\"ds-field\"><span class=\"ds-field-label\">Seuil :</span> 9</p></div></div></div>",
-      "css": ".ds-card { background-color: var(--mui-palette-background-paper, #121212); background-image: var(--mui-overlays-1, linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.05))); color: var(--mui-palette-text-primary, #fff); border-radius: 4px; padding: 16px 16px 24px; box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12); font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-card-title { margin: 0 0 8px; text-align: center; font-size: 2.125rem; font-weight: 400; line-height: 1.235; letter-spacing: 0.00735em; } .ds-triad { display: flex; flex-wrap: wrap; justify-content: space-evenly; gap: 32px; } .ds-field { margin: 0; font-size: 1rem; line-height: 1.5; letter-spacing: 0.00938em; } .ds-field-label { text-decoration: underline dotted; } .ds-field-value { cursor: pointer; border-bottom: 1px dashed transparent; } .ds-field-value:hover, .ds-field-value:focus-visible { border-bottom-color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); outline: none; } .ds-gauge { width: 140px; height: 4px; overflow: hidden; margin: 2px 0 8px; } .ds-gauge span { display: block; height: 100%; } .ds-gauge-sante { background: #7a211b; } .ds-gauge-sante span { background: var(--mui-palette-error-main, #f44336); } .ds-gauge-equilibre { background: #145b7b; } .ds-gauge-equilibre span { background: var(--mui-palette-info-main, #29b6f6); } .ds-gauge-eclat { background: #7f5313; } .ds-gauge-eclat span { background: var(--mui-palette-warning-main, #ffa726); }"
-    },
-    {
-      "name": "Sheet Field",
-      "kind": "custom",
-      "refersTo": "sheet-field-value-editable",
-      "description": "One stat line: dotted-underlined label with the rules tooltip, value with a faint 10px pencil, dashed underline on hover, optional / max.",
-      "html": "<p class=\"ds-sheet-field\"><span class=\"ds-sheet-field-label\" tabindex=\"0\" title=\"[Vig] L'endurance physique, la solidité du corps…\">Vigueur :</span> <span class=\"ds-sheet-field-value\" tabindex=\"0\">30 <svg viewBox=\"0 0 24 24\" width=\"10\" height=\"10\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z\"/></svg></span></p>",
-      "css": ".ds-sheet-field { margin: 0; display: flex; gap: 4px; font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 1rem; line-height: 1.5; letter-spacing: 0.00938em; color: var(--mui-palette-text-primary, #fff); } .ds-sheet-field-label { text-decoration: underline dotted; cursor: help; } .ds-sheet-field-value { cursor: pointer; border-bottom: 1px dashed transparent; } .ds-sheet-field-value svg { vertical-align: top; opacity: 0.6; } .ds-sheet-field-value:hover { border-bottom-color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); } .ds-sheet-field-value:focus-visible, .ds-sheet-field-label:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: 2px; }"
-    },
-    {
-      "name": "XP Bar",
-      "kind": "custom",
-      "refersTo": "xp-bar",
-      "description": "One XP category: Subtitle label, Total, caption of what it pays, 16px segmented bar (spent primary, pending hatched, left primary 22%) whose segments brighten on hover.",
-      "html": "<div class=\"ds-xp\"><div class=\"ds-xp-head\"><h5>Éprouver</h5><span>Total : <strong>180</strong></span></div><p class=\"ds-xp-desc\">Corps et Âme, compétences martiales et générales, le Corpus.</p><div class=\"ds-xp-bar\" role=\"group\" aria-label=\"Éprouver : total 180 XP\"><span class=\"ds-xp-spent\" tabindex=\"0\" title=\"Dépensée : 120 XP\" style=\"width:66%\"></span><span class=\"ds-xp-pending\" tabindex=\"0\" title=\"À payer à la validation : 20 XP\" style=\"width:11%\"></span><span class=\"ds-xp-left\" tabindex=\"0\" title=\"Restante : 40 XP\" style=\"width:23%\"></span></div></div>",
-      "css": ".ds-xp { width: 280px; font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-xp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } .ds-xp-head h5 { margin: 0; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-xp-desc { margin: 0 0 8px; font-size: 0.75rem; line-height: 1.66; letter-spacing: 0.03333em; color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); } .ds-xp-bar { display: flex; height: 16px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.08); } .ds-xp-bar span { min-width: 4px; cursor: help; transition: width 0.3s; } .ds-xp-bar span:hover, .ds-xp-bar span:focus-visible { filter: brightness(1.25); outline: none; } .ds-xp-spent { background: var(--mui-palette-primary-main, #90caf9); } .ds-xp-pending { background-image: repeating-linear-gradient(45deg, #90caf9 0 5px, rgba(144,202,249,0.4) 5px 10px); } .ds-xp-left { background: rgba(144, 202, 249, 0.22); }"
-    },
-    {
-      "name": "Scope Lock and Status Chip",
-      "kind": "chip",
-      "refersTo": "chip-status",
-      "description": "Settled state is neutral grey (closed lock, Validée); unsettled state is warning (open lock, En création).",
-      "html": "<div class=\"ds-locks\"><h5 class=\"ds-group\">Le Corps <em>(18)</em> <svg class=\"ds-lock-closed\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-label=\"Validé\"><path fill=\"currentColor\" d=\"M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9zm9 14H6V10h12zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2\"/></svg></h5><span class=\"ds-chip\">Validée</span><span class=\"ds-chip ds-chip-warning\">En création</span></div>",
-      "css": ".ds-locks { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-group { margin: 0; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-lock-closed { vertical-align: middle; margin-left: 4px; color: rgba(255, 255, 255, 0.3); } .ds-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 16px; font-size: 0.8125rem; background: rgba(255, 255, 255, 0.16); color: #fff; } .ds-chip-warning { background: var(--mui-palette-warning-main, #ffa726); color: rgba(0, 0, 0, 0.87); }"
-    },
-    {
-      "name": "Skill Degree Chips",
-      "kind": "chip",
-      "refersTo": "chip-degree",
-      "description": "Small outlined chips marking a skill's degree in the tree: Base primary, Principe secondary, Maîtrise/Technique success, Enchaînement warning.",
-      "html": "<div class=\"ds-degrees\"><span class=\"ds-degree ds-degree-base\">Base</span><span class=\"ds-degree ds-degree-principe\">Principe</span><span class=\"ds-degree ds-degree-maitrise\">Maîtrise</span><span class=\"ds-degree ds-degree-enchainement\">Enchaînement</span></div>",
-      "css": ".ds-degrees { display: flex; gap: 8px; flex-wrap: wrap; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-degree { display: inline-flex; align-items: center; height: 24px; padding: 0 7px; border-radius: 16px; font-size: 0.8125rem; background: transparent; border: 1px solid; } .ds-degree-base { color: #90caf9; border-color: rgba(144, 202, 249, 0.7); } .ds-degree-principe { color: #ce93d8; border-color: rgba(206, 147, 216, 0.7); } .ds-degree-maitrise { color: #66bb6a; border-color: rgba(102, 187, 106, 0.7); } .ds-degree-enchainement { color: #ffa726; border-color: rgba(255, 167, 38, 0.7); }"
-    },
-    {
-      "name": "Collection Table",
-      "kind": "custom",
-      "refersTo": "table-cell",
-      "description": "List card: left-aligned Subtitle, small table with inline-edit cells and a delete icon, one-line empty state, + Ajouter… underneath.",
-      "html": "<div class=\"ds-list\"><h5 class=\"ds-list-title\">Objets</h5><table class=\"ds-table\"><thead><tr><th>Objet</th><th>Quantité</th><th aria-label=\"Actions\"></th></tr></thead><tbody><tr><td>Besace</td><td>1</td><td><button class=\"ds-icon-btn\" type=\"button\" aria-label=\"Supprimer\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM8 9h8v10H8zm7.5-5-1-1h-5l-1 1H5v2h14V4z\"/></svg></button></td></tr></tbody></table><button class=\"ds-add\" type=\"button\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg>Ajouter un objet</button></div>",
-      "css": ".ds-list { font-family: Roboto, Helvetica, Arial, sans-serif; color: var(--mui-palette-text-primary, #fff); } .ds-list-title { margin: 0 0 8px; font-size: 1.5rem; font-weight: 400; line-height: 1.334; } .ds-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 1.43; letter-spacing: 0.01071em; } .ds-table th { text-align: left; font-weight: 700; padding: 6px 16px; border-bottom: 1px solid #515151; } .ds-table td { padding: 6px 16px; border-bottom: 1px solid #515151; } .ds-icon-btn { display: inline-flex; padding: 5px; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; } .ds-icon-btn:hover { background: rgba(255, 255, 255, 0.08); } .ds-icon-btn:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); } .ds-add { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 4px 5px; border: 0; border-radius: 4px; background: transparent; color: var(--mui-palette-primary-main, #90caf9); font: inherit; font-size: 0.8125rem; font-weight: 500; line-height: 1.75; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-add:hover { background: rgba(144, 202, 249, 0.08); } .ds-add:focus-visible { outline: none; background: rgba(144, 202, 249, 0.12); }"
-    },
-    {
-      "name": "Dialog Actions",
+      "name": "Primary Button",
       "kind": "button",
-      "refersTo": "button-contained",
-      "description": "XP dialog footer: Annuler as text, confirming action contained primary; destructive confirmation uses error text instead.",
-      "html": "<div class=\"ds-actions\"><button class=\"ds-btn-text\" type=\"button\">Annuler</button><button class=\"ds-btn-contained\" type=\"button\">Attribuer</button><button class=\"ds-btn-error\" type=\"button\">Supprimer</button></div>",
-      "css": ".ds-actions { display: flex; gap: 8px; justify-content: flex-end; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-actions button { border: 0; border-radius: 4px; font: inherit; font-size: 0.875rem; font-weight: 500; line-height: 1.75; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-text { background: transparent; color: var(--mui-palette-primary-main, #90caf9); padding: 6px 8px; } .ds-btn-text:hover { background: rgba(144, 202, 249, 0.08); } .ds-btn-contained { background: var(--mui-palette-primary-main, #90caf9); color: rgba(0, 0, 0, 0.87); padding: 6px 16px; box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12); } .ds-btn-contained:hover { background: #42a5f5; } .ds-btn-error { background: transparent; color: var(--mui-palette-error-main, #f44336); padding: 6px 8px; } .ds-btn-error:hover { background: rgba(244, 67, 54, 0.08); } .ds-actions button:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: 2px; }"
+      "refersTo": "button-primary",
+      "description": "Contained lamp-gold action; the only filled button.",
+      "html": "<button class=\"ds-btn-primary\">Enregistrer</button>",
+      "css": ".ds-btn-primary { background: #d9a441; color: #1a1406; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 16px; border: none; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-primary:hover { background: #b8892f; } .ds-btn-primary:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
     },
     {
-      "name": "Sheet Tabs",
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Secondary action in dialogs and alerts.",
+      "html": "<button class=\"ds-btn-text\">Annuler</button>",
+      "css": ".ds-btn-text { background: transparent; color: #d9a441; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 8px; border: none; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-text:hover { background: rgba(217, 164, 65, 0.08); } .ds-btn-text:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tabs",
       "kind": "nav",
       "refersTo": "tab",
-      "description": "Centred tabs of the sheet, active tab in Bleu Primaire with a 2px indicator; index mirrored in the URL hash.",
-      "html": "<nav class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab ds-tab-active\" role=\"tab\" aria-selected=\"true\">Caractéristiques</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Traits</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Schémas &amp; Compétences</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Inventaire</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Notes</button></nav>",
-      "css": ".ds-tabs { display: flex; justify-content: center; flex-wrap: wrap; } .ds-tab { background: transparent; border: 0; border-bottom: 2px solid transparent; min-height: 48px; padding: 12px 16px; color: var(--mui-palette-text-secondary, rgba(255,255,255,0.7)); font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1.25; letter-spacing: 0.02857em; text-transform: uppercase; cursor: pointer; transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 300ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-tab:hover { color: var(--mui-palette-text-primary, #fff); } .ds-tab:focus-visible { outline: 2px solid var(--mui-palette-primary-main, #90caf9); outline-offset: -2px; } .ds-tab-active { color: var(--mui-palette-primary-main, #90caf9); border-bottom-color: var(--mui-palette-primary-main, #90caf9); }"
+      "description": "Sentence-case tabs over a full-width hairline, gold 2px indicator.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab ds-tab-active\" href=\"#\">Caractéristiques</a><a class=\"ds-tab\" href=\"#\">Traits</a><a class=\"ds-tab\" href=\"#\">Inventaire</a><a class=\"ds-tab\" href=\"#\">Notes</a></nav>",
+      "css": ".ds-tabs { display: flex; border-bottom: 1px solid rgba(232, 226, 211, 0.12); background: #11131c; } .ds-tab { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; color: #a9b1c2; text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 120ms ease-out; } .ds-tab:hover { color: #e8e2d3; } .ds-tab:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; } .ds-tab-active { color: #d9a441; border-bottom-color: #d9a441; }"
     },
     {
-      "name": "Outlined Picker",
-      "kind": "input",
-      "refersTo": "input-outlined",
-      "description": "Outlined 40px field used for catalogue pickers and dialog amounts, next to a small add button that is disabled until a choice is made.",
-      "html": "<div class=\"ds-picker\"><label class=\"ds-outlined\"><span>Potentiel à ajouter</span><input type=\"text\" placeholder=\"Potentiel à ajouter\"></label><button class=\"ds-add-disabled\" type=\"button\" disabled>+ Ajouter (10 XP)</button></div>",
-      "css": ".ds-picker { display: flex; align-items: center; gap: 12px; font-family: Roboto, Helvetica, Arial, sans-serif; } .ds-outlined { position: relative; display: inline-flex; } .ds-outlined span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .ds-outlined input { height: 40px; box-sizing: border-box; width: 280px; padding: 8.5px 14px; border: 1px solid rgba(255, 255, 255, 0.23); border-radius: 4px; background: transparent; color: var(--mui-palette-text-primary, #fff); font: inherit; font-size: 1rem; } .ds-outlined input:hover { border-color: var(--mui-palette-text-primary, #fff); } .ds-outlined input:focus-visible { outline: none; border: 2px solid var(--mui-palette-primary-main, #90caf9); padding: 7.5px 13px; } .ds-add-disabled { border: 0; background: transparent; padding: 4px 5px; color: rgba(255, 255, 255, 0.3); font: inherit; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02857em; text-transform: uppercase; }"
-    },
-    {
-      "name": "Save Snackbar",
+      "name": "Section Heading and Stat Rows",
       "kind": "custom",
-      "refersTo": "snackbar-info",
-      "description": "notistack info toast confirming every save, creation or deletion, in French past tense.",
-      "html": "<div class=\"ds-snackbar\" role=\"status\"><span>Notes sauvegardées.</span><button class=\"ds-snackbar-close\" type=\"button\" aria-label=\"Fermer\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg></button></div>",
-      "css": ".ds-snackbar { display: inline-flex; align-items: center; gap: 8px; min-width: 288px; padding: 6px 16px; border-radius: 4px; background-color: #2196f3; color: #fff; font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 0.875rem; line-height: 1.43; letter-spacing: 0.01071em; box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12); } .ds-snackbar span { flex: 1; padding: 8px 0; } .ds-snackbar-close { display: inline-flex; background: transparent; border: 0; color: inherit; border-radius: 4px; padding: 4px; cursor: pointer; } .ds-snackbar-close:hover { background-color: rgba(255,255,255,0.12); } .ds-snackbar-close:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }"
+      "refersTo": "stat-row",
+      "description": "Sheet sections are not cards: small-caps heading plus running rule, ruled rows with tabular numerals on the ground.",
+      "html": "<section class=\"ds-section\"><h2 class=\"ds-section-title\">Combat</h2><div class=\"ds-row\"><span>Initiative</span><b>1</b></div><div class=\"ds-row\"><span>Impact</span><b>5</b></div><div class=\"ds-row\"><span>Encombrement</span><b>10 %</b></div></section>",
+      "css": ".ds-section { background: #11131c; padding: 16px; width: 240px; color: #e8e2d3; } .ds-section-title { display: flex; align-items: center; gap: 12px; margin: 0 0 8px; font-family: 'Alegreya Sans SC', 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.08em; } .ds-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(232, 226, 211, 0.12); } .ds-row { display: flex; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(232, 226, 211, 0.12); font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-row:last-child { border-bottom: 0; } .ds-row:hover span { color: #e8e2d3; } .ds-row b { margin-left: auto; font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.0625rem; color: #e8e2d3; font-variant-numeric: lining-nums tabular-nums; }"
+    },
+    {
+      "name": "Sheet Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A sheet in the list: tinted 2px top rule and portrait ring, hairline border.",
+      "html": "<a class=\"ds-sheet-card\" href=\"#\"><span class=\"ds-portrait\">L</span><span><strong>Lyse</strong><small>Inspirée : la Lune</small></span></a>",
+      "css": ".ds-sheet-card { --tint: #ad94e0; width: 250px; display: flex; align-items: center; gap: 12px; padding: 16px; background: #161925; border: 1px solid rgba(232, 226, 211, 0.12); border-top: 2px solid color-mix(in srgb, var(--tint) 60%, transparent); border-radius: 2px; color: #e8e2d3; text-decoration: none; transition: background-color 120ms ease-out; } .ds-sheet-card:hover { background: #1d2130; } .ds-sheet-card:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; } .ds-portrait { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; border: 2px solid color-mix(in srgb, var(--tint) 60%, transparent); background: color-mix(in srgb, var(--tint) 16%, transparent); color: var(--tint); font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 23px; } .ds-sheet-card strong { display: block; font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.25rem; } .ds-sheet-card small { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; }"
+    },
+    {
+      "name": "Editable Value",
+      "kind": "input",
+      "refersTo": "stat-row",
+      "description": "Reads as text at rest; dashed underline and pencil on hover/focus; standard underline field when editing.",
+      "html": "<div class=\"ds-edit-wrap\"><span class=\"ds-editable\" tabindex=\"0\" role=\"button\">20<svg class=\"ds-pen\" width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z\"/></svg></span><input class=\"ds-input\" value=\"25\" aria-label=\"Agilité\"></div>",
+      "css": ".ds-edit-wrap { display: flex; gap: 24px; align-items: baseline; padding: 12px; background: #11131c; } .ds-editable { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.375rem; color: #e8e2d3; font-variant-numeric: lining-nums tabular-nums; border-bottom: 1px dashed transparent; cursor: pointer; } .ds-pen { opacity: 0; margin-left: 2px; vertical-align: top; color: #a9b1c2; transition: opacity 120ms ease-out; } .ds-editable:hover, .ds-editable:focus-visible { border-bottom-color: #a9b1c2; outline: none; } .ds-editable:hover .ds-pen, .ds-editable:focus-visible .ds-pen { opacity: 0.7; } .ds-input { width: 60px; background: transparent; border: 0; border-bottom: 1px solid #a9b1c2; color: #e8e2d3; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 1rem; padding: 4px 0; } .ds-input:focus { outline: none; border-bottom: 2px solid #d9a441; }"
+    },
+    {
+      "name": "Moon Gauge",
+      "kind": "custom",
+      "refersTo": "moon-gauge",
+      "description": "An Existence as a lunar phase: arc of strokes (one per point), lit disc, numeral, joined minus/plus stepper.",
+      "html": "<div class=\"ds-gauge\"><svg width=\"60\" height=\"60\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 12.91 51.09 A 27 27 0 0 1 9.25 17.73\" fill=\"none\" stroke=\"#d97a6c\" stroke-width=\"3\"/><path d=\"M 14.89 10.76 A 27 27 0 0 1 49.11 10.76\" fill=\"none\" stroke=\"#d97a6c\" stroke-width=\"3\"/><path d=\"M 54.75 17.73 A 27 27 0 0 1 51.09 51.09\" fill=\"none\" stroke=\"rgba(232,226,211,0.12)\" stroke-width=\"3\"/><circle cx=\"32\" cy=\"32\" r=\"17\" fill=\"rgba(217,122,108,0.1)\" stroke=\"rgba(217,122,108,0.45)\"/><path d=\"M 32 15 A 17 17 0 0 1 32 49 A 5.67 17 0 0 1 32 15 Z\" fill=\"#d97a6c\"/></svg><div><span class=\"ds-g-label\">La Santé</span><span class=\"ds-g-val\">2</span><span class=\"ds-g-max\">/ 3</span> <span class=\"ds-g-cap\">seuil 6</span></div><span class=\"ds-step\"><button aria-label=\"Retirer un point\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><i></i><button aria-label=\"Ajouter un point\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span></div>",
+      "css": ".ds-gauge { display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: #161925; color: #e8e2d3; } .ds-g-label { display: block; font-family: 'Alegreya Sans SC', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.08em; color: #a9b1c2; } .ds-g-val { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.625rem; font-variant-numeric: lining-nums tabular-nums; } .ds-g-max { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; margin-left: 4px; } .ds-g-cap { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.8125rem; color: #a9b1c2; margin-left: 4px; } .ds-step { display: inline-flex; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; overflow: hidden; } .ds-step i { width: 1px; background: rgba(232, 226, 211, 0.12); } .ds-step button { width: 34px; height: 32px; display: grid; place-items: center; background: transparent; border: 0; color: #a9b1c2; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-step button:hover, .ds-step button:focus-visible { color: #d9a441; background: rgba(217, 164, 65, 0.1); outline: none; }"
+    },
+    {
+      "name": "Tooltip",
+      "kind": "custom",
+      "refersTo": "tooltip",
+      "description": "Rule and formula behind a label, on the raised surface with a hairline.",
+      "html": "<span class=\"ds-tip-wrap\"><span class=\"ds-tip-label\" tabindex=\"0\">Initiative</span><span class=\"ds-tip\" role=\"tooltip\">Vivacité / 10</span></span>",
+      "css": ".ds-tip-wrap { display: inline-flex; flex-direction: column; gap: 8px; padding: 12px; background: #11131c; } .ds-tip-label { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; cursor: help; } .ds-tip-label:hover, .ds-tip-label:focus-visible { color: #e8e2d3; outline: none; } .ds-tip { background: #1d2130; color: #e8e2d3; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.45; padding: 8px 12px; max-width: 380px; }"
     }
   ],
   "narrative": {
     "northStar": "La Fiche Immersive",
-    "overview": "The sheet should be immersive, customisable and alive. It should feel like being inside the character, not like filling in a form. Everything visible today is a provisional base: Material UI v9 with its default theme, dark by default. It's documented here so that new screens stay consistent until Oniria gets its own identity. When that identity arrives, it goes through the theme (createTheme in src/app/providers.tsx), not through one-off overrides scattered across components.\n\nThe confirmed feel is feutré et immersif, avec une dose de vivant et réactif (muted and immersive, with a touch of lively and reactive). Surfaces stay calm, dark and low-contrast at rest. The liveliness shows up when you interact: each segment of an XP bar brightens on hover and gives its value in a tooltip; a lock tells you whether a part of the sheet is frozen or still free; editable values reveal a dashed underline; every save is answered with a toast.\n\nThe game's structure organises the screen. Computed groups (Caractères, Facultés, Existences, Expérience) are cards with a large centred title. Inside them, the game's triads (Corps / Esprit / Âme, Chair / Pensée / Lien, Santé / Équilibre / Éclat, Éprouver / Apprendre / Vivre) sit in three columns. Lists the player maintains (traits, Corpus, weapons, objects) are compact tables with a left-aligned title and an \"Ajouter…\" button underneath. Game meanings are carried by MUI's six semantic palette roles, never by custom colours.",
+    "overview": "The world is **Éphémérides des Lunes**: every sheet reads like a page of a lunar almanac. Values stand in columns drawn with a ruler, headed by spaced small capitals, numbers set in tabular serif figures, columns separated by one-pixel rules. The four Existences (Santé, Équilibre, Éclat, Maï) are drawn as phases of the moon, each ringed by an arc of strokes, one stroke per point. Each character carries its own moon tint, and that tint grows stronger as the character's Devenir rises. The feel is muted and immersive, with a dose of the living and responsive: values slide to their new phase, hover reveals the rule behind a number, and nothing else moves.\n\nThe system is tuned for long evening sessions next to Discord. Night (\"Nuit\") is ink-dark navy with bone text and lamp gold for interaction. Day (\"Jour\") is bone paper with navy ink. Both are calm, low-chroma grounds, so the only saturated color on screen belongs to the game itself (Existences, the character's moon) or to the thing you can press. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling, down to a half-width window beside Discord.\n\nThe system rejects the generic tool look of identical boxed cards with centered titles, stock Material blue, and anything that tires the eyes or betrays the game's own vocabulary.",
     "keyCharacteristics": [
-      "Stock MUI v9 theme with CSS variables; dark (\"Sombre\") by default, plus \"Clair\" and \"Système\" modes chosen by the player.",
-      "Single centred column up to 1400px wide. Tab panels stack below 900px and sit side by side above it.",
-      "Typographic hierarchy that mirrors the game: section card → triad group or list → stat line.",
-      "Quiet editing: values look like plain text with a faint pencil, are saved on Enter or blur, and cancelled with Escape.",
-      "Game states expressed through the palette roles (error, info, warning, success, secondary) and the lock.",
-      "Depth in dark mode comes from MUI's white overlays, not from shadows."
+      "Almanac tables: small-caps headings, running hairline rules, values right-aligned in tabular serif figures.",
+      "Flat at rest: depth comes from three tonal steps of ground, never from shadow.",
+      "One interaction color (lamp gold); game colors stay with game meaning.",
+      "A personal moon tint per character, with intensity driven by Devenir.",
+      "Two themes (Nuit / Jour) and two densities (Confort / Compact), all chosen by the player."
     ],
     "rules": [
-      { "name": "The Palette-Role Rule", "body": "Game meanings use only the theme's semantic roles (error, info, warning, success, secondary, primary), written as color=\"warning\" or 'error.main', never as a hex value. This is what keeps Santé, Équilibre and Éclat correct in Clair mode (#d32f2f, #0288d1, #ed6c02) without extra code.", "section": "colors" },
-      { "name": "The Warning-Means-Unsettled Rule", "body": "Apart from the Éclat gauge, orange always means \"not settled yet\": free to change, waiting for validation, or about to cost something irreversible. A validated, settled state is neutral grey (the closed lock, the \"Validée\" chip).", "section": "colors" },
-      { "name": "The Game Hierarchy Rule", "body": "Typographic roles follow the game, not the page: a centred Title = a computed section of the sheet; a Subtitle = a triad group, or a list the player maintains; Body = one stat. Don't use Title or Subtitle for anything else.", "section": "typography" },
-      { "name": "The Overlay-Not-Shadow Rule", "body": "In dark mode, convey depth through elevation (which drives the overlay), never through custom shadows or hand-picked greys. A hard-coded #1e1e1e card is correct in Sombre and wrong in Clair.", "section": "elevation" }
+      {
+        "name": "The Lampe Rule",
+        "body": "Gold means \"you can act here\". Nothing decorative is gold, and no other hue marks interaction.",
+        "section": "colors"
+      },
+      {
+        "name": "The Couleur du Jeu Rule",
+        "body": "Existence colors appear only in moon gauges, and moon tints only in a character's own identity (plate wash, top rule, portrait ring, sheet-card top rule, tint button). Neither becomes a UI accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lune Personnelle Rule",
+        "body": "Tint intensity follows Devenir on a 0–100 scale: the plate wash runs from 6% to 18% tint, and the top rule and portrait ring from 35% to 100%. Above 100 (transcendance), a second ring detaches from the portrait with a 3px gap of paper color. A missing Devenir sits at mid intensity.",
+        "section": "colors"
+      },
+      {
+        "name": "The Chiffre Tabulaire Rule",
+        "body": "Every number on a sheet is Spectral with `lining-nums tabular-nums` (the body defaults to tabular figures too), right-aligned in its column so values line up like a table.",
+        "section": "typography"
+      },
+      {
+        "name": "The Petites Capitales Rule",
+        "body": "Headings and labels use the real small-caps face (Alegreya Sans SC) with letter spacing. Never use `text-transform: uppercase`. Buttons and tabs stay in sentence case.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sans Ombre Rule",
+        "body": "Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP \"remaining\" outline use `box-shadow` as a stroke, not as elevation.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Do take every colour, radius and space from the MUI theme (theme.vars.palette.*, theme.spacing, shape.borderRadius 4px). The base is provisional, so the theme is the single place where Oniria's identity will be set.",
-      "Do reuse the established game mappings: Santé error, Équilibre info, Éclat warning; skill degrees Base primary, Principe secondary, Maîtrise and Technique success, Enchaînement warning; history entries Attribution success, Dépense primary, Remboursement info, XP perdue warning, Offert secondary.",
-      "Do mark anything unsettled (free to change, waiting for validation, about to cost XP irreversibly) with warning, and settled states with neutral grey.",
-      "Do check every new screen in Sombre, Clair and Système, and at mobile width, where tab panels stack and triads wrap.",
-      "Do keep the Label : valeur / max stat line, attach rules text and formulas as a tooltip on a dotted-underlined label, and show the XP cost in the label of any button that spends it.",
-      "Do build new lists with CollectionTable (small table, inline-edit cells, delete icon, \"+ Ajouter…\" underneath, a one-line empty state), and let wide tables scroll inside their card.",
-      "Do keep surfaces calm at rest and put the liveliness in interaction: hover, focus, edit, save, and tooltips that reveal values."
+      "**Do** set every game value as a Spectral tabular numeral, right-aligned in its column.",
+      "**Do** separate columns and rows with 1px rule-color lines; use the stronger group rule only under characteristic-group headings.",
+      "**Do** head sections with Alegreya Sans SC small caps followed by a running rule to the column edge.",
+      "**Do** keep gold for interaction only: buttons, active tab, focus outline, stepper hover.",
+      "**Do** step surface tone (ground, paper, raised) plus a hairline border to show depth.",
+      "**Do** derive a character's identity color from its moon tint, scaled by Devenir, through the `--tint` variable with its night and day values.",
+      "**Do** keep everything used in play visible without scrolling at 520px (half screen beside Discord) and wider.",
+      "**Do** honor both densities (8px / 6px unit) and both themes for every new surface.",
+      "**Do** disable gauge and phase transitions under `prefers-reduced-motion`."
     ],
     "donts": [
-      "Don't treat stock MUI as Oniria's identity, and don't polish it piece by piece. It is a confirmed provisional base, and the identity will be defined as a whole, in the theme.",
-      "Don't hard-code white, black, rgba(255,255,255,…) or hex values in components. They break Clair mode. LoadingButton still does this.",
-      "Don't introduce a new colour for a game meaning. Map it to an existing palette role, or wait for the theme-level identity.",
-      "Don't let a player spend or lose XP without a dialog that shows the split, or delete anything without a confirmation that names the consequence.",
-      "Don't rely on Roboto's or Inter's metrics until the font stack is fixed in the theme."
+      "**Don't** wrap sheet sections in identical boxed cards with centered titles.",
+      "**Don't** cast shadows on resting surfaces; the dialog is the only shadow.",
+      "**Don't** use `text-transform: uppercase`; small caps come from Alegreya Sans SC.",
+      "**Don't** use Existence colors or moon tints as general UI accents, or gold as decoration.",
+      "**Don't** round corners beyond 2px on rectangles; round forms are reserved for moons and portraits.",
+      "**Don't** reintroduce stock Material blue or pure black/white grounds; they tire the eyes over a long session.",
+      "**Don't** let anything move on a value change except the gauge that changed."
     ]
   }
 }

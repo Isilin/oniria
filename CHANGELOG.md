@@ -12,6 +12,17 @@ Première version complète des fiches de personnages d'Oniria.
 
 ### Ajouté
 
+- Nouvelle identité « Éphémérides des Lunes » pour toute l'application :
+  encre de nuit et papier os (thèmes Nuit, Jour, Système), filets d'un
+  pixel, Spectral et Alegreya Sans.
+- Fiche : plaque du personnage, bande d'éphéméride collée en haut (Santé,
+  Équilibre, Éclat et Maï en phases de lune, −/+ en un geste), et tout ce
+  qui sert en jeu sur un seul écran (Caractères, Facultés, combat).
+- Teinte de lune propre à chaque personnage, d'autant plus présente que le
+  Devenir est élevé (au-delà de 100 : transcendance).
+- Réglages enregistrés sur le compte : thème, densité (confort ou
+  compacte) et sections repliées.
+
 - Fiches complètes reprenant les règles du tableur « Lunes d'Oniria » :
   caractères et coût en XP, facultés et marges (bonus du Corpus), santé,
   équilibre, éclat, Maï, protection et encombrement calculés.

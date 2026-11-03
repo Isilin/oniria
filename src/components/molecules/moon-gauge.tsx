@@ -80,7 +80,7 @@ const Stepper = ({
         justifySelf: 'start',
         border: 1,
         borderColor: 'rule',
-        borderRadius: 0.5,
+        borderRadius: 1,
         overflow: 'hidden',
       }}
     >

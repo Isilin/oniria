@@ -53,12 +53,13 @@ The app isn't a generic sheet builder or a public product. It implements Oniria 
 **Sheet (5 tabs)**
 
 - **Caractéristiques:**
-  - avatar ("Changer l'image");
-  - Visage (Le Soi / L'Autre / Le Monde: Nom, Âge, Maï, Aspect, Devenir);
-  - Caractères (Le Corps, L'Esprit, L'Âme, four stats each, with the XP invested per group);
-  - Facultés (La Chair, La Pensée, Le Lien, with margins and Corpus bonuses; plus Dégâts, Initiative, Impact, Impulsion, Conduction, Protection, Encombrement);
-  - Existences (La Santé, L'Équilibre, L'Éclat, each with a maximum and a Seuil);
+  - a character plate: portrait (or the name's initial on a tinted moon), name, player and table, Âge, Aspect, Devenir;
+  - a band pinned to the top of every tab: the Existences (La Santé, L'Équilibre, L'Éclat, each with a maximum and a Seuil) and the Maï, each changed with −/+;
+  - Caractères (Le Corps, L'Esprit, L'Âme, four stats each; the XP invested per group shows on hover);
+  - Facultés (La Chair, La Pensée, Le Lien, with margins and Corpus bonuses);
+  - Combat (Dégâts, Initiative, Impact, Impulsion, Conduction, Protection, Encombrement);
   - Expérience (Éprouver, Apprendre, Vivre).
+  - From 1200px wide, Caractères, Facultés and Combat sit side by side, so everything used in play fits on one screen.
 - **Traits:** innate traits, each with a balance (the total must come to 0), and acquired traits (after-effects, renown, divine favours, notable objects gained during play).
 - **Schémas & Compétences:**
   - the Corpus (typed aspects with an optional bonus on a stat or on Santé);
@@ -84,6 +85,11 @@ The app isn't a generic sheet builder or a public product. It implements Oniria 
 - Add characters to a table, remove them, and rename the table.
 - An overview table shows each character's Santé, Équilibre, Éclat, Maï, Initiative, Protection, Encombrement, Dégâts and remaining XP. It also shows status chips: "à valider", "en création" and "écart".
 - The MJ can distribute XP to several characters at once.
+
+**Personalisation**
+
+- Each character has a moon tint chosen by its owner or the MJ, from eight tints made for Oniria (field `tint`). The tint gets stronger as the Devenir rises: the base scale runs from 0 to 100, and a Devenir above 100 marks the character's transcendance.
+- Each account keeps its own display settings: theme (Nuit, Jour, Système), density (confort or compacte) and collapsed sections of the sheet (field `preferences`, route `/api/me/preferences`). They follow the player from one device to another.
 
 **Permissions**
 
