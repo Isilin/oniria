@@ -11,6 +11,8 @@ import {
   LEGACY,
   offeredTo,
   peekRemoval,
+  planPoints,
+  PointsInput,
   POOLS,
   recordRemoval,
   SCOPE_BY_KEY,
@@ -38,6 +40,8 @@ const isAdmin = (actor: Actor) => actor.role === 'ADMIN';
 export interface XpPayload {
   /** Répartition choisie ; sinon, la répartition proposée. */
   split?: Amounts;
+  /** Points des caractères : répartition choisie pour chaque partie. */
+  splits?: Partial<Record<Scope, Amounts>>;
   /** MJ : l'élément est offert. */
   gift?: boolean;
   /** MJ, pour une baisse ou un retrait : rembourser (par défaut) ou non. */
@@ -57,6 +61,21 @@ const readAmounts = (raw: Record<string, unknown>): Amounts =>
     POOLS.map((p) => [p.key, toInt(raw[p.key], p.label)]),
   ) as Amounts;
 
+const readSplits = (raw: unknown): XpPayload['splits'] => {
+  if (raw === undefined || raw === null) return undefined;
+  if (typeof raw !== 'object' || Array.isArray(raw)) {
+    throw new HttpError(400, 'Répartition invalide.');
+  }
+  return Object.fromEntries(
+    Object.entries(raw).map(([scope, amounts]) => {
+      if (!isScope(scope) || !amounts || typeof amounts !== 'object') {
+        throw new HttpError(400, 'Répartition invalide.');
+      }
+      return [scope, readAmounts(amounts as Record<string, unknown>)];
+    }),
+  );
+};
+
 export const readXpPayload = (body: unknown): XpPayload => {
   const xp =
     body && typeof body === 'object'
@@ -71,6 +90,7 @@ export const readXpPayload = (body: unknown): XpPayload => {
     split: POOLS.some((p) => raw[p.key] !== undefined)
       ? readAmounts(raw)
       : undefined,
+    splits: readSplits(raw.splits),
     gift: raw.gift === true,
     refund: raw.refund === undefined ? undefined : raw.refund !== false,
   };
@@ -200,6 +220,80 @@ export const chargeChange = async (
       offered: taken.offered,
     },
   });
+};
+
+/**
+ * Enregistre ce que coûtent les points ajoutés (ou retirés) aux caractères :
+ * reprises du MJ d'abord, puis achats (ou cadeaux du MJ), une écriture par
+ * caractère. Rien pour une partie débloquée.
+ *
+ * À appeler dans une transaction, après `lockSheet`. Renvoie les écritures
+ * ajoutées au journal (avec leur auteur), que l'API renvoie au client.
+ */
+export const chargePoints = async (
+  tx: Tx,
+  sheetId: string,
+  { current, target }: Pick<PointsInput, 'current' | 'target'>,
+  actor: Actor,
+  payload: XpPayload,
+) => {
+  const sheet = await tx.sheet.findUnique({
+    where: { id: sheetId },
+    select: { unlocked: true, xpEntries: { select: ENTRY_SELECT } },
+  });
+  if (!sheet) throw new HttpError(404, 'Fiche introuvable.');
+  const plan = planPoints(
+    { current, target, unlocked: sheet.unlocked, entries: sheet.xpEntries },
+    { splits: payload.splits, gift: payload.gift, refund: payload.refund },
+  );
+  if (!isAdmin(actor)) {
+    const lowered = plan.removals[0]?.line;
+    if (lowered) {
+      throw new HttpError(
+        403,
+        `${SCOPE_BY_KEY[lowered.scope].label} est validé : seul le MJ peut baisser ou retirer ce qui a été acquis.`,
+      );
+    }
+    if (payload.gift && plan.purchases.length) {
+      throw new HttpError(403, 'Seul le MJ peut offrir un élément.');
+    }
+  }
+  if (plan.error) throw new HttpError(400, plan.error);
+
+  const base = (line: { target: string; scope: Scope; label: string }) => ({
+    sheetId,
+    authorId: actor.id,
+    target: line.target,
+    scope: line.scope,
+    label: line.label,
+  });
+  const data: Prisma.XpEntryCreateManyInput[] = [
+    ...plan.removals.map(({ line, taken }) => ({
+      ...base(line),
+      kind: payload.refund === false ? ('LOSS' as const) : ('REFUND' as const),
+      feel: taken.feel,
+      learn: taken.learn,
+      live: taken.live,
+      offered: taken.offered,
+    })),
+    ...plan.purchases.map(({ line, split }) =>
+      payload.gift
+        ? { ...base(line), kind: 'GIFT' as const, offered: line.delta }
+        : { ...base(line), kind: 'SPEND' as const, ...split },
+    ),
+  ];
+  if (data.length === 0) return [];
+  // Plusieurs caractères : regroupés dans l'historique.
+  const batch = data.length > 1 ? `points:${randomUUID()}` : null;
+  await tx.xpEntry.createMany({ data: data.map((e) => ({ ...e, batch })) });
+  // La fiche est verrouillée : ses dernières écritures sont celles-ci.
+  const added = await tx.xpEntry.findMany({
+    where: { sheetId },
+    orderBy: { seq: 'desc' },
+    take: data.length,
+    include: ENTRY_AUTHOR,
+  });
+  return added.reverse();
 };
 
 /* -------------------------------------------------------------------------- */

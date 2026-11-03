@@ -14,8 +14,15 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import SheetField from '../molecules/sheet-field';
 
+type Derived = 'damage' | 'initiative' | 'impact' | 'impulsion' | 'conduction';
+
 const AbilitiesCard = ({ id }: { id: string }) => {
-  const { computed } = useSheet(id);
+  const { computed, base } = useSheet(id);
+  /** Aperçu d'une valeur dérivée des caractères. */
+  const derived = (key: Derived) => ({
+    value: computed[key],
+    preview: { before: base[key], delta: computed[key] - base[key] },
+  });
 
   return (
     <Card>
@@ -37,11 +44,18 @@ const AbilitiesCard = ({ id }: { id: string }) => {
               {FACULTIES.filter((f) => f.column === column.key).map((f) => {
                 const major = CHARACTERISTIC_BY_KEY[f.major];
                 const minor = CHARACTERISTIC_BY_KEY[f.minor];
+                const now = computed.faculties[f.key];
+                const before = base.faculties[f.key];
                 return (
                   <SheetField
                     key={f.key}
                     label={f.label}
-                    value={formatFaculty(computed.faculties[f.key])}
+                    value={formatFaculty(now)}
+                    preview={{
+                      before: formatFaculty(before),
+                      delta:
+                        now.value - before.value || now.margin - before.margin,
+                    }}
                     tooltip={
                       <>
                         <strong>
@@ -74,29 +88,29 @@ const AbilitiesCard = ({ id }: { id: string }) => {
           <Grid>
             <SheetField
               label="Dégâts"
-              value={computed.damage}
+              {...derived('damage')}
               tooltip="(Force / 10) - 5"
             />
             <SheetField
               label="Initiative"
-              value={computed.initiative}
+              {...derived('initiative')}
               tooltip="Vivacité / 10"
             />
           </Grid>
           <Grid>
             <SheetField
               label="Impact"
-              value={computed.impact}
+              {...derived('impact')}
               tooltip="Raisonnement / 10"
             />
             <SheetField
               label="Impulsion"
-              value={computed.impulsion}
+              {...derived('impulsion')}
               tooltip="Perception / 10"
             />
             <SheetField
               label="Conduction"
-              value={computed.conduction}
+              {...derived('conduction')}
               tooltip="Concentration / 10"
             />
           </Grid>

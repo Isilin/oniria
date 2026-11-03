@@ -8,6 +8,7 @@ import {
   corpusCost,
   investedIn,
   offeredTo,
+  planPoints,
   SKILL_COSTS,
   skillChange,
   spyreeChange,
@@ -331,6 +332,153 @@ describe('fiche', () => {
     });
     expect(summary.dues).toEqual([
       expect.objectContaining({ target: 'spyree:a', amount: 30 }),
+    ]);
+  });
+});
+
+describe('points des caractères', () => {
+  it('une partie débloquée se modifie sans rien payer', () => {
+    const plan = planPoints({
+      current: { strength: 20 },
+      target: { strength: 30 },
+      unlocked: ['body'],
+    });
+    expect(plan.lines).toEqual([
+      expect.objectContaining({
+        key: 'strength',
+        from: 20,
+        to: 30,
+        free: true,
+      }),
+    ]);
+    expect(plan).toMatchObject({ cost: 0, freeCost: 15, error: null });
+    expect(plan.dues).toEqual([]);
+  });
+
+  it('ignore les caractères qui ne changent pas', () => {
+    const plan = planPoints({
+      current: { strength: 20, agility: 10 },
+      target: { strength: 20 },
+    });
+    expect(plan.lines).toEqual([]);
+  });
+
+  it('achats sur plusieurs parties : Vivre gardé pour la fin', () => {
+    const plan = planPoints({
+      current: { strength: 25, will: 25 },
+      target: { strength: 27, will: 26 },
+      unlocked: [],
+      entries: journal(entry('GAIN', { feel: 3, learn: 1, live: 2 })),
+    });
+    expect(plan.dues).toEqual([
+      expect.objectContaining({ scope: 'body', amount: 4 }),
+      expect.objectContaining({ scope: 'soul', amount: 2 }),
+    ]);
+    expect(plan.splits).toEqual({
+      body: { feel: 3, learn: 0, live: 1 },
+      soul: { feel: 0, learn: 1, live: 1 },
+    });
+    expect(plan).toMatchObject({ cost: 6, missing: 0, error: null });
+  });
+
+  it("refuse quand il manque de l'XP", () => {
+    const plan = planPoints({
+      current: { strength: 25 },
+      target: { strength: 27 },
+      entries: journal(entry('GAIN', { feel: 1, learn: 10 })),
+    });
+    expect(plan.missing).toBe(3);
+    expect(plan.missingByScope).toEqual({ body: 3 });
+    expect(plan.error).toBe('XP insuffisante : il manque 3 XP (Le Corps 3).');
+  });
+
+  it("vérifie les répartitions choisies ensemble, sur l'XP restante", () => {
+    const input = {
+      current: { strength: 25, will: 25 },
+      target: { strength: 27, will: 26 },
+      entries: journal(entry('GAIN', { live: 4 })),
+    };
+    expect(
+      planPoints(input, {
+        splits: {
+          body: { feel: 0, learn: 0, live: 4 },
+          soul: { feel: 0, learn: 0, live: 2 },
+        },
+      }).error,
+    ).toBe("L'Âme : Pas assez d'XP Vivre (reste 0).");
+    expect(
+      planPoints(input, {
+        splits: { body: { feel: 0, learn: 0, live: 4 } },
+      }).error,
+    ).toBe("L'Âme : La répartition (0) doit faire 2 XP.");
+  });
+
+  it('répartit la dépense d’une partie entre ses caractères', () => {
+    const plan = planPoints(
+      {
+        current: { strength: 25, agility: 25 },
+        target: { strength: 27, agility: 26 },
+        entries: journal(entry('GAIN', { feel: 10, live: 10 })),
+      },
+      { splits: { body: { feel: 4, learn: 0, live: 2 } } },
+    );
+    expect(plan.error).toBeNull();
+    expect(plan.purchases).toEqual([
+      expect.objectContaining({
+        line: expect.objectContaining({ key: 'strength' }),
+        split: { feel: 4, learn: 0, live: 0 },
+      }),
+      expect.objectContaining({
+        line: expect.objectContaining({ key: 'agility' }),
+        split: { feel: 0, learn: 0, live: 2 },
+      }),
+    ]);
+  });
+
+  it("un achat offert ne demande pas d'XP", () => {
+    const plan = planPoints(
+      { current: { strength: 25 }, target: { strength: 27 } },
+      { gift: true },
+    );
+    expect(plan.error).toBeNull();
+    expect(plan.purchases[0].split).toEqual({ feel: 0, learn: 0, live: 0 });
+  });
+
+  it("l'XP remboursée par une baisse paie les achats du même lot", () => {
+    const input = {
+      current: { strength: 27, agility: 25 },
+      target: { strength: 25, agility: 27 },
+      entries: journal(
+        entry('GAIN', { live: 4 }),
+        entry('SPEND', { live: 4 }, 'char:strength'),
+      ),
+    };
+    const refunded = planPoints(input);
+    expect(refunded.removals).toEqual([
+      expect.objectContaining({
+        taken: { feel: 0, learn: 0, live: 4, offered: 0 },
+        missing: 0,
+      }),
+    ]);
+    expect(refunded.balance).toEqual({ feel: 0, learn: 0, live: 4 });
+    expect(refunded.error).toBeNull();
+    expect(planPoints(input, { refund: false }).error).toBe(
+      'XP insuffisante : il manque 4 XP (Le Corps 4).',
+    );
+  });
+
+  it("deux baisses ne reprennent pas deux fois les mêmes dépenses de l'ancienne fiche", () => {
+    const plan = planPoints({
+      current: { strength: 26, agility: 26 },
+      target: { strength: 25, agility: 25 },
+      entries: journal(
+        entry('GAIN', { live: 3 }),
+        entry('SPEND', { live: 3 }, 'legacy'),
+      ),
+    });
+    expect(plan.removals.map((r) => [r.taken.live, r.missing])).toEqual([
+      [2, 0],
+      [1, 1],
     ]);
   });
 });

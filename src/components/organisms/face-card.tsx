@@ -4,10 +4,11 @@ import { useSheet } from '@/lib/hooks/use-sheet';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import PreviewValue from '../atoms/preview-value';
 import SheetField from '../molecules/sheet-field';
 
 const FaceCard = ({ id }: { id: string }) => {
-  const { sheet, computed, canEdit, update } = useSheet(id);
+  const { sheet, computed, base, canEdit, update } = useSheet(id);
 
   return (
     <Card>
@@ -37,7 +38,14 @@ const FaceCard = ({ id }: { id: string }) => {
           label="Maï"
           value={sheet.current_mai ?? computed.mai}
           tooltip="Maximum : Âme / 10"
-          postValue={`/ ${computed.mai}`}
+          postValue={
+            <>
+              /{' '}
+              <PreviewValue before={base.mai} delta={computed.mai - base.mai}>
+                {computed.mai}
+              </PreviewValue>
+            </>
+          }
           editable={canEdit}
           onEdit={(newVal) =>
             update({ current_mai: newVal === '' ? null : Number(newVal) })
