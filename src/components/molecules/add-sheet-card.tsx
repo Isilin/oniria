@@ -1,7 +1,7 @@
 'use client';
 
-import PlusICon from '@mui/icons-material/Add';
-import { Card, CardActionArea, CardContent } from '@mui/material';
+import PlusIcon from '@mui/icons-material/Add';
+import { Card, CardActionArea, Typography } from '@mui/material';
 import { useState } from 'react';
 import CreateSheetDialog from '../organisms/create-sheet-dialog';
 
@@ -10,18 +10,27 @@ const AddSheetCard = () => {
 
   return (
     <>
-      <Card sx={{ width: 250 }}>
-        <CardActionArea sx={{ height: '100%' }} onClick={() => setOpen(true)}>
-          <CardContent
-            sx={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <PlusICon sx={{ width: 100, height: 100 }} />
-          </CardContent>
+      <Card
+        sx={{
+          width: 250,
+          borderStyle: 'dashed',
+          bgcolor: 'transparent',
+        }}
+      >
+        <CardActionArea
+          onClick={() => setOpen(true)}
+          sx={{
+            height: '100%',
+            minHeight: 90,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+            color: 'primary.main',
+          }}
+        >
+          <PlusIcon />
+          <Typography variant="button">Nouvelle fiche</Typography>
         </CardActionArea>
       </Card>
       <CreateSheetDialog open={open} onClose={() => setOpen(false)} />

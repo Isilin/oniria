@@ -17,8 +17,11 @@ export const XP_BAR_PARTS = {
   },
   left: {
     label: 'Restante',
+    // Contour net plutôt qu'aplat pâle : la part restante reste lisible
+    // de nuit comme de jour, sans se confondre avec la part dépensée.
     sx: (theme: Theme) => ({
-      bgcolor: alpha(theme.palette.primary.main, 0.22),
+      bgcolor: alpha(theme.palette.primary.main, 0.14),
+      boxShadow: `inset 0 0 0 1.5px ${theme.vars?.palette.primary.main ?? theme.palette.primary.main}`,
     }),
   },
   negative: {
@@ -73,8 +76,22 @@ const XpBar = ({
         }}
       >
         <Typography variant="h5">{label}</Typography>
-        <Typography variant="body1" color={left < 0 ? 'error' : undefined}>
-          Total : <strong>{gained}</strong>
+        {/* Ce qui reste est ce dont on parle à la table : il passe en tête. */}
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ whiteSpace: 'nowrap' }}
+        >
+          reste{' '}
+          <Typography
+            component="span"
+            variant="numeral"
+            color={left < 0 ? 'error' : 'textPrimary'}
+            sx={{ fontSize: '1.375rem' }}
+          >
+            {left}
+          </Typography>{' '}
+          / {gained}
         </Typography>
       </Box>
       {description && (
@@ -88,7 +105,7 @@ const XpBar = ({
       )}
       <Box
         role="group"
-        aria-label={`${label} : total ${gained} XP`}
+        aria-label={`${label} : reste ${left} XP sur ${gained}`}
         sx={{
           display: 'flex',
           height: 16,

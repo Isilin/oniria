@@ -7,15 +7,14 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Typography from '@mui/material/Typography';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
-import AvatarCard from './avatar-card';
+import CharacterPlate from './character-plate';
 import CharactersCard from './characters-card';
-import ExistencesCard from './existences-card';
+import CombatCard from './combat-card';
+import EphemerisBand from './ephemeris-band';
 import ExperienceCard from './experience-card';
-import FaceCard from './face-card';
 import InventoryTab from './inventory-tab';
 import MagicCard from './magic-card';
 import SchemesCard from './schemes-card';
@@ -34,7 +33,7 @@ const NOTES_TAB = 4;
 const Sheet = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
-  const { sheet, isLoading, error, canEdit } = useSheet(id);
+  const { sheet, isLoading, error } = useSheet(id);
 
   if (isLoading) return <CircularProgress />;
   if (error || !sheet)
@@ -44,28 +43,8 @@ const Sheet = ({ id }: { id: string }) => {
 
   return (
     <>
-      <Box
-        sx={{
-          textAlign: 'center',
-        }}
-      >
-        <Typography
-          variant="h2"
-          component="h1"
-          sx={{
-            fontSize: { xs: '2.25rem', md: '3.75rem' },
-            wordBreak: 'break-word',
-          }}
-        >
-          {sheet.name}
-        </Typography>
-        <Typography variant="subtitle1">
-          Joueur·euse : {sheet.user.name}
-          {sheet.teams.length > 0 &&
-            ` · Table : ${sheet.teams.map((t) => t.name).join(', ')}`}
-          {!canEdit && ' · lecture seule'}
-        </Typography>
-      </Box>
+      <CharacterPlate id={id} />
+      <EphemerisBand id={id} />
       <Tabs
         value={value}
         onChange={(e, newVal) => {
@@ -93,30 +72,39 @@ const Sheet = ({ id }: { id: string }) => {
         ))}
       </Tabs>
       <TabContent index={0} active={value === 0}>
+        {/* Tout ce qui sert en jeu tient sur un écran : Caractères, Facultés
+            et combat côte à côte dès 1200 px, l'expérience dessous. */}
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5,
-            width: { xs: '100%', md: 300 },
-            flexShrink: 0,
+            width: '100%',
+            display: 'grid',
+            gap: 2,
+            alignItems: 'start',
+            gridTemplateColumns: {
+              xs: 'minmax(0, 1fr)',
+              md: 'minmax(0, 1fr) 260px',
+              lg: 'minmax(0, 1.1fr) minmax(0, 1fr) 236px',
+            },
+            gridTemplateAreas: {
+              xs: '"car" "fac" "com" "xp"',
+              md: '"car com" "fac com" "xp xp"',
+              lg: '"car fac com" "xp xp xp"',
+            },
+            '& > *': { minWidth: 0 },
           }}
         >
-          <AvatarCard id={id} />
-          <FaceCard id={id} />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            flexGrow: 1,
-          }}
-        >
-          <CharactersCard id={id} />
-          <AbilitiesCard id={id} />
-          <ExistencesCard id={id} />
-          <ExperienceCard id={id} />
+          <Box sx={{ gridArea: 'car' }}>
+            <CharactersCard id={id} />
+          </Box>
+          <Box sx={{ gridArea: 'fac' }}>
+            <AbilitiesCard id={id} />
+          </Box>
+          <Box sx={{ gridArea: 'com' }}>
+            <CombatCard id={id} />
+          </Box>
+          <Box sx={{ gridArea: 'xp' }}>
+            <ExperienceCard id={id} />
+          </Box>
         </Box>
       </TabContent>
       <TabContent index={1} active={value === 1}>

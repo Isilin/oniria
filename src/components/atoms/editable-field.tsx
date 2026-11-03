@@ -1,7 +1,7 @@
 'use client';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { TextField, Typography } from '@mui/material';
+import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
 
 export type EditableValue = string | number | null | undefined;
@@ -18,6 +18,8 @@ interface Props {
   minWidth?: number;
   fullWidth?: boolean;
   'aria-label'?: string;
+  /** Style du texte affiché (ex. `numeral` pour une valeur de la fiche). */
+  variant?: TypographyProps['variant'];
 }
 
 const EditableField = ({
@@ -30,6 +32,7 @@ const EditableField = ({
   minWidth,
   fullWidth,
   'aria-label': ariaLabel,
+  variant = 'body1',
 }: Props) => {
   const asString = value === null || value === undefined ? '' : `${value}`;
   // Brouillon pendant l'édition ; null = on affiche la valeur reçue, qui
@@ -57,7 +60,7 @@ const EditableField = ({
   if (!editable) {
     return (
       <Typography
-        variant="body1"
+        variant={variant}
         component="span"
         sx={{ whiteSpace: type === 'multiline' ? 'pre-line' : undefined }}
       >
@@ -67,25 +70,40 @@ const EditableField = ({
   }
 
   if (!focused) {
+    // Au repos, une valeur modifiable se lit comme du texte : le crayon et le
+    // souligné n'apparaissent qu'au survol ou au focus. Tab passe d'une
+    // valeur à l'autre ; Entrée ou Espace ouvre l'édition.
     return (
       <Typography
-        variant="body1"
+        variant={variant}
         component="span"
         role="button"
         tabIndex={0}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ? `Modifier ${ariaLabel}` : undefined}
         onClick={() => setFocused(true)}
-        onFocus={() => setFocused(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setFocused(true);
+          }
+        }}
         color={asString ? 'textPrimary' : 'textSecondary'}
         sx={{
           cursor: 'pointer',
           borderBottom: '1px dashed transparent',
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
-          ':hover': { borderBottomColor: 'text.secondary' },
+          '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
+          ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
+          ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
+          '@media (hover: none)': { '& .edit-mark': { opacity: 0.45 } },
         }}
       >
-        {shown}{' '}
-        <EditIcon sx={{ fontSize: 10, verticalAlign: 'top', opacity: 0.6 }} />
+        {shown}
+        <EditIcon
+          className="edit-mark"
+          aria-hidden
+          sx={{ fontSize: 11, verticalAlign: 'top', ml: 0.25 }}
+        />
       </Typography>
     );
   }

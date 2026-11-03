@@ -62,14 +62,13 @@ const ExperienceCard = ({ id }: { id: string }) => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
             gap: 1,
             flexWrap: 'wrap',
-            mb: 1,
+            mb: 1.5,
           }}
         >
-          <Typography variant="h4" align="center">
+          <Typography variant="h4" component="h2">
             Expérience
           </Typography>
           <Chip

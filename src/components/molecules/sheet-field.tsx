@@ -18,6 +18,10 @@ interface Props {
   hint?: ReactNode;
 }
 
+/**
+ * Une ligne de la fiche : `Libellé : valeur / max`. Le libellé porte la
+ * règle en infobulle ; il est focalisable pour qu'elle se lise au clavier.
+ */
 const SheetField = ({
   label,
   value,
@@ -30,9 +34,24 @@ const SheetField = ({
 }: Props) => {
   const labelNode = (
     <Typography
-      variant="body1"
+      variant="body2"
       component="span"
-      sx={tooltip ? { textDecoration: 'underline dotted', cursor: 'help' } : {}}
+      color="textSecondary"
+      tabIndex={tooltip ? 0 : undefined}
+      sx={
+        tooltip
+          ? {
+              cursor: 'help',
+              textDecoration: 'underline dotted',
+              textDecorationColor: 'var(--mui-palette-rule)',
+              textUnderlineOffset: '0.25em',
+              '&:hover, &:focus-visible': {
+                color: 'text.primary',
+                textDecorationColor: 'currentColor',
+              },
+            }
+          : undefined
+      }
     >
       {`${label} :`}
     </Typography>
@@ -42,13 +61,13 @@ const SheetField = ({
     <Box
       sx={{
         display: 'flex',
-        gap: '4px',
+        gap: '6px',
         alignItems: 'baseline',
         flexWrap: 'wrap',
       }}
     >
       {tooltip ? (
-        <Tooltip title={tooltip} arrow>
+        <Tooltip title={tooltip} describeChild>
           {labelNode}
         </Tooltip>
       ) : (
@@ -60,9 +79,10 @@ const SheetField = ({
         editable={editable && !!onEdit}
         type={type}
         aria-label={label}
+        variant={type === 'number' ? 'numeral' : 'body1'}
       />
       {postValue !== undefined && postValue !== null && (
-        <Typography variant="body1" component="span">
+        <Typography variant="body2" component="span" color="textSecondary">
           {postValue}
         </Typography>
       )}

@@ -3,14 +3,10 @@
  * Partagé entre l'API (validation) et l'interface (formulaires).
  */
 
+import { TINT_KEYS } from '../tints';
+
 export type FieldType =
-  | 'string'
-  | 'text'
-  | 'int'
-  | 'boolean'
-  | 'enum'
-  | 'ref'
-  | 'refs';
+  'string' | 'text' | 'int' | 'boolean' | 'enum' | 'ref' | 'refs';
 
 export interface FieldSpec {
   type: FieldType;
@@ -63,6 +59,7 @@ export const SHEET_FIELDS: FieldSpecs = {
   current_mai: int,
   aspect: string,
   become: string,
+  tint: { type: 'enum', values: TINT_KEYS },
   ...Object.fromEntries(STAT_KEYS.map((key) => [key, int])),
   current_health: int,
   current_stability: int,

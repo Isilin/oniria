@@ -61,6 +61,10 @@ model User {
   sheets    Sheet[]
   xpEntries XpEntry[]
 
+  // Réglages de l'interface (thème, densité, sections repliées), suivis d'un
+  // appareil à l'autre. Forme validée par l'API (src/lib/preferences.ts).
+  preferences Json?
+
   @@map(name: "users")
 }
 
@@ -94,6 +98,7 @@ model Sheet {
   current_mai Int?
   aspect      String? @default("Type")
   become      String? @default("10") // Devenir
+  tint        String? // Teinte de lune choisie pour le personnage (src/lib/tints.ts)
 
   // Caractères
   strength      Int? @default(25) // force
