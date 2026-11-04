@@ -1,6 +1,6 @@
 ---
 name: Oniria
-description: "Éphémérides des Lunes": character sheets for the Oniria tabletop RPG, read like a page of lunar almanac tables.
+description: "« Éphémérides des Lunes » : character sheets for the Oniria tabletop RPG, read like a page of lunar almanac tables."
 colors:
   encre-de-nuit: "#11131c"
   nuit-voilee: "#161925"
@@ -187,6 +187,21 @@ components:
     height: "32px"
   stepper-half-hover:
     textColor: "{colors.or-de-lampe}"
+  stepper-half-sm:
+    textColor: "{colors.argent}"
+    width: "24px"
+    height: "24px"
+  pending-points:
+    textColor: "{colors.sauge}"
+    typography: "{typography.caption}"
+  preview-up:
+    textColor: "{colors.sauge}"
+  preview-down:
+    textColor: "{colors.cuivre}"
+  points-bar:
+    backgroundColor: "{colors.nuit-relevee}"
+    rounded: "{rounded.sm}"
+    padding: "12px"
   character-plate:
     backgroundColor: "{colors.nuit-voilee}"
     rounded: "{rounded.sm}"
@@ -225,6 +240,7 @@ The system is tuned for long evening sessions next to Discord. Night ("Nuit") is
 The system rejects the generic tool look of identical boxed cards with centered titles, stock Material blue, and anything that tires the eyes or betrays the game's own vocabulary.
 
 **Key Characteristics:**
+
 - Almanac tables: small-caps headings, running hairline rules, values right-aligned in tabular serif figures.
 - Flat at rest: depth comes from three tonal steps of ground, never from shadow.
 - One interaction color (lamp gold); game colors stay with game meaning.
@@ -236,17 +252,21 @@ The system rejects the generic tool look of identical boxed cards with centered 
 A near-monochrome ink-and-bone ground carries a single warm lamp-gold accent, four Existence hues, and eight personal moon tints.
 
 ### Primary
+
 - **Or de lampe** (night) / **Or bruni** (day): the only interaction color. Used for contained buttons, the active tab label and its 2px indicator, the focus outline, stepper hover, the back arrow, text selection (32% alpha), and the spent part of XP bars. Text on it is **Mèche** at night and **Vélin** by day.
 
 ### Secondary
+
 - **Lilas** (night) / **Violet d'encre** (day): a quiet secondary for category chips (principles, gifted XP) and a loading button. It never competes with gold for interaction.
 
 ### Tertiary
+
 - **Existences**: **Santé** (warm coral at night, brick by day), **Équilibre** (watch blue, slate blue), **Éclat** (pale gold, dark ochre), **Maï** (pale mauve, dusk violet). They live only in the moon gauges, where they fill the phase disc, the stroke arc, and a 10% wash with a 45% outline.
 - **Lunes (moon tints)**: eight per-character tints, each with a night and a day value: Lune d'argent (default), d'ambre, rousse, de jade, d'azur, d'améthyste, de corail, de nacre. Set by the player or the GM.
-- **Status**: Braise / Vermillon (error), Cuivre / Rouille (warning), Bleu de veille / Bleu ardoise (info), Sauge / Mousse (success). Alerts, chips, and the negative XP balance only.
+- **Status**: Braise / Vermillon (error), Cuivre / Rouille (warning), Bleu de veille / Bleu ardoise (info), Sauge / Mousse (success). Alerts, chips, the negative XP balance, and pending points: Sauge marks a value that rises in preview, Cuivre one that falls, and Braise a pending purchase the XP cannot cover.
 
 ### Neutral
+
 - **Encre de nuit** / **Papier os**: the page ground.
 - **Nuit voilée** / **Papier**: paper surfaces (the plate, the ephemeris band, cards).
 - **Nuit relevée** / **Vélin**: raised surfaces (tooltips, menus, popovers, dialogs, the portrait's camera button).
@@ -255,11 +275,14 @@ A near-monochrome ink-and-bone ground carries a single warm lamp-gold accent, fo
 - **Filet de nuit** / **Filet du jour**: every one-pixel rule, divider, card border, and empty arc track (bone at 12% / ink at 14%).
 
 ### Named Rules
+
 **The Lampe Rule.** Gold means "you can act here". Nothing decorative is gold, and no other hue marks interaction.
 
 **The Couleur du Jeu Rule.** Existence colors appear only in moon gauges, and moon tints only in a character's own identity (plate wash, top rule, portrait ring, sheet-card top rule, tint button). Neither becomes a UI accent.
 
 **The Lune Personnelle Rule.** Tint intensity follows Devenir on a 0–100 scale: the plate wash runs from 6% to 18% tint, and the top rule and portrait ring from 35% to 100%. Above 100 (transcendance), a second ring detaches from the portrait with a 3px gap of paper color. A missing Devenir sits at mid intensity.
+
+**The Aperçu Rule.** A value changed by pending points is a preview, not a fact. It turns bold, in Sauge when it rises and Cuivre when it falls, and its saved value waits in a tooltip ("Avant : N"). The whole sheet previews at once (characteristics, group totals, faculties, combat values, gauge maximums and thresholds, XP bar), and nothing returns to ink until the points are validated or cancelled.
 
 ## Typography
 
@@ -270,6 +293,7 @@ A near-monochrome ink-and-bone ground carries a single warm lamp-gold accent, fo
 **Character:** Spectral gives names and numbers a printed, almanac-table gravity. Alegreya Sans comes from the same humanist calligraphic family, so the interface stays warm without becoming decorative. Its small-caps cut supplies true small capitals for every heading and label.
 
 ### Hierarchy
+
 - **Display** (Spectral 400, 4rem, 1.05, +0.04em): the ONIRIA wordmark on the home page and top-level page titles.
 - **Headline** (Spectral 500, 2.75rem, 1.1): the character's name on the plate, set at 1.625rem on phone and 2.5rem from md.
 - **Headline small** (Spectral 500, 2rem, 1.15): secondary page titles (tables, whitelist).
@@ -281,6 +305,7 @@ A near-monochrome ink-and-bone ground carries a single warm lamp-gold accent, fo
 - **Numeral** (Spectral 500, lining tabular figures, 1.2): every game value. Size follows importance: 1.75rem italic for group totals, 1.375rem for characteristics and the XP left, 1.0625rem for combat, 1rem for faculties, and 1.25rem to 1.625rem in gauges.
 
 ### Named Rules
+
 **The Chiffre Tabulaire Rule.** Every number on a sheet is Spectral with `lining-nums tabular-nums` (the body defaults to tabular figures too), right-aligned in its column so values line up like a table.
 
 **The Petites Capitales Rule.** Headings and labels use the real small-caps face (Alegreya Sans SC) with letter spacing. Never use `text-transform: uppercase`. Buttons and tabs stay in sentence case.
@@ -290,11 +315,14 @@ A near-monochrome ink-and-bone ground carries a single warm lamp-gold accent, fo
 The sheet is a single column up to 1400px wide, centered, with a 32px page gutter (12px below 600px) and a 24px vertical stack (16px on phone). The spacing unit is 8px in Confort and 6px in Compact. Compact also tightens card padding from 20px to 12px and shrinks buttons and icon buttons to small.
 
 The order is fixed: a thin 52px header bar (back, ONIRIA, display settings, ⋯ page actions injected through slots), then the character plate, then the ephemeris band, which is sticky to the top on every tab. Tabs follow, stretched full width so their rule runs under the whole page. The Caractéristiques tab is a ruled table grid:
+
 - **xs:** one column (Caractères, Facultés, Combat, Expérience).
 - **md (900px):** Caractères and Facultés on the left, Combat in a fixed 260px column on the right.
 - **lg (1200px):** three columns (1.1fr / 1fr / 236px) with Expérience full width below.
 
 Columns are separated by a 1px rule with 24px inner padding, not by gaps between boxes.
+
+While characteristic points are pending, the points bar sticks to the bottom of the viewport (16px from the edge, full content width) so the preview can be read anywhere on the sheet. It only exists for players who can edit the sheet and disappears once the points are validated or cancelled.
 
 **520px is the key breakpoint** (a half screen beside Discord). From there the plate fits on one line (portrait, name, facts), the band shows all four moons on one row (three Existences at 3fr each, Maï at 2.4fr) with shared captions, and characteristic and faculty groups stay in three fixed columns. Below 520px groups go to two columns, the three Existences share a row, and Maï drops under a rule. From 1200px, gauge steppers move inline after the value.
 
@@ -303,16 +331,19 @@ Columns are separated by a 1px rule with 24px inner padding, not by gaps between
 Flat at rest. Depth comes from three tonal steps (ground, then paper, then raised) and one-pixel rules. Cards, the plate, and the band carry a hairline border, never a shadow (`elevation: 0`, no background-image overlay). Raised surfaces (tooltip, menu, popover) are lighter tones with a hairline border. Only modal dialogs cast a shadow.
 
 ### Shadow Vocabulary
+
 - **Dialog** (`box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5)`): modal dialogs only, on the raised surface.
 
 ### Named Rules
-**The Sans Ombre Rule.** Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP "remaining" outline use `box-shadow` as a stroke, not as elevation.
+
+**The Sans Ombre Rule.** Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP "remaining" outline use `box-shadow` as a stroke, not as elevation. Sticky strips follow the same rule: the ephemeris band and the points bar float over the scrolling sheet on their own tone and rules, without a shadow.
 
 ## Shapes
 
 Corners are nearly square (2px) everywhere: cards, buttons, chips, alerts, tooltips, the plate, the stepper, and XP bars. Progress lines are square (3px high, 0 radius). The only round forms are the moon: portraits, moon discs, tint swatches (36px), and the arc of strokes (270° open at the bottom, 3px stroke, 6px maximum gap between strokes; above 24 points it becomes a continuous arc).
 
 Rules come in three weights:
+
 - **Hairline:** 1px rule color. Rows, columns, borders.
 - **Group rule:** 1px in secondary text color, under characteristic-group headings.
 - **Tint rule:** 2px in the moon tint, across the top of the plate and sheet cards.
@@ -322,53 +353,88 @@ Section headings and band captions extend into a running rule (`::after`, flex 1
 ## Components
 
 ### Buttons
+
 Quiet and typographic.
+
 - **Shape:** near-square (2px).
 - **Primary (contained):** lamp gold with Mèche/Vélin text, no elevation, sentence case, Alegreya Sans 500.
 - **Text / icon buttons:** gold or inherited color. Icon buttons sit at medium size in Confort and small in Compact.
 - **Focus:** a 2px gold outline offset by 2px, applied globally through `:focus-visible`.
 
 ### Chips
+
 - **Style:** 2px radius, MUI filled. Status meaning comes only from status colors (Validée default, En création warning) or the secondary lilac for categories.
 
 ### Cards / Containers
+
 - **Sheet sections are not cards.** They sit on the ground: a small-caps section heading with a running rule, an optional adornment (lock, status), and a collapse chevron that rotates -90° in 160ms. Collapse state is saved on the account.
 - **Cards** (sheet list, add-sheet): paper background, 1px rule border, 2px radius, 20px/12px padding. The sheet card is 250px wide with a 2px tint top rule and a 56px portrait ringed in the tint. The add card is dashed and transparent, with a gold label.
 - **Tab panels** are transparent and borderless.
 
 ### Inputs / Fields
+
 - **Editable values read as text.** At rest a value looks like plain text. On hover or focus a 1px dashed underline and a small pencil (11px, 70% opacity) appear in 120ms. On touch there is no pencil, only a dotted underline at 40% secondary. Enter or click opens a standard (underline) text field; Escape cancels, blur commits.
 - **Labels with rules** are focusable and show the formula in a tooltip, with `cursor: help`.
 
 ### Navigation
+
 - **Header bar:** 52px, bottom hairline, no background. ONIRIA in small caps at +0.24em in secondary text, brightening to primary text (not gold) on hover. Page controls are portaled into start and end slots, so there is only ever one bar.
 - **Tabs:** 44px, sentence case, Alegreya Sans 500 at 0.9375rem, 14px inline padding, 2px gold indicator over a full-width bottom rule. Scrollable on phone.
 - **Display settings:** a popover on the raised surface with toggle groups Nuit / Jour / Système and Confort / Compact, under small-caps labels.
 
 ### Moon Gauge (signature)
+
 An Existence as a lunar phase:
+
 - **Disc:** 17/64 of the box. The lit part grows as a crescent from the right, then gibbous, then full.
 - **Arc:** a 270° arc of strokes, one stroke per point, colored up to the current value. The empty track uses the rule color.
 - **Size:** 60px from md, 34px on phone. Maï is drawn smaller inside the same box so values stay on one baseline.
 - **Text:** small-caps label, numeral value, "/ max" in secondary, "seuil N" caption.
-- **Stepper:** a joined −|+ (two 34×32 halves split by a 1px rule, 2px-radius frame). Secondary at rest; gold with a 10% gold wash on hover or focus in 120ms.
+- **Stepper:** a joined −|+ (two 34×32 halves split by a 1px rule, 2px-radius frame). Secondary at rest; gold with a 10% gold wash on hover or focus in 120ms. The keyboard focus ring is drawn inside the frame (2px gold, offset −2px).
 - **Motion:** the phase and strokes glide in 260ms `cubic-bezier(0.22, 1, 0.36, 1)` (stroke color in 200ms). Disabled under `prefers-reduced-motion`.
 
 ### Character Plate (signature)
+
 The almanac header of a sheet: portrait (88px / 56px) ringed in the moon tint, the name in headline Spectral with a tint-colored palette button, and the player and table in secondary text. Âge, Aspect, and Devenir are three right-aligned almanac columns, each a small-caps label above its value. The paper surface is washed with the tint and topped by a 2px tint rule (see the Lune Personnelle Rule). The tint picker is a 4×2 grid of 36px swatches; the selected swatch gets a 2px primary-text ring. Without an image, the portrait is a tinted moon carrying the initial in Spectral.
 
 ### Ephemeris Band (signature)
+
 A sticky paper strip ruled top and bottom. A small-caps caption with a running rule spans "Existences", and a second spans "Maï". The four gauges sit in columns separated by 1px rules.
 
 ### Stat Row
+
 One almanac line: a body-small label in secondary on the left (tooltip with the rule, brightening to primary on hover) and a right-aligned numeral on the right, with an optional caption margin. A 1px rule sits under each row except the last; rows have 4px vertical padding.
 
 ### XP Bar
-A 16px segmented bar: spent (solid gold), pending (45° gold stripes), remaining (14% gold with a 1.5px inset gold outline), negative (error). Each segment shows its value on hover or focus. A legend sits beneath it.
+
+A 16px segmented bar: spent (solid gold), due at validation (45° gold stripes), pending points (45° Sauge stripes), remaining (14% gold with a 1.5px inset gold outline), negative (error). Each segment shows its value on hover or focus. A legend sits beneath it.
+
+### Point Stepper
+
+Characteristics are raised point by point, like a game's level-up screen.
+
+- **Frame:** the moon gauge's joined −|+, in its small size (two 24×24 cells, the 2.5.8 minimum target, 16px icons). Both cells are always there, so every value in a group stays in one right-aligned column.
+- **States:** "−" is disabled (text-disabled) while nothing can be removed. When a point can be removed below the saved value (GM, sheet in creation) it is faded to 35% until hover or focus. "+" is disabled at the maximum.
+- **Pending count:** "+2" or "−1" sits before the value, in bold caption figures, Sauge or Cuivre. It is always rendered (empty without pending points) and announced politely to screen readers.
+- **Gestures:** a click steps 1 point, Shift+click steps 5, and holding repeats, starting after 400ms and accelerating (×0.75 per step) down to 40ms. A tooltip states these gestures after 600ms.
+- **Draft lifetime:** pending points survive tab changes and data refreshes (returning from Discord re-reads the sheet without clearing them). Only "Valider", "Annuler", or leaving the page (with a browser confirmation) ends them.
+
+### Preview Value
+
+The Aperçu Rule as a component. An unchanged value renders as plain text. A changed value turns semibold (600, Spectral's loaded weight; never a synthetic bold) in Sauge (rising) or Cuivre (falling), becomes focusable with `cursor: help`, and shows "Avant : N" in an arrowed tooltip that opens instantly on touch.
+
+### Points Bar
+
+A sticky bottom strip that appears while points are pending.
+
+- **Content:** on the left, the changes in bold ("Force +2 · Agilité +1"), and below them the cost in secondary text ("Coût : 12 XP · reprise : 3 XP"). On the right, "Annuler" (text button) and "Valider" (contained gold).
+- **Surface:** the raised tone with a 2px radius and no shadow (see the Sans Ombre Rule).
+- **Border:** 1px Sauge. When the XP cannot cover the purchase, the border and the detail line switch to Braise and name the missing XP per category. "Valider" is then disabled, except for the GM.
 
 ## Do's and Don'ts
 
 ### Do:
+
 - **Do** set every game value as a Spectral tabular numeral, right-aligned in its column.
 - **Do** separate columns and rows with 1px rule-color lines; use the stronger group rule only under characteristic-group headings.
 - **Do** head sections with Alegreya Sans SC small caps followed by a running rule to the column edge.
@@ -378,8 +444,12 @@ A 16px segmented bar: spent (solid gold), pending (45° gold stripes), remaining
 - **Do** keep everything used in play visible without scrolling at 520px (half screen beside Discord) and wider.
 - **Do** honor both densities (8px / 6px unit) and both themes for every new surface.
 - **Do** disable gauge and phase transitions under `prefers-reduced-motion`.
+- **Do** show pending points as a preview across the whole sheet: semibold, Sauge up, Cuivre down, with the saved value in a tooltip.
+- **Do** read colors in styles through the theme's CSS variables (`var(--mui-palette-…)`, `theme.vars`, `color-mix()` for alpha). `theme.palette` holds only the day scheme, so the night would inherit day colors.
+- **Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.
 
 ### Don't:
+
 - **Don't** wrap sheet sections in identical boxed cards with centered titles.
 - **Don't** cast shadows on resting surfaces; the dialog is the only shadow.
 - **Don't** use `text-transform: uppercase`; small caps come from Alegreya Sans SC.
@@ -387,3 +457,4 @@ A 16px segmented bar: spent (solid gold), pending (45° gold stripes), remaining
 - **Don't** round corners beyond 2px on rectangles; round forms are reserved for moons and portraits.
 - **Don't** reintroduce stock Material blue or pure black/white grounds; they tire the eyes over a long session.
 - **Don't** let anything move on a value change except the gauge that changed.
+- **Don't** add another −/+ style; steppers share the joined frame of the moon gauge.

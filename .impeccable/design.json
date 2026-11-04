@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T00:00:00Z",
+  "generatedAt": "2026-11-04T19:14:24Z",
   "title": "Design System: Oniria",
   "extensions": {
     "colorMeta": {
@@ -930,6 +930,11 @@
         "name": "moon-phase",
         "value": "260ms cubic-bezier(0.22, 1, 0.36, 1)",
         "purpose": "Lit phase and arc glide to the new value. Off under prefers-reduced-motion."
+      },
+      {
+        "name": "point-repeat",
+        "value": "400ms first repeat, x0.75 per step, 40ms floor",
+        "purpose": "Held + or − on the point stepper repeats and accelerates."
       }
     ],
     "breakpoints": [
@@ -1040,6 +1045,30 @@
       "description": "Rule and formula behind a label, on the raised surface with a hairline.",
       "html": "<span class=\"ds-tip-wrap\"><span class=\"ds-tip-label\" tabindex=\"0\">Initiative</span><span class=\"ds-tip\" role=\"tooltip\">Vivacité / 10</span></span>",
       "css": ".ds-tip-wrap { display: inline-flex; flex-direction: column; gap: 8px; padding: 12px; background: #11131c; } .ds-tip-label { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; cursor: help; } .ds-tip-label:hover, .ds-tip-label:focus-visible { color: #e8e2d3; outline: none; } .ds-tip { background: #1d2130; color: #e8e2d3; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.45; padding: 8px 12px; max-width: 380px; }"
+    },
+    {
+      "name": "Preview Value",
+      "kind": "custom",
+      "refersTo": "preview-up",
+      "description": "A value changed by pending points: bold, Sauge when it rises, Cuivre when it falls, saved value in a tooltip (\"Avant : N\").",
+      "html": "<div class=\"ds-pv\"><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Force</span><span class=\"ds-pv-num ds-pv-up\" tabindex=\"0\" title=\"Avant : 52\">54</span></span><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Agilité</span><span class=\"ds-pv-num ds-pv-down\" tabindex=\"0\" title=\"Avant : 40\">39</span></span><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Vivacité</span><span class=\"ds-pv-num\">47</span></span></div>",
+      "css": ".ds-pv { display: grid; width: 220px; padding: 8px 16px; background: #11131c; color: #e8e2d3; } .ds-pv-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(232, 226, 211, 0.12); } .ds-pv-row:last-child { border-bottom: 0; } .ds-pv-label { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-pv-num { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.375rem; font-variant-numeric: lining-nums tabular-nums; } .ds-pv-up { color: #7fb38a; font-weight: 600; cursor: help; } .ds-pv-down { color: #e8894a; font-weight: 600; cursor: help; } .ds-pv-num:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
+    },
+    {
+      "name": "Point Stepper",
+      "kind": "custom",
+      "refersTo": "stepper-half-sm",
+      "description": "Characteristic level-up in the moon gauge frame, small size (two 24px cells, always both, so values stay in one column). The pending count sits before the value. Click 1, Shift 5, hold to repeat.",
+      "html": "<div class=\"ds-ps\"><span class=\"ds-ps-label\">Force</span><span class=\"ds-ps-count\" aria-live=\"polite\">+2</span><span class=\"ds-ps-val\">22</span><span class=\"ds-ps-frame\"><button class=\"ds-ps-btn\" aria-label=\"Retirer un point à Force\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><button class=\"ds-ps-btn\" aria-label=\"Ajouter un point à Force\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span></div>",
+      "css": ".ds-ps { display: flex; align-items: baseline; gap: 4px; width: 200px; padding: 4px 16px; background: #11131c; color: #e8e2d3; } .ds-ps-label { margin-right: auto; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-ps-count { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: #7fb38a; } .ds-ps-val { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 600; font-size: 1.375rem; font-variant-numeric: lining-nums tabular-nums; color: #7fb38a; } .ds-ps-frame { display: inline-flex; align-self: center; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; overflow: hidden; } .ds-ps-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #a9b1c2; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-ps-btn + .ds-ps-btn { border-left: 1px solid rgba(232, 226, 211, 0.12); } .ds-ps-btn:hover, .ds-ps-btn:focus-visible { color: #d9a441; background: rgba(217, 164, 65, 0.1); } .ds-ps-btn:focus-visible { outline: 2px solid #d9a441; outline-offset: -2px; }"
+    },
+    {
+      "name": "Points Bar",
+      "kind": "custom",
+      "refersTo": "points-bar",
+      "description": "Sticky bottom strip while points are pending: the changes, their cost, Annuler and Valider. Raised tone, 1px Sauge rule (Braise when XP is missing), no shadow.",
+      "html": "<div class=\"ds-pb\" role=\"region\" aria-label=\"Points en attente\"><div><div class=\"ds-pb-lines\">Force +2 · Agilité −1</div><div class=\"ds-pb-detail\" aria-live=\"polite\">Coût : 4 XP · reprise : 1 XP</div></div><div class=\"ds-pb-actions\"><button class=\"ds-pb-cancel\">Annuler</button><button class=\"ds-pb-ok\">Valider</button></div></div>",
+      "css": ".ds-pb { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; width: 520px; background: #1d2130; color: #e8e2d3; border: 1px solid #7fb38a; border-radius: 2px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; } .ds-pb-lines { font-weight: 700; font-size: 1rem; } .ds-pb-detail { font-size: 0.9375rem; color: #a9b1c2; } .ds-pb-actions { display: flex; gap: 8px; margin-left: auto; } .ds-pb-cancel, .ds-pb-ok { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 16px; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-pb-cancel { background: transparent; color: #d9a441; border: 0; padding: 6px 8px; } .ds-pb-cancel:hover { background: rgba(217, 164, 65, 0.08); } .ds-pb-ok { background: #d9a441; color: #1a1406; border: 0; } .ds-pb-ok:hover { background: #c4923a; } .ds-pb-cancel:focus-visible, .ds-pb-ok:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
     }
   ],
   "narrative": {
@@ -1069,6 +1098,11 @@
         "section": "colors"
       },
       {
+        "name": "The Aperçu Rule",
+        "body": "A value changed by pending points is a preview, not a fact. It turns bold, in Sauge when it rises and Cuivre when it falls, and its saved value waits in a tooltip (\"Avant : N\"). The whole sheet previews at once (characteristics, group totals, faculties, combat values, gauge maximums and thresholds, XP bar), and nothing returns to ink until the points are validated or cancelled.",
+        "section": "colors"
+      },
+      {
         "name": "The Chiffre Tabulaire Rule",
         "body": "Every number on a sheet is Spectral with `lining-nums tabular-nums` (the body defaults to tabular figures too), right-aligned in its column so values line up like a table.",
         "section": "typography"
@@ -1080,7 +1114,7 @@
       },
       {
         "name": "The Sans Ombre Rule",
-        "body": "Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP \"remaining\" outline use `box-shadow` as a stroke, not as elevation.",
+        "body": "Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP \"remaining\" outline use `box-shadow` as a stroke, not as elevation. Sticky strips follow the same rule: the ephemeris band and the points bar float over the scrolling sheet on their own tone and rules, without a shadow.",
         "section": "elevation"
       }
     ],
@@ -1093,7 +1127,10 @@
       "**Do** derive a character's identity color from its moon tint, scaled by Devenir, through the `--tint` variable with its night and day values.",
       "**Do** keep everything used in play visible without scrolling at 520px (half screen beside Discord) and wider.",
       "**Do** honor both densities (8px / 6px unit) and both themes for every new surface.",
-      "**Do** disable gauge and phase transitions under `prefers-reduced-motion`."
+      "**Do** disable gauge and phase transitions under `prefers-reduced-motion`.",
+      "**Do** show pending points as a preview across the whole sheet: semibold, Sauge up, Cuivre down, with the saved value in a tooltip.",
+      "**Do** read colors in styles through the theme's CSS variables (`var(--mui-palette-…)`, `theme.vars`, `color-mix()` for alpha). `theme.palette` holds only the day scheme, so the night would inherit day colors.",
+      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet."
     ],
     "donts": [
       "**Don't** wrap sheet sections in identical boxed cards with centered titles.",
@@ -1102,7 +1139,8 @@
       "**Don't** use Existence colors or moon tints as general UI accents, or gold as decoration.",
       "**Don't** round corners beyond 2px on rectangles; round forms are reserved for moons and portraits.",
       "**Don't** reintroduce stock Material blue or pure black/white grounds; they tire the eyes over a long session.",
-      "**Don't** let anything move on a value change except the gauge that changed."
+      "**Don't** let anything move on a value change except the gauge that changed.",
+      "**Don't** add another −/+ style; steppers share the joined frame of the moon gauge."
     ]
   }
 }
