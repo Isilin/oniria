@@ -15,6 +15,12 @@ export const XP_BAR_PARTS = {
       backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.primary.main} 0 5px, ${alpha(theme.palette.primary.main, 0.4)} 5px 10px)`,
     }),
   },
+  draft: {
+    label: 'Points en attente',
+    sx: (theme: Theme) => ({
+      backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.success.main} 0 5px, ${alpha(theme.palette.success.main, 0.4)} 5px 10px)`,
+    }),
+  },
   left: {
     label: 'Restante',
     // Contour net plutôt qu'aplat pâle : la part restante reste lisible
@@ -42,6 +48,8 @@ interface Props {
   left: number;
   /** Part de la restante réservée à la validation de la création ou du reset. */
   pending?: number;
+  /** Part de la restante que coûteraient les points en attente. */
+  draft?: number;
 }
 
 /**
@@ -55,13 +63,17 @@ const XpBar = ({
   spent,
   left,
   pending = 0,
+  draft = 0,
 }: Props) => {
   const negative = Math.max(0, -left);
+  const reserved = Math.min(pending, Math.max(0, left));
+  const drafted = Math.min(draft, Math.max(0, left - reserved));
   const parts: { part: XpBarPart; value: number }[] = [
     { part: 'spent' as const, value: Math.max(0, spent - negative) },
     { part: 'negative' as const, value: negative },
-    { part: 'pending' as const, value: Math.min(pending, Math.max(0, left)) },
-    { part: 'left' as const, value: Math.max(0, left - pending) },
+    { part: 'pending' as const, value: reserved },
+    { part: 'draft' as const, value: drafted },
+    { part: 'left' as const, value: Math.max(0, left - reserved - drafted) },
   ].filter((p) => p.value > 0);
   const scale = parts.reduce((total, p) => total + p.value, 0);
 

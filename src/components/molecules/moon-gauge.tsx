@@ -3,6 +3,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
+import PreviewValue from '../atoms/preview-value';
 
 /** Mélange compatible avec les variables CSS du thème (nuit / jour). */
 const mix = (color: string, percent: number) =>
@@ -25,6 +26,8 @@ interface Props {
   inline?: boolean;
   /** Libellé masqué là où une légende de la bande le porte déjà (≥ 520 px). */
   labelHiddenWide?: boolean;
+  /** Maximum et seuil de la fiche enregistrée (aperçu des points en attente). */
+  before?: { max: number; threshold?: number };
 }
 
 const SIZE = 64;
@@ -120,6 +123,7 @@ const MoonGauge = ({
   small = false,
   inline = false,
   labelHiddenWide = false,
+  before,
 }: Props) => {
   const fraction = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
   const lit = litPath(fraction);
@@ -281,7 +285,13 @@ const MoonGauge = ({
             {current}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            / {max}
+            /{' '}
+            <PreviewValue
+              before={before?.max}
+              delta={before ? max - before.max : 0}
+            >
+              {max}
+            </PreviewValue>
           </Typography>
           {threshold !== undefined && (
             <Typography
@@ -289,7 +299,17 @@ const MoonGauge = ({
               color="textSecondary"
               sx={{ ml: 0.5, whiteSpace: 'nowrap' }}
             >
-              seuil {threshold}
+              seuil{' '}
+              <PreviewValue
+                before={before?.threshold}
+                delta={
+                  before?.threshold !== undefined
+                    ? threshold - before.threshold
+                    : 0
+                }
+              >
+                {threshold}
+              </PreviewValue>
             </Typography>
           )}
         </Box>

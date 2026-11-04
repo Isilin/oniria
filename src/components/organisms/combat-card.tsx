@@ -2,29 +2,44 @@
 
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { Typography } from '@mui/material';
+import { ReactNode } from 'react';
+import PreviewValue from '../atoms/preview-value';
 import SectionCard from '../molecules/section-card';
 import StatRow from '../molecules/stat-row';
 
+type Derived = 'damage' | 'initiative' | 'impact' | 'impulsion' | 'conduction';
+
 /** Les valeurs de combat, en colonne à côté des Caractères. */
 const CombatCard = ({ id }: { id: string }) => {
-  const { computed } = useSheet(id);
+  const { computed, base } = useSheet(id);
 
-  const rows = [
-    { label: 'Dégâts', value: computed.damage, tooltip: '(Force / 10) - 5' },
+  /** Valeur dérivée des caractères, en aperçu tant que des points attendent. */
+  const derived = (key: Derived) => (
+    <PreviewValue before={base[key]} delta={computed[key] - base[key]}>
+      {computed[key]}
+    </PreviewValue>
+  );
+
+  const rows: { label: string; value: ReactNode; tooltip: string }[] = [
+    { label: 'Dégâts', value: derived('damage'), tooltip: '(Force / 10) - 5' },
     {
       label: 'Initiative',
-      value: computed.initiative,
+      value: derived('initiative'),
       tooltip: 'Vivacité / 10',
     },
-    { label: 'Impact', value: computed.impact, tooltip: 'Raisonnement / 10' },
+    {
+      label: 'Impact',
+      value: derived('impact'),
+      tooltip: 'Raisonnement / 10',
+    },
     {
       label: 'Impulsion',
-      value: computed.impulsion,
+      value: derived('impulsion'),
       tooltip: 'Perception / 10',
     },
     {
       label: 'Conduction',
-      value: computed.conduction,
+      value: derived('conduction'),
       tooltip: 'Concentration / 10',
     },
     {

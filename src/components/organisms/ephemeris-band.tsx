@@ -45,7 +45,7 @@ const Caption = ({
  * phases de lune. Collée en haut de la fiche sur tous les onglets.
  */
 const EphemerisBand = ({ id }: { id: string }) => {
-  const { sheet, computed, canEdit, update } = useSheet(id);
+  const { sheet, computed, base, canEdit, update } = useSheet(id);
   const theme = useTheme();
   if (!sheet || !computed) return null;
   const colors = theme.vars!.palette.existence;
@@ -55,6 +55,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
     field: Field;
     max: number;
     threshold?: number;
+    before: { max: number; threshold?: number };
     hint: string;
     color: string;
     area: string;
@@ -64,6 +65,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
       field: 'current_health',
       max: computed.health,
       threshold: computed.healthThreshold,
+      before: { max: base.health, threshold: base.healthThreshold },
       hint: 'Vigueur / 10, plus les bonus « Santé +N » du Corpus',
       color: colors.health,
       area: 'g1',
@@ -73,6 +75,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
       field: 'current_stability',
       max: computed.stability,
       threshold: computed.stabilityThreshold,
+      before: { max: base.stability, threshold: base.stabilityThreshold },
       hint: 'Entendement / 10',
       color: colors.stability,
       area: 'g2',
@@ -82,6 +85,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
       field: 'current_radiance',
       max: computed.radiance,
       threshold: computed.radianceThreshold,
+      before: { max: base.radiance, threshold: base.radianceThreshold },
       hint: 'Âme / 10',
       color: colors.radiance,
       area: 'g3',
@@ -90,6 +94,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
       label: 'Maï',
       field: 'current_mai',
       max: computed.mai,
+      before: { max: base.mai },
       hint: 'Âme / 10',
       color: colors.mai,
       area: 'g4',
@@ -154,6 +159,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
               current={current}
               max={g.max}
               threshold={g.threshold}
+              before={g.before}
               hint={g.hint}
               color={g.color}
               small={g.field === 'current_mai'}

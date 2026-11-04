@@ -3,12 +3,16 @@
 import {
   Amounts,
   checkSplit,
+  PointsOptions,
+  PointsPlan,
   POOL_LABELS,
   POOLS,
+  Scope,
   SCOPE_BY_KEY,
   sum,
   suggestSplit,
   XpChange,
+  zero,
 } from '@/lib/rules/xp';
 import {
   Alert,
@@ -54,9 +58,25 @@ export interface RemovalRequest {
   refund: { amounts: Amounts; offered: number; missing: number };
 }
 
+/** Réponse du dialogue des points : ce qu'on envoie à l'API dans `xp`. */
+export interface PointsAnswer {
+  splits?: Partial<Record<Scope, Amounts>>;
+  gift?: boolean;
+  refund?: boolean;
+}
+
+export interface PointsRequest {
+  /** Les points en attente, avec la répartition proposée. */
+  plan: PointsPlan;
+  isAdmin: boolean;
+  /** Recalcule le plan avec les choix faits dans le dialogue. */
+  evaluate: (options: PointsOptions) => PointsPlan;
+}
+
 interface XpDialogs {
   askPurchase: (request: PurchaseRequest) => Promise<XpAnswer | null>;
   askRemoval: (request: RemovalRequest) => Promise<XpAnswer | null>;
+  askPoints: (request: PointsRequest) => Promise<PointsAnswer | null>;
 }
 
 type Pending =
@@ -69,6 +89,11 @@ type Pending =
       kind: 'removal';
       request: RemovalRequest;
       resolve: (a: XpAnswer | null) => void;
+    }
+  | {
+      kind: 'points';
+      request: PointsRequest;
+      resolve: (a: PointsAnswer | null) => void;
     };
 
 const XpDialogContext = createContext<XpDialogs | null>(null);
@@ -262,9 +287,170 @@ const RemovalDialog = ({
   );
 };
 
+const lineCost = (line: PointsPlan['lines'][number]) =>
+  line.free
+    ? 'libre'
+    : line.delta > 0
+      ? `${line.delta} XP`
+      : `reprise de ${-line.delta} XP`;
+
+/**
+ * Validation des points ajoutés aux caractères : répartition proposée pour
+ * chaque partie (modifiable) ; pour le MJ, cadeau des achats et
+ * remboursement (ou perte) des baisses.
+ */
+const PointsDialog = ({
+  request: { plan: initial, isAdmin, evaluate },
+  onClose,
+}: {
+  request: PointsRequest;
+  onClose: (answer: PointsAnswer | null) => void;
+}) => {
+  const [refund, setRefund] = useState(true);
+  const [gift, setGift] = useState(false);
+  const [splits, setSplits] = useState(initial.splits);
+  const suggestion = useMemo(() => evaluate({ refund }), [evaluate, refund]);
+  const plan = useMemo(
+    () => evaluate({ splits, gift, refund }),
+    [evaluate, splits, gift, refund],
+  );
+  const buying = plan.dues.length > 0 && !gift;
+  const refunded = plan.removals.reduce(
+    (total, r) => ({
+      feel: total.feel + r.taken.feel,
+      learn: total.learn + r.taken.learn,
+      live: total.live + r.taken.live,
+    }),
+    zero(),
+  );
+  const unrecorded = plan.removals.reduce((t, r) => t + r.missing, 0);
+
+  return (
+    <Dialog open onClose={() => onClose(null)} maxWidth="sm" fullWidth>
+      <DialogTitle>Valider les points</DialogTitle>
+      <DialogContent>
+        <Box component="ul" sx={{ pl: 2.5, mt: 0 }}>
+          {plan.lines.map((line) => (
+            <Typography component="li" key={line.key}>
+              {line.label} : <strong>{lineCost(line)}</strong>
+            </Typography>
+          ))}
+        </Box>
+        {plan.lines.some((l) => l.free) && (
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            Les parties débloquées ne coûtent rien maintenant : leur coût sera
+            payé à la validation de la fiche.
+          </Typography>
+        )}
+        {buying && (
+          <>
+            <Typography gutterBottom sx={{ mt: 1 }}>
+              Coût : <strong>{plan.cost} XP</strong>
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              La dépense est définitive : seul le MJ pourra la reprendre.
+            </Typography>
+            {plan.dues.map((due) => {
+              const scope = SCOPE_BY_KEY[due.scope];
+              return (
+                <Box key={due.scope} sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2">
+                    {scope.label} : {due.amount} XP, payés avec{' '}
+                    {scope.pools.map((p) => POOL_LABELS[p]).join(', ')}
+                  </Typography>
+                  <AmountsFields
+                    value={splits[due.scope] ?? zero()}
+                    onChange={(split) =>
+                      setSplits({ ...splits, [due.scope]: split })
+                    }
+                    allowed={scope.pools}
+                    balance={plan.balance}
+                  />
+                </Box>
+              );
+            })}
+          </>
+        )}
+        {buying && suggestion.missing > 0 && (
+          <Alert severity="warning" sx={{ mt: 2 }}>
+            XP insuffisante : il manque {suggestion.missing} XP.
+          </Alert>
+        )}
+        {buying && plan.error && suggestion.missing === 0 && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {plan.error}
+          </Alert>
+        )}
+        {isAdmin && plan.dues.length > 0 && (
+          <FormControlLabel
+            sx={{ mt: 1, display: 'flex' }}
+            control={
+              <Checkbox
+                checked={gift}
+                onChange={(e) => setGift(e.target.checked)}
+              />
+            }
+            label="Offert par le MJ (aucune XP dépensée)"
+          />
+        )}
+        {plan.removals.length > 0 && (
+          <>
+            <Typography variant="subtitle2" sx={{ mt: 2 }}>
+              Baisses
+            </Typography>
+            <RadioGroup
+              value={refund ? 'refund' : 'loss'}
+              onChange={(e) => {
+                const value = e.target.value === 'refund';
+                setRefund(value);
+                setSplits(evaluate({ refund: value }).splits);
+              }}
+            >
+              <FormControlLabel
+                value="refund"
+                control={<Radio />}
+                label={
+                  sum(refunded) > 0
+                    ? `Rembourser : ${formatAmounts(refunded)}`
+                    : 'Rembourser (rien à rendre : rien n’a été payé)'
+                }
+              />
+              <FormControlLabel
+                value="loss"
+                control={<Radio />}
+                label="Ne pas rembourser : l'XP est perdue"
+              />
+            </RadioGroup>
+            {unrecorded > 0 && (
+              <Alert severity="info" sx={{ mt: 1 }}>
+                {unrecorded} XP de cette valeur n&apos;apparaissent pas dans le
+                journal (fiche reprise ou compte inexact) : ils ne peuvent pas
+                être rendus.
+              </Alert>
+            )}
+          </>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => onClose(null)}>Annuler</Button>
+        <Button
+          variant="contained"
+          disabled={buying && !!plan.error}
+          onClick={() =>
+            onClose({ splits: buying ? splits : undefined, gift, refund })
+          }
+        >
+          {buying ? `Dépenser ${plan.cost} XP` : 'Valider'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 /**
  * Fournit les dialogues de paiement : achat (répartition proposée,
- * modifiable) et reprise par le MJ (remboursement ou perte).
+ * modifiable), reprise par le MJ (remboursement ou perte) et validation des
+ * points des caractères.
  */
 export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
   const [pending, setPending] = useState<Pending | null>(null);
@@ -283,12 +469,19 @@ export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
       ),
     [],
   );
+  const askPoints = useCallback(
+    (request: PointsRequest) =>
+      new Promise<PointsAnswer | null>((resolve) =>
+        setPending({ kind: 'points', request, resolve }),
+      ),
+    [],
+  );
   const value = useMemo(
-    () => ({ askPurchase, askRemoval }),
-    [askPurchase, askRemoval],
+    () => ({ askPurchase, askRemoval, askPoints }),
+    [askPurchase, askRemoval, askPoints],
   );
 
-  const close = (answer: XpAnswer | null) => {
+  const close = (answer: (XpAnswer & PointsAnswer) | null) => {
     pending?.resolve(answer);
     setPending(null);
   };
@@ -301,6 +494,9 @@ export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
       )}
       {pending?.kind === 'removal' && (
         <RemovalDialog request={pending.request} onClose={close} />
+      )}
+      {pending?.kind === 'points' && (
+        <PointsDialog request={pending.request} onClose={close} />
       )}
     </XpDialogContext.Provider>
   );

@@ -3,12 +3,13 @@
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTIC_BY_KEY, FACULTIES, FACULTY_COLUMNS } from '@/lib/rules';
 import { Box, Typography } from '@mui/material';
+import PreviewValue from '../atoms/preview-value';
 import SectionCard from '../molecules/section-card';
 import StatRow from '../molecules/stat-row';
 
 /** Les Facultés, en plus petit : une table serrée, trois colonnes. */
 const AbilitiesCard = ({ id }: { id: string }) => {
-  const { computed } = useSheet(id);
+  const { computed, base } = useSheet(id);
 
   return (
     <SectionCard title="Facultés" section="faculties">
@@ -43,12 +44,22 @@ const AbilitiesCard = ({ id }: { id: string }) => {
             {FACULTIES.filter((f) => f.column === column.key).map((f) => {
               const major = CHARACTERISTIC_BY_KEY[f.major];
               const minor = CHARACTERISTIC_BY_KEY[f.minor];
-              const { value, margin } = computed.faculties[f.key];
+              const now = computed.faculties[f.key];
+              const before = base.faculties[f.key];
               return (
                 <StatRow
                   key={f.key}
                   label={f.label}
-                  after={margin !== 0 ? `+${margin}` : undefined}
+                  after={
+                    now.margin !== 0 ? (
+                      <PreviewValue
+                        before={`+${before.margin}`}
+                        delta={now.margin - before.margin}
+                      >
+                        +{now.margin}
+                      </PreviewValue>
+                    ) : undefined
+                  }
                   tooltip={
                     <>
                       <strong>
@@ -66,7 +77,12 @@ const AbilitiesCard = ({ id }: { id: string }) => {
                   }
                 >
                   <Typography variant="numeral" sx={{ fontSize: '1rem' }}>
-                    {value}
+                    <PreviewValue
+                      before={before.value}
+                      delta={now.value - before.value}
+                    >
+                      {now.value}
+                    </PreviewValue>
                   </Typography>
                 </StatRow>
               );

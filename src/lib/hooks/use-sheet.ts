@@ -3,8 +3,12 @@
 import { XpAnswer, useXpDialogs } from '@/components/organisms/xp-dialogs';
 import { CharacteristicKey, ComputedSheet, computeSheet } from '@/lib/rules';
 import {
-  characteristicChange,
+  CHARACTERISTIC_MAX,
+  CHARACTERISTIC_MIN,
+  characteristicScope,
   corpusChange,
+  planPoints,
+  PointsPlan,
   Scope,
   SCOPE_BY_KEY,
   skillChange,
@@ -14,7 +18,7 @@ import {
   XpSummary,
   xpSummary,
 } from '@/lib/rules/xp';
-import { CollectionKey, STAT_KEYS } from '@/lib/sheet/fields';
+import { CollectionKey } from '@/lib/sheet/fields';
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import { useCallback, useMemo } from 'react';
@@ -22,6 +26,7 @@ import useSWR from 'swr';
 import { FullSheet, SheetGetResult } from '../db/sheet';
 import fetcher, { request } from '../helpers/swr';
 import { useCatalog } from './use-catalog';
+import { EMPTY_DRAFT, PointsDraft, usePointsDraft } from './use-points-draft';
 
 export const useSheets = () => {
   const {
@@ -61,18 +66,29 @@ type Entry = FullSheet['xpEntries'][number];
 
 /**
  * Quand une écriture coûte ou rend de l'XP (achat, remboursement…), le
- * serveur renvoie avec sa réponse l'écriture ajoutée au journal : inutile de
- * recharger la fiche.
+ * serveur renvoie avec sa réponse les écritures ajoutées au journal (une
+ * pour un élément d'une liste, une par caractère pour des points) : inutile
+ * de recharger la fiche.
  */
-const splitEntry = (saved: Fields | null) => {
-  const { xpEntry, ...rest } = (saved ?? {}) as Fields & { xpEntry?: Entry };
-  return { entry: xpEntry, rest: rest as Fields };
+const splitEntries = (saved: Fields | null) => {
+  const { xpEntry, addedXpEntries, ...rest } = (saved ?? {}) as Fields & {
+    xpEntry?: Entry;
+    addedXpEntries?: Entry[];
+  };
+  return {
+    entries: [...(xpEntry ? [xpEntry] : []), ...(addedXpEntries ?? [])],
+    rest: rest as Fields,
+  };
 };
 
-const withEntry = (current: FullSheet, entry?: Entry): FullSheet =>
-  entry && !current.xpEntries.some((e) => e.id === entry.id)
-    ? { ...current, xpEntries: [...current.xpEntries, entry] }
+const withEntries = (current: FullSheet, entries: Entry[]): FullSheet => {
+  const added = entries.filter(
+    (entry) => !current.xpEntries.some((e) => e.id === entry.id),
+  );
+  return added.length
+    ? { ...current, xpEntries: [...current.xpEntries, ...added] }
     : current;
+};
 
 /** Les listes d'identifiants ne sont pas appliquées en optimiste. */
 const scalarPart = (patch: Fields) =>
@@ -110,6 +126,34 @@ const once = <T>(compute: (sheet: FullSheet) => T) => {
 const computeOnce = once<ComputedSheet>(computeSheet);
 const summarizeOnce = once<XpSummary>(xpSummary);
 
+/** Pareil, par version de la fiche et des points en attente. */
+const onceWithDraft = <T>(
+  compute: (sheet: FullSheet, draft: PointsDraft) => T,
+) => {
+  const cache = new WeakMap<FullSheet, WeakMap<PointsDraft, T>>();
+  return (sheet: FullSheet, draft: PointsDraft) => {
+    let byDraft = cache.get(sheet);
+    if (!byDraft) cache.set(sheet, (byDraft = new WeakMap()));
+    if (!byDraft.has(draft)) byDraft.set(draft, compute(sheet, draft));
+    return byDraft.get(draft) as T;
+  };
+};
+
+const pointsInput = (sheet: FullSheet, draft: PointsDraft) => ({
+  current: sheet,
+  target: draft,
+  unlocked: sheet.unlocked,
+  entries: sheet.xpEntries,
+});
+
+/** La fiche telle qu'elle serait avec les points en attente. */
+const previewOnce = onceWithDraft<FullSheet>((sheet, draft) =>
+  Object.keys(draft).length ? { ...sheet, ...draft } : sheet,
+);
+const planOnce = onceWithDraft<PointsPlan>((sheet, draft) =>
+  planPoints(pointsInput(sheet, draft)),
+);
+
 export const useSheet = (id: string) => {
   const url = `/api/sheets/${id}`;
   const { data: session } = useSession();
@@ -123,9 +167,30 @@ export const useSheet = (id: string) => {
 
   const { catalog } = useCatalog();
   const dialogs = useXpDialogs();
+  const pointsDraft = usePointsDraft();
+  const draft = pointsDraft?.draft ?? EMPTY_DRAFT;
 
-  const computed = useMemo(() => (sheet ? computeOnce(sheet) : null), [sheet]);
+  const preview = useMemo(
+    () => (sheet ? previewOnce(sheet, draft) : null),
+    [sheet, draft],
+  );
+  /** Valeurs calculées, avec les points en attente (aperçu). */
+  const computed = useMemo(
+    () => (preview ? computeOnce(preview) : null),
+    [preview],
+  );
+  /** Valeurs calculées de la fiche enregistrée. */
+  const base = useMemo(() => (sheet ? computeOnce(sheet) : null), [sheet]);
   const xp = useMemo(() => (sheet ? summarizeOnce(sheet) : null), [sheet]);
+  /** XP avec les points en attente (ce qu'il resterait à payer…). */
+  const xpPreview = useMemo(
+    () => (preview ? summarizeOnce(preview) : null),
+    [preview],
+  );
+  const plan = useMemo(
+    () => (sheet ? planOnce(sheet, draft) : null),
+    [sheet, draft],
+  );
 
   const isAdmin = session?.user?.role === 'ADMIN';
   const canEdit =
@@ -212,27 +277,24 @@ export const useSheet = (id: string) => {
     [sheet, xp, isAdmin, isLocked, dialogs, enqueueSnackbar],
   );
 
-  /** Met à jour des champs de la fiche (affichés tout de suite). */
-  const update = useCallback(
-    async (patch: Partial<FullSheet>) => {
-      const key = STAT_KEYS.find(
-        (k) => k in patch && (patch[k] ?? 0) !== (sheet?.[k] ?? 0),
-      ) as CharacteristicKey | undefined;
-      const paid = await payFor(
-        key && sheet ? characteristicChange(key, sheet[key], patch[key]) : null,
-      );
-      if (!paid) return false;
+  /**
+   * Enregistre des champs de la fiche (affichés tout de suite, puis
+   * `shown`), avec le paiement des caractères s'il y en a.
+   */
+  const save = useCallback(
+    async (patch: Partial<FullSheet>, paid: Paid = {}, shown?: () => void) => {
       let previous: Fields = {};
       await apply((current) => {
         previous = previousValues(current, patch);
         return { ...current, ...patch };
       });
+      shown?.();
       try {
-        const { entry, rest } = splitEntry(
+        const { entries, rest } = splitEntries(
           await request<Fields>('PATCH', url, { ...patch, ...paid }),
         );
         await apply((current) =>
-          withEntry({ ...current, ...confirmed(rest, patch) }, entry),
+          withEntries({ ...current, ...confirmed(rest, patch) }, entries),
         );
         return true;
       } catch (e) {
@@ -240,8 +302,82 @@ export const useSheet = (id: string) => {
         return false;
       }
     },
-    [apply, fail, payFor, sheet, url],
+    [apply, fail, url],
   );
+
+  /** Met à jour des champs de la fiche (les caractères : voir `points`). */
+  const update = useCallback(
+    (patch: Partial<FullSheet>) => save(patch),
+    [save],
+  );
+
+  /** Un caractère se baisse librement, sauf dans une partie validée (MJ). */
+  const bounds = useCallback(
+    (key: CharacteristicKey) => ({
+      min:
+        !sheet || isAdmin || !isLocked(characteristicScope(key))
+          ? CHARACTERISTIC_MIN
+          : (sheet[key] ?? 0),
+      max: CHARACTERISTIC_MAX,
+    }),
+    [sheet, isAdmin, isLocked],
+  );
+
+  /** Ajoute (ou retire, si `step` est négatif) des points en attente. */
+  const stepPoints = useCallback(
+    (key: CharacteristicKey, step: number) => {
+      if (!sheet || !pointsDraft) return;
+      const { min, max } = bounds(key);
+      const saved = sheet[key] ?? 0;
+      pointsDraft.setDraft((current) => {
+        const from = current[key] ?? saved;
+        const to = Math.min(max, Math.max(min, from + step));
+        if (to === from) return current;
+        const next = { ...current };
+        if (to === saved) delete next[key];
+        else next[key] = to;
+        return next;
+      });
+    },
+    [sheet, pointsDraft, bounds],
+  );
+
+  const clearPoints = useCallback(
+    () => pointsDraft?.setDraft(EMPTY_DRAFT),
+    [pointsDraft],
+  );
+
+  /**
+   * Valide les points en attente. Une partie débloquée s'enregistre sans
+   * rien payer ; sinon, un dialogue propose la répartition (et, pour le MJ,
+   * le cadeau ou le remboursement des baisses).
+   */
+  const commitPoints = useCallback(async () => {
+    if (!sheet || !pointsDraft || !plan || plan.lines.length === 0) {
+      return false;
+    }
+    const pending = pointsDraft.draft;
+    let paid: Paid = {};
+    if (plan.dues.length > 0 || plan.removals.length > 0) {
+      if (!dialogs) return false;
+      const input = pointsInput(sheet, pending);
+      const answer = await dialogs.askPoints({
+        plan,
+        isAdmin,
+        evaluate: (options) => planPoints(input, options),
+      });
+      if (!answer) return false;
+      paid = { xp: { ...answer } };
+    }
+    const patch = Object.fromEntries(
+      plan.lines.map((line) => [line.key, line.to]),
+    ) as Partial<FullSheet>;
+    // Les points ne sont vidés qu'une fois les nouvelles valeurs affichées :
+    // l'aperçu ne revient pas en arrière entre les deux.
+    const ok = await save(patch, paid, () => pointsDraft.setDraft(EMPTY_DRAFT));
+    if (!ok) pointsDraft.setDraft(pending);
+    return ok;
+  }, [sheet, pointsDraft, plan, dialogs, isAdmin, save]);
 
   /** Coût d'un nouvel élément d'une liste. */
   const changeForNew = useCallback(
@@ -302,10 +438,10 @@ export const useSheet = (id: string) => {
           ...data,
           ...paid,
         });
-        const { entry, rest } = splitEntry(saved);
+        const { entries, rest } = splitEntries(saved);
         const created = rest as CollectionItem<K>;
         await apply((current) => ({
-          ...withEntry(current, entry),
+          ...withEntries(current, entries),
           [collection]: [...current[collection], created],
         }));
         return created;
@@ -361,9 +497,9 @@ export const useSheet = (id: string) => {
           `${url}/${collection}/${itemId}`,
           { ...fields, ...paid },
         );
-        const { entry, rest } = splitEntry(saved);
+        const { entries, rest } = splitEntries(saved);
         await apply((current) =>
-          withEntry(replace(() => confirmed(rest, fields))(current), entry),
+          withEntries(replace(() => confirmed(rest, fields))(current), entries),
         );
         return true;
       } catch (e) {
@@ -397,8 +533,10 @@ export const useSheet = (id: string) => {
           'DELETE',
           `${url}/${collection}/${itemId}${query}`,
         );
-        const { entry } = splitEntry(saved);
-        if (entry) await apply((current) => withEntry(current, entry));
+        const { entries } = splitEntries(saved);
+        if (entries.length) {
+          await apply((current) => withEntries(current, entries));
+        }
         return true;
       } catch (e) {
         await fail(e, (current) => {
@@ -481,13 +619,24 @@ export const useSheet = (id: string) => {
   return {
     sheet,
     computed,
+    base,
     xp,
+    xpPreview,
     error,
     isLoading,
     canEdit,
     isAdmin,
     isLocked,
     update,
+    /** Points en attente sur les caractères. */
+    points: {
+      plan,
+      draft,
+      bounds,
+      step: stepPoints,
+      clear: clearPoints,
+      commit: commitPoints,
+    },
     createItem,
     updateItem,
     deleteItem,

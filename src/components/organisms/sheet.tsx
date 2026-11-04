@@ -1,6 +1,7 @@
 'use client';
 
 import useAnchor from '@/lib/hooks/use-anchor';
+import { PointsDraftProvider } from '@/lib/hooks/use-points-draft';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -17,6 +18,7 @@ import EphemerisBand from './ephemeris-band';
 import ExperienceCard from './experience-card';
 import InventoryTab from './inventory-tab';
 import MagicCard from './magic-card';
+import PointsBar from './points-bar';
 import SchemesCard from './schemes-card';
 import SkillsCard from './skills-card';
 import TraitsTab from './traits-tab';
@@ -33,7 +35,7 @@ const NOTES_TAB = 4;
 const Sheet = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
-  const { sheet, isLoading, error } = useSheet(id);
+  const { sheet, isLoading, error, canEdit } = useSheet(id);
 
   if (isLoading) return <CircularProgress />;
   if (error || !sheet)
@@ -42,7 +44,8 @@ const Sheet = ({ id }: { id: string }) => {
     );
 
   return (
-    <>
+    // Les points en attente sont propres à cette fiche.
+    <PointsDraftProvider key={id}>
       <CharacterPlate id={id} />
       <EphemerisBand id={id} />
       <Tabs
@@ -155,7 +158,8 @@ const Sheet = ({ id }: { id: string }) => {
           <NotesCard id={id} />
         </Box>
       </TabContent>
-    </>
+      {canEdit && <PointsBar id={id} />}
+    </PointsDraftProvider>
   );
 };
 

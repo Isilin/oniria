@@ -21,10 +21,7 @@ const LoadingButton = ({ ...props }) => {
       sx={{ minWidth: 'fit-content' }}
     >
       {loading ? (
-        <CircularProgress
-          size={24.5}
-          sx={{ color: 'action.disabled' }}
-        />
+        <CircularProgress size={24.5} sx={{ color: 'action.disabled' }} />
       ) : (
         props.children
       )}

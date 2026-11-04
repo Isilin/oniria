@@ -689,6 +689,187 @@ export const spyreeChange = (
   }`,
 });
 
+/* -------------------------------------------------------------------------- */
+/*                         Points ajoutés aux caractères                      */
+/* -------------------------------------------------------------------------- */
+
+type CharacteristicValuesInput = Partial<
+  Record<CharacteristicKey, number | null>
+>;
+
+export interface PointsInput {
+  /** Valeurs actuelles des caractères. */
+  current: CharacteristicValuesInput;
+  /** Valeurs visées (seuls les caractères modifiés comptent). */
+  target: CharacteristicValuesInput;
+  unlocked?: string[] | null;
+  entries?: XpEntryInput[];
+}
+
+/** Choix de l'utilisateur·ice au moment de valider des points. */
+export interface PointsOptions {
+  /** Répartition choisie pour chaque partie ; sinon, celle proposée. */
+  splits?: Partial<Record<Scope, Amounts>>;
+  /** MJ : les achats sont offerts. */
+  gift?: boolean;
+  /** MJ : les baisses sont remboursées (par défaut) ou l'XP est perdue. */
+  refund?: boolean;
+}
+
+export interface PointsLine {
+  key: CharacteristicKey;
+  target: string;
+  scope: Scope;
+  from: number;
+  to: number;
+  /** XP : positive pour une hausse, négative pour une baisse. */
+  delta: number;
+  label: string;
+  /** Partie débloquée : rien n'est payé maintenant. */
+  free: boolean;
+}
+
+export interface PointsPlan {
+  lines: PointsLine[];
+  /** Ce qu'il faut payer maintenant, par partie validée. */
+  dues: Due[];
+  /** Baisses d'une partie validée (MJ) : ce qui serait repris. */
+  removals: { line: PointsLine; taken: Layer; missing: number }[];
+  /** XP disponible pour les achats : restante, plus ce qui est remboursé. */
+  balance: Amounts;
+  /** Répartition de chaque partie (choisie ou proposée). */
+  splits: Partial<Record<Scope, Amounts>>;
+  /** Répartition de chaque hausse, caractère par caractère. */
+  purchases: { line: PointsLine; split: Amounts }[];
+  /** XP à dépenser maintenant. */
+  cost: number;
+  /** La même, par catégorie (répartitions additionnées). */
+  spending: Amounts;
+  /** XP des parties débloquées, payée à la validation de la fiche. */
+  freeCost: number;
+  /** XP manquante avec la répartition proposée, par partie. */
+  missingByScope: Partial<Record<Scope, number>>;
+  missing: number;
+  /** Ce qui empêche de valider, ou null. */
+  error: string | null;
+}
+
+/**
+ * Ce que coûtent les points ajoutés (ou retirés) aux caractères : chaque
+ * hausse d'une partie validée est un achat, chaque baisse une reprise du MJ ;
+ * une partie débloquée se modifie sans rien payer. Les reprises passent en
+ * premier : l'XP remboursée peut payer les achats.
+ *
+ * Ne vérifie pas les droits (seul le MJ baisse ou offre) : c'est à l'appelant.
+ */
+export const planPoints = (
+  { current, target, unlocked, entries = [] }: PointsInput,
+  { splits: chosen, gift = false, refund = true }: PointsOptions = {},
+): PointsPlan => {
+  const lines: PointsLine[] = CHARACTERISTICS.filter(
+    (c) => c.key in target && value(target[c.key]) !== value(current[c.key]),
+  ).map((c) => {
+    const change = characteristicChange(c.key, current[c.key], target[c.key]);
+    return {
+      key: c.key,
+      target: charTarget(c.key),
+      scope: change.scope,
+      from: value(current[c.key]),
+      to: value(target[c.key]),
+      delta: change.delta,
+      label: change.label,
+      free: (unlocked ?? []).includes(change.scope),
+    };
+  });
+
+  const ledger = buildLedger(entries);
+  const removals = lines
+    .filter((l) => !l.free && l.delta < 0)
+    .map((line) => {
+      const { taken, missing } = peekRemoval(ledger, line.target, -line.delta);
+      recordRemoval(ledger, line.target, taken);
+      return { line, taken, missing };
+    });
+  const refunded = refund
+    ? removals.reduce((total, r) => add(total, amountsOf(r.taken)), zero())
+    : zero();
+  const balance = add(xpTotals(entries).left, refunded);
+
+  const bought = lines.filter((l) => !l.free && l.delta > 0);
+  const dues: Due[] = SCOPES.filter((s) =>
+    bought.some((l) => l.scope === s.key),
+  ).map((s) => ({
+    target: s.key,
+    scope: s.key,
+    label: s.label,
+    amount: bought
+      .filter((l) => l.scope === s.key)
+      .reduce((total, l) => total + l.delta, 0),
+  }));
+
+  const allocation = allocate(dues, balance);
+  const missingByScope: Partial<Record<Scope, number>> = {};
+  dues.forEach((due, index) => {
+    if (allocation.missing[index] > 0) {
+      missingByScope[due.scope] = allocation.missing[index];
+    }
+  });
+  const missing = allocation.missing.reduce((total, m) => total + m, 0);
+
+  const splits: Partial<Record<Scope, Amounts>> = {};
+  let error: string | null = null;
+  if (!gift) {
+    const remaining = { ...balance };
+    dues.forEach((due, index) => {
+      const split = chosen
+        ? (chosen[due.scope] ?? zero())
+        : allocation.splits[index];
+      splits[due.scope] = split;
+      const problem = chosen
+        ? checkSplit(split, due.amount, due.scope, remaining)
+        : null;
+      if (problem && !error) error = `${due.label} : ${problem}`;
+      for (const pool of POOLS) remaining[pool.key] -= split[pool.key];
+    });
+    if (!chosen && missing > 0) {
+      error = `XP insuffisante : il manque ${missing} XP (${Object.entries(
+        missingByScope,
+      )
+        .map(([s, m]) => `${SCOPE_BY_KEY[s as Scope].label} ${m}`)
+        .join(', ')}).`;
+    }
+  }
+
+  // Chaque caractère prend sa part de la répartition de sa partie.
+  const left = Object.fromEntries(
+    Object.entries(splits).map(([s, split]) => [s, { ...split }]),
+  ) as Partial<Record<Scope, Amounts>>;
+  const purchases = bought.map((line) => {
+    if (gift) return { line, split: zero() };
+    const pot = left[line.scope] ?? zero();
+    const { split } = suggestSplit(line.delta, line.scope, pot);
+    for (const pool of POOLS) pot[pool.key] -= split[pool.key];
+    return { line, split };
+  });
+
+  return {
+    lines,
+    dues,
+    removals,
+    balance,
+    splits,
+    purchases,
+    cost: dues.reduce((total, d) => total + d.amount, 0),
+    spending: Object.values(splits).reduce(add, zero()),
+    freeCost: lines
+      .filter((l) => l.free)
+      .reduce((total, l) => total + l.delta, 0),
+    missingByScope,
+    missing,
+    error,
+  };
+};
+
 /** Remboursement proposé quand le MJ baisse ou retire un élément validé. */
 export const suggestRefund = (
   entries: XpEntryInput[],
