@@ -26,7 +26,6 @@ import {
 } from '@mdxeditor/editor';
 // Styles chargés avec l'éditeur (onglet Notes), et non sur toutes les pages.
 import '@mdxeditor/editor/style.css';
-import { useColorScheme } from '@mui/material/styles';
 import './styles.css';
 
 interface EditorProps {
@@ -46,12 +45,6 @@ export default function InitializedMDXEditor({
   readOnly,
   editorRef,
 }: EditorProps) {
-  const { mode, systemMode } = useColorScheme();
-  if (!mode) {
-    return null;
-  }
-  const theme = (mode === 'system' ? systemMode : mode) + '-theme';
-
   return (
     <MDXEditor
       onChange={onChange}
@@ -90,7 +83,9 @@ export default function InitializedMDXEditor({
       ]}
       ref={editorRef}
       contentEditableClassName="prose"
-      className={theme}
+      // Les deux thèmes de l'app sont du papier clair (Jour, bougie) : les
+      // notes s'écrivent toujours sur la feuille, à la main (styles.css).
+      className="light-theme"
     />
   );
 }

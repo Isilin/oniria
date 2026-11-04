@@ -1,3 +1,4 @@
+import { EASE, MOTION } from '@/theme/theme';
 import Paper from '@mui/material/Paper';
 import { PropsWithChildren } from 'react';
 
@@ -24,6 +25,15 @@ const TabContent = ({ index, active, children }: PropsWithChildren<Props>) => {
         border: 'none',
         justifyContent: 'center',
         width: '100%',
+        alignSelf: 'stretch',
+        // Le contenu se pose sur le fond, comme les colonnes d'une page.
+        bgcolor: 'transparent',
+        // L'onglet ouvert se pose sur la feuille ; l'animation repart à chaque
+        // ouverture (display: none → flex). Fondu seul en mouvement réduit.
+        animation: `oniria-panel ${MOTION.state}ms ${EASE} both`,
+        '@media (prefers-reduced-motion: reduce)': {
+          animation: `oniria-fade ${MOTION.state}ms ease-out both`,
+        },
       }}
       variant="outlined"
     >

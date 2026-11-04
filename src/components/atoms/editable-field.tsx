@@ -1,8 +1,9 @@
 'use client';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { TextField, Typography } from '@mui/material';
+import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
+import Written from './written';
 
 export type EditableValue = string | number | null | undefined;
 
@@ -18,6 +19,11 @@ interface Props {
   minWidth?: number;
   fullWidth?: boolean;
   'aria-label'?: string;
+  /**
+   * Style du texte affiché. Par défaut `hand` : ce que le joueur écrit est
+   * manuscrit, à l'encre bleue (voir DESIGN.md).
+   */
+  variant?: TypographyProps['variant'];
 }
 
 const EditableField = ({
@@ -30,6 +36,7 @@ const EditableField = ({
   minWidth,
   fullWidth,
   'aria-label': ariaLabel,
+  variant = 'hand',
 }: Props) => {
   const asString = value === null || value === undefined ? '' : `${value}`;
   // Brouillon pendant l'édition ; null = on affiche la valeur reçue, qui
@@ -53,39 +60,72 @@ const EditableField = ({
   };
 
   const shown = display ?? (asString || placeholder);
+  const handwritten = variant === 'hand';
+  // L'encre bleue pour ce qui est écrit ; le tiret d'une case vide reste pâle.
+  const ink = !asString
+    ? 'text.secondary'
+    : variant === 'inherit'
+      ? 'inherit'
+      : handwritten
+        ? 'primary.main'
+        : 'text.primary';
 
   if (!editable) {
     return (
       <Typography
-        variant="body1"
+        variant={variant}
         component="span"
-        sx={{ whiteSpace: type === 'multiline' ? 'pre-line' : undefined }}
+        sx={{
+          color: ink,
+          whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+        }}
       >
-        {shown}
+        <Written value={shown}>{shown}</Written>
       </Typography>
     );
   }
 
   if (!focused) {
+    // Au repos, une valeur modifiable se lit comme du texte : le crayon et le
+    // souligné n'apparaissent qu'au survol ou au focus. Tab passe d'une
+    // valeur à l'autre ; Entrée ou Espace ouvre l'édition.
     return (
       <Typography
-        variant="body1"
+        variant={variant}
         component="span"
         role="button"
         tabIndex={0}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ? `Modifier ${ariaLabel}` : undefined}
         onClick={() => setFocused(true)}
-        onFocus={() => setFocused(true)}
-        color={asString ? 'textPrimary' : 'textSecondary'}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setFocused(true);
+          }
+        }}
         sx={{
+          color: ink,
           cursor: 'pointer',
           borderBottom: '1px dashed transparent',
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
-          ':hover': { borderBottomColor: 'text.secondary' },
+          '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
+          ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
+          ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
+          // Au toucher, pas de crayon : un pointillé discret signale la valeur modifiable.
+          '@media (hover: none)': {
+            '& .edit-mark': { display: 'none' },
+            borderBottom: '1px dotted',
+            borderBottomColor:
+              'color-mix(in srgb, var(--mui-palette-text-secondary) 40%, transparent)',
+          },
         }}
       >
-        {shown}{' '}
-        <EditIcon sx={{ fontSize: 10, verticalAlign: 'top', opacity: 0.6 }} />
+        <Written value={shown}>{shown}</Written>
+        <EditIcon
+          className="edit-mark"
+          aria-hidden
+          sx={{ fontSize: 11, verticalAlign: 'top', ml: 0.25 }}
+        />
       </Typography>
     );
   }

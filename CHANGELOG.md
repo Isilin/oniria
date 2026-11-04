@@ -12,6 +12,26 @@ Première version complète des fiches de personnages d'Oniria.
 
 ### Ajouté
 
+- Nouvelle identité « Le carnet d'Oniria » pour toute l'application : une
+  feuille de personnage imprimée sur papier crème, avec cadre, bandeau aux
+  phases de lune, lignes-guides, planètes et constellations d'atlas,
+  lavis d'aquarelle et gribouillis à la plume. Ce que le joueur écrit est
+  manuscrit à l'encre bleue ; ce que les règles calculent est tapé à la
+  machine. Thème Jour, et thème Nuit à la bougie (même papier, halo ambré).
+- Fiche : plaque du personnage en champs imprimés, encadré des Existences
+  collé en haut (Santé, Équilibre, Éclat et Maï en petites planètes, un
+  point coché par point, −/+ en un geste), et tout ce qui sert en jeu sur
+  un seul écran dès 1440 px (Caractères, Facultés, combat).
+- Teinte de lune propre à chaque personnage, posée en lavis d'aquarelle
+  d'autant plus présent que le Devenir est élevé (au-delà de 100 :
+  transcendance, second cadre autour du portrait).
+- Réglages enregistrés sur le compte : thème, densité (confort ou
+  compacte) et sections repliées.
+- Mouvement : une valeur écrite ou modifiée se trace comme à la plume,
+  l’aperçu validé « sèche » vers l’encre, les points d’Existence se
+  cochent en goutte d’encre, la barre des points glisse depuis le bas, la
+  bougie s’allume et vacille à peine, Jour et Nuit passent en fondu
+  enchaîné. Rien ne bouge au chargement ; mouvement réduit respecté.
 - Fiches complètes reprenant les règles du tableur « Lunes d'Oniria » :
   caractères et coût en XP, facultés et marges (bonus du Corpus), santé,
   équilibre, éclat, Maï, protection et encombrement calculés.
@@ -37,7 +57,9 @@ Première version complète des fiches de personnages d'Oniria.
   « + » ajoute un point, « − n + » montre les points en attente, puis on
   valide ou on annule. Le reste de la fiche (facultés, existences, Maï, XP…)
   se met à jour en aperçu. Plusieurs caractères s'achètent ensemble, avec une
-  répartition par partie, seulement si l'XP suffit.
+  répartition par partie, seulement si l'XP suffit. Les « − + » des
+  caractères reprennent le cadre de ceux des lunes, et les valeurs restent
+  alignées en colonne ; les points en attente s'affichent devant la valeur.
 - Node.js 26, Next.js 16, React 19, MUI 9, Prisma 7, Auth.js v5 (bêta 32).
 - Fiches en lecture seule pour les autres joueur·euses ; édition réservée à
   la·au propriétaire et aux MJ.
@@ -49,12 +71,30 @@ Première version complète des fiches de personnages d'Oniria.
   l'écriture ajoutée au journal, sans recharger la fiche ; les pages
   arrivent avec leurs données ; seul l'onglet ouvert est affiché et
   l'éditeur des Notes n'est chargé qu'à son ouverture.
+- Whitelist : adresses affichées en entier et en lecture seule, correction
+  explicite (« Modifier », Entrée, Échap), ajout libellé, confirmation qui
+  nomme l'adresse retirée.
+- Les confirmations de suppression nomment ce qui disparaît (fiche, table,
+  adresse) et ce qui est conservé ; supprimer une fiche ou une table passe
+  par le menu « ⋯ », loin du bouton retour.
+- Attribution d'XP : le raccourci « Création : 700 Vivre » n'est proposé que
+  pour une fiche en création, le bouton dit ce qu'il fait (« Attribuer 30 XP
+  à 2 personnages ») et « Accorder un reset » disparaît d'une fiche encore
+  en création.
 
 ### Corrigé
 
 - Une modification pouvait disparaître de l'écran quand un autre
   enregistrement se terminait juste après (ex. modifier un objet puis
   cliquer aussitôt sur « Ajouter »).
+- Corriger une adresse de la whitelist ne faisait rien (la route `PATCH`
+  n'existait pas) ; un ajout refusé par le serveur s'affichait comme réussi.
+- Revenir sur l'onglet de la fiche (après Discord, par exemple) effaçait les
+  points en attente et faisait clignoter la page ; les fiches, tables et la
+  whitelist restent désormais affichées pendant qu'elles sont relues.
+- Thème Nuit : contour de focus, sélection de texte et barre de défilement
+  prenaient les couleurs du thème Jour (or trop sombre, défilement
+  invisible), comme les rayures de la barre d'XP.
 
 ### Sécurité
 

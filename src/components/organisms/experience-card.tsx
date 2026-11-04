@@ -10,8 +10,6 @@ import {
   AlertTitle,
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Collapse,
   Dialog,
@@ -35,6 +33,7 @@ const scopeList = (scopes: Scope[]) =>
 const ExperienceCard = ({ id }: { id: string }) => {
   const {
     sheet,
+    computed,
     xp: saved,
     // Avec les points en attente : ce qu'il resterait à payer à la validation.
     xpPreview: xp,
@@ -70,19 +69,18 @@ const ExperienceCard = ({ id }: { id: string }) => {
   );
 
   return (
-    <Card>
-      <CardContent>
+    <Box component="section" sx={{ minWidth: 0 }}>
+      <Box>
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
             gap: 1,
             flexWrap: 'wrap',
-            mb: 1,
+            mb: 1.5,
           }}
         >
-          <Typography variant="h4" align="center">
+          <Typography variant="h4" component="h2">
             Expérience
           </Typography>
           <Chip
@@ -93,7 +91,20 @@ const ExperienceCard = ({ id }: { id: string }) => {
               !draft ? 'Validée' : creation ? 'En création' : 'Reset en cours'
             }
           />
+          <Box
+            aria-hidden
+            sx={{ flex: 1, minWidth: 24, height: '1px', bgcolor: 'rule' }}
+          />
         </Box>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          component="p"
+          sx={{ mb: 1.5 }}
+        >
+          Investie dans les caractères : {computed.characteristicsCost} XP (1 XP
+          par point jusqu’à 25, 2 jusqu’à 50, 4 jusqu’à 75, 8 au-delà).
+        </Typography>
 
         <Grid container spacing={3}>
           {POOLS.map((pool) => (
@@ -201,13 +212,16 @@ const ExperienceCard = ({ id }: { id: string }) => {
               <Button size="small" onClick={() => setGrantOpen(true)}>
                 Attribuer de l&apos;XP
               </Button>
-              <Button
-                size="small"
-                color="warning"
-                onClick={() => setResetOpen(true)}
-              >
-                Accorder un reset
-              </Button>
+              {/* En création, tout se modifie déjà librement : rien à remettre à zéro. */}
+              {!creation && (
+                <Button
+                  size="small"
+                  color="warning"
+                  onClick={() => setResetOpen(true)}
+                >
+                  Accorder un reset
+                </Button>
+              )}
             </>
           )}
           <Button
@@ -227,7 +241,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
             />
           </Box>
         </Collapse>
-      </CardContent>
+      </Box>
 
       <Dialog open={confirmValidate} onClose={() => setConfirmValidate(false)}>
         <DialogTitle>Valider la fiche ?</DialogTitle>
@@ -259,6 +273,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
             open={grantOpen}
             onClose={() => setGrantOpen(false)}
             onSubmit={grantXp}
+            creationShortcut={creation}
           />
           <XpResetDialog
             open={resetOpen}
@@ -268,7 +283,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
           />
         </>
       )}
-    </Card>
+    </Box>
   );
 };
 

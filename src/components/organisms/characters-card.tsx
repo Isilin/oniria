@@ -3,16 +3,14 @@
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
 import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
+import { Box, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { Fragment } from 'react';
 import PreviewValue from '../atoms/preview-value';
+import Written from '../atoms/written';
 import ScopeLock from '../atoms/scope-lock';
-import PointStepper from '../molecules/point-stepper';
-import SheetField from '../molecules/sheet-field';
+import PointStepper, { PendingPoints } from '../molecules/point-stepper';
+import SectionCard from '../molecules/section-card';
+import StatRow from '../molecules/stat-row';
 
 /** Prix du prochain point : 1 jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, puis 8. */
 const nextPointCost = (value: number) =>
@@ -20,108 +18,125 @@ const nextPointCost = (value: number) =>
     ? null
     : characteristicCost(value + 1) - characteristicCost(value);
 
+/**
+ * Les Caractères : la valeur écrite à la main, à l'encre bleue, et le total
+ * de chaque groupe tapé à la machine (il est calculé). Les points s'ajoutent
+ * un par un, en aperçu, avant d'être validés (barre des points en attente).
+ */
 const CharactersCard = ({ id }: { id: string }) => {
   const { computed, base, canEdit, isLocked, points } = useSheet(id);
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h4" align="center" gutterBottom>
-          Caractères
-        </Typography>
-        <Grid
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
-            gap: 4,
-            flexWrap: 'wrap',
-          }}
-        >
-          {GROUPS.map((group, index) => (
-            <Fragment key={group.key}>
-              {index > 0 && (
-                <Divider orientation="vertical" variant="middle" flexItem />
-              )}
-              <Grid>
-                <Typography variant="h5">
-                  {group.label}{' '}
-                  <em>
-                    (
+    <SectionCard title="Caractères" section="characters">
+      <Box
+        sx={{
+          display: 'grid',
+          // Trois colonnes dès 640 px (demi-écran) : jamais de groupe renvoyé
+          // sous un autre. En dessous, deux (la machine à écrire est large).
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          '@media (min-width: 640px)': {
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          },
+          columnGap: 1.5,
+          rowGap: 2,
+        }}
+      >
+        {GROUPS.map((group) => {
+          const total = computed.groups[group.key];
+          const cost = computed.groupCosts[group.key];
+          return (
+            <Box key={group.key} sx={{ minWidth: 0 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: 0.5,
+                  pb: 0.75,
+                  mb: 0.25,
+                  borderBottom: '1.5px solid',
+                  borderColor: 'text.primary',
+                }}
+              >
+                <Typography variant="h5" component="h3">
+                  {group.label}
+                </Typography>
+                <ScopeLock locked={isLocked(group.key)} />
+                <Tooltip
+                  title={`Expérience investie : ${cost} XP${
+                    cost !== base.groupCosts[group.key]
+                      ? ` (avant : ${base.groupCosts[group.key]} XP)`
+                      : ''
+                  }`}
+                  describeChild
+                >
+                  <Typography
+                    variant="numeral"
+                    tabIndex={0}
+                    sx={{
+                      ml: 'auto',
+                      fontSize: '1.375rem',
+                      cursor: 'help',
+                    }}
+                  >
                     <PreviewValue
                       before={base.groups[group.key]}
-                      delta={
-                        computed.groups[group.key] - base.groups[group.key]
-                      }
+                      delta={total - base.groups[group.key]}
                     >
-                      {computed.groups[group.key]}
+                      {total}
                     </PreviewValue>
-                    )
-                  </em>
-                  <ScopeLock locked={isLocked(group.key)} />
-                </Typography>
-                {CHARACTERISTICS.filter((c) => c.group === group.key).map(
-                  (c) => {
-                    const value = computed.values[c.key];
-                    const pending = value - base.values[c.key];
-                    const { min, max } = points.bounds(c.key);
-                    const next = nextPointCost(value);
-                    return (
-                      <SheetField
-                        key={c.key}
-                        label={c.label}
-                        value={value}
-                        preview={{ before: base.values[c.key], delta: pending }}
-                        tooltip={`${c.description} (valeur : ${characteristicCost(value)} XP${
-                          next !== null ? ` ; point suivant : ${next} XP` : ''
-                        })`}
-                        postValue={
-                          canEdit ? (
-                            <PointStepper
-                              label={c.label}
-                              points={pending}
-                              canAdd={value < max}
-                              canRemove={value > min}
-                              onStep={(step) => points.step(c.key, step)}
-                            />
-                          ) : undefined
-                        }
-                      />
-                    );
-                  },
-                )}
-                <Typography variant="caption" color="textSecondary">
-                  Exp. :{' '}
-                  <PreviewValue
-                    before={base.groupCosts[group.key]}
-                    delta={
-                      computed.groupCosts[group.key] -
-                      base.groupCosts[group.key]
+                  </Typography>
+                </Tooltip>
+              </Box>
+              {CHARACTERISTICS.filter((c) => c.group === group.key).map((c) => {
+                const value = computed.values[c.key];
+                const pending = value - base.values[c.key];
+                const { min, max } = points.bounds(c.key);
+                const next = nextPointCost(value);
+                return (
+                  <StatRow
+                    key={c.key}
+                    label={c.label}
+                    tooltip={`${c.description} (valeur : ${characteristicCost(value)} XP${
+                      next !== null ? ` ; point suivant : ${next} XP` : ''
+                    })`}
+                    after={
+                      canEdit ? (
+                        <PointStepper
+                          label={c.label}
+                          points={pending}
+                          canAdd={value < max}
+                          canRemove={value > min}
+                          onStep={(step) => points.step(c.key, step)}
+                        />
+                      ) : undefined
                     }
                   >
-                    {computed.groupCosts[group.key]}
-                  </PreviewValue>
-                </Typography>
-              </Grid>
-            </Fragment>
-          ))}
-        </Grid>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          align="center"
-          sx={{ mt: 2 }}
-        >
-          Expérience investie dans les caractères :{' '}
-          <PreviewValue
-            before={base.characteristicsCost}
-            delta={computed.characteristicsCost - base.characteristicsCost}
-          >
-            {computed.characteristicsCost}
-          </PreviewValue>{' '}
-          (1 XP par point jusqu’à 25, 2 jusqu’à 50, 4 jusqu’à 75, 8 au-delà)
-        </Typography>
-      </CardContent>
-    </Card>
+                    {canEdit && (
+                      <PendingPoints
+                        points={pending}
+                        before={base.values[c.key]}
+                      />
+                    )}
+                    <Typography
+                      variant="hand"
+                      sx={{
+                        fontSize: '1.625rem',
+                        fontWeight: 700,
+                        lineHeight: 0.9,
+                      }}
+                    >
+                      <PreviewValue before={base.values[c.key]} delta={pending}>
+                        <Written value={value}>{value}</Written>
+                      </PreviewValue>
+                    </Typography>
+                  </StatRow>
+                );
+              })}
+            </Box>
+          );
+        })}
+      </Box>
+    </SectionCard>
   );
 };
 

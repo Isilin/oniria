@@ -9,7 +9,7 @@ import TeamListElement from '../molecules/team-list-element';
 const TeamsList = () => {
   const { teams, isLoading } = useTeams();
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading && !teams) return <CircularProgress />;
   if (!teams?.length)
     return <Typography color="textSecondary">Aucune table de jeu.</Typography>;
 

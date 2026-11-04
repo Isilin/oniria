@@ -1,4 +1,5 @@
 import BackButton from '@/components/atoms/back-button';
+import HeaderSlot from '@/components/atoms/header-slot';
 import SWRFallback from '@/components/atoms/swr-fallback';
 import WhitelistAddButton from '@/components/molecules/whitelist-add-button';
 import WhitelistList from '@/components/organisms/whitelist-list';
@@ -17,15 +18,9 @@ const Page = async () => {
   return (
     <Suspense>
       <SWRFallback fallback={{ '/api/whitelist': data }}>
-        <BackButton href="/" />
-        <Typography
-          variant="h1"
-          sx={{
-            textAlign: 'center',
-          }}
-        >
-          ONIRIA
-        </Typography>
+        <HeaderSlot side="start">
+          <BackButton href="/" />
+        </HeaderSlot>
         <Typography
           variant="h3"
           sx={{

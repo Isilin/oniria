@@ -3,10 +3,16 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
+import ButtonBase from '@mui/material/ButtonBase';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { visuallyHidden } from '@mui/utils';
+import { EASE_PEN, MOTION } from '@/theme/theme';
 import { MouseEvent, PointerEvent, ReactNode, useEffect, useRef } from 'react';
+import StepperFrame, {
+  stepperCell,
+  stepperIconSize,
+} from '../atoms/stepper-frame';
 
 /** Maj+clic : 5 points d'un coup. */
 const BIG_STEP = 5;
@@ -79,29 +85,27 @@ const RepeatButton = ({
     <Tooltip
       title={`${label} (Maj : ${BIG_STEP} ; maintenir pour répéter)`}
       enterDelay={600}
-      arrow
     >
-      <span>
-        <IconButton
-          size="small"
+      <Box component="span" sx={{ display: 'flex' }}>
+        <ButtonBase
           aria-label={label}
           disabled={disabled}
           onClick={click}
           onPointerDown={start}
           onContextMenu={(e) => e.preventDefault()}
           sx={{
-            p: 0.25,
+            ...stepperCell('sm'),
             touchAction: 'manipulation',
             userSelect: 'none',
             ...(faded && {
               opacity: 0.35,
-              '&:hover, &:focus-visible': { opacity: 1 },
+              '&:hover, &.Mui-focusVisible': { opacity: 1 },
             }),
           }}
         >
           {children}
-        </IconButton>
-      </span>
+        </ButtonBase>
+      </Box>
     </Tooltip>
   );
 };
@@ -117,48 +121,74 @@ interface Props {
 }
 
 /**
- * Ajout de points à un caractère, comme dans un jeu : « + », puis
- * « − n + » tant que des points sont en attente.
+ * Ajout de points à un caractère, comme dans un jeu, dans le cadre −|+ des
+ * lunes. Toujours deux cases, pour que les valeurs restent en colonne : le
+ * « − » est éteint tant qu'il n'y a rien à retirer.
  */
 const PointStepper = ({ label, points, canAdd, canRemove, onStep }: Props) => (
-  <Box
-    component="span"
-    sx={{ display: 'inline-flex', alignItems: 'center', alignSelf: 'center' }}
-  >
-    {(points !== 0 || canRemove) && (
-      <RepeatButton
-        label={`Retirer un point à ${label}`}
-        disabled={!canRemove}
-        faded={points === 0}
-        onStep={(count) => onStep(-count)}
-      >
-        <RemoveIcon fontSize="inherit" />
-      </RepeatButton>
-    )}
-    {points !== 0 && (
-      <Typography
-        variant="body2"
-        component="span"
-        aria-live="polite"
-        sx={{
-          minWidth: 28,
-          textAlign: 'center',
-          fontWeight: 'bold',
-          fontVariantNumeric: 'tabular-nums',
-          color: points > 0 ? 'success.main' : 'warning.main',
-        }}
-      >
-        {points > 0 ? `+${points}` : `−${-points}`}
-      </Typography>
-    )}
+  <StepperFrame sx={{ alignSelf: 'center' }}>
+    <RepeatButton
+      label={`Retirer un point à ${label}`}
+      disabled={!canRemove}
+      // Retirer sous la valeur enregistrée (MJ, création) reste discret.
+      faded={points === 0 && canRemove}
+      onStep={(count) => onStep(-count)}
+    >
+      <RemoveIcon sx={{ fontSize: stepperIconSize('sm') }} />
+    </RepeatButton>
     <RepeatButton
       label={`Ajouter un point à ${label}`}
       disabled={!canAdd}
       onStep={onStep}
     >
-      <AddIcon fontSize="inherit" />
+      <AddIcon sx={{ fontSize: stepperIconSize('sm') }} />
     </RepeatButton>
-  </Box>
+  </StepperFrame>
+);
+
+/**
+ * La valeur enregistrée d'un caractère, barrée devant la nouvelle tant que
+ * des points attendent, comme une correction à la main. Toujours présente
+ * (vide sans point en attente), pour être annoncée.
+ */
+export const PendingPoints = ({
+  points,
+  before,
+}: {
+  points: number;
+  before: number;
+}) => (
+  <Typography
+    // Nouvelle clé quand des points arrivent : le trait se tire à nouveau.
+    key={points !== 0 ? 'barree' : 'vide'}
+    variant="hand"
+    component="span"
+    aria-live="polite"
+    sx={{
+      fontSize: '1.375rem',
+      opacity: 0.45,
+      // Un trait d'encre tiré de gauche à droite (et non un barré du texte).
+      backgroundImage: 'linear-gradient(currentColor, currentColor)',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: '0 58%',
+      backgroundSize: '100% 1.5px',
+      // Le trait se tire seulement quand une valeur est barrée.
+      animation:
+        points !== 0
+          ? `oniria-strike ${MOTION.write}ms ${EASE_PEN} both`
+          : 'none',
+      '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+    }}
+  >
+    {points !== 0 && (
+      <>
+        <Box component="span" sx={visuallyHidden}>
+          avant :{' '}
+        </Box>
+        {before}
+      </>
+    )}
+  </Typography>
 );
 
 export default PointStepper;

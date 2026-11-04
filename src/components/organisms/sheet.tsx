@@ -8,15 +8,15 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Typography from '@mui/material/Typography';
+import { Constellation } from '../atoms/ornaments';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
-import AvatarCard from './avatar-card';
+import CharacterPlate from './character-plate';
 import CharactersCard from './characters-card';
-import ExistencesCard from './existences-card';
+import CombatCard from './combat-card';
+import EphemerisBand from './ephemeris-band';
 import ExperienceCard from './experience-card';
-import FaceCard from './face-card';
 import InventoryTab from './inventory-tab';
 import MagicCard from './magic-card';
 import PointsBar from './points-bar';
@@ -33,42 +33,32 @@ const TABS = [
 ];
 const NOTES_TAB = 4;
 
-const Sheet = ({ id }: { id: string }) => {
+// Les points en attente sont propres à cette fiche, et gardés au-dessus de
+// tout état de chargement : relire la fiche ne doit pas les effacer.
+const Sheet = ({ id }: { id: string }) => (
+  <PointsDraftProvider key={id}>
+    <SheetContent id={id} />
+  </PointsDraftProvider>
+);
+
+const SheetContent = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
   const { sheet, isLoading, error, canEdit } = useSheet(id);
 
-  if (isLoading) return <CircularProgress />;
-  if (error || !sheet)
+  // La fiche déjà affichée reste en place pendant qu'on la relit (retour sur
+  // l'onglet après Discord, par exemple) : pas de clignotement.
+  if (!sheet) {
+    if (isLoading) return <CircularProgress />;
     return (
       <Alert severity="error">{error?.message ?? 'Fiche introuvable.'}</Alert>
     );
+  }
 
   return (
-    // Les points en attente sont propres à cette fiche.
-    <PointsDraftProvider key={id}>
-      <Box
-        sx={{
-          textAlign: 'center',
-        }}
-      >
-        <Typography
-          variant="h2"
-          component="h1"
-          sx={{
-            fontSize: { xs: '2.25rem', md: '3.75rem' },
-            wordBreak: 'break-word',
-          }}
-        >
-          {sheet.name}
-        </Typography>
-        <Typography variant="subtitle1">
-          Joueur·euse : {sheet.user.name}
-          {sheet.teams.length > 0 &&
-            ` · Table : ${sheet.teams.map((t) => t.name).join(', ')}`}
-          {!canEdit && ' · lecture seule'}
-        </Typography>
-      </Box>
+    <>
+      <CharacterPlate id={id} />
+      <EphemerisBand id={id} />
       <Tabs
         value={value}
         onChange={(e, newVal) => {
@@ -78,7 +68,9 @@ const Sheet = ({ id }: { id: string }) => {
         variant="scrollable"
         scrollButtons="auto"
         allowScrollButtonsMobile
-        sx={{ maxWidth: '100%' }}
+        // Étirés sur toute la largeur : le filet court sous toute la page et
+        // la lecture commence à la marge gauche.
+        sx={{ alignSelf: 'stretch', width: '100%', maxWidth: '100%' }}
       >
         {TABS.map((label, index) => (
           <Tab
@@ -96,30 +88,72 @@ const Sheet = ({ id }: { id: string }) => {
         ))}
       </Tabs>
       <TabContent index={0} active={value === 0}>
+        {/* Tout ce qui sert en jeu tient sur un écran : Caractères, Facultés
+            et combat côte à côte dès 1200 px, l'expérience dessous. */}
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5,
-            width: { xs: '100%', md: 300 },
-            flexShrink: 0,
+            width: '100%',
+            display: 'grid',
+            gap: 2,
+            alignItems: 'start',
+            gridTemplateColumns: {
+              xs: 'minmax(0, 1fr)',
+              md: 'minmax(0, 1fr) 210px',
+            },
+            gridTemplateAreas: {
+              xs: '"car" "fac" "com" "xp"',
+              md: '"car com" "fac com" "xp xp"',
+            },
+            // Écrit en clair pour venir après les paliers de MUI.
+            '@media (min-width: 1440px)': {
+              gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr) 210px',
+              gridTemplateAreas: '"car fac com" "xp xp xp"',
+            },
+            '& > *': { minWidth: 0 },
+            columnGap: { md: 0 },
+            rowGap: 3,
+            pt: 2,
           }}
         >
-          <AvatarCard id={id} />
-          <FaceCard id={id} />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            flexGrow: 1,
-          }}
-        >
-          <CharactersCard id={id} />
-          <AbilitiesCard id={id} />
-          <ExistencesCard id={id} />
-          <ExperienceCard id={id} />
+          <Box sx={{ gridArea: 'car', pr: { md: 3 } }}>
+            <CharactersCard id={id} />
+          </Box>
+          {/* Colonnes séparées par un filet imprimé, comme sur la feuille. */}
+          <Box
+            sx={{
+              gridArea: 'fac',
+              pr: { md: 3 },
+              '@media (min-width: 1440px)': {
+                pl: 3,
+                borderLeft: '1px solid var(--mui-palette-text-primary)',
+              },
+            }}
+          >
+            <AbilitiesCard id={id} />
+          </Box>
+          <Box
+            sx={{
+              gridArea: 'com',
+              pl: { md: 3 },
+              borderLeft: { md: '1px solid var(--mui-palette-text-primary)' },
+            }}
+          >
+            <CombatCard id={id} />
+            {/* Une constellation pâle dans le blanc sous le combat. */}
+            <Constellation
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                width: '100%',
+                height: 'auto',
+                maxWidth: 220,
+                mt: 4,
+                mx: 'auto',
+              }}
+            />
+          </Box>
+          <Box sx={{ gridArea: 'xp' }}>
+            <ExperienceCard id={id} />
+          </Box>
         </Box>
       </TabContent>
       <TabContent index={1} active={value === 1}>
@@ -152,7 +186,7 @@ const Sheet = ({ id }: { id: string }) => {
         </Box>
       </TabContent>
       {canEdit && <PointsBar id={id} />}
-    </PointsDraftProvider>
+    </>
   );
 };
 

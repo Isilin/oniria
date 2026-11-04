@@ -180,7 +180,9 @@ const SkillNode = ({
         open={confirm}
         onClose={() => setConfirm(false)}
         onValidated={() => onDelete(owned)}
-        message={`Retirer « ${name} » de la fiche ?`}
+        title={`Retirer « ${name} » ?`}
+        message="La compétence est retirée de la fiche."
+        confirmLabel="Retirer"
       />
       {kids.map((child) => (
         <SkillNode
@@ -290,7 +292,7 @@ const AddSkill = ({
 };
 
 const SkillsCard = ({ id }: { id: string }) => {
-  const { catalog, isLoading } = useCatalog();
+  const { catalog } = useCatalog();
   const {
     sheet,
     canEdit,
@@ -301,7 +303,7 @@ const SkillsCard = ({ id }: { id: string }) => {
     deleteItem,
   } = useSheet(id);
 
-  if (isLoading || !catalog) return <CircularProgress />;
+  if (!catalog) return <CircularProgress />;
 
   const byId = new Map(catalog.skills.map((s) => [s.id, s]));
   const ownedIds = new Set(sheet.skills.map((s) => s.skillId));

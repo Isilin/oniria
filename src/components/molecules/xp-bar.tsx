@@ -1,7 +1,15 @@
 'use client';
 
 import { Box, Tooltip, Typography } from '@mui/material';
-import { alpha, SxProps, Theme } from '@mui/material/styles';
+import { SxProps, Theme } from '@mui/material/styles';
+
+/** Variables CSS du thème : la couleur suit la nuit et le jour. */
+const PRIMARY = 'var(--mui-palette-primary-main)';
+const SUCCESS = 'var(--mui-palette-success-main)';
+const mix = (color: string, percent: number) =>
+  `color-mix(in srgb, ${color} ${percent}%, transparent)`;
+const stripes = (color: string) =>
+  `repeating-linear-gradient(45deg, ${color} 0 5px, ${mix(color, 40)} 5px 10px)`;
 
 /** Apparence des parties de la barre, partagée avec la légende. */
 export const XP_BAR_PARTS = {
@@ -11,21 +19,20 @@ export const XP_BAR_PARTS = {
   },
   pending: {
     label: 'À payer à la validation',
-    sx: (theme: Theme) => ({
-      backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.primary.main} 0 5px, ${alpha(theme.palette.primary.main, 0.4)} 5px 10px)`,
-    }),
+    sx: { backgroundImage: stripes(PRIMARY) },
   },
   draft: {
     label: 'Points en attente',
-    sx: (theme: Theme) => ({
-      backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.success.main} 0 5px, ${alpha(theme.palette.success.main, 0.4)} 5px 10px)`,
-    }),
+    sx: { backgroundImage: stripes(SUCCESS) },
   },
   left: {
     label: 'Restante',
-    sx: (theme: Theme) => ({
-      bgcolor: alpha(theme.palette.primary.main, 0.22),
-    }),
+    // Contour net plutôt qu'aplat pâle : la part restante reste lisible
+    // de nuit comme de jour, sans se confondre avec la part dépensée.
+    sx: {
+      bgcolor: mix(PRIMARY, 14),
+      boxShadow: `inset 0 0 0 1.5px ${PRIMARY}`,
+    },
   },
   negative: {
     label: 'Solde négatif',
@@ -85,8 +92,22 @@ const XpBar = ({
         }}
       >
         <Typography variant="h5">{label}</Typography>
-        <Typography variant="body1" color={left < 0 ? 'error' : undefined}>
-          Total : <strong>{gained}</strong>
+        {/* Ce qui reste est ce dont on parle à la table : il passe en tête. */}
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ whiteSpace: 'nowrap' }}
+        >
+          reste{' '}
+          <Typography
+            component="span"
+            variant="numeral"
+            color={left < 0 ? 'error' : 'textPrimary'}
+            sx={{ fontSize: '1.375rem' }}
+          >
+            {left}
+          </Typography>{' '}
+          / {gained}
         </Typography>
       </Box>
       {description && (
@@ -100,7 +121,7 @@ const XpBar = ({
       )}
       <Box
         role="group"
-        aria-label={`${label} : total ${gained} XP`}
+        aria-label={`${label} : reste ${left} XP sur ${gained}`}
         sx={{
           display: 'flex',
           height: 16,
@@ -153,7 +174,7 @@ export const XpBarLegend = ({ parts }: { parts: XpBarPart[] }) => (
       <Box key={part} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Box
           sx={[
-            { width: 14, height: 10, borderRadius: 0.5 },
+            { width: 14, height: 10, borderRadius: 1 },
             XP_BAR_PARTS[part].sx,
           ]}
         />

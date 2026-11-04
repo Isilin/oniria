@@ -4,7 +4,7 @@ import { FullSheet } from '@/lib/db/sheet';
 import { useSheets } from '@/lib/hooks/use-sheet';
 import { useTeam } from '@/lib/hooks/use-team';
 import { computeSheet, FACULTIES, formatFaculty } from '@/lib/rules';
-import { xpSummary } from '@/lib/rules/xp';
+import { ALL_SCOPES, unlockedScopes, xpSummary } from '@/lib/rules/xp';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import {
   Alert,
@@ -128,7 +128,9 @@ const MemberRow = ({
           open={confirm}
           onClose={() => setConfirm(false)}
           onValidated={onRemove}
-          message={`Retirer ${sheet.name} de la table ? La fiche est conservée.`}
+          title={`Retirer ${sheet.name} de la table ?`}
+          message="La fiche est conservée ; elle n'apparaît simplement plus ici."
+          confirmLabel="Retirer"
         />
       </TableCell>
     </TableRow>
@@ -142,8 +144,8 @@ const TeamCard = ({ id }: { id: string }) => {
   const [grantOpen, setGrantOpen] = useState(false);
   const [recipients, setRecipients] = useState<string[] | null>(null);
 
-  if (isLoading) return <CircularProgress />;
-  if (error || !team)
+  if (isLoading && !team) return <CircularProgress />;
+  if (!team)
     return (
       <Alert severity="error">{error?.message ?? 'Table introuvable.'}</Alert>
     );
@@ -152,6 +154,11 @@ const TeamCard = ({ id }: { id: string }) => {
   const chosen = recipients ?? team.members.map((m) => m.id);
   const candidates = [...(sheets?.own ?? []), ...(sheets?.others ?? [])].filter(
     (s) => !memberIds.has(s.id),
+  );
+  // Le raccourci « Création » n'a de sens que si un personnage choisi est en création.
+  const creationChosen = team.members.some(
+    (m) =>
+      chosen.includes(m.id) && unlockedScopes(m).length === ALL_SCOPES.length,
   );
 
   return (
@@ -270,6 +277,8 @@ const TeamCard = ({ id }: { id: string }) => {
         onClose={() => setGrantOpen(false)}
         title="Distribuer de l'expérience"
         disabled={chosen.length === 0}
+        creationShortcut={creationChosen}
+        recipients={chosen.length}
         onSubmit={(grant) => grantXp({ ...grant, sheetIds: chosen })}
       >
         <FormGroup sx={{ mt: 2 }}>

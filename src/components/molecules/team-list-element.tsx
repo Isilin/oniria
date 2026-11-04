@@ -13,7 +13,13 @@ const TeamListElement = ({ team }: Props) => {
     <Card sx={{ width: 250 }}>
       <CardActionArea component={Link} href={`/team/${team.id}`}>
         <CardContent>
-          <Typography variant="h5">{team.name}</Typography>
+          <Typography
+            variant="hand"
+            component="h3"
+            sx={{ fontSize: '1.625rem' }}
+          >
+            {team.name}
+          </Typography>
           <Typography variant="body2" color="textSecondary">
             {team.members.length
               ? team.members.map((m) => m.name).join(', ')

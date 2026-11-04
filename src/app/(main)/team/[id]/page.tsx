@@ -1,10 +1,10 @@
 import BackButton from '@/components/atoms/back-button';
+import HeaderSlot from '@/components/atoms/header-slot';
 import SWRFallback from '@/components/atoms/swr-fallback';
 import DeleteTeamButton from '@/components/molecules/delete-team-button';
 import TeamCard from '@/components/organisms/team-card';
 import { asJson, findTeam, listSheets } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
-import Box from '@mui/material/Box';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -30,17 +30,13 @@ const Page = async ({
   return (
     <Suspense>
       <SWRFallback fallback={fallback}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}
-        >
+        <HeaderSlot side="start">
           <BackButton href="/team" />
+        </HeaderSlot>
+        <HeaderSlot side="title">Table de jeu</HeaderSlot>
+        <HeaderSlot side="end">
           <DeleteTeamButton id={params.id} />
-        </Box>
+        </HeaderSlot>
         <TeamCard id={params.id} />
       </SWRFallback>
     </Suspense>
