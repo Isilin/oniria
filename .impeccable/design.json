@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T20:49:09Z",
+  "generatedAt": "2026-11-04T22:26:46Z",
   "title": "Design System: Oniria",
   "extensions": {
     "colorMeta": {
@@ -730,29 +730,79 @@
     ],
     "motion": [
       {
-        "name": "state-quick",
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Arrivals: tabs, points bar, ink dots, second frame."
+      },
+      {
+        "name": "ease-pen",
+        "value": "cubic-bezier(0.45, 0.05, 0.35, 1)",
+        "purpose": "The pen stroke: steady, slowing only at the end."
+      },
+      {
+        "name": "quick",
         "value": "120ms ease-out",
-        "purpose": "Colour and background on hover/focus (stepper, edit pencil, buttons)."
+        "purpose": "Hover, press, preview colour arriving."
+      },
+      {
+        "name": "press",
+        "value": "80ms ease-out",
+        "purpose": "Buttons and stepper cells sink by 1px; no ripple."
+      },
+      {
+        "name": "state",
+        "value": "220ms",
+        "purpose": "Tab panel settles (fade + 6px rise); points bar border colour."
+      },
+      {
+        "name": "write",
+        "value": "420ms ease-pen",
+        "purpose": "Signature: a written or changed value traces itself left to right (clip-path); the strike over an old value is drawn the same way."
+      },
+      {
+        "name": "dry",
+        "value": "600ms ease-out",
+        "purpose": "A preview colour fades back to ink on validation or cancel."
+      },
+      {
+        "name": "planet-phase",
+        "value": "260ms ease-out",
+        "purpose": "Watercolour phase glides to the new value."
+      },
+      {
+        "name": "ink-dot",
+        "value": "280ms ease-out",
+        "purpose": "A gained Existence point grows from its centre."
+      },
+      {
+        "name": "points-bar",
+        "value": "enter 280ms ease-out, exit 160ms",
+        "purpose": "Slides up from the bottom; fades under reduced motion."
+      },
+      {
+        "name": "theme-crossfade",
+        "value": "450ms ease-out",
+        "purpose": "Jour to bougie via View Transitions."
+      },
+      {
+        "name": "candle",
+        "value": "700ms fade-in, 9s flicker loop",
+        "purpose": "Night glow lights then barely flickers; flicker off under reduced motion."
+      },
+      {
+        "name": "wash-bloom",
+        "value": "700ms ease-out",
+        "purpose": "Plate tint wash blooms in on arrival; 500ms tint change."
       },
       {
         "name": "chevron",
         "value": "160ms ease-out",
-        "purpose": "Section collapse chevron rotation (-90deg)."
+        "purpose": "Section collapse chevron rotation."
       },
       {
         "name": "collapse",
         "value": "180ms",
         "purpose": "Section content collapse."
-      },
-      {
-        "name": "planet-dot",
-        "value": "200ms ease-out",
-        "purpose": "Pen dot appearing or fading when a point is gained or lost."
-      },
-      {
-        "name": "planet-phase",
-        "value": "260ms cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "Watercolour phase glides to the new value. Off under prefers-reduced-motion."
       },
       {
         "name": "point-repeat",
@@ -885,13 +935,14 @@
   ],
   "narrative": {
     "northStar": "La Fiche Immersive",
-    "overview": "The world is **Le carnet d'Oniria**. Every page is a character sheet printed on cream paper and filled in by hand, the way a sheet lives on the table across many evenings. A double printed frame runs around the page, and a title band carries a frieze of moon phases between two fleurons. The paper has its own grain, faint blue guide lines and a red margin. Over it sit pale atlas geometries (planets on their orbit, armillary spheres, constellations), soft watercolour washes and a few pen doodles. Oniria is a multiverse of moons (medieval, alien, steampunk worlds…), so the sheet belongs to no single genre: it speaks of moons, travel between worlds, and a story written game after game.\n\nThe system rests on one rule of writing. What the player writes is handwritten in blue ink (Caveat): the name, age, Aspect, Devenir, current Existences, characteristics, traits, items, notes. What the rules print or compute is typed (Courier Prime), with page and section titles stamped (Special Elite): labels, totals, maximums, thresholds, Facultés, combat values. Reading the sheet tells you at a glance what is yours and what the game derives.\n\nThere are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.\n\nThe system rejects the clean \"tool\" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.",
+    "overview": "The world is **Le carnet d'Oniria**. Every page is a character sheet printed on cream paper and filled in by hand, the way a sheet lives on the table across many evenings. A double printed frame runs around the page, and a title band carries a frieze of moon phases between two fleurons. The paper has its own grain, faint blue guide lines and a red margin. Over it sit pale atlas geometries (planets on their orbit, armillary spheres, constellations), soft watercolour washes and a few pen doodles. Oniria is a multiverse of moons (medieval, alien, steampunk worlds…), so the sheet belongs to no single genre: it speaks of moons, travel between worlds, and a story written game after game.\n\nThe system rests on one rule of writing. What the player writes is handwritten in blue ink (Caveat): the name, age, Aspect, Devenir, current Existences, characteristics, traits, items, notes. What the rules print or compute is typed (Courier Prime), with page and section titles stamped (Special Elite): labels, totals, maximums, thresholds, Facultés, combat values. Reading the sheet tells you at a glance what is yours and what the game derives.\n\nThere are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.\n\nMotion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback:\n- tabs settle with a short fade and rise (220ms);\n- the points bar slides up from the bottom (280ms) and leaves faster (160ms);\n- the candle lights in 700ms, then barely flickers on a 9s loop;\n- Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);\n- buttons press like a stamp (1px down), with no Material ripple.\n\nNothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising and flickering stop; fades and colour changes that carry state remain.\n\nThe system rejects the clean \"tool\" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.",
     "keyCharacteristics": [
       "A printed sheet on paper: double frame, title band with moon phases, grain, guide lines and margin.",
       "Handwritten blue ink for everything the player writes; typewriter for everything the rules print.",
       "Existences as small atlas planets: printed orbit, watercolour phase, one pen-filled dot per point.",
       "A personal moon tint per character, laid as a watercolour wash whose strength follows Devenir.",
-      "Two lights (Jour, bougie) on the same light paper, and two densities, chosen by the player."
+      "Two lights (Jour, bougie) on the same light paper, and two densities, chosen by the player.",
+      "One motion signature: values write themselves like a pen stroke, and previews dry into ink."
     ],
     "rules": [
       {
@@ -950,7 +1001,8 @@
       "**Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.",
       "**Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, \"Avant : N\" in a tooltip.",
       "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.",
-      "**Do** honour both densities and both lights for every new surface, and disable planet motion under `prefers-reduced-motion`."
+      "**Do** honour both densities and both lights for every new surface.",
+      "**Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes."
     ],
     "donts": [
       "**Don't** use a system sans or a display serif: printed text is a typewriter, titles are a stamp, and the player's words are a hand.",
@@ -960,7 +1012,8 @@
       "**Don't** add shadows inside the sheet; lift things with raised paper and a printed border.",
       "**Don't** reintroduce a dark ground for the night: the candle warms and dims the same paper.",
       "**Don't** add another −/+ style; steppers share one printed frame in two sizes.",
-      "**Don't** bind the sheet to one genre (parchment, chrome, neon): Oniria's moons are many worlds."
+      "**Don't** bind the sheet to one genre (parchment, chrome, neon): Oniria's moons are many worlds.",
+      "**Don't** add load choreography, scroll reveals, staggers or Material ripples; the sheet moves only when something is written, changes state or needs continuity."
     ]
   }
 }

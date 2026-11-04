@@ -223,6 +223,15 @@ The system rests on one rule of writing. What the player writes is handwritten i
 
 There are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.
 
+Motion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback:
+- tabs settle with a short fade and rise (220ms);
+- the points bar slides up from the bottom (280ms) and leaves faster (160ms);
+- the candle lights in 700ms, then barely flickers on a 9s loop;
+- Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
+- buttons press like a stamp (1px down), with no Material ripple.
+
+Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising and flickering stop; fades and colour changes that carry state remain.
+
 The system rejects the clean "tool" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.
 
 **Key Characteristics:**
@@ -231,6 +240,7 @@ The system rejects the clean "tool" look (identical boxed cards, a sterile inter
 - Existences as small atlas planets: printed orbit, watercolour phase, one pen-filled dot per point.
 - A personal moon tint per character, laid as a watercolour wash whose strength follows Devenir.
 - Two lights (Jour, bougie) on the same light paper, and two densities, chosen by the player.
+- One motion signature: values write themselves like a pen stroke, and previews dry into ink.
 
 ## Colors
 
@@ -370,7 +380,12 @@ An Existence as a small atlas planet:
   - the current value is handwritten;
   - "/ max" and "seuil N" are typed.
 - **Size:** 64px from md, 40px on phone. Maï is drawn smaller in the same box.
-- **Motion:** the phase and the dots glide in 260ms `cubic-bezier(0.22, 1, 0.36, 1)`; this is disabled under `prefers-reduced-motion`.
+- **Motion:**
+  - the watercolour phase glides to its new value in 260ms;
+  - a gained point lands like an ink drop, growing from its centre in 280ms;
+  - the handwritten value rewrites itself.
+
+  Under `prefers-reduced-motion`, dots only fade and the phase jumps.
 
 ### Character Plate (signature)
 The head of the sheet, as printed fields:
@@ -380,6 +395,7 @@ The head of the sheet, as printed fields:
 - **Âge, Aspect and Devenir:** handwritten on field lines.
 - **Tint wash:** spills from the portrait (see the Lune Personnelle Rule).
 - **Doodle (from lg):** a pen-sketched moon and a dotted travel path fill the blank under the facts.
+- **Motion:** the wash blooms in over 700ms on arrival and changes colour softly (500ms) when the tint changes. Crossing Devenir 100 detaches the second frame (outline offset 0 → 4px, 600ms).
 
 ### Existences Box (signature)
 A sticky, opaque printed box. Typed captions "Existences" and "Maï" run into printed rules, and the four planets sit in columns separated by 1px printed rules.
@@ -392,15 +408,16 @@ A joined −|+ in a printed frame (1px rule, 2px corners). It has two sizes:
 - **md**, on planets: 34×32 cells;
 - **sm**, on characteristic rows: 24×24 cells, the 2.5.8 minimum.
 
-Cells are pale ink at rest. On hover or focus they turn blue ink over a 10% ink wash in 120ms, and the focus ring is drawn inside the frame. Characteristic steppers always show both cells, so values stay in a column. "−" is disabled while nothing can be removed. A click steps 1 point, Shift+click steps 5, and holding repeats from 400ms down to 40ms.
+Cells are pale ink at rest. On hover or focus they turn blue ink over a 10% ink wash in 120ms, and the focus ring is drawn inside the frame. Characteristic steppers always show both cells, so values stay in a column. "−" is disabled while nothing can be removed. A click steps 1 point, Shift+click steps 5, and holding repeats from 400ms down to 40ms. Pressed cells and buttons sink by 1px for 80ms; there is no ripple.
 
 ### Preview Value
-The Aperçu Rule as a component. An unchanged value renders normally. A changed one turns semibold in succès or avertissement, becomes focusable, and shows "Avant : N" in a tooltip. On characteristic rows, the saved value is struck through before the new one, in faded ink.
+The Aperçu Rule as a component. An unchanged value renders normally. A changed one turns semibold in succès or avertissement, becomes focusable, and shows "Avant : N" in a tooltip. On characteristic rows, the saved value is struck through before the new one, in faded ink. The strike is drawn left to right as the pending points arrive. The preview colour comes in fast (120ms) and dries slowly back to ink on validation or cancel (600ms).
 
 ### Points Bar
 Sticky at the bottom while points are pending: a raised-paper strip with a 1px succès border (erreur when XP is missing).
 - **Left:** the changes in bold type, with the cost below them.
 - **Right:** "Annuler" (text) and "Valider" (contained blue ink).
+- **Motion:** slides up from the bottom (280ms, `cubic-bezier(0.16, 1, 0.3, 1)`) and leaves faster (160ms), keeping its last content while it goes. Under reduced motion it fades.
 
 ### XP Bar
 A 16px segmented bar:
@@ -430,7 +447,8 @@ The notes editor always uses its light theme. It has a printed toolbar with a pr
 - **Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.
 - **Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, "Avant : N" in a tooltip.
 - **Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.
-- **Do** honour both densities and both lights for every new surface, and disable planet motion under `prefers-reduced-motion`.
+- **Do** honour both densities and both lights for every new surface.
+- **Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes.
 
 ### Don't:
 - **Don't** use a system sans or a display serif: printed text is a typewriter, titles are a stamp, and the player's words are a hand.
@@ -441,3 +459,4 @@ The notes editor always uses its light theme. It has a printed toolbar with a pr
 - **Don't** reintroduce a dark ground for the night: the candle warms and dims the same paper.
 - **Don't** add another −/+ style; steppers share one printed frame in two sizes.
 - **Don't** bind the sheet to one genre (parchment, chrome, neon): Oniria's moons are many worlds.
+- **Don't** add load choreography, scroll reveals, staggers or Material ripples; the sheet moves only when something is written, changes state or needs continuity.
