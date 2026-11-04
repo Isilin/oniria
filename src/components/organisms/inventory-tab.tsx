@@ -170,7 +170,9 @@ const Prerequisite = ({
             inputProps={{ 'aria-label': 'Caractère requis' }}
           >
             <MenuItem value="">
-              <em>-</em>
+              <Box component="span" sx={{ color: 'text.secondary' }}>
+                -
+              </Box>
             </MenuItem>
             {STAT_OPTIONS.map((o) => (
               <MenuItem key={o.value} value={o.value}>

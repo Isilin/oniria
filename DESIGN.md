@@ -103,6 +103,13 @@ typography:
     letterSpacing: "0.02em"
   numeral:
     fontFamily: "Courier Prime, Courier New, monospace"
+    fontSize: "0.9375rem"
+    fontWeight: 700
+    lineHeight: 1.2
+    fontFeature: "lnum, tnum"
+  numeral-total:
+    fontFamily: "Courier Prime, Courier New, monospace"
+    fontSize: "1.375rem"
     fontWeight: 700
     lineHeight: 1.2
     fontFeature: "lnum, tnum"
@@ -126,6 +133,26 @@ typography:
     fontSize: "2.375rem"
     fontWeight: 700
     lineHeight: 0.95
+  hand-existence-phone:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.75rem"
+    fontWeight: 700
+    lineHeight: 0.95
+  note:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.375rem"
+    fontWeight: 500
+    lineHeight: "30px"
+  note-title:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "2rem"
+    fontWeight: 700
+    lineHeight: "30px"
+  note-heading:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.625rem"
+    fontWeight: 700
+    lineHeight: "30px"
 rounded:
   none: "0px"
   sm: "2px"
@@ -292,16 +319,22 @@ Cream paper, brown printing ink, blue fountain-pen ink, four Existence watercolo
 - **Section** (Special Elite, 0.9375rem, +0.22em, uppercase): section headings, preceded by an armillary sphere and followed by a printed rule. Also the title band.
 - **Group** (Courier Prime 700, 0.9375rem, +0.04em, uppercase): LE CORPS, L'ESPRIT, VUE D'ENSEMBLE.
 - **Dialog title** (Special Elite, 1.0625rem, +0.12em): dialog headings.
-- **Label** (Courier Prime, 0.75rem, +0.14em, uppercase): field labels (NOM, ÂGE, LA SANTÉ), table heads, column captions.
+- **Label** (Courier Prime, 0.75rem, +0.14em, uppercase): field labels (NOM, ÂGE, LA SANTÉ), table heads, column captions. Never smaller: where a column is narrow (three planets per row on phone), the tracking tightens to +0.06em instead. Table heads never wrap; the table scrolls.
 - **Body** (Courier Prime, 0.9375rem, 1.55) and **Body small** (0.875rem): interface text, player and table names, descriptions.
 - **Row label** (Courier Prime, 0.75rem): stat-row labels. The typewriter is wide; 12px keeps "Concentration" beside its value.
-- **Numeral** (Courier Prime 700, tabular): every computed value (group totals, Facultés, combat, XP).
-- **Hand** (Caveat 600, 1.375rem) for written text, **Hand value** (Caveat 700, 1.625rem) for characteristics, **Hand existence** (Caveat 700, 2.375rem; 1.75rem on phone) for current Existences.
+- **Numeral** (Courier Prime 700, tabular, 0.9375rem): every computed value on a row (Facultés, combat); **Numeral total** (1.375rem) for group totals and the XP left. One size per role, so Facultés and Combat read as one column of figures.
+- **Hand** (Caveat 600, 1.375rem) for written text, **Hand value** (Caveat 700, 1.625rem) for characteristics, **Hand existence** (Caveat 700, 2.375rem; 1.75rem below 900px) for current Existences. Each is a theme variant (`hand`, `handValue`, `handExistence`), never sizes set by hand.
+- **Note** (Caveat 500, 1.375rem on 30px lines): the notes. **Note title** (Caveat 700, 2rem) and **Note heading** (1.625rem) stay on the 30px line; smaller headings keep the text size, underlined with the pen.
+
+### Line breaks and measure
+- Headings balance their lines (`text-wrap: balance`); body text avoids a lone last word (`pretty`).
+- Rules text in tooltips runs at 46 characters per line; notes at 75 at most (34rem), while tables and images keep the full width.
+- An amount stays glued to its category, and the middle dot never starts a line ("Éprouver 30 · Apprendre 10", with non-breaking spaces). In tables, a value comes first and its threshold sits under it as a caption ("6/6", "seuil 10").
 
 ### Named Rules
 **The Machine à écrire Rule.** Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.
 
-**The Pas d'italique Rule.** Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant.
+**The Pas d'italique Rule.** Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant. Courier Prime is served in roman only (400, 700), so no italic file is ever preloaded.
 
 ## Layout
 
@@ -318,8 +351,8 @@ Key widths:
 - **Characteristic groups:** three side by side from 640px, two below.
 - **Faculty columns:** same rule.
 - **Plate:** portrait, name and facts on one line from 760px; below that, Âge, Aspect and Devenir go under the name.
-- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row with labels above the planets, and Maï drops under a rule.
-- **Planet steppers:** move inline after the value from 1200px.
+- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row, and Maï drops under a rule. Labels sit above the planets below 900px and beside them from 900px, so "L'Équilibre" is never cut.
+- **Planet steppers:** move inline after the value from 1200px; the label then runs over the value and the stepper.
 
 ## Elevation & Depth
 
@@ -376,7 +409,7 @@ An Existence as a small atlas planet:
 - **Phase:** the lit part is painted in watercolour, waxing as a crescent from the right, then gibbous, then full, over a faint wash of the same colour.
 - **Points:** one printed ring per point on a 270° arc open at the bottom, filled with a pen dot up to the current value. Above 24 points, the arc becomes a continuous pen stroke.
 - **Text:**
-  - the label is typed (placed above the planet on phone);
+  - the label is typed (placed above the planet below 900px);
   - the current value is handwritten;
   - "/ max" and "seuil N" are typed.
 - **Size:** 64px from md, 40px on phone. Maï is drawn smaller in the same box.
@@ -433,7 +466,11 @@ All ornaments are decorative and `aria-hidden`:
 - **Pen** (blue): the sketched moon and dotted path in the plate (from lg).
 
 ### Notes
-The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, and its text is handwritten in blue at 1.375rem on 30px lines.
+The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, typed like the rest of the print (its menus too). The text is handwritten in blue at 1.375rem on 30px lines, like a page of a notebook:
+- every block, headings included, stays on the 30px line, with one blank line between blocks and one above a heading;
+- lines run to 75 characters at most; tables and images keep the full width;
+- a quote is the same hand with a 1px pen stroke in the margin;
+- inline code is typed (Courier Prime) at 0.75em, inside the line.
 
 ## Do's and Don'ts
 

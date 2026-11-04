@@ -1,5 +1,5 @@
 import type { Density } from '@/lib/preferences';
-import { alpha, createTheme } from '@mui/material/styles';
+import { alpha, createTheme, type TypographyStyle } from '@mui/material/styles';
 
 /**
  * « Le carnet d'Oniria » : la fiche est une feuille de personnage imprimée,
@@ -37,10 +37,15 @@ declare module '@mui/material/styles' {
   interface TypographyVariants {
     numeral: React.CSSProperties;
     hand: React.CSSProperties;
+    handValue: React.CSSProperties;
+    // Style MUI (et non React) : la taille change avec la largeur.
+    handExistence: TypographyStyle;
   }
   interface TypographyVariantsOptions {
     numeral?: React.CSSProperties;
     hand?: React.CSSProperties;
+    handValue?: React.CSSProperties;
+    handExistence?: TypographyStyle;
   }
 }
 
@@ -48,6 +53,8 @@ declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     numeral: true;
     hand: true;
+    handValue: true;
+    handExistence: true;
   }
 }
 
@@ -187,6 +194,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontSize: '3.5rem',
         letterSpacing: '0.3em',
         lineHeight: 1.1,
+        textWrap: 'balance',
       },
       // Le nom du personnage ou de la table : écrit à la main.
       h2: {
@@ -194,6 +202,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontWeight: 600,
         fontSize: '3rem',
         lineHeight: 1,
+        textWrap: 'balance',
       },
       // Titre de page (Tables de jeu, Whitelist).
       h3: {
@@ -203,6 +212,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
         lineHeight: 1.3,
+        textWrap: 'balance',
       },
       // Titre de section : frappé au tampon, suivi d'un filet.
       h4: {
@@ -212,6 +222,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
         lineHeight: 1.4,
+        textWrap: 'balance',
       },
       // Titre de groupe (Le Corps, Vue d'ensemble…).
       h5: {
@@ -221,12 +232,14 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.04em',
         textTransform: 'uppercase',
         lineHeight: 1.4,
+        textWrap: 'balance',
       },
       h6: {
         fontFamily: TYPE,
         fontWeight: 700,
         fontSize: '0.9375rem',
         lineHeight: 1.35,
+        textWrap: 'balance',
       },
       subtitle1: { fontFamily: TYPE, fontSize: '0.9375rem', lineHeight: 1.5 },
       subtitle2: {
@@ -236,8 +249,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
       },
-      body1: { fontSize: '0.9375rem', lineHeight: 1.55 },
-      body2: { fontSize: '0.875rem', lineHeight: 1.5 },
+      // Pas de mot seul en fin de paragraphe (descriptions, règles).
+      body1: { fontSize: '0.9375rem', lineHeight: 1.55, textWrap: 'pretty' },
+      body2: { fontSize: '0.875rem', lineHeight: 1.5, textWrap: 'pretty' },
       caption: { fontSize: '0.75rem', lineHeight: 1.4 },
       // Libellé de champ imprimé : NOM, ÂGE, LA SANTÉ…
       overline: {
@@ -255,10 +269,12 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.02em',
         textTransform: 'none',
       },
-      // Valeur calculée par les règles : tapée à la machine.
+      // Valeur calculée par les règles : tapée à la machine. Une seule taille
+      // sur les lignes (Facultés, combat) ; les totaux la grossissent.
       numeral: {
         fontFamily: TYPE,
         fontWeight: 700,
+        fontSize: '0.9375rem',
         fontVariantNumeric: 'lining-nums tabular-nums',
         lineHeight: 1.2,
       },
@@ -269,6 +285,23 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontSize: '1.375rem',
         lineHeight: 1.05,
         color: 'var(--mui-palette-primary-main)',
+      },
+      // Un caractère, écrit sur sa ligne (Force, Raisonnement…).
+      handValue: {
+        fontFamily: HAND,
+        fontWeight: 700,
+        fontSize: '1.625rem',
+        lineHeight: 0.9,
+        color: 'var(--mui-palette-primary-main)',
+      },
+      // L'Existence en cours, à côté de sa planète.
+      handExistence: {
+        fontFamily: HAND,
+        fontWeight: 700,
+        fontSize: '1.75rem',
+        lineHeight: 0.95,
+        color: 'var(--mui-palette-primary-main)',
+        '@media (min-width: 900px)': { fontSize: '2.375rem' },
       },
     },
     components: {
@@ -494,7 +527,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             fontWeight: 400,
             lineHeight: 1.45,
             padding: '8px 12px',
-            maxWidth: 380,
+            // Le texte des règles se lit : 46 signes par ligne, pas moins.
+            maxWidth: 'calc(46ch + 24px)',
+            textWrap: 'pretty',
           }),
           arrow: ({ theme }) => ({
             color: theme.vars.palette.raised,
@@ -515,6 +550,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
             fontSize: '0.75rem',
+            // Un libellé de colonne ne se coupe pas (« Enc. (%) ») : le
+            // tableau défile plutôt.
+            whiteSpace: 'nowrap',
             color: theme.vars.palette.text.secondary,
             borderBottom: `1.5px solid ${theme.vars.palette.text.primary}`,
           }),

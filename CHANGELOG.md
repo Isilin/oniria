@@ -81,6 +81,16 @@ Première version complète des fiches de personnages d'Oniria.
   pour une fiche en création, le bouton dit ce qu'il fait (« Attribuer 30 XP
   à 2 personnages ») et « Accorder un reset » disparaît d'une fiche encore
   en création.
+- Typographie : les notes s'écrivent comme une page de cahier (titres et
+  paragraphes sur la ligne de 30 px, 75 signes par ligne au plus, petits
+  titres soulignés, citation marquée d'un trait de plume, code tapé à la
+  machine) et leur barre d'outils est tapée à la machine. Les chiffres des
+  Facultés et du combat ont la même taille ; les règles en infobulle se
+  lisent sur des lignes plus longues ; dans la vue d'ensemble d'une table,
+  le seuil passe sous la valeur et l'XP restante se coupe entre les
+  catégories, jamais entre « Vivre » et son montant.
+- Pages plus légères : l'italique de la machine à écrire, jamais utilisé,
+  n'est plus préchargé (deux fichiers de police en moins).
 
 ### Corrigé
 
@@ -95,6 +105,11 @@ Première version complète des fiches de personnages d'Oniria.
 - Thème Nuit : contour de focus, sélection de texte et barre de défilement
   prenaient les couleurs du thème Jour (or trop sombre, défilement
   invisible), comme les rayures de la barre d'XP.
+- Le libellé « L'Équilibre » était coupé sur tablette et entre 1200 et
+  1440 px ; sur téléphone, les libellés des Existences gardent la taille des
+  autres libellés (ils tombaient à 10 px).
+- Les en-têtes de colonnes ne se coupent plus en deux (« Enc. (%) ») et ceux
+  de l'inventaire reprennent le style des autres libellés.
 
 ### Sécurité
 

@@ -125,14 +125,15 @@ const MoonGauge = ({
       noWrap
       sx={{
         display: 'block',
-        // Sur téléphone, le libellé doit tenir en entier : « L'Équilibre ».
-        fontSize: { xs: '0.625rem', md: '0.75rem' },
-        letterSpacing: { xs: '0.06em', md: '0.14em' },
-        ...(hint && { cursor: 'help' }),
-        ...(labelHiddenWide && {
+        // Taille des libellés partout ; sur téléphone (trois planètes par
+        // ligne), l'espacement se resserre pour que « L'Équilibre » tienne.
+        letterSpacing: '0.06em',
+        '@media (min-width: 520px)': {
+          letterSpacing: '0.14em',
           // Masqué mais présent : la valeur reste sur la ligne des autres.
-          '@media (min-width: 520px)': { visibility: 'hidden' },
-        }),
+          ...(labelHiddenWide && { visibility: 'hidden' }),
+        },
+        ...(hint && { cursor: 'help' }),
       }}
     >
       {label}
@@ -150,13 +151,18 @@ const MoonGauge = ({
         columnGap: 1,
         rowGap: 0.5,
         minWidth: 0,
-        // Téléphone : le libellé au-dessus, sur toute la largeur de la colonne
-        // (la machine à écrire est large) ; dès 520 px, à côté de la planète.
+        // Le libellé au-dessus, sur toute la largeur de la colonne (la machine
+        // à écrire est large) ; à côté de la planète dès 900 px, quand la
+        // colonne laisse la place à « L'Équilibre » en entier.
         gridTemplateColumns: 'auto minmax(0, 1fr)',
         gridTemplateAreas: '"label label" "disc text"',
-        '@media (min-width: 520px)': {
-          gridTemplateAreas: '"disc label" "disc text"',
-        },
+        // Pas de clé commune avec le cas des −|+ ci-dessous : une clé écrasée
+        // garde sa place et passerait avant la règle des 520 px.
+        ...(!stepper && {
+          '@media (min-width: 900px)': {
+            gridTemplateAreas: '"disc label" "disc text"',
+          },
+        }),
         ...(stepper && {
           // −|+ sous la valeur quand la colonne est étroite ; à côté sinon
           // (sur une ligne entière au téléphone, et dès 1200 px).
@@ -167,14 +173,19 @@ const MoonGauge = ({
             ? 'auto minmax(0, max-content) auto'
             : 'auto minmax(0, 1fr)',
           '@media (min-width: 520px)': {
-            gridTemplateAreas: '"disc label" "disc text" "step step"',
+            gridTemplateAreas: '"label label" "disc text" "step step"',
             gridTemplateColumns: 'auto minmax(0, 1fr)',
+          },
+          '@media (min-width: 900px)': {
+            gridTemplateAreas: '"disc label" "disc text" "step step"',
           },
           // Écrit en clair (et non theme.breakpoints) pour venir après la règle
           // des 520 px : MUI range ses propres paliers en premier.
           '@media (min-width: 1200px)': {
             columnGap: 2,
-            gridTemplateAreas: '"disc label step" "disc text step"',
+            // Le libellé passe au-dessus des −|+ : « L'Équilibre » en entier
+            // dès 1200 px, et les −|+ face à la valeur qu'ils changent.
+            gridTemplateAreas: '"disc label label" "disc text step"',
             // Les −|+ suivent la valeur au lieu d'être rejetés en bout de colonne.
             gridTemplateColumns: 'auto minmax(0, max-content) auto',
           },
@@ -309,14 +320,7 @@ const MoonGauge = ({
             flexWrap: 'wrap',
           }}
         >
-          <Typography
-            variant="hand"
-            sx={{
-              fontSize: { xs: '1.75rem', md: '2.375rem' },
-              fontWeight: 700,
-              lineHeight: 0.95,
-            }}
-          >
+          <Typography variant="handExistence">
             <Written value={current}>{current}</Written>
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ ml: 0.5 }}>

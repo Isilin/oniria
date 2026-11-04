@@ -117,14 +117,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                         before={base.values[c.key]}
                       />
                     )}
-                    <Typography
-                      variant="hand"
-                      sx={{
-                        fontSize: '1.625rem',
-                        fontWeight: 700,
-                        lineHeight: 0.9,
-                      }}
-                    >
+                    <Typography variant="handValue">
                       <PreviewValue before={base.values[c.key]} delta={pending}>
                         <Written value={value}>{value}</Written>
                       </PreviewValue>

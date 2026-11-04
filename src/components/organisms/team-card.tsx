@@ -37,8 +37,19 @@ import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 import { formatAmounts } from './xp-dialogs';
 import XpGrantDialog from './xp-grant-dialog';
 
-const gauge = (current: number | null, max: number, threshold: number) =>
-  `${current ?? max}/${max} (seuil ${threshold})`;
+/** Une Existence : la valeur, et son seuil en légende dessous. */
+const gauge = (current: number | null, max: number, threshold: number) => (
+  <>
+    {current ?? max}/{max}
+    <Typography
+      variant="caption"
+      color="textSecondary"
+      sx={{ display: 'block', whiteSpace: 'nowrap' }}
+    >
+      seuil {threshold}
+    </Typography>
+  </>
+);
 
 const MemberRow = ({
   sheet,
@@ -53,7 +64,8 @@ const MemberRow = ({
 
   return (
     <TableRow hover>
-      <TableCell>
+      {/* Un nom courant (« Corwin (test) ») tient sur sa ligne. */}
+      <TableCell sx={{ minWidth: '14ch' }}>
         <MuiLink component={Link} href={`/sheet/${sheet.id}`}>
           {sheet.name}
         </MuiLink>
@@ -85,7 +97,7 @@ const MemberRow = ({
       </TableCell>
       <TableCell>{c.bulk} %</TableCell>
       <TableCell>{c.damage}</TableCell>
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+      <TableCell sx={{ minWidth: '16ch' }}>
         {formatAmounts(xp.left)}
         {xp.unlocked.length > 0 && (
           <Chip

@@ -80,7 +80,7 @@ const PointsBar = ({ id }: { id: string }) => {
         }}
       >
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             {current.lines
               .map(
                 (l) =>

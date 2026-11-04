@@ -123,7 +123,9 @@ function CollectionTable<R extends Row>({
         >
           {!column.required && (
             <MenuItem value="">
-              <em>-</em>
+              <Box component="span" sx={{ color: 'text.secondary' }}>
+                -
+              </Box>
             </MenuItem>
           )}
           {column.options?.map((o) => (
@@ -175,7 +177,7 @@ function CollectionTable<R extends Row>({
                 <TableCell
                   key={column.key}
                   align={column.align}
-                  sx={{ width: column.width, fontWeight: 'bold' }}
+                  sx={{ width: column.width }}
                 >
                   {column.tooltip ? (
                     <Tooltip title={column.tooltip} arrow>
