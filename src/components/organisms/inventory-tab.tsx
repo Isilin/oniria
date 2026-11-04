@@ -7,8 +7,6 @@ import WarningIcon from '@mui/icons-material/WarningAmber';
 import {
   Autocomplete,
   Box,
-  Card,
-  CardContent,
   Chip,
   MenuItem,
   Select,
@@ -19,6 +17,7 @@ import {
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import EditableField from '../atoms/editable-field';
+import SectionCard from '../molecules/section-card';
 import SheetField from '../molecules/sheet-field';
 import { Column } from './collection-table';
 import SheetCollection from './sheet-collection';
@@ -263,175 +262,163 @@ const InventoryTab = ({ id }: { id: string }) => {
   };
 
   return (
+    // Des sections de la feuille, comme l'onglet Caractéristiques : un titre
+    // frappé et son filet, pas de cartes.
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        gap: 4,
         width: '100%',
+        pt: 2,
       }}
     >
-      <Card>
-        <CardContent>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 4,
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            <SheetField label="Dégâts (Force)" value={computed.damage} />
-            <SheetField
-              label="Protection"
-              value={
-                computed.protection.max
-                  ? `${computed.protection.current}/${computed.protection.max}`
-                  : '-'
-              }
-            />
-            <SheetField label="Encombrement" value={`${computed.bulk} %`} />
-          </Box>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <SheetCollection
-            id={id}
-            collection="meleeWeapons"
-            title="Armes de mêlée"
-            addLabel="Ajouter une arme de mêlée"
-            emptyLabel="Aucune arme de mêlée."
-            columns={[
-              equipped,
-              { key: 'name', label: 'Nom' },
-              { key: 'damage', label: 'Dégâts', type: 'number' },
-              { key: 'extend', label: 'Allonge', type: 'number' },
-              bulk,
-              solidity,
-              prerequisiteColumn('meleeWeapons'),
-              propertiesColumn('meleeWeapons'),
-              quality,
-            ]}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <SheetCollection
-            id={id}
-            collection="rangeWeapons"
-            title="Armes de tir"
-            addLabel="Ajouter une arme de tir"
-            emptyLabel="Aucune arme de tir."
-            columns={[
-              equipped,
-              { key: 'name', label: 'Nom' },
-              { key: 'damage', label: 'Dégâts', type: 'number' },
-              {
-                key: 'penetration_damage',
-                label: 'Pénétration',
-                type: 'number',
-                tooltip: 'Dégâts de pénétration',
-              },
-              { key: 'velocity', label: 'Vélocité', type: 'number' },
-              { key: 'rate', label: 'Cadence', type: 'number' },
-              {
-                key: 'reload_rate',
-                label: 'Recharg.',
-                type: 'number',
-                tooltip: 'Rechargement',
-              },
-              {
-                key: 'low_range',
-                label: 'Courte',
-                type: 'number',
-                tooltip: 'Portée courte',
-              },
-              {
-                key: 'medium_range',
-                label: 'Moyenne',
-                type: 'number',
-                tooltip: 'Portée moyenne',
-              },
-              {
-                key: 'long_range',
-                label: 'Longue',
-                type: 'number',
-                tooltip: 'Portée longue',
-              },
-              bulk,
-              solidity,
-              prerequisiteColumn('rangeWeapons'),
-              propertiesColumn('rangeWeapons'),
-              quality,
-            ]}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <SheetCollection
-            id={id}
-            collection="armors"
-            title="Armures"
-            addLabel="Ajouter une armure"
-            emptyLabel="Aucune armure."
-            columns={[
-              equipped,
-              { key: 'name', label: 'Nom' },
-              {
-                key: 'current_protection',
-                label: 'Protection',
-                type: 'number',
-                tooltip: 'Protection actuelle (vide = intacte)',
-                display: (row) =>
-                  `${row.current_protection ?? row.protection ?? '-'}`,
-              },
-              {
-                key: 'protection',
-                label: 'Max',
-                type: 'number',
-                tooltip: 'Protection maximale',
-              },
-              { key: 'index', label: 'Indice', type: 'number' },
-              {
-                key: 'type',
-                label: 'Type',
-                type: 'select',
-                options: ARMOR_TYPES,
-              },
-              bulk,
-              solidity,
-              prerequisiteColumn('armors'),
-              propertiesColumn('armors'),
-              quality,
-            ]}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <SheetCollection
-            id={id}
-            collection="items"
-            title="Objets"
-            defaults={{ quantity: 1 }}
-            addLabel="Ajouter un objet"
-            emptyLabel="Besace vide."
-            columns={[
-              { key: 'name', label: 'Objet' },
-              {
-                key: 'quantity',
-                label: 'Quantité',
-                type: 'number',
-                width: 100,
-              },
-              { key: 'description', label: 'Notes' },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      {/* Ce que l'équipement porté donne au combat : une ligne tapée. */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          columnGap: 4,
+          rowGap: 0.5,
+        }}
+      >
+        <SheetField label="Dégâts (Force)" value={computed.damage} />
+        <SheetField
+          label="Protection"
+          value={
+            computed.protection.max
+              ? `${computed.protection.current}/${computed.protection.max}`
+              : '-'
+          }
+        />
+        <SheetField label="Encombrement" value={`${computed.bulk} %`} />
+      </Box>
+      <SectionCard title="Armes de mêlée">
+        <SheetCollection
+          id={id}
+          collection="meleeWeapons"
+          addLabel="Ajouter une arme de mêlée"
+          emptyLabel="Aucune arme de mêlée."
+          columns={[
+            equipped,
+            { key: 'name', label: 'Nom' },
+            { key: 'damage', label: 'Dégâts', type: 'number' },
+            { key: 'extend', label: 'Allonge', type: 'number' },
+            bulk,
+            solidity,
+            prerequisiteColumn('meleeWeapons'),
+            propertiesColumn('meleeWeapons'),
+            quality,
+          ]}
+        />
+      </SectionCard>
+      <SectionCard title="Armes de tir">
+        <SheetCollection
+          id={id}
+          collection="rangeWeapons"
+          addLabel="Ajouter une arme de tir"
+          emptyLabel="Aucune arme de tir."
+          columns={[
+            equipped,
+            { key: 'name', label: 'Nom' },
+            { key: 'damage', label: 'Dégâts', type: 'number' },
+            {
+              key: 'penetration_damage',
+              label: 'Pénétration',
+              type: 'number',
+              tooltip: 'Dégâts de pénétration',
+            },
+            { key: 'velocity', label: 'Vélocité', type: 'number' },
+            { key: 'rate', label: 'Cadence', type: 'number' },
+            {
+              key: 'reload_rate',
+              label: 'Recharg.',
+              type: 'number',
+              tooltip: 'Rechargement',
+            },
+            {
+              key: 'low_range',
+              label: 'Courte',
+              type: 'number',
+              tooltip: 'Portée courte',
+            },
+            {
+              key: 'medium_range',
+              label: 'Moyenne',
+              type: 'number',
+              tooltip: 'Portée moyenne',
+            },
+            {
+              key: 'long_range',
+              label: 'Longue',
+              type: 'number',
+              tooltip: 'Portée longue',
+            },
+            bulk,
+            solidity,
+            prerequisiteColumn('rangeWeapons'),
+            propertiesColumn('rangeWeapons'),
+            quality,
+          ]}
+        />
+      </SectionCard>
+      <SectionCard title="Armures">
+        <SheetCollection
+          id={id}
+          collection="armors"
+          addLabel="Ajouter une armure"
+          emptyLabel="Aucune armure."
+          columns={[
+            equipped,
+            { key: 'name', label: 'Nom' },
+            {
+              key: 'current_protection',
+              label: 'Protection',
+              type: 'number',
+              tooltip: 'Protection actuelle (vide = intacte)',
+              display: (row) =>
+                `${row.current_protection ?? row.protection ?? '-'}`,
+            },
+            {
+              key: 'protection',
+              label: 'Max',
+              type: 'number',
+              tooltip: 'Protection maximale',
+            },
+            { key: 'index', label: 'Indice', type: 'number' },
+            {
+              key: 'type',
+              label: 'Type',
+              type: 'select',
+              options: ARMOR_TYPES,
+            },
+            bulk,
+            solidity,
+            prerequisiteColumn('armors'),
+            propertiesColumn('armors'),
+            quality,
+          ]}
+        />
+      </SectionCard>
+      <SectionCard title="Objets">
+        <SheetCollection
+          id={id}
+          collection="items"
+          defaults={{ quantity: 1 }}
+          addLabel="Ajouter un objet"
+          emptyLabel="Besace vide."
+          columns={[
+            { key: 'name', label: 'Objet' },
+            {
+              key: 'quantity',
+              label: 'Quantité',
+              type: 'number',
+              width: 100,
+            },
+            { key: 'description', label: 'Notes' },
+          ]}
+        />
+      </SectionCard>
     </Box>
   );
 };

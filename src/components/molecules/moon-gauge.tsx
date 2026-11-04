@@ -116,6 +116,42 @@ const MoonGauge = ({
   const viewBox = small ? '-16 -16 96 96' : '-4 -4 72 72';
   const stepper = editable && onChange;
 
+  const hasThreshold = threshold !== undefined;
+  // Sur téléphone (trois planètes par ligne), « seuil 10 » ne tient pas à
+  // côté de la planète : il passe sur sa propre ligne, sous la planète. Dès
+  // 520 px, il reprend sa place après « / max ».
+  const thresholdNode = (narrow: boolean) =>
+    hasThreshold && (
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        sx={{
+          whiteSpace: 'nowrap',
+          ...(narrow
+            ? {
+                gridArea: 'seuil',
+                display: 'block',
+                '@media (min-width: 520px)': { display: 'none' },
+              }
+            : {
+                ml: 0.5,
+                display: 'none',
+                '@media (min-width: 520px)': { display: 'inline' },
+              }),
+        }}
+      >
+        seuil{' '}
+        <PreviewValue
+          before={before?.threshold}
+          delta={
+            before?.threshold !== undefined ? threshold - before.threshold : 0
+          }
+        >
+          {threshold}
+        </PreviewValue>
+      </Typography>
+    );
+
   const labelNode = (
     <Typography
       variant="overline"
@@ -155,7 +191,9 @@ const MoonGauge = ({
         // à écrire est large) ; à côté de la planète dès 900 px, quand la
         // colonne laisse la place à « L'Équilibre » en entier.
         gridTemplateColumns: 'auto minmax(0, 1fr)',
-        gridTemplateAreas: '"label label" "disc text"',
+        gridTemplateAreas: hasThreshold
+          ? '"label label" "disc text" "seuil seuil"'
+          : '"label label" "disc text"',
         // Pas de clé commune avec le cas des −|+ ci-dessous : une clé écrasée
         // garde sa place et passerait avant la règle des 520 px.
         ...(!stepper && {
@@ -168,7 +206,9 @@ const MoonGauge = ({
           // (sur une ligne entière au téléphone, et dès 1200 px).
           gridTemplateAreas: inline
             ? '"label label label" "disc text step"'
-            : '"label label" "disc text" "step step"',
+            : hasThreshold
+              ? '"label label" "disc text" "seuil seuil" "step step"'
+              : '"label label" "disc text" "step step"',
           gridTemplateColumns: inline
             ? 'auto minmax(0, max-content) auto'
             : 'auto minmax(0, 1fr)',
@@ -332,27 +372,10 @@ const MoonGauge = ({
               {max}
             </PreviewValue>
           </Typography>
-          {threshold !== undefined && (
-            <Typography
-              variant="caption"
-              color="textSecondary"
-              sx={{ ml: 0.5, whiteSpace: 'nowrap' }}
-            >
-              seuil{' '}
-              <PreviewValue
-                before={before?.threshold}
-                delta={
-                  before?.threshold !== undefined
-                    ? threshold - before.threshold
-                    : 0
-                }
-              >
-                {threshold}
-              </PreviewValue>
-            </Typography>
-          )}
+          {thresholdNode(false)}
         </Box>
       </Box>
+      {thresholdNode(true)}
       {stepper && (
         <Stepper label={label} onStep={(d) => onChange(current + d)} />
       )}

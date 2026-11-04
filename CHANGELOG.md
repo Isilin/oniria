@@ -91,6 +91,12 @@ Première version complète des fiches de personnages d'Oniria.
   catégories, jamais entre « Vivre » et son montant.
 - Pages plus légères : l'italique de la machine à écrire, jamais utilisé,
   n'est plus préchargé (deux fichiers de police en moins).
+- Mise en page : les onglets Traits, Schémas & Compétences et Inventaire
+  sont rangés comme l'onglet Caractéristiques, en sections de la feuille
+  (titre frappé et filet) au lieu de cartes empilées ; le résumé de
+  l'inventaire tient sur une ligne. Les compétences passent sur deux
+  colonnes jusqu'à 1200 px. La page des tables de jeu reprend la
+  présentation de l'accueil, avec une carte « Nouvelle table de jeu ».
 
 ### Corrigé
 
@@ -110,6 +116,11 @@ Première version complète des fiches de personnages d'Oniria.
   autres libellés (ils tombaient à 10 px).
 - Les en-têtes de colonnes ne se coupent plus en deux (« Enc. (%) ») et ceux
   de l'inventaire reprennent le style des autres libellés.
+- Sur téléphone, « seuil N » des Existences débordait sur le filet de la
+  colonne voisine ; il passe sur sa propre ligne, sous la planète.
+- Les noms écrits dans les tableaux (armes, armures, objets, traits) ne se
+  coupent plus mot par mot ; la corbeille d'une compétence ne se retrouve
+  plus seule sur sa ligne.
 
 ### Sécurité
 

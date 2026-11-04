@@ -347,11 +347,20 @@ Order, top to bottom: the title band (back, page title, moon phases, ONIRIA, dis
 
 Columns are separated by a 1px printed rule with 24px inner padding.
 
+The other tabs follow the same structure: sections on the paper, one after the other, 32px apart (4 spacing units), each under its stamped heading. Inside a section, groups (Le Corpus, La Spyrée, Générales…) sit under a typed group title, 4 units apart, and the table, list or tree follows tightly.
+- **Traits:** Traits innés, then Traits acquis (the line explaining acquired traits sits under its heading).
+- **Schémas & Compétences:** Schémas (Corpus beside Spyrée and Âmée from lg), Compétences (one column, two from 900px, three from 1200px, so a skill tree never runs on 240px), then Sortilèges and Golem side by side from lg.
+- **Inventaire:** a typed line with what the worn equipment gives to combat (Dégâts, Protection, Encombrement), then Armes de mêlée, Armes de tir, Armures, Objets.
+
+Tables keep a handwritten name readable: the name column never narrows below 9rem, so a name takes two lines at most; when columns run out of room, the table scrolls sideways instead. In a skill tree, the degree chip leads and the bin stays at the end of the line; only the name and its précision wrap.
+
+The lists outside the sheet (Mes fiches, Autres fiches, Tables de jeu) are rows of 250px cards aligned to the left margin of the content, 32px apart, ending with a dashed card that creates a new one ("Nouvelle fiche", "Nouvelle table de jeu").
+
 Key widths:
 - **Characteristic groups:** three side by side from 640px, two below.
 - **Faculty columns:** same rule.
 - **Plate:** portrait, name and facts on one line from 760px; below that, Âge, Aspect and Devenir go under the name.
-- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row, and Maï drops under a rule. Labels sit above the planets below 900px and beside them from 900px, so "L'Équilibre" is never cut.
+- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row, and Maï drops under a rule; there, "seuil N" takes its own line under the planet, since it cannot fit beside it. Labels sit above the planets below 900px and beside them from 900px, so "L'Équilibre" is never cut.
 - **Planet steppers:** move inline after the value from 1200px; the label then runs over the value and the stepper.
 
 ## Elevation & Depth
@@ -389,7 +398,7 @@ Rules come in three weights:
 - **Style:** outlined by default, 2px radius, typewriter bold. Status colour comes only from the état inks.
 
 ### Cards / Containers
-- **Sheet sections are not cards.** Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule, and has a collapse chevron saved on the account.
+- **Sheet sections are not cards,** on any tab. Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule (`SectionCard`). The sections of the Caractéristiques tab also have a collapse chevron saved on the account.
 - **Printed boxes** (plate, Existences): square, 1.5px printing-ink border. The Existences box is opaque paper with grain, so it can stick above the scrolling sheet.
 - **Cards** (sheet list, add-sheet, teams): raised paper, 1px printing-ink border, 2px radius. A sheet card shows a square portrait frame, the name handwritten, and the player or Aspect typed. The add card is dashed.
 

@@ -39,8 +39,14 @@ export interface Column<R extends Row> {
   display?: (row: R) => string | undefined;
   tooltip?: string;
   width?: number | string;
+  /** Largeur sous laquelle la colonne ne descend pas (défaut pour `name`). */
+  minWidth?: number | string;
   align?: 'left' | 'center' | 'right';
 }
+
+// Un nom écrit à la main se coupe en deux lignes au plus, jamais mot par mot
+// (« Bâton du Reflet ») : quand la place manque, le tableau défile.
+const NAME_MIN_WIDTH = '9rem';
 
 interface Props<R extends Row> {
   title?: ReactNode;
@@ -177,7 +183,12 @@ function CollectionTable<R extends Row>({
                 <TableCell
                   key={column.key}
                   align={column.align}
-                  sx={{ width: column.width }}
+                  sx={{
+                    width: column.width,
+                    minWidth:
+                      column.minWidth ??
+                      (column.key === 'name' ? NAME_MIN_WIDTH : undefined),
+                  }}
                 >
                   {column.tooltip ? (
                     <Tooltip title={column.tooltip} arrow>

@@ -12,8 +12,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   CircularProgress,
   IconButton,
@@ -28,6 +26,7 @@ import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import ScopeLock from '../atoms/scope-lock';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
+import SectionCard from '../molecules/section-card';
 
 type SheetSkill = CollectionItem<'skills'>;
 type SkillType = (typeof SKILL_TYPES)[number];
@@ -107,12 +106,13 @@ const SkillNode = ({
 
   return (
     <Box>
+      {/* Le degré à gauche, la corbeille au bout de la ligne ; seul le nom
+          et sa précision passent à la ligne quand la colonne est étroite. */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          flexWrap: 'wrap',
           pl: depth * 3,
           py: 0.25,
         }}
@@ -126,51 +126,63 @@ const SkillNode = ({
           color={DEGREE_COLORS[skill.degree]}
           label={DEGREE_LABELS[skill.degree]}
         />
-        <Tooltip title={skill.description ?? ''} arrow>
-          <Typography
-            component="span"
-            sx={
-              skill.description
-                ? { textDecoration: 'underline dotted', cursor: 'help' }
-                : {}
-            }
-          >
-            {name}
-          </Typography>
-        </Tooltip>
-        {(editable || owned.suffixe) && (
-          <Typography component="span" variant="body2" color="textSecondary">
-            <EditableField
-              value={owned.suffixe}
-              editable={editable}
-              placeholder="+ précision"
-              aria-label={`Précision pour ${name}`}
-              onChange={(suffixe) => onUpdate(owned, { suffixe })}
-            />
-          </Typography>
-        )}
-        {editable && prerequisites.length > 1 && (
-          <Select
-            size="small"
-            variant="standard"
-            value={owned.prerequisiteId ?? ''}
-            onChange={(e) =>
-              onUpdate(owned, { prerequisiteId: e.target.value })
-            }
-            inputProps={{ 'aria-label': `Prérequis de ${name}` }}
-          >
-            {prerequisites.map((p) => (
-              <MenuItem key={p.id} value={p.id}>
-                via {skillName(p)}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'baseline',
+            columnGap: 1,
+          }}
+        >
+          <Tooltip title={skill.description ?? ''} arrow>
+            <Typography
+              component="span"
+              sx={
+                skill.description
+                  ? { textDecoration: 'underline dotted', cursor: 'help' }
+                  : {}
+              }
+            >
+              {name}
+            </Typography>
+          </Tooltip>
+          {(editable || owned.suffixe) && (
+            <Typography component="span" variant="body2" color="textSecondary">
+              <EditableField
+                value={owned.suffixe}
+                editable={editable}
+                placeholder="+ précision"
+                aria-label={`Précision pour ${name}`}
+                onChange={(suffixe) => onUpdate(owned, { suffixe })}
+              />
+            </Typography>
+          )}
+          {editable && prerequisites.length > 1 && (
+            <Select
+              size="small"
+              variant="standard"
+              value={owned.prerequisiteId ?? ''}
+              onChange={(e) =>
+                onUpdate(owned, { prerequisiteId: e.target.value })
+              }
+              inputProps={{ 'aria-label': `Prérequis de ${name}` }}
+            >
+              {prerequisites.map((p) => (
+                <MenuItem key={p.id} value={p.id}>
+                  via {skillName(p)}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        </Box>
         {editable && (!locked || isAdmin) && (
           <IconButton
             size="small"
             aria-label={`Retirer ${name}`}
             onClick={() => (locked ? onDelete(owned) : setConfirm(true))}
+            sx={{ flexShrink: 0 }}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -330,74 +342,69 @@ const SkillsCard = ({ id }: { id: string }) => {
     isLocked(skillScope(skill.type));
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h4" align="center" gutterBottom>
-          Compétences
-        </Typography>
-        <Grid container spacing={3}>
-          {SKILL_TYPES.map((type) => {
-            const typeRoots = roots.filter((r) => skillOf(r).type === type);
-            const categories = [
-              ...new Set(typeRoots.map((r) => skillOf(r).category)),
-            ];
-            return (
-              <Grid key={type} size={{ xs: 12, md: 4 }}>
-                <Typography variant="h5">
-                  {TYPE_LABELS[type]}
-                  <ScopeLock locked={isLocked(skillScope(type))} />
+    <SectionCard title="Compétences">
+      {/* Trois colonnes seulement quand elles ont la place (1200 px) : un
+          arbre de compétences a besoin de largeur. */}
+      <Grid container spacing={4}>
+        {SKILL_TYPES.map((type) => {
+          const typeRoots = roots.filter((r) => skillOf(r).type === type);
+          const categories = [
+            ...new Set(typeRoots.map((r) => skillOf(r).category)),
+          ];
+          return (
+            <Grid key={type} size={{ xs: 12, md: 6, lg: 4 }}>
+              <Typography variant="h5">
+                {TYPE_LABELS[type]}
+                <ScopeLock locked={isLocked(skillScope(type))} />
+              </Typography>
+              {categories.length === 0 && (
+                <Typography variant="body2" color="textSecondary">
+                  Aucune compétence.
                 </Typography>
-                {categories.length === 0 && (
-                  <Typography variant="body2" color="textSecondary">
-                    Aucune compétence.
+              )}
+              {categories.map((category) => (
+                <Box
+                  key={category}
+                  sx={{
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {category}
                   </Typography>
-                )}
-                {categories.map((category) => (
-                  <Box
-                    key={category}
-                    sx={{
-                      mb: 1,
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      {category}
-                    </Typography>
-                    {typeRoots
-                      .filter((r) => skillOf(r).category === category)
-                      .map((owned) => (
-                        <SkillNode
-                          key={owned.id}
-                          owned={owned}
-                          byId={byId}
-                          childrenOf={childrenOf}
-                          ownedIds={ownedIds}
-                          editable={canEdit}
-                          isLocked={skillLocked}
-                          isAdmin={isAdmin}
-                          depth={0}
-                          onUpdate={onUpdate}
-                          onDelete={onDelete}
-                        />
-                      ))}
-                  </Box>
-                ))}
-                {canEdit && (
-                  <AddSkill
-                    type={type}
-                    skills={catalog.skills.filter((s) => s.type === type)}
-                    byId={byId}
-                    ownedIds={ownedIds}
-                    onAdd={(skill) =>
-                      createItem('skills', { skillId: skill.id })
-                    }
-                  />
-                )}
-              </Grid>
-            );
-          })}
-        </Grid>
-      </CardContent>
-    </Card>
+                  {typeRoots
+                    .filter((r) => skillOf(r).category === category)
+                    .map((owned) => (
+                      <SkillNode
+                        key={owned.id}
+                        owned={owned}
+                        byId={byId}
+                        childrenOf={childrenOf}
+                        ownedIds={ownedIds}
+                        editable={canEdit}
+                        isLocked={skillLocked}
+                        isAdmin={isAdmin}
+                        depth={0}
+                        onUpdate={onUpdate}
+                        onDelete={onDelete}
+                      />
+                    ))}
+                </Box>
+              ))}
+              {canEdit && (
+                <AddSkill
+                  type={type}
+                  skills={catalog.skills.filter((s) => s.type === type)}
+                  byId={byId}
+                  ownedIds={ownedIds}
+                  onAdd={(skill) => createItem('skills', { skillId: skill.id })}
+                />
+              )}
+            </Grid>
+          );
+        })}
+      </Grid>
+    </SectionCard>
   );
 };
 

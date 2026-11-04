@@ -1,7 +1,6 @@
 import BackButton from '@/components/atoms/back-button';
 import HeaderSlot from '@/components/atoms/header-slot';
 import SWRFallback from '@/components/atoms/swr-fallback';
-import TeamAddButton from '@/components/molecules/team-add-button';
 import TeamsList from '@/components/organisms/teams-list';
 import { asJson, listTeams } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
@@ -30,7 +29,6 @@ const Page = async () => {
           Tables de jeu
         </Typography>
         <TeamsList />
-        <TeamAddButton />
       </SWRFallback>
     </Suspense>
   );

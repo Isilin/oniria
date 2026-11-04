@@ -164,8 +164,9 @@ const SheetContent = ({ id }: { id: string }) => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: 4,
             width: '100%',
+            pt: 2,
           }}
         >
           <SchemesCard id={id} />

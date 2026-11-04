@@ -1,30 +1,33 @@
 'use client';
 
 import { useTeams } from '@/lib/hooks/use-team';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
+import TeamAddButton from '../molecules/team-add-button';
 import TeamListElement from '../molecules/team-list-element';
 
+/**
+ * Les tables, rangées comme les fiches de l'accueil : des cartes alignées à
+ * gauche, et la carte en pointillés pour en créer une à la suite.
+ */
 const TeamsList = () => {
   const { teams, isLoading } = useTeams();
 
   if (isLoading && !teams) return <CircularProgress />;
-  if (!teams?.length)
-    return <Typography color="textSecondary">Aucune table de jeu.</Typography>;
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        justifyContent: 'center',
-      }}
-    >
-      {teams.map((team) => (
-        <TeamListElement team={team} key={team.id} />
-      ))}
-    </Grid>
+    <Container>
+      {!teams?.length && (
+        <Typography color="textSecondary" sx={{ mb: 2 }}>
+          Aucune table de jeu.
+        </Typography>
+      )}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        {teams?.map((team) => (
+          <TeamListElement team={team} key={team.id} />
+        ))}
+        <TeamAddButton />
+      </Box>
+    </Container>
   );
 };
 
