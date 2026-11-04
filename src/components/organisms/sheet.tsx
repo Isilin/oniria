@@ -32,20 +32,30 @@ const TABS = [
 ];
 const NOTES_TAB = 4;
 
-const Sheet = ({ id }: { id: string }) => {
+// Les points en attente sont propres à cette fiche, et gardés au-dessus de
+// tout état de chargement : relire la fiche ne doit pas les effacer.
+const Sheet = ({ id }: { id: string }) => (
+  <PointsDraftProvider key={id}>
+    <SheetContent id={id} />
+  </PointsDraftProvider>
+);
+
+const SheetContent = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
   const { sheet, isLoading, error, canEdit } = useSheet(id);
 
-  if (isLoading) return <CircularProgress />;
-  if (error || !sheet)
+  // La fiche déjà affichée reste en place pendant qu'on la relit (retour sur
+  // l'onglet après Discord, par exemple) : pas de clignotement.
+  if (!sheet) {
+    if (isLoading) return <CircularProgress />;
     return (
       <Alert severity="error">{error?.message ?? 'Fiche introuvable.'}</Alert>
     );
+  }
 
   return (
-    // Les points en attente sont propres à cette fiche.
-    <PointsDraftProvider key={id}>
+    <>
       <CharacterPlate id={id} />
       <EphemerisBand id={id} />
       <Tabs
@@ -159,7 +169,7 @@ const Sheet = ({ id }: { id: string }) => {
         </Box>
       </TabContent>
       {canEdit && <PointsBar id={id} />}
-    </PointsDraftProvider>
+    </>
   );
 };
 

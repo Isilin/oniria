@@ -47,7 +47,9 @@ Première version complète des fiches de personnages d'Oniria.
   « + » ajoute un point, « − n + » montre les points en attente, puis on
   valide ou on annule. Le reste de la fiche (facultés, existences, Maï, XP…)
   se met à jour en aperçu. Plusieurs caractères s'achètent ensemble, avec une
-  répartition par partie, seulement si l'XP suffit.
+  répartition par partie, seulement si l'XP suffit. Les « − + » des
+  caractères reprennent le cadre de ceux des lunes, et les valeurs restent
+  alignées en colonne ; les points en attente s'affichent devant la valeur.
 - Node.js 26, Next.js 16, React 19, MUI 9, Prisma 7, Auth.js v5 (bêta 32).
 - Fiches en lecture seule pour les autres joueur·euses ; édition réservée à
   la·au propriétaire et aux MJ.
@@ -77,6 +79,12 @@ Première version complète des fiches de personnages d'Oniria.
   cliquer aussitôt sur « Ajouter »).
 - Corriger une adresse de la whitelist ne faisait rien (la route `PATCH`
   n'existait pas) ; un ajout refusé par le serveur s'affichait comme réussi.
+- Revenir sur l'onglet de la fiche (après Discord, par exemple) effaçait les
+  points en attente et faisait clignoter la page ; les fiches, tables et la
+  whitelist restent désormais affichées pendant qu'elles sont relues.
+- Thème Nuit : contour de focus, sélection de texte et barre de défilement
+  prenaient les couleurs du thème Jour (or trop sombre, défilement
+  invisible), comme les rayures de la barre d'XP.
 
 ### Sécurité
 

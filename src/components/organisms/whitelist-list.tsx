@@ -7,7 +7,7 @@ import WhitelistElement from '../molecules/whitelist-element';
 const WhitelistList = () => {
   const { whitelist, isLoading } = useWhitelist();
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading && !whitelist) return <CircularProgress />;
 
   if (!whitelist?.length) {
     return (

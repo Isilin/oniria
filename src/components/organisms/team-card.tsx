@@ -144,8 +144,8 @@ const TeamCard = ({ id }: { id: string }) => {
   const [grantOpen, setGrantOpen] = useState(false);
   const [recipients, setRecipients] = useState<string[] | null>(null);
 
-  if (isLoading) return <CircularProgress />;
-  if (error || !team)
+  if (isLoading && !team) return <CircularProgress />;
+  if (!team)
     return (
       <Alert severity="error">{error?.message ?? 'Table introuvable.'}</Alert>
     );

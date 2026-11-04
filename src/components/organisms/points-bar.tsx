@@ -5,7 +5,6 @@ import { CHARACTERISTIC_BY_KEY } from '@/lib/rules';
 import { SCOPE_BY_KEY, Scope } from '@/lib/rules/xp';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
@@ -44,10 +43,11 @@ const PointsBar = ({ id }: { id: string }) => {
   };
 
   return (
-    <Paper
+    // Une surface relevée cernée d'un filet, sans ombre : comme la bande
+    // d'éphéméride, collée cette fois en bas de l'écran.
+    <Box
       role="region"
       aria-label="Points en attente"
-      elevation={8}
       sx={{
         position: 'sticky',
         bottom: 16,
@@ -59,7 +59,9 @@ const PointsBar = ({ id }: { id: string }) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 1.5,
+        bgcolor: 'raised',
         border: 1,
+        borderRadius: 1,
         borderColor: missing ? 'error.main' : 'success.main',
       }}
     >
@@ -92,7 +94,7 @@ const PointsBar = ({ id }: { id: string }) => {
           Valider
         </Button>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 

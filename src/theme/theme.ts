@@ -203,17 +203,19 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
     },
     components: {
       MuiCssBaseline: {
+        // Variables CSS, et non theme.palette : sinon la nuit hérite des
+        // valeurs du jour (or bruni, encre), illisibles sur fond sombre.
         styleOverrides: (theme) => ({
           body: { fontVariantNumeric: 'lining-nums tabular-nums' },
           '::selection': {
-            background: alpha(theme.palette.primary.main, 0.32),
+            background: `color-mix(in srgb, ${theme.vars.palette.primary.main} 32%, transparent)`,
           },
           ':focus-visible': {
-            outline: `2px solid ${theme.palette.primary.main}`,
+            outline: `2px solid ${theme.vars.palette.primary.main}`,
             outlineOffset: 2,
           },
           '*': {
-            scrollbarColor: `${alpha(theme.palette.text.primary, 0.24)} transparent`,
+            scrollbarColor: `color-mix(in srgb, ${theme.vars.palette.text.primary} 24%, transparent) transparent`,
           },
           a: { textUnderlineOffset: '0.2em' },
         }),

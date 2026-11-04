@@ -14,7 +14,7 @@ import SheetCard from '../molecules/sheet-card';
 const ListSheets = () => {
   const { sheets, isLoading } = useSheets();
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading && !sheets) return <CircularProgress />;
 
   return (
     <Container>

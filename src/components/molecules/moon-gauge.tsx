@@ -4,6 +4,10 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import PreviewValue from '../atoms/preview-value';
+import StepperFrame, {
+  stepperCell,
+  stepperIconSize,
+} from '../atoms/stepper-frame';
 
 /** Mélange compatible avec les variables CSS du thème (nuit / jour). */
 const mix = (color: string, percent: number) =>
@@ -62,49 +66,26 @@ const Stepper = ({
 }: {
   label: string;
   onStep: (delta: number) => void;
-}) => {
-  const half = {
-    width: 34,
-    height: 32,
-    color: 'text.secondary',
-    transition: 'color 120ms ease-out, background-color 120ms ease-out',
-    '&:hover, &.Mui-focusVisible': {
-      color: 'primary.main',
-      bgcolor:
-        'color-mix(in srgb, var(--mui-palette-primary-main) 10%, transparent)',
-    },
-  };
-  return (
-    <Box
-      sx={{
-        gridArea: 'step',
-        display: 'inline-flex',
-        alignSelf: 'center',
-        justifySelf: 'start',
-        border: 1,
-        borderColor: 'rule',
-        borderRadius: 1,
-        overflow: 'hidden',
-      }}
+}) => (
+  <StepperFrame
+    sx={{ gridArea: 'step', alignSelf: 'center', justifySelf: 'start' }}
+  >
+    <ButtonBase
+      aria-label={`Retirer un point : ${label}`}
+      onClick={() => onStep(-1)}
+      sx={stepperCell('md')}
     >
-      <ButtonBase
-        aria-label={`Retirer un point : ${label}`}
-        onClick={() => onStep(-1)}
-        sx={half}
-      >
-        <RemoveIcon sx={{ fontSize: 18 }} />
-      </ButtonBase>
-      <Box sx={{ width: '1px', bgcolor: 'rule' }} />
-      <ButtonBase
-        aria-label={`Ajouter un point : ${label}`}
-        onClick={() => onStep(1)}
-        sx={half}
-      >
-        <AddIcon sx={{ fontSize: 18 }} />
-      </ButtonBase>
-    </Box>
-  );
-};
+      <RemoveIcon sx={{ fontSize: stepperIconSize('md') }} />
+    </ButtonBase>
+    <ButtonBase
+      aria-label={`Ajouter un point : ${label}`}
+      onClick={() => onStep(1)}
+      sx={stepperCell('md')}
+    >
+      <AddIcon sx={{ fontSize: stepperIconSize('md') }} />
+    </ButtonBase>
+  </StepperFrame>
+);
 
 /**
  * Une Existence comme une phase de lune : le disque s'éclaire selon la

@@ -23,7 +23,9 @@ const PreviewValue = ({ children, before, delta }: Props) => {
         tabIndex={0}
         sx={{
           color: delta > 0 ? 'success.main' : 'warning.main',
-          fontWeight: 'bold',
+          // 600 : le demi-gras chargé de Spectral (pas de gras synthétique) ;
+          // Alegreya Sans prend son 700.
+          fontWeight: 600,
           cursor: 'help',
         }}
       >

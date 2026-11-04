@@ -1,7 +1,15 @@
 'use client';
 
 import { Box, Tooltip, Typography } from '@mui/material';
-import { alpha, SxProps, Theme } from '@mui/material/styles';
+import { SxProps, Theme } from '@mui/material/styles';
+
+/** Variables CSS du thème : la couleur suit la nuit et le jour. */
+const PRIMARY = 'var(--mui-palette-primary-main)';
+const SUCCESS = 'var(--mui-palette-success-main)';
+const mix = (color: string, percent: number) =>
+  `color-mix(in srgb, ${color} ${percent}%, transparent)`;
+const stripes = (color: string) =>
+  `repeating-linear-gradient(45deg, ${color} 0 5px, ${mix(color, 40)} 5px 10px)`;
 
 /** Apparence des parties de la barre, partagée avec la légende. */
 export const XP_BAR_PARTS = {
@@ -11,24 +19,20 @@ export const XP_BAR_PARTS = {
   },
   pending: {
     label: 'À payer à la validation',
-    sx: (theme: Theme) => ({
-      backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.primary.main} 0 5px, ${alpha(theme.palette.primary.main, 0.4)} 5px 10px)`,
-    }),
+    sx: { backgroundImage: stripes(PRIMARY) },
   },
   draft: {
     label: 'Points en attente',
-    sx: (theme: Theme) => ({
-      backgroundImage: `repeating-linear-gradient(45deg, ${theme.palette.success.main} 0 5px, ${alpha(theme.palette.success.main, 0.4)} 5px 10px)`,
-    }),
+    sx: { backgroundImage: stripes(SUCCESS) },
   },
   left: {
     label: 'Restante',
     // Contour net plutôt qu'aplat pâle : la part restante reste lisible
     // de nuit comme de jour, sans se confondre avec la part dépensée.
-    sx: (theme: Theme) => ({
-      bgcolor: alpha(theme.palette.primary.main, 0.14),
-      boxShadow: `inset 0 0 0 1.5px ${theme.vars?.palette.primary.main ?? theme.palette.primary.main}`,
-    }),
+    sx: {
+      bgcolor: mix(PRIMARY, 14),
+      boxShadow: `inset 0 0 0 1.5px ${PRIMARY}`,
+    },
   },
   negative: {
     label: 'Solde négatif',

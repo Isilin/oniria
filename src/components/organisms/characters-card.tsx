@@ -7,7 +7,7 @@ import { Box, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PreviewValue from '../atoms/preview-value';
 import ScopeLock from '../atoms/scope-lock';
-import PointStepper from '../molecules/point-stepper';
+import PointStepper, { PendingPoints } from '../molecules/point-stepper';
 import SectionCard from '../molecules/section-card';
 import StatRow from '../molecules/stat-row';
 
@@ -111,6 +111,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                       ) : undefined
                     }
                   >
+                    {canEdit && <PendingPoints points={pending} />}
                     <Typography variant="numeral" sx={{ fontSize: '1.375rem' }}>
                       <PreviewValue before={base.values[c.key]} delta={pending}>
                         {value}
