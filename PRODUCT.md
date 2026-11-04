@@ -89,6 +89,7 @@ The app isn't a generic sheet builder or a public product. It implements Oniria 
 **Personalisation**
 
 - Each character has a moon tint chosen by its owner or the MJ, from eight tints made for Oniria (field `tint`). The tint gets stronger as the Devenir rises: the base scale runs from 0 to 100, and a Devenir above 100 marks the character's transcendance.
+- The sheet tells apart what the player writes (handwritten, blue ink) and what the rules compute (typed). Both themes are the same paper: Jour, and Nuit lit by a candle.
 - Each account keeps its own display settings: theme (Nuit, Jour, Système), density (confort or compacte) and collapsed sections of the sheet (field `preferences`, route `/api/me/preferences`). They follow the player from one device to another.
 
 **Permissions**

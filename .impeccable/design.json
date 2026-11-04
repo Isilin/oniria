@@ -1,915 +1,738 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T19:14:24Z",
+  "generatedAt": "2026-11-04T20:49:09Z",
   "title": "Design System: Oniria",
   "extensions": {
     "colorMeta": {
-      "encre-de-nuit": {
+      "table-jour": {
         "role": "neutral",
-        "displayName": "Encre de nuit",
-        "canonical": "#11131c",
-        "oklch": "oklch(18.9% 0.019 274.8)",
-        "scheme": "nuit",
+        "displayName": "Table jour",
+        "canonical": "#e4dcc8",
+        "scheme": "jour",
         "tonalRamp": [
-          "#0a0b0e",
-          "#23252a",
-          "#40424a",
-          "#5e616b",
-          "#7f828d",
-          "#a2a5ae",
-          "#c7c9d0",
-          "#edeef4"
+          "#2e2c28",
+          "#5b5850",
+          "#898478",
+          "#b6b0a0",
+          "#e4dcc8",
+          "#ece7d9",
+          "#f3efe6",
+          "#faf8f4"
         ]
       },
-      "nuit-voilee": {
+      "papier-jour": {
         "role": "neutral",
-        "displayName": "Nuit voilée",
-        "canonical": "#161925",
-        "oklch": "oklch(21.6% 0.024 273.4)",
-        "scheme": "nuit",
+        "displayName": "Papier jour",
+        "canonical": "#efe6cf",
+        "scheme": "jour",
         "tonalRamp": [
-          "#0a0b0f",
-          "#23252c",
-          "#3f424c",
-          "#5d616e",
-          "#7e8290",
-          "#a1a5b1",
-          "#c6c9d3",
-          "#eceef5"
+          "#302e29",
+          "#605c53",
+          "#8f8a7c",
+          "#bfb8a6",
+          "#efe6cf",
+          "#f4eedd",
+          "#f8f4e9",
+          "#fcfaf5"
         ]
       },
-      "nuit-relevee": {
+      "papier-releve-jour": {
         "role": "neutral",
-        "displayName": "Nuit relevée",
-        "canonical": "#1d2130",
-        "oklch": "oklch(25.1% 0.029 272.6)",
-        "scheme": "nuit",
+        "displayName": "Papier relevé jour",
+        "canonical": "#f6efdc",
+        "scheme": "jour",
         "tonalRamp": [
-          "#090b10",
-          "#22252e",
-          "#3e414e",
-          "#5c6171",
-          "#7d8293",
-          "#a0a4b3",
-          "#c5c9d5",
-          "#ebeef7"
+          "#31302c",
+          "#626058",
+          "#948f84",
+          "#c5bfb0",
+          "#f6efdc",
+          "#f9f4e7",
+          "#fbf8ef",
+          "#fdfcf8"
         ]
       },
-      "os": {
+      "encre-imprimee-jour": {
         "role": "neutral",
-        "displayName": "Os",
-        "canonical": "#e8e2d3",
-        "oklch": "oklch(91.3% 0.021 88.7)",
-        "scheme": "nuit",
+        "displayName": "Encre imprimée jour",
+        "canonical": "#3b3328",
+        "scheme": "jour",
         "tonalRamp": [
-          "#0d0b07",
-          "#27251e",
-          "#454239",
-          "#666155",
-          "#878275",
-          "#a9a59a",
-          "#ccc9c0",
-          "#f1eee8"
+          "#0c0a08",
+          "#181410",
+          "#231f18",
+          "#2f2920",
+          "#3b3328",
+          "#767069",
+          "#a7a39e",
+          "#d8d6d4"
         ]
       },
-      "argent": {
+      "encre-pale-jour": {
         "role": "neutral",
-        "displayName": "Argent",
-        "canonical": "#a9b1c2",
-        "oklch": "oklch(75.9% 0.026 265.5)",
-        "scheme": "nuit",
+        "displayName": "Encre pâle jour",
+        "canonical": "#665c4b",
+        "scheme": "jour",
         "tonalRamp": [
-          "#090b10",
-          "#21252d",
-          "#3d424d",
-          "#5b616f",
-          "#7b8291",
-          "#9fa5b2",
-          "#c4c9d3",
-          "#ebeef6"
+          "#14120f",
+          "#29251e",
+          "#3d372d",
+          "#524a3c",
+          "#665c4b",
+          "#948d81",
+          "#bab6ae",
+          "#e0dedb"
         ]
       },
-      "filet-nuit": {
-        "role": "neutral",
-        "displayName": "Filet de nuit",
-        "canonical": "rgba(232, 226, 211, 0.12)",
-        "oklch": "oklch(91.3% 0.021 88.7)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#0d0b07",
-          "#27251e",
-          "#454239",
-          "#666155",
-          "#878275",
-          "#a9a59a",
-          "#ccc9c0",
-          "#f1eee8"
-        ]
-      },
-      "or-de-lampe": {
+      "encre-bleue-jour": {
         "role": "primary",
-        "displayName": "Or de lampe",
-        "canonical": "#d9a441",
-        "oklch": "oklch(75.1% 0.130 79.8)",
-        "scheme": "nuit",
+        "displayName": "Encre bleue jour",
+        "canonical": "#23336b",
+        "scheme": "jour",
         "tonalRamp": [
-          "#170700",
-          "#381f00",
-          "#5c3a00",
-          "#845700",
-          "#a77918",
-          "#c59e5b",
-          "#e3c491",
-          "#ffebc6"
+          "#070a15",
+          "#0e142b",
+          "#151f40",
+          "#1c2956",
+          "#23336b",
+          "#657097",
+          "#9ca3bc",
+          "#d3d6e1"
         ]
       },
-      "meche": {
-        "role": "primary",
-        "displayName": "Mèche",
-        "canonical": "#1a1406",
-        "oklch": "oklch(19.4% 0.027 87.4)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#0d0b06",
-          "#28251c",
-          "#474236",
-          "#676151",
-          "#898272",
-          "#aaa597",
-          "#cdc9be",
-          "#f2eee6"
-        ]
-      },
-      "lilas": {
+      "sanguine-jour": {
         "role": "secondary",
-        "displayName": "Lilas",
-        "canonical": "#b49ad9",
-        "oklch": "oklch(73.2% 0.094 303.1)",
-        "scheme": "nuit",
+        "displayName": "Sanguine jour",
+        "canonical": "#9a4a2a",
+        "scheme": "jour",
         "tonalRamp": [
-          "#0f0718",
-          "#2a1e3b",
-          "#4a3861",
-          "#6b5589",
-          "#8d76ad",
-          "#ae9bca",
-          "#d0c1e7",
-          "#f4e9ff"
+          "#1f0f08",
+          "#3e1e11",
+          "#5c2c19",
+          "#7b3b22",
+          "#9a4a2a",
+          "#b8806a",
+          "#d2ae9f",
+          "#ebdbd4"
         ]
       },
-      "braise": {
-        "role": "error",
-        "displayName": "Braise",
-        "canonical": "#e06a5a",
-        "oklch": "oklch(66.3% 0.151 29.5)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#1f0000",
-          "#470d08",
-          "#72231b",
-          "#a13b2f",
-          "#c75e4f",
-          "#e3897b",
-          "#fdb4a8",
-          "#ffe0d6"
-        ]
+      "ligne-guide-jour": {
+        "role": "neutral",
+        "displayName": "Ligne-guide jour",
+        "canonical": "rgba(62, 79, 140, 0.12)",
+        "scheme": "jour"
       },
-      "cuivre": {
-        "role": "warning",
-        "displayName": "Cuivre",
-        "canonical": "#e8894a",
-        "oklch": "oklch(72.0% 0.140 52.2)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#1d0200",
-          "#421500",
-          "#6b2d00",
-          "#984700",
-          "#bd6930",
-          "#d99266",
-          "#f5bb98",
-          "#ffe4cb"
-        ]
+      "marge-jour": {
+        "role": "neutral",
+        "displayName": "Marge jour",
+        "canonical": "rgba(178, 70, 52, 0.32)",
+        "scheme": "jour"
       },
-      "bleu-de-veille": {
-        "role": "info",
-        "displayName": "Bleu de veille",
-        "canonical": "#8fb3d9",
-        "oklch": "oklch(75.4% 0.068 250.1)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#030c17",
-          "#162638",
-          "#2d445c",
-          "#466483",
-          "#6686a7",
-          "#8ea8c4",
-          "#b6cce3",
-          "#e1f0ff"
-        ]
-      },
-      "sauge": {
+      "succes-jour": {
         "role": "success",
-        "displayName": "Sauge",
-        "canonical": "#7fb38a",
-        "oklch": "oklch(71.9% 0.081 150.5)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#020f05",
-          "#122b19",
-          "#284b31",
-          "#406d4b",
-          "#618f6b",
-          "#8ab092",
-          "#b4d2ba",
-          "#dff5e3"
-        ]
-      },
-      "papier-os": {
-        "role": "neutral",
-        "displayName": "Papier os",
-        "canonical": "#f4efe3",
-        "oklch": "oklch(95.3% 0.017 88.0)",
+        "displayName": "Succès jour",
+        "canonical": "#2f6640",
         "scheme": "jour",
         "tonalRamp": [
-          "#0c0b08",
-          "#272520",
-          "#45423b",
-          "#656157",
-          "#868278",
-          "#a8a59c",
-          "#ccc9c2",
-          "#f0eee9"
+          "#09140d",
+          "#13291a",
+          "#1c3d26",
+          "#265233",
+          "#2f6640",
+          "#6d9479",
+          "#a1baa9",
+          "#d5e0d9"
         ]
       },
-      "papier": {
-        "role": "neutral",
-        "displayName": "Papier",
-        "canonical": "#faf7ef",
-        "oklch": "oklch(97.6% 0.011 89.7)",
+      "avertissement-jour": {
+        "role": "warning",
+        "displayName": "Avertissement jour",
+        "canonical": "#924716",
         "scheme": "jour",
         "tonalRamp": [
-          "#0c0b09",
-          "#262522",
-          "#44423d",
-          "#63615b",
-          "#85827c",
-          "#a7a59f",
-          "#cbc9c4",
-          "#f0eeeb"
+          "#1d0e04",
+          "#3a1c09",
+          "#582b0d",
+          "#753912",
+          "#924716",
+          "#b37e5c",
+          "#ceac96",
+          "#e9dad0"
         ]
       },
-      "velin": {
-        "role": "neutral",
-        "displayName": "Vélin",
-        "canonical": "#fffdf7",
-        "oklch": "oklch(99.4% 0.008 91.5)",
+      "erreur-jour": {
+        "role": "error",
+        "displayName": "Erreur jour",
+        "canonical": "#a63a2a",
         "scheme": "jour",
         "tonalRamp": [
-          "#0c0b0a",
-          "#262522",
-          "#43423e",
-          "#63615c",
-          "#84827d",
-          "#a6a5a1",
-          "#cac9c6",
-          "#efeeec"
+          "#210c08",
+          "#421711",
+          "#642319",
+          "#852e22",
+          "#a63a2a",
+          "#c1756a",
+          "#d7a69f",
+          "#edd8d4"
         ]
       },
-      "encre": {
-        "role": "neutral",
-        "displayName": "Encre",
-        "canonical": "#1d1f2b",
-        "oklch": "oklch(24.3% 0.023 277.2)",
+      "info-jour": {
+        "role": "info",
+        "displayName": "Info jour",
+        "canonical": "#355d8a",
         "scheme": "jour",
         "tonalRamp": [
-          "#0a0b0f",
-          "#23252c",
-          "#3f414b",
-          "#5e606e",
-          "#7f818f",
-          "#a2a4b0",
-          "#c7c8d2",
-          "#edeef5"
+          "#0b131c",
+          "#152537",
+          "#203853",
+          "#2a4a6e",
+          "#355d8a",
+          "#728ead",
+          "#a4b6ca",
+          "#d7dfe8"
         ]
       },
-      "ardoise": {
+      "table-bougie": {
         "role": "neutral",
-        "displayName": "Ardoise",
-        "canonical": "#555b6b",
-        "oklch": "oklch(47.2% 0.027 269.1)",
-        "scheme": "jour",
+        "displayName": "Table bougie",
+        "canonical": "#0d0906",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#090b10",
-          "#22252d",
-          "#3d424d",
-          "#5b6170",
-          "#7c8292",
-          "#a0a5b2",
-          "#c5c9d4",
-          "#ebeef6"
+          "#030201",
+          "#050402",
+          "#080504",
+          "#0a0705",
+          "#0d0906",
+          "#565351",
+          "#92908f",
+          "#cfcecd"
         ]
       },
-      "filet-jour": {
+      "papier-bougie": {
         "role": "neutral",
-        "displayName": "Filet du jour",
-        "canonical": "rgba(29, 31, 43, 0.14)",
-        "oklch": "oklch(24.3% 0.023 277.2)",
-        "scheme": "jour",
+        "displayName": "Papier bougie",
+        "canonical": "#cfbc96",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#0a0b0f",
-          "#23252c",
-          "#3f414b",
-          "#5e606e",
-          "#7f818f",
-          "#a2a4b0",
-          "#c7c8d2",
-          "#edeef5"
+          "#29261e",
+          "#534b3c",
+          "#7c715a",
+          "#a69678",
+          "#cfbc96",
+          "#ddd0b6",
+          "#e9e1d0",
+          "#f5f2ea"
         ]
       },
-      "or-bruni": {
+      "papier-releve-bougie": {
+        "role": "neutral",
+        "displayName": "Papier relevé bougie",
+        "canonical": "#d9c8a3",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#2b2821",
+          "#575041",
+          "#827862",
+          "#aea082",
+          "#d9c8a3",
+          "#e4d9bf",
+          "#eee6d6",
+          "#f7f4ed"
+        ]
+      },
+      "encre-imprimee-bougie": {
+        "role": "neutral",
+        "displayName": "Encre imprimée bougie",
+        "canonical": "#3a2a1a",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#0c0805",
+          "#17110a",
+          "#231910",
+          "#2e2215",
+          "#3a2a1a",
+          "#756a5f",
+          "#a69f98",
+          "#d8d4d1"
+        ]
+      },
+      "encre-pale-bougie": {
+        "role": "neutral",
+        "displayName": "Encre pâle bougie",
+        "canonical": "#4a3824",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#0f0b07",
+          "#1e160e",
+          "#2c2216",
+          "#3b2d1d",
+          "#4a3824",
+          "#807466",
+          "#aea59c",
+          "#dbd7d3"
+        ]
+      },
+      "encre-bleue-bougie": {
         "role": "primary",
-        "displayName": "Or bruni",
-        "canonical": "#8a5a12",
-        "oklch": "oklch(50.9% 0.103 70.8)",
-        "scheme": "jour",
+        "displayName": "Encre bleue bougie",
+        "canonical": "#22305a",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#160700",
-          "#371f00",
-          "#5b3a07",
-          "#825719",
-          "#a6783e",
-          "#c49d6f",
-          "#e3c39f",
-          "#ffead0"
+          "#070a12",
+          "#0e1324",
+          "#141d36",
+          "#1b2648",
+          "#22305a",
+          "#646e8c",
+          "#9ca2b5",
+          "#d3d6de"
         ]
       },
-      "violet-encre": {
+      "sanguine-bougie": {
         "role": "secondary",
-        "displayName": "Violet d'encre",
-        "canonical": "#6a4fa3",
-        "oklch": "oklch(49.6% 0.131 296.1)",
-        "scheme": "jour",
+        "displayName": "Sanguine bougie",
+        "canonical": "#77321a",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#0e051f",
-          "#291b45",
-          "#473570",
-          "#68509d",
-          "#8972c2",
-          "#aa98dc",
-          "#cdc0f6",
-          "#f1e8ff"
+          "#180a05",
+          "#30140a",
+          "#471e10",
+          "#5f2815",
+          "#77321a",
+          "#a0705f",
+          "#c2a398",
+          "#e4d6d1"
         ]
       },
-      "vermillon": {
-        "role": "error",
-        "displayName": "Vermillon",
-        "canonical": "#b23a2a",
-        "oklch": "oklch(52.0% 0.159 30.7)",
-        "scheme": "jour",
-        "tonalRamp": [
-          "#200000",
-          "#480b05",
-          "#742116",
-          "#a43829",
-          "#ca5b4a",
-          "#e68777",
-          "#ffb3a5",
-          "#ffdfd4"
-        ]
+      "ligne-guide-bougie": {
+        "role": "neutral",
+        "displayName": "Ligne-guide bougie",
+        "canonical": "rgba(90, 52, 20, 0.13)",
+        "scheme": "bougie"
       },
-      "rouille": {
-        "role": "warning",
-        "displayName": "Rouille",
-        "canonical": "#b0561c",
-        "oklch": "oklch(55.5% 0.135 48.7)",
-        "scheme": "jour",
-        "tonalRamp": [
-          "#1c0200",
-          "#421500",
-          "#6b2d01",
-          "#974711",
-          "#bd6939",
-          "#d9916b",
-          "#f5ba9c",
-          "#ffe4ce"
-        ]
+      "marge-bougie": {
+        "role": "neutral",
+        "displayName": "Marge bougie",
+        "canonical": "rgba(150, 60, 30, 0.34)",
+        "scheme": "bougie"
       },
-      "bleu-ardoise": {
-        "role": "info",
-        "displayName": "Bleu ardoise",
-        "canonical": "#3d6a99",
-        "oklch": "oklch(51.3% 0.090 250.9)",
-        "scheme": "jour",
-        "tonalRamp": [
-          "#010c1a",
-          "#0f263e",
-          "#254465",
-          "#3b648f",
-          "#5c86b2",
-          "#86a9cf",
-          "#b0cceb",
-          "#dcf1ff"
-        ]
-      },
-      "mousse": {
+      "succes-bougie": {
         "role": "success",
-        "displayName": "Mousse",
-        "canonical": "#3f7a4f",
-        "oklch": "oklch(52.7% 0.092 151.0)",
-        "scheme": "jour",
+        "displayName": "Succès bougie",
+        "canonical": "#22542f",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#010f04",
-          "#0e2c17",
-          "#234c2f",
-          "#3a6f48",
-          "#5b9168",
-          "#86b28f",
-          "#b1d4b8",
-          "#ddf6e2"
+          "#071109",
+          "#0e2213",
+          "#14321c",
+          "#1b4326",
+          "#22542f",
+          "#64876d",
+          "#9cb2a1",
+          "#d3ddd5"
         ]
       },
-      "sante-nuit": {
-        "role": "tertiary",
-        "displayName": "Santé (nuit)",
-        "canonical": "#d97a6c",
-        "oklch": "oklch(68.1% 0.121 29.4)",
-        "scheme": "nuit",
+      "avertissement-bougie": {
+        "role": "warning",
+        "displayName": "Avertissement bougie",
+        "canonical": "#78380e",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#1c0201",
-          "#41150f",
-          "#6a2c24",
-          "#96453a",
-          "#bb675a",
-          "#d88f84",
-          "#f4b9af",
-          "#ffe3db"
+          "#180b03",
+          "#301606",
+          "#482208",
+          "#602d0b",
+          "#78380e",
+          "#a17456",
+          "#c2a593",
+          "#e4d7cf"
         ]
       },
-      "equilibre-nuit": {
-        "role": "tertiary",
-        "displayName": "Équilibre (nuit)",
-        "canonical": "#8fb3d9",
-        "oklch": "oklch(75.4% 0.068 250.1)",
-        "scheme": "nuit",
+      "erreur-bougie": {
+        "role": "error",
+        "displayName": "Erreur bougie",
+        "canonical": "#842a1c",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#030c17",
-          "#162638",
-          "#2d445c",
-          "#466483",
-          "#6686a7",
-          "#8ea8c4",
-          "#b6cce3",
-          "#e1f0ff"
+          "#1a0806",
+          "#35110b",
+          "#4f1911",
+          "#6a2216",
+          "#842a1c",
+          "#a96a60",
+          "#c89f99",
+          "#e6d4d2"
         ]
       },
-      "eclat-nuit": {
-        "role": "tertiary",
-        "displayName": "Éclat (nuit)",
-        "canonical": "#e9cf7a",
-        "oklch": "oklch(85.8% 0.109 92.9)",
-        "scheme": "nuit",
+      "info-bougie": {
+        "role": "info",
+        "displayName": "Info bougie",
+        "canonical": "#254a73",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#120a00",
-          "#302300",
-          "#514000",
-          "#755f03",
-          "#978133",
-          "#b7a468",
-          "#d7c99a",
-          "#f9eecd"
+          "#070f17",
+          "#0f1e2e",
+          "#162c45",
+          "#1e3b5c",
+          "#254a73",
+          "#66809d",
+          "#9daec0",
+          "#d3dbe3"
         ]
       },
-      "mai-nuit": {
-        "role": "tertiary",
-        "displayName": "Maï (nuit)",
-        "canonical": "#c9b8e8",
-        "oklch": "oklch(81.3% 0.069 301.1)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#0d0815",
-          "#282036",
-          "#473b59",
-          "#675980",
-          "#897aa3",
-          "#aa9ec1",
-          "#cdc4e0",
-          "#f1eaff"
-        ]
+      "lueur-bougie": {
+        "role": "neutral",
+        "displayName": "Lueur bougie",
+        "canonical": "rgba(255, 168, 76, 0.3)",
+        "scheme": "bougie"
       },
       "sante-jour": {
         "role": "tertiary",
-        "displayName": "Santé (jour)",
+        "displayName": "Santé jour",
         "canonical": "#a8432f",
-        "oklch": "oklch(51.6% 0.138 33.0)",
         "scheme": "jour",
         "tonalRamp": [
-          "#1e0100",
-          "#441108",
-          "#6e281a",
-          "#9c412e",
-          "#c2634f",
-          "#de8d7b",
-          "#f9b7a8",
-          "#ffe1d6"
+          "#220d09",
+          "#431b13",
+          "#65281c",
+          "#863626",
+          "#a8432f",
+          "#c27b6d",
+          "#d8aaa1",
+          "#eed9d5"
         ]
       },
       "equilibre-jour": {
         "role": "tertiary",
-        "displayName": "Équilibre (jour)",
+        "displayName": "Équilibre jour",
         "canonical": "#3d6a99",
-        "oklch": "oklch(51.3% 0.090 250.9)",
         "scheme": "jour",
         "tonalRamp": [
-          "#010c1a",
-          "#0f263e",
-          "#254465",
-          "#3b648f",
-          "#5c86b2",
-          "#86a9cf",
-          "#b0cceb",
-          "#dcf1ff"
+          "#0c151f",
+          "#182a3d",
+          "#25405c",
+          "#31557a",
+          "#3d6a99",
+          "#7797b8",
+          "#a8bcd1",
+          "#d8e1eb"
         ]
       },
       "eclat-jour": {
         "role": "tertiary",
-        "displayName": "Éclat (jour)",
-        "canonical": "#8a6a10",
-        "oklch": "oklch(54.2% 0.106 86.5)",
+        "displayName": "Éclat jour",
+        "canonical": "#9a7414",
         "scheme": "jour",
         "tonalRamp": [
-          "#130900",
-          "#322200",
-          "#543e00",
-          "#795d0b",
-          "#9c7e36",
-          "#bba26a",
-          "#dbc79b",
-          "#fcedce"
+          "#1f1704",
+          "#3e2e08",
+          "#5c460c",
+          "#7b5d10",
+          "#9a7414",
+          "#b89e5b",
+          "#d2c095",
+          "#ebe3d0"
         ]
       },
       "mai-jour": {
         "role": "tertiary",
-        "displayName": "Maï (jour)",
+        "displayName": "Maï jour",
         "canonical": "#6a55a0",
-        "oklch": "oklch(50.5% 0.117 294.8)",
         "scheme": "jour",
         "tonalRamp": [
-          "#0d061d",
-          "#281d42",
-          "#46376b",
-          "#665397",
-          "#8775bc",
-          "#a89ad7",
-          "#ccc1f2",
-          "#f0e9ff"
+          "#151120",
+          "#2a2240",
+          "#403360",
+          "#554480",
+          "#6a55a0",
+          "#9788bd",
+          "#bcb3d4",
+          "#e1ddec"
         ]
       },
-      "lune-argent-nuit": {
+      "sante-bougie": {
         "role": "tertiary",
-        "displayName": "Lune d'argent (nuit)",
-        "canonical": "#b9c3d6",
-        "oklch": "oklch(81.5% 0.029 263.4)",
-        "scheme": "nuit",
+        "displayName": "Santé bougie",
+        "canonical": "#9a3a28",
+        "scheme": "bougie",
         "tonalRamp": [
-          "#090b10",
-          "#21252d",
-          "#3c424e",
-          "#596171",
-          "#7a8393",
-          "#9ea5b3",
-          "#c3c9d5",
-          "#eaeff7"
+          "#1f0c08",
+          "#3e1710",
+          "#5c2318",
+          "#7b2e20",
+          "#9a3a28",
+          "#b87569",
+          "#d2a69e",
+          "#ebd8d4"
         ]
       },
-      "lune-argent-jour": {
+      "equilibre-bougie": {
         "role": "tertiary",
-        "displayName": "Lune d'argent (jour)",
+        "displayName": "Équilibre bougie",
+        "canonical": "#2f5a85",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#09121b",
+          "#132435",
+          "#1c3650",
+          "#26486a",
+          "#2f5a85",
+          "#6d8caa",
+          "#a1b5c8",
+          "#d5dee7"
+        ]
+      },
+      "eclat-bougie": {
+        "role": "tertiary",
+        "displayName": "Éclat bougie",
+        "canonical": "#86640c",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#1b1402",
+          "#362805",
+          "#503c07",
+          "#6b500a",
+          "#86640c",
+          "#aa9355",
+          "#c9b992",
+          "#e7e0ce"
+        ]
+      },
+      "mai-bougie": {
+        "role": "tertiary",
+        "displayName": "Maï bougie",
+        "canonical": "#5a4690",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#120e1d",
+          "#241c3a",
+          "#362a56",
+          "#483873",
+          "#5a4690",
+          "#8c7eb1",
+          "#b5accd",
+          "#dedae9"
+        ]
+      },
+      "lune-argent": {
+        "role": "tertiary",
+        "displayName": "Lune argent",
         "canonical": "#5d6b85",
-        "oklch": "oklch(52.6% 0.045 262.7)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#070b13",
-          "#1e2532",
-          "#394254",
-          "#556279",
-          "#75839b",
-          "#9aa6bb",
-          "#c0cadb",
-          "#e8effb"
+          "#13151b",
+          "#252b35",
+          "#384050",
+          "#4a566a",
+          "#5d6b85",
+          "#8e97aa",
+          "#b6bcc8",
+          "#dfe1e7"
         ]
       },
-      "lune-ambre-nuit": {
+      "lune-ambre": {
         "role": "tertiary",
-        "displayName": "Lune d'ambre (nuit)",
-        "canonical": "#e0b25a",
-        "oklch": "oklch(78.8% 0.119 81.8)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#150800",
-          "#362000",
-          "#593c00",
-          "#805900",
-          "#a37b28",
-          "#c1a062",
-          "#e0c596",
-          "#ffecca"
-        ]
-      },
-      "lune-ambre-jour": {
-        "role": "tertiary",
-        "displayName": "Lune d'ambre (jour)",
+        "displayName": "Lune ambre",
         "canonical": "#94640f",
-        "oklch": "oklch(54.1% 0.110 74.5)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#160700",
-          "#371f00",
-          "#5b3a00",
-          "#82570a",
-          "#a67936",
-          "#c49e6a",
-          "#e2c49b",
-          "#ffebcd"
+          "#1e1403",
+          "#3b2806",
+          "#593c09",
+          "#76500c",
+          "#94640f",
+          "#b49357",
+          "#cfb993",
+          "#eae0cf"
         ]
       },
-      "lune-rousse-nuit": {
+      "lune-rousse": {
         "role": "tertiary",
-        "displayName": "Lune rousse (nuit)",
-        "canonical": "#d9825f",
-        "oklch": "oklch(69.2% 0.118 42.4)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#1b0300",
-          "#401705",
-          "#682f17",
-          "#93492b",
-          "#b86b4c",
-          "#d59378",
-          "#f1bba6",
-          "#ffe5d5"
-        ]
-      },
-      "lune-rousse-jour": {
-        "role": "tertiary",
-        "displayName": "Lune rousse (jour)",
+        "displayName": "Lune rousse",
         "canonical": "#a24a28",
-        "oklch": "oklch(51.6% 0.126 40.7)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#1c0300",
-          "#411504",
-          "#6a2d15",
-          "#964728",
-          "#bc684a",
-          "#d89177",
-          "#f4baa5",
-          "#ffe4d4"
+          "#200f08",
+          "#411e10",
+          "#612c18",
+          "#823b20",
+          "#a24a28",
+          "#be8069",
+          "#d5ae9e",
+          "#ecdbd4"
         ]
       },
-      "lune-jade-nuit": {
+      "lune-jade": {
         "role": "tertiary",
-        "displayName": "Lune de jade (nuit)",
-        "canonical": "#78c0a3",
-        "oklch": "oklch(75.2% 0.084 166.7)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#001008",
-          "#052d20",
-          "#194d3b",
-          "#2e6f58",
-          "#519178",
-          "#7eb29c",
-          "#acd4c2",
-          "#d9f7e9"
-        ]
-      },
-      "lune-jade-jour": {
-        "role": "tertiary",
-        "displayName": "Lune de jade (jour)",
+        "displayName": "Lune jade",
         "canonical": "#2e7a5c",
-        "oklch": "oklch(52.4% 0.089 164.1)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#001007",
-          "#042d1e",
-          "#174d38",
-          "#2c7055",
-          "#509275",
-          "#7db39a",
-          "#abd4c0",
-          "#d9f7e8"
+          "#091812",
+          "#123125",
+          "#1c4937",
+          "#25624a",
+          "#2e7a5c",
+          "#6da28d",
+          "#a1c3b6",
+          "#d5e4de"
         ]
       },
-      "lune-azur-nuit": {
+      "lune-azur": {
         "role": "tertiary",
-        "displayName": "Lune d'azur (nuit)",
-        "canonical": "#82aee0",
-        "oklch": "oklch(73.8% 0.087 252.2)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#020c1a",
-          "#11263d",
-          "#274464",
-          "#3e648d",
-          "#5f85b1",
-          "#88a8cd",
-          "#b2ccea",
-          "#def1ff"
-        ]
-      },
-      "lune-azur-jour": {
-        "role": "tertiary",
-        "displayName": "Lune d'azur (jour)",
+        "displayName": "Lune azur",
         "canonical": "#2f6299",
-        "oklch": "oklch(48.8% 0.104 252.3)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#000b1d",
-          "#0c2642",
-          "#20446a",
-          "#366496",
-          "#5785ba",
-          "#81a9d5",
-          "#adccf1",
-          "#daf1ff"
+          "#09141f",
+          "#13273d",
+          "#1c3b5c",
+          "#264e7a",
+          "#2f6299",
+          "#6d91b8",
+          "#a1b8d1",
+          "#d5e0eb"
         ]
       },
-      "lune-amethyste-nuit": {
+      "lune-amethyste": {
         "role": "tertiary",
-        "displayName": "Lune d'améthyste (nuit)",
-        "canonical": "#ad94e0",
-        "oklch": "oklch(71.7% 0.111 298.7)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#0e061c",
-          "#2a1d40",
-          "#483768",
-          "#695393",
-          "#8b74b7",
-          "#ac9ad3",
-          "#cec1ee",
-          "#f2e8ff"
-        ]
-      },
-      "lune-amethyste-jour": {
-        "role": "tertiary",
-        "displayName": "Lune d'améthyste (jour)",
+        "displayName": "Lune améthyste",
         "canonical": "#6747a6",
-        "oklch": "oklch(48.1% 0.147 295.9)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#0e0421",
-          "#2a1949",
-          "#483275",
-          "#694da4",
-          "#8a6fc9",
-          "#ab96e3",
-          "#cebefb",
-          "#f1e7ff"
+          "#150e21",
+          "#291c42",
+          "#3e2b64",
+          "#523985",
+          "#6747a6",
+          "#957ec1",
+          "#bbacd7",
+          "#e1daed"
         ]
       },
-      "lune-corail-nuit": {
+      "lune-corail": {
         "role": "tertiary",
-        "displayName": "Lune de corail (nuit)",
-        "canonical": "#e88e92",
-        "oklch": "oklch(74.1% 0.110 17.2)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#1a0305",
-          "#3f1619",
-          "#672d32",
-          "#91474c",
-          "#b7686c",
-          "#d49092",
-          "#f0b9ba",
-          "#ffe3e3"
-        ]
-      },
-      "lune-corail-jour": {
-        "role": "tertiary",
-        "displayName": "Lune de corail (jour)",
+        "displayName": "Lune corail",
         "canonical": "#ab3f47",
-        "oklch": "oklch(52.0% 0.142 19.2)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#1e0003",
-          "#450e14",
-          "#70242a",
-          "#9d3c43",
-          "#c45e63",
-          "#e0898a",
-          "#fbb4b4",
-          "#ffdfdf"
+          "#220d0e",
+          "#44191c",
+          "#67262b",
+          "#893239",
+          "#ab3f47",
+          "#c4797e",
+          "#d9a9ac",
+          "#eed9da"
         ]
       },
-      "lune-nacre-nuit": {
+      "lune-nacre": {
         "role": "tertiary",
-        "displayName": "Lune de nacre (nuit)",
-        "canonical": "#e6dcc8",
-        "oklch": "oklch(89.7% 0.029 84.6)",
-        "scheme": "nuit",
-        "tonalRamp": [
-          "#0e0b06",
-          "#29251c",
-          "#474135",
-          "#686050",
-          "#8a8171",
-          "#aba496",
-          "#cec8bd",
-          "#f2eee6"
-        ]
-      },
-      "lune-nacre-jour": {
-        "role": "tertiary",
-        "displayName": "Lune de nacre (jour)",
+        "displayName": "Lune nacre",
         "canonical": "#7a6a4a",
-        "oklch": "oklch(53.1% 0.051 84.2)",
-        "scheme": "jour",
+        "scheme": "both",
         "tonalRamp": [
-          "#0f0a03",
-          "#2c2414",
-          "#4c402a",
-          "#6e5f43",
-          "#908063",
-          "#b0a48a",
-          "#d2c8b4",
-          "#f5eedf"
+          "#18150f",
+          "#312a1e",
+          "#49402c",
+          "#62553b",
+          "#7a6a4a",
+          "#a29780",
+          "#c3bcae",
+          "#e4e1db"
         ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "ONIRIA wordmark on home; top-level page titles."
+        "purpose": "ONIRIA on the home page, stamped."
       },
-      "headline": {
-        "displayName": "Headline",
-        "purpose": "Character name on the plate (1.625rem phone, 2.5rem md+)."
+      "name": {
+        "displayName": "Name",
+        "purpose": "Character and team names, handwritten on a field line."
       },
-      "headline-sm": {
-        "displayName": "Headline small",
-        "purpose": "Secondary page titles."
-      },
-      "title": {
-        "displayName": "Title",
-        "purpose": "Characteristic groups, XP pools, sheet-card names."
+      "page-title": {
+        "displayName": "Page title",
+        "purpose": "Tables de jeu, Whitelist: stamped, uppercase."
       },
       "section": {
         "displayName": "Section",
-        "purpose": "Small-caps sheet section headings, followed by a running rule."
+        "purpose": "Section headings and the title band, stamped, with an armillary sphere and a running rule."
+      },
+      "group": {
+        "displayName": "Group",
+        "purpose": "LE CORPS, L’ESPRIT, VUE D’ENSEMBLE: typewriter bold, uppercase."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Small-caps column captions, gauge labels, plate facts, popover labels."
-      },
-      "label-table": {
-        "displayName": "Table head",
-        "purpose": "Small-caps table header cells and subtitles."
+        "purpose": "Printed field labels and table heads: typewriter, uppercase, tracked."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Interface text."
+        "purpose": "Interface text, typewriter."
       },
       "body-sm": {
         "displayName": "Body small",
-        "purpose": "Stat-row labels, secondary lines."
+        "purpose": "Player and table names, descriptions."
       },
-      "caption": {
-        "displayName": "Caption",
-        "purpose": "Thresholds, margins, XP descriptions."
+      "row-label": {
+        "displayName": "Row label",
+        "purpose": "Stat-row labels at 12px: the typewriter is wide."
       },
       "button": {
         "displayName": "Button",
-        "purpose": "Buttons and tabs, sentence case."
+        "purpose": "Buttons and tabs, typewriter bold, sentence case."
       },
       "numeral": {
         "displayName": "Numeral",
-        "purpose": "Every game value: Spectral lining tabular figures; sized by importance."
+        "purpose": "Every computed value: totals, Facultés, combat, XP."
+      },
+      "hand": {
+        "displayName": "Hand",
+        "purpose": "Everything the player writes: fields, traits, items, notes."
+      },
+      "hand-value": {
+        "displayName": "Hand value",
+        "purpose": "Characteristic values."
+      },
+      "hand-existence": {
+        "displayName": "Hand existence",
+        "purpose": "Current Existences in the planets."
       }
     },
     "shadows": [
       {
+        "name": "feuille",
+        "value": "0 14px 34px -14px rgba(0, 0, 0, 0.4)",
+        "purpose": "The sheet on the table. None on phone."
+      },
+      {
         "name": "dialog",
-        "value": "0 24px 48px -12px rgba(0, 0, 0, 0.5)",
-        "purpose": "Modal dialogs only; nothing else casts a shadow."
+        "value": "0 24px 48px -12px rgba(0, 0, 0, 0.45)",
+        "purpose": "Modal dialogs, with a double printed frame."
       },
       {
-        "name": "transcendance-ring",
-        "value": "0 0 0 3px var(--mui-palette-background-paper), 0 0 0 4px var(--tint)",
-        "purpose": "Second ring detached from the portrait when Devenir exceeds 100. A stroke, not elevation."
+        "name": "billet",
+        "value": "0 8px 20px -10px rgba(0, 0, 0, 0.45)",
+        "purpose": "Toasts laid on the sheet."
       },
       {
-        "name": "xp-remaining-outline",
-        "value": "inset 0 0 0 1.5px var(--mui-palette-primary-main)",
-        "purpose": "Outline of the remaining XP segment. A stroke, not elevation."
+        "name": "bougie-glow",
+        "value": "radial-gradient(ellipse 60% 70% at 26% 12%, rgba(255, 168, 76, 0.3), rgba(255, 140, 50, 0.08) 45%, transparent 75%)",
+        "purpose": "Night only: candle glow, soft-light, fixed overlay at z-index 1250."
+      },
+      {
+        "name": "bougie-shade",
+        "value": "radial-gradient(ellipse 95% 110% at 34% 18%, transparent 55%, rgba(20, 10, 4, 0.12) 80%, rgba(8, 4, 2, 0.45) 100%)",
+        "purpose": "Night only: brown shadow at the edges; removed under prefers-contrast: more."
       }
     ],
     "motion": [
       {
         "name": "state-quick",
         "value": "120ms ease-out",
-        "purpose": "Color, background and opacity on hover/focus (stepper, edit pencil)."
+        "purpose": "Colour and background on hover/focus (stepper, edit pencil, buttons)."
       },
       {
         "name": "chevron",
@@ -922,29 +745,33 @@
         "purpose": "Section content collapse."
       },
       {
-        "name": "moon-stroke",
+        "name": "planet-dot",
         "value": "200ms ease-out",
-        "purpose": "Arc stroke color when a point is gained or lost."
+        "purpose": "Pen dot appearing or fading when a point is gained or lost."
       },
       {
-        "name": "moon-phase",
+        "name": "planet-phase",
         "value": "260ms cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "Lit phase and arc glide to the new value. Off under prefers-reduced-motion."
+        "purpose": "Watercolour phase glides to the new value. Off under prefers-reduced-motion."
       },
       {
         "name": "point-repeat",
         "value": "400ms first repeat, x0.75 per step, 40ms floor",
-        "purpose": "Held + or − on the point stepper repeats and accelerates."
+        "purpose": "Held + or − on a characteristic stepper."
       }
     ],
     "breakpoints": [
       {
-        "name": "demi-ecran",
+        "name": "existences-row",
         "value": "520px"
       },
       {
-        "name": "sm",
-        "value": "600px"
+        "name": "groups-three",
+        "value": "640px"
+      },
+      {
+        "name": "plate-one-line",
+        "value": "760px"
       },
       {
         "name": "md",
@@ -955,30 +782,31 @@
         "value": "1200px"
       },
       {
-        "name": "xl",
-        "value": "1536px"
+        "name": "three-columns",
+        "value": "1440px"
       }
     ],
     "densities": [
       {
-        "name": "confort",
-        "spacingUnit": "8px",
-        "cardPadding": "20px",
-        "controlSize": "medium"
+        "name": "Confort",
+        "unit": "8px",
+        "cardPad": "20px"
       },
       {
-        "name": "compact",
-        "spacingUnit": "6px",
-        "cardPadding": "12px",
-        "controlSize": "small"
+        "name": "Compact",
+        "unit": "6px",
+        "cardPad": "12px"
       }
     ],
     "tintIntensity": {
-      "devenirFull": 100,
-      "plateWash": "6%-18%",
-      "ringAndTopRule": "35%-100%",
-      "missingDevenirLevel": 0.5,
-      "transcendance": "> 100: second detached ring"
+      "scale": "0–100 Devenir",
+      "wash": "14% → 34% opacity",
+      "transcendance": "second frame in the tint, 4px outside the portrait frame"
+    },
+    "scripts": {
+      "hand": "Caveat",
+      "type": "Courier Prime",
+      "stamp": "Special Elite"
     }
   },
   "components": [
@@ -986,161 +814,153 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Contained lamp-gold action; the only filled button.",
-      "html": "<button class=\"ds-btn-primary\">Enregistrer</button>",
-      "css": ".ds-btn-primary { background: #d9a441; color: #1a1406; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 16px; border: none; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-primary:hover { background: #b8892f; } .ds-btn-primary:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
+      "description": "Blue-ink contained button, typewriter bold, near-square.",
+      "html": "<button class=\"ds-btn-primary\">Valider</button>",
+      "css": ".ds-btn-primary { background: #23336b; color: #f6efdc; font-family: 'Courier Prime', 'Courier New', monospace; font-weight: 700; font-size: 0.875rem; letter-spacing: 0.02em; padding: 6px 16px; border: 0; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-primary:hover { background: #1a2654; } .ds-btn-primary:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
     },
     {
       "name": "Text Button",
       "kind": "button",
       "refersTo": "button-text",
-      "description": "Secondary action in dialogs and alerts.",
+      "description": "Blue-ink text button.",
       "html": "<button class=\"ds-btn-text\">Annuler</button>",
-      "css": ".ds-btn-text { background: transparent; color: #d9a441; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 8px; border: none; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-text:hover { background: rgba(217, 164, 65, 0.08); } .ds-btn-text:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
+      "css": ".ds-btn-text { background: transparent; color: #23336b; font-family: 'Courier Prime', 'Courier New', monospace; font-weight: 700; font-size: 0.875rem; padding: 6px 8px; border: 0; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-btn-text:hover { background: rgba(59, 51, 40, 0.06); } .ds-btn-text:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
     },
     {
       "name": "Tabs",
       "kind": "nav",
       "refersTo": "tab",
-      "description": "Sentence-case tabs over a full-width hairline, gold 2px indicator.",
-      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab ds-tab-active\" href=\"#\">Caractéristiques</a><a class=\"ds-tab\" href=\"#\">Traits</a><a class=\"ds-tab\" href=\"#\">Inventaire</a><a class=\"ds-tab\" href=\"#\">Notes</a></nav>",
-      "css": ".ds-tabs { display: flex; border-bottom: 1px solid rgba(232, 226, 211, 0.12); background: #11131c; } .ds-tab { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; color: #a9b1c2; text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 120ms ease-out; } .ds-tab:hover { color: #e8e2d3; } .ds-tab:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; } .ds-tab-active { color: #d9a441; border-bottom-color: #d9a441; }"
+      "description": "Typewriter tabs with a blue-ink indicator over a printed rule.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab on\" role=\"tab\" aria-selected=\"true\">Caractéristiques</button><button class=\"ds-tab\" role=\"tab\">Traits</button><button class=\"ds-tab\" role=\"tab\">Inventaire</button></div>",
+      "css": ".ds-tabs { display: flex; border-bottom: 1px solid #3b3328; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-tab { min-height: 44px; padding: 0 14px; border: 0; background: none; font-family: 'Courier Prime', 'Courier New', monospace; font-weight: 700; font-size: 0.875rem; color: #665c4b; border-bottom: 2px solid transparent; cursor: pointer; } .ds-tab:hover { color: #3b3328; } .ds-tab.on { color: #23336b; border-bottom-color: #23336b; } .ds-tab:focus-visible { outline: 2px solid #23336b; outline-offset: -2px; }"
     },
     {
-      "name": "Section Heading and Stat Rows",
+      "name": "Section and Stat Rows",
       "kind": "custom",
       "refersTo": "stat-row",
-      "description": "Sheet sections are not cards: small-caps heading plus running rule, ruled rows with tabular numerals on the ground.",
-      "html": "<section class=\"ds-section\"><h2 class=\"ds-section-title\">Combat</h2><div class=\"ds-row\"><span>Initiative</span><b>1</b></div><div class=\"ds-row\"><span>Impact</span><b>5</b></div><div class=\"ds-row\"><span>Encombrement</span><b>10 %</b></div></section>",
-      "css": ".ds-section { background: #11131c; padding: 16px; width: 240px; color: #e8e2d3; } .ds-section-title { display: flex; align-items: center; gap: 12px; margin: 0 0 8px; font-family: 'Alegreya Sans SC', 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.08em; } .ds-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(232, 226, 211, 0.12); } .ds-row { display: flex; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(232, 226, 211, 0.12); font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-row:last-child { border-bottom: 0; } .ds-row:hover span { color: #e8e2d3; } .ds-row b { margin-left: auto; font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.0625rem; color: #e8e2d3; font-variant-numeric: lining-nums tabular-nums; }"
+      "description": "Stamped section heading with an armillary sphere; rows with typed labels, handwritten or typed values.",
+      "html": "<section class=\"ds-sec\"><h2 class=\"ds-sec-h\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><ellipse cx=\"10\" cy=\"10\" rx=\"8\" ry=\"3\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.8\"/><ellipse cx=\"10\" cy=\"10\" rx=\"3\" ry=\"8\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.8\"/><circle cx=\"10\" cy=\"10\" r=\"1.4\" fill=\"#3b3328\"/></svg><span>CARACTÈRES</span></h2><div class=\"ds-gh\"><span>LE CORPS</span><b>18</b></div><div class=\"ds-row\"><span class=\"ds-k\">Force</span><s class=\"ds-was\">20</s><span class=\"ds-hand ds-up\">22</span></div><div class=\"ds-row\"><span class=\"ds-k\">Agilité</span><span class=\"ds-hand\">25</span></div><div class=\"ds-row\"><span class=\"ds-k\">Coup Brutal</span><span class=\"ds-typed\">44</span></div></section>",
+      "css": ".ds-sec { width: 260px; padding: 12px 16px; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-sec-h { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font: 400 0.9375rem 'Special Elite', 'Courier Prime', monospace; letter-spacing: 0.22em; } .ds-sec-h::after { content: ''; flex: 1; height: 1px; background: #3b3328; } .ds-gh { display: flex; justify-content: space-between; border-bottom: 1.5px solid #3b3328; font: 700 0.9375rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.04em; } .ds-gh b { font-size: 1.375rem; } .ds-row { display: flex; align-items: baseline; gap: 6px; padding: 4px 0; border-bottom: 1px solid rgba(59, 51, 40, 0.24); } .ds-k { margin-right: auto; font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; } .ds-hand { font: 700 1.625rem/0.9 'Caveat', 'Segoe Print', cursive; color: #23336b; } .ds-was { font: 600 1.25rem/0.9 'Caveat', 'Segoe Print', cursive; color: #23336b; opacity: 0.45; } .ds-up { color: #2f6640; } .ds-typed { font: 700 0.875rem 'Courier Prime', 'Courier New', monospace; }"
     },
     {
-      "name": "Sheet Card",
-      "kind": "card",
-      "refersTo": "card",
-      "description": "A sheet in the list: tinted 2px top rule and portrait ring, hairline border.",
-      "html": "<a class=\"ds-sheet-card\" href=\"#\"><span class=\"ds-portrait\">L</span><span><strong>Lyse</strong><small>Inspirée : la Lune</small></span></a>",
-      "css": ".ds-sheet-card { --tint: #ad94e0; width: 250px; display: flex; align-items: center; gap: 12px; padding: 16px; background: #161925; border: 1px solid rgba(232, 226, 211, 0.12); border-top: 2px solid color-mix(in srgb, var(--tint) 60%, transparent); border-radius: 2px; color: #e8e2d3; text-decoration: none; transition: background-color 120ms ease-out; } .ds-sheet-card:hover { background: #1d2130; } .ds-sheet-card:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; } .ds-portrait { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; border: 2px solid color-mix(in srgb, var(--tint) 60%, transparent); background: color-mix(in srgb, var(--tint) 16%, transparent); color: var(--tint); font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 23px; } .ds-sheet-card strong { display: block; font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.25rem; } .ds-sheet-card small { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; }"
-    },
-    {
-      "name": "Editable Value",
+      "name": "Handwritten Field",
       "kind": "input",
-      "refersTo": "stat-row",
-      "description": "Reads as text at rest; dashed underline and pencil on hover/focus; standard underline field when editing.",
-      "html": "<div class=\"ds-edit-wrap\"><span class=\"ds-editable\" tabindex=\"0\" role=\"button\">20<svg class=\"ds-pen\" width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z\"/></svg></span><input class=\"ds-input\" value=\"25\" aria-label=\"Agilité\"></div>",
-      "css": ".ds-edit-wrap { display: flex; gap: 24px; align-items: baseline; padding: 12px; background: #11131c; } .ds-editable { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.375rem; color: #e8e2d3; font-variant-numeric: lining-nums tabular-nums; border-bottom: 1px dashed transparent; cursor: pointer; } .ds-pen { opacity: 0; margin-left: 2px; vertical-align: top; color: #a9b1c2; transition: opacity 120ms ease-out; } .ds-editable:hover, .ds-editable:focus-visible { border-bottom-color: #a9b1c2; outline: none; } .ds-editable:hover .ds-pen, .ds-editable:focus-visible .ds-pen { opacity: 0.7; } .ds-input { width: 60px; background: transparent; border: 0; border-bottom: 1px solid #a9b1c2; color: #e8e2d3; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 1rem; padding: 4px 0; } .ds-input:focus { outline: none; border-bottom: 2px solid #d9a441; }"
+      "refersTo": "handwritten-value",
+      "description": "A printed label over a value written in blue ink on a field line; dashed underline on hover or focus.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-lbl\">ASPECT</span><span class=\"ds-val\" tabindex=\"0\" role=\"button\">Inspirée : la Lune</span></label>",
+      "css": ".ds-field { display: inline-grid; padding: 12px 16px; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-lbl { font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.14em; color: #665c4b; } .ds-val { font: 600 1.375rem/1.05 'Caveat', 'Segoe Print', cursive; color: #23336b; border-bottom: 1px solid #3b3328; padding-bottom: 2px; cursor: pointer; } .ds-val:hover, .ds-val:focus-visible { border-bottom-style: dashed; } .ds-val:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
     },
     {
-      "name": "Moon Gauge",
+      "name": "Planet",
       "kind": "custom",
-      "refersTo": "moon-gauge",
-      "description": "An Existence as a lunar phase: arc of strokes (one per point), lit disc, numeral, joined minus/plus stepper.",
-      "html": "<div class=\"ds-gauge\"><svg width=\"60\" height=\"60\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M 12.91 51.09 A 27 27 0 0 1 9.25 17.73\" fill=\"none\" stroke=\"#d97a6c\" stroke-width=\"3\"/><path d=\"M 14.89 10.76 A 27 27 0 0 1 49.11 10.76\" fill=\"none\" stroke=\"#d97a6c\" stroke-width=\"3\"/><path d=\"M 54.75 17.73 A 27 27 0 0 1 51.09 51.09\" fill=\"none\" stroke=\"rgba(232,226,211,0.12)\" stroke-width=\"3\"/><circle cx=\"32\" cy=\"32\" r=\"17\" fill=\"rgba(217,122,108,0.1)\" stroke=\"rgba(217,122,108,0.45)\"/><path d=\"M 32 15 A 17 17 0 0 1 32 49 A 5.67 17 0 0 1 32 15 Z\" fill=\"#d97a6c\"/></svg><div><span class=\"ds-g-label\">La Santé</span><span class=\"ds-g-val\">2</span><span class=\"ds-g-max\">/ 3</span> <span class=\"ds-g-cap\">seuil 6</span></div><span class=\"ds-step\"><button aria-label=\"Retirer un point\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><i></i><button aria-label=\"Ajouter un point\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span></div>",
-      "css": ".ds-gauge { display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: #161925; color: #e8e2d3; } .ds-g-label { display: block; font-family: 'Alegreya Sans SC', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.08em; color: #a9b1c2; } .ds-g-val { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.625rem; font-variant-numeric: lining-nums tabular-nums; } .ds-g-max { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; margin-left: 4px; } .ds-g-cap { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.8125rem; color: #a9b1c2; margin-left: 4px; } .ds-step { display: inline-flex; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; overflow: hidden; } .ds-step i { width: 1px; background: rgba(232, 226, 211, 0.12); } .ds-step button { width: 34px; height: 32px; display: grid; place-items: center; background: transparent; border: 0; color: #a9b1c2; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-step button:hover, .ds-step button:focus-visible { color: #d9a441; background: rgba(217, 164, 65, 0.1); outline: none; }"
+      "refersTo": "planet",
+      "description": "An Existence as an atlas planet: printed orbit, watercolour phase, one pen dot per point; current value handwritten, max and threshold typed.",
+      "html": "<div class=\"ds-planet\"><svg width=\"64\" height=\"64\" viewBox=\"-4 -4 72 72\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"32\" rx=\"31\" ry=\"10.5\" transform=\"rotate(-16 32 32)\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.6\" stroke-dasharray=\"1.5 3\" opacity=\"0.6\"/><circle cx=\"32\" cy=\"32\" r=\"18\" fill=\"#3d6a99\" fill-opacity=\"0.14\"/><path d=\"M 32 17 A 15 15 0 0 1 32 47 A 7.50 15 0 0 1 32 17 Z\" fill=\"#3d6a99\" fill-opacity=\"0.62\"/><circle cx=\"32\" cy=\"32\" r=\"15\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"1.1\"/><circle cx=\"6.5\" cy=\"37.1\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"6.5\" cy=\"37.1\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"17.6\" cy=\"10.4\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"17.6\" cy=\"10.4\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"46.4\" cy=\"10.4\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"46.4\" cy=\"10.4\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"57.5\" cy=\"37.1\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/></svg><div><span class=\"ds-lbl\">L'ÉQUILIBRE</span><div><span class=\"ds-cur\">3</span><span class=\"ds-mx\"> / 4</span></div><span class=\"ds-th\">seuil 8</span></div></div>",
+      "css": ".ds-planet { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border: 1.5px solid #3b3328; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-lbl { font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.14em; color: #665c4b; } .ds-cur { font: 700 2.375rem/0.95 'Caveat', 'Segoe Print', cursive; color: #23336b; } .ds-mx { font: 400 0.875rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; } .ds-th { display: block; font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; }"
     },
     {
-      "name": "Tooltip",
+      "name": "Stepper",
       "kind": "custom",
-      "refersTo": "tooltip",
-      "description": "Rule and formula behind a label, on the raised surface with a hairline.",
-      "html": "<span class=\"ds-tip-wrap\"><span class=\"ds-tip-label\" tabindex=\"0\">Initiative</span><span class=\"ds-tip\" role=\"tooltip\">Vivacité / 10</span></span>",
-      "css": ".ds-tip-wrap { display: inline-flex; flex-direction: column; gap: 8px; padding: 12px; background: #11131c; } .ds-tip-label { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; cursor: help; } .ds-tip-label:hover, .ds-tip-label:focus-visible { color: #e8e2d3; outline: none; } .ds-tip { background: #1d2130; color: #e8e2d3; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.45; padding: 8px 12px; max-width: 380px; }"
-    },
-    {
-      "name": "Preview Value",
-      "kind": "custom",
-      "refersTo": "preview-up",
-      "description": "A value changed by pending points: bold, Sauge when it rises, Cuivre when it falls, saved value in a tooltip (\"Avant : N\").",
-      "html": "<div class=\"ds-pv\"><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Force</span><span class=\"ds-pv-num ds-pv-up\" tabindex=\"0\" title=\"Avant : 52\">54</span></span><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Agilité</span><span class=\"ds-pv-num ds-pv-down\" tabindex=\"0\" title=\"Avant : 40\">39</span></span><span class=\"ds-pv-row\"><span class=\"ds-pv-label\">Vivacité</span><span class=\"ds-pv-num\">47</span></span></div>",
-      "css": ".ds-pv { display: grid; width: 220px; padding: 8px 16px; background: #11131c; color: #e8e2d3; } .ds-pv-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(232, 226, 211, 0.12); } .ds-pv-row:last-child { border-bottom: 0; } .ds-pv-label { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-pv-num { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 500; font-size: 1.375rem; font-variant-numeric: lining-nums tabular-nums; } .ds-pv-up { color: #7fb38a; font-weight: 600; cursor: help; } .ds-pv-down { color: #e8894a; font-weight: 600; cursor: help; } .ds-pv-num:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
-    },
-    {
-      "name": "Point Stepper",
-      "kind": "custom",
-      "refersTo": "stepper-half-sm",
-      "description": "Characteristic level-up in the moon gauge frame, small size (two 24px cells, always both, so values stay in one column). The pending count sits before the value. Click 1, Shift 5, hold to repeat.",
-      "html": "<div class=\"ds-ps\"><span class=\"ds-ps-label\">Force</span><span class=\"ds-ps-count\" aria-live=\"polite\">+2</span><span class=\"ds-ps-val\">22</span><span class=\"ds-ps-frame\"><button class=\"ds-ps-btn\" aria-label=\"Retirer un point à Force\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><button class=\"ds-ps-btn\" aria-label=\"Ajouter un point à Force\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span></div>",
-      "css": ".ds-ps { display: flex; align-items: baseline; gap: 4px; width: 200px; padding: 4px 16px; background: #11131c; color: #e8e2d3; } .ds-ps-label { margin-right: auto; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-size: 0.9375rem; color: #a9b1c2; } .ds-ps-count { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: #7fb38a; } .ds-ps-val { font-family: Spectral, 'Iowan Old Style', Georgia, serif; font-weight: 600; font-size: 1.375rem; font-variant-numeric: lining-nums tabular-nums; color: #7fb38a; } .ds-ps-frame { display: inline-flex; align-self: center; border: 1px solid rgba(232, 226, 211, 0.12); border-radius: 2px; overflow: hidden; } .ds-ps-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #a9b1c2; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-ps-btn + .ds-ps-btn { border-left: 1px solid rgba(232, 226, 211, 0.12); } .ds-ps-btn:hover, .ds-ps-btn:focus-visible { color: #d9a441; background: rgba(217, 164, 65, 0.1); } .ds-ps-btn:focus-visible { outline: 2px solid #d9a441; outline-offset: -2px; }"
+      "refersTo": "stepper-cell-sm",
+      "description": "Joined −|+ in a printed frame; pale ink at rest, blue ink on hover, focus ring inside the frame.",
+      "html": "<span class=\"ds-step\"><button aria-label=\"Retirer un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><button aria-label=\"Ajouter un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span>",
+      "css": ".ds-step { display: inline-flex; border: 1px solid rgba(59, 51, 40, 0.24); border-radius: 2px; overflow: hidden; background: #efe6cf; } .ds-step button { width: 24px; height: 24px; padding: 0; border: 0; background: none; color: #665c4b; display: grid; place-items: center; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-step button + button { border-left: 1px solid rgba(59, 51, 40, 0.24); } .ds-step button:hover, .ds-step button:focus-visible { color: #23336b; background: rgba(35, 51, 107, 0.1); } .ds-step button:focus-visible { outline: 2px solid #23336b; outline-offset: -2px; }"
     },
     {
       "name": "Points Bar",
       "kind": "custom",
       "refersTo": "points-bar",
-      "description": "Sticky bottom strip while points are pending: the changes, their cost, Annuler and Valider. Raised tone, 1px Sauge rule (Braise when XP is missing), no shadow.",
-      "html": "<div class=\"ds-pb\" role=\"region\" aria-label=\"Points en attente\"><div><div class=\"ds-pb-lines\">Force +2 · Agilité −1</div><div class=\"ds-pb-detail\" aria-live=\"polite\">Coût : 4 XP · reprise : 1 XP</div></div><div class=\"ds-pb-actions\"><button class=\"ds-pb-cancel\">Annuler</button><button class=\"ds-pb-ok\">Valider</button></div></div>",
-      "css": ".ds-pb { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; width: 520px; background: #1d2130; color: #e8e2d3; border: 1px solid #7fb38a; border-radius: 2px; font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; } .ds-pb-lines { font-weight: 700; font-size: 1rem; } .ds-pb-detail { font-size: 0.9375rem; color: #a9b1c2; } .ds-pb-actions { display: flex; gap: 8px; margin-left: auto; } .ds-pb-cancel, .ds-pb-ok { font-family: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.01em; padding: 6px 16px; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out; } .ds-pb-cancel { background: transparent; color: #d9a441; border: 0; padding: 6px 8px; } .ds-pb-cancel:hover { background: rgba(217, 164, 65, 0.08); } .ds-pb-ok { background: #d9a441; color: #1a1406; border: 0; } .ds-pb-ok:hover { background: #c4923a; } .ds-pb-cancel:focus-visible, .ds-pb-ok:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }"
+      "description": "Raised-paper strip with a succès rule while points are pending; no shadow.",
+      "html": "<div class=\"ds-pb\" role=\"region\" aria-label=\"Points en attente\"><div><div class=\"ds-pb-l\">Force +2 · Agilité +1</div><div class=\"ds-pb-d\">Coût : 4 XP</div></div><div class=\"ds-pb-a\"><button class=\"ds-pb-c\">Annuler</button><button class=\"ds-pb-v\">Valider</button></div></div>",
+      "css": ".ds-pb { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; width: 520px; background: #f6efdc; border: 1px solid #2f6640; border-radius: 2px; color: #3b3328; font-family: 'Courier Prime', 'Courier New', monospace; } .ds-pb-l { font-weight: 700; } .ds-pb-d { font-size: 0.875rem; color: #665c4b; } .ds-pb-a { display: flex; gap: 8px; margin-left: auto; } .ds-pb-c, .ds-pb-v { font: 700 0.875rem 'Courier Prime', 'Courier New', monospace; border: 0; border-radius: 2px; padding: 6px 16px; cursor: pointer; } .ds-pb-c { background: none; color: #23336b; padding: 6px 8px; } .ds-pb-v { background: #23336b; color: #f6efdc; } .ds-pb-c:focus-visible, .ds-pb-v:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tooltip",
+      "kind": "custom",
+      "refersTo": "tooltip",
+      "description": "Raised paper with a printing-ink border, typewriter text.",
+      "html": "<div class=\"ds-tip\" role=\"tooltip\">Maximum : Entendement / 10</div>",
+      "css": ".ds-tip { display: inline-block; max-width: 380px; padding: 8px 12px; background: #f6efdc; color: #3b3328; border: 1px solid #3b3328; border-radius: 2px; font: 400 0.8125rem/1.45 'Courier Prime', 'Courier New', monospace; }"
     }
   ],
   "narrative": {
     "northStar": "La Fiche Immersive",
-    "overview": "The world is **Éphémérides des Lunes**: every sheet reads like a page of a lunar almanac. Values stand in columns drawn with a ruler, headed by spaced small capitals, numbers set in tabular serif figures, columns separated by one-pixel rules. The four Existences (Santé, Équilibre, Éclat, Maï) are drawn as phases of the moon, each ringed by an arc of strokes, one stroke per point. Each character carries its own moon tint, and that tint grows stronger as the character's Devenir rises. The feel is muted and immersive, with a dose of the living and responsive: values slide to their new phase, hover reveals the rule behind a number, and nothing else moves.\n\nThe system is tuned for long evening sessions next to Discord. Night (\"Nuit\") is ink-dark navy with bone text and lamp gold for interaction. Day (\"Jour\") is bone paper with navy ink. Both are calm, low-chroma grounds, so the only saturated color on screen belongs to the game itself (Existences, the character's moon) or to the thing you can press. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling, down to a half-width window beside Discord.\n\nThe system rejects the generic tool look of identical boxed cards with centered titles, stock Material blue, and anything that tires the eyes or betrays the game's own vocabulary.",
+    "overview": "The world is **Le carnet d'Oniria**. Every page is a character sheet printed on cream paper and filled in by hand, the way a sheet lives on the table across many evenings. A double printed frame runs around the page, and a title band carries a frieze of moon phases between two fleurons. The paper has its own grain, faint blue guide lines and a red margin. Over it sit pale atlas geometries (planets on their orbit, armillary spheres, constellations), soft watercolour washes and a few pen doodles. Oniria is a multiverse of moons (medieval, alien, steampunk worlds…), so the sheet belongs to no single genre: it speaks of moons, travel between worlds, and a story written game after game.\n\nThe system rests on one rule of writing. What the player writes is handwritten in blue ink (Caveat): the name, age, Aspect, Devenir, current Existences, characteristics, traits, items, notes. What the rules print or compute is typed (Courier Prime), with page and section titles stamped (Special Elite): labels, totals, maximums, thresholds, Facultés, combat values. Reading the sheet tells you at a glance what is yours and what the game derives.\n\nThere are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.\n\nThe system rejects the clean \"tool\" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.",
     "keyCharacteristics": [
-      "Almanac tables: small-caps headings, running hairline rules, values right-aligned in tabular serif figures.",
-      "Flat at rest: depth comes from three tonal steps of ground, never from shadow.",
-      "One interaction color (lamp gold); game colors stay with game meaning.",
-      "A personal moon tint per character, with intensity driven by Devenir.",
-      "Two themes (Nuit / Jour) and two densities (Confort / Compact), all chosen by the player."
+      "A printed sheet on paper: double frame, title band with moon phases, grain, guide lines and margin.",
+      "Handwritten blue ink for everything the player writes; typewriter for everything the rules print.",
+      "Existences as small atlas planets: printed orbit, watercolour phase, one pen-filled dot per point.",
+      "A personal moon tint per character, laid as a watercolour wash whose strength follows Devenir.",
+      "Two lights (Jour, bougie) on the same light paper, and two densities, chosen by the player."
     ],
     "rules": [
       {
-        "name": "The Lampe Rule",
-        "body": "Gold means \"you can act here\". Nothing decorative is gold, and no other hue marks interaction.",
+        "name": "The Plume Rule",
+        "body": "What the player writes is handwritten in blue ink; what the rules print or compute is typed in printing ink. A value never changes script when it changes state: an editable value is handwritten when read and when typed into.",
+        "section": "colors"
+      },
+      {
+        "name": "The Encre Bleue Rule",
+        "body": "Blue ink means \"written by the player\" or \"you can act here\". No other hue marks interaction, and nothing decorative is blue except pen doodles.",
         "section": "colors"
       },
       {
         "name": "The Couleur du Jeu Rule",
-        "body": "Existence colors appear only in moon gauges, and moon tints only in a character's own identity (plate wash, top rule, portrait ring, sheet-card top rule, tint button). Neither becomes a UI accent.",
+        "body": "Existence colours appear only in the planets' watercolour, and moon tints only in a character's own identity (the plate wash, the portrait planet, the tint button). Neither becomes a UI accent.",
         "section": "colors"
       },
       {
         "name": "The Lune Personnelle Rule",
-        "body": "Tint intensity follows Devenir on a 0–100 scale: the plate wash runs from 6% to 18% tint, and the top rule and portrait ring from 35% to 100%. Above 100 (transcendance), a second ring detaches from the portrait with a 3px gap of paper color. A missing Devenir sits at mid intensity.",
+        "body": "The plate's tint wash runs from 14% to 34% opacity as Devenir goes from 0 to 100. Above 100 (transcendance), the portrait gets a second frame in the tint, 4px outside the first. A missing Devenir sits at mid strength.",
         "section": "colors"
       },
       {
         "name": "The Aperçu Rule",
-        "body": "A value changed by pending points is a preview, not a fact. It turns bold, in Sauge when it rises and Cuivre when it falls, and its saved value waits in a tooltip (\"Avant : N\"). The whole sheet previews at once (characteristics, group totals, faculties, combat values, gauge maximums and thresholds, XP bar), and nothing returns to ink until the points are validated or cancelled.",
+        "body": "A value changed by pending points is a preview, not a fact: it turns semibold in succès (rising) or avertissement (falling), its saved value stays struck through before it, and \"Avant : N\" waits in a tooltip. Nothing returns to ink until the points are validated or cancelled.",
         "section": "colors"
       },
       {
-        "name": "The Chiffre Tabulaire Rule",
-        "body": "Every number on a sheet is Spectral with `lining-nums tabular-nums` (the body defaults to tabular figures too), right-aligned in its column so values line up like a table.",
+        "name": "The Machine à écrire Rule",
+        "body": "Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.",
         "section": "typography"
       },
       {
-        "name": "The Petites Capitales Rule",
-        "body": "Headings and labels use the real small-caps face (Alegreya Sans SC) with letter spacing. Never use `text-transform: uppercase`. Buttons and tabs stay in sentence case.",
+        "name": "The Pas d'italique Rule",
+        "body": "Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant.",
         "section": "typography"
       },
       {
-        "name": "The Sans Ombre Rule",
-        "body": "Nothing casts a shadow at rest. To lift something, step its surface tone and give it a rule. The transcendance second ring and the XP \"remaining\" outline use `box-shadow` as a stroke, not as elevation. Sticky strips follow the same rule: the ephemeris band and the points bar float over the scrolling sheet on their own tone and rules, without a shadow.",
+        "name": "The Papier Rule",
+        "body": "Nothing inside the sheet floats on a shadow. To lift something, lay raised paper on the sheet and give it a printed border.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Bougie Rule",
+        "body": "At night the candle is an overlay above the page and below modals (z-index 1250, no pointer events): an amber glow in soft-light at the top left, and a brown shadow that starts at 55% of the radius and stays under 12% opacity until 80%. Every ink keeps at least 4.5:1 where text sits. Under `prefers-contrast: more`, the candle is removed.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "**Do** set every game value as a Spectral tabular numeral, right-aligned in its column.",
-      "**Do** separate columns and rows with 1px rule-color lines; use the stronger group rule only under characteristic-group headings.",
-      "**Do** head sections with Alegreya Sans SC small caps followed by a running rule to the column edge.",
-      "**Do** keep gold for interaction only: buttons, active tab, focus outline, stepper hover.",
-      "**Do** step surface tone (ground, paper, raised) plus a hairline border to show depth.",
-      "**Do** derive a character's identity color from its moon tint, scaled by Devenir, through the `--tint` variable with its night and day values.",
-      "**Do** keep everything used in play visible without scrolling at 520px (half screen beside Discord) and wider.",
-      "**Do** honor both densities (8px / 6px unit) and both themes for every new surface.",
-      "**Do** disable gauge and phase transitions under `prefers-reduced-motion`.",
-      "**Do** show pending points as a preview across the whole sheet: semibold, Sauge up, Cuivre down, with the saved value in a tooltip.",
-      "**Do** read colors in styles through the theme's CSS variables (`var(--mui-palette-…)`, `theme.vars`, `color-mix()` for alpha). `theme.palette` holds only the day scheme, so the night would inherit day colors.",
-      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet."
+      "**Do** write every value the player sets in Caveat, in blue ink, on a printed field line or row; type every computed value in Courier Prime.",
+      "**Do** stamp page and section titles in Special Elite, uppercase, with an armillary sphere and a running printed rule for sections.",
+      "**Do** frame printed areas (plate, Existences, portrait) as square boxes in printing ink; lay cards, menus and dialogs on the sheet as raised paper with a 1px border.",
+      "**Do** read colours through the theme's CSS variables (`var(--mui-palette-…)`, `theme.vars`, `color-mix()` for alpha); both themes are light paper, and the candle has its own inks.",
+      "**Do** keep every text ink at 4.5:1 or more on its paper, including near the candle's shadowed edges.",
+      "**Do** keep everything used in play visible without scrolling from 1440px; below that, keep Combat beside Caractères and Facultés.",
+      "**Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.",
+      "**Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, \"Avant : N\" in a tooltip.",
+      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.",
+      "**Do** honour both densities and both lights for every new surface, and disable planet motion under `prefers-reduced-motion`."
     ],
     "donts": [
-      "**Don't** wrap sheet sections in identical boxed cards with centered titles.",
-      "**Don't** cast shadows on resting surfaces; the dialog is the only shadow.",
-      "**Don't** use `text-transform: uppercase`; small caps come from Alegreya Sans SC.",
-      "**Don't** use Existence colors or moon tints as general UI accents, or gold as decoration.",
-      "**Don't** round corners beyond 2px on rectangles; round forms are reserved for moons and portraits.",
-      "**Don't** reintroduce stock Material blue or pure black/white grounds; they tire the eyes over a long session.",
-      "**Don't** let anything move on a value change except the gauge that changed.",
-      "**Don't** add another −/+ style; steppers share the joined frame of the moon gauge."
+      "**Don't** use a system sans or a display serif: printed text is a typewriter, titles are a stamp, and the player's words are a hand.",
+      "**Don't** handwrite something the rules compute, or type something the player wrote.",
+      "**Don't** use blue ink for decoration, or any other hue for interaction.",
+      "**Don't** use Existence colours or moon tints outside the planets and the character's identity.",
+      "**Don't** add shadows inside the sheet; lift things with raised paper and a printed border.",
+      "**Don't** reintroduce a dark ground for the night: the candle warms and dims the same paper.",
+      "**Don't** add another −/+ style; steppers share one printed frame in two sizes.",
+      "**Don't** bind the sheet to one genre (parchment, chrome, neon): Oniria's moons are many worlds."
     ]
   }
 }

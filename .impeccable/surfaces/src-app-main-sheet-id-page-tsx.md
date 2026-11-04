@@ -7,7 +7,7 @@ related_targets: ["src/app/providers.tsx"]
 
 # Fiche de personnage
 
-Mode: Operate. Surface: la fiche (`/sheet/[id]`), première expression d'un monde qui habille toute l'app par le thème.
+Mode: Operate. Surface: la fiche (`/sheet/[id]`), première expression du carnet d'Oniria, qui habille toute l'app par le thème.
 
 Audience et tâche : joueur·euse en pleine partie sur Discord, le soir ; MJ qui suit et distribue l'XP. Sans défiler : Caractères (majeur), Facultés (mineur), Existences, Maï, combat. Santé / Équilibre / Éclat / Maï se modifient en un geste (−/+). Personnalisation : teinte de lune par personnage (choisie par le joueur ou le MJ), intensité liée au Devenir (base 0–100, au-delà = transcendance) ; réglages par compte (thème, densité, sections repliées). À éviter : fatiguer les yeux, trahir le jeu.
 
@@ -15,14 +15,14 @@ Décisions ouvertes : aucune ; l'échelle du Devenir est fixée à 0–100 dans 
 
 ## Direction contract
 
-THESIS: La fiche se lit comme une page d'éphémérides des Lunes : chaque valeur à sa place dans des colonnes au cordeau, les Existences comme des phases de lune. Elle refuse la grille de cartes identiques à titre centré de l'outil générique.
+THESIS: La fiche est une feuille de personnage imprimée et remplie à la main, comme sur la table au fil des soirées : ce que le joueur écrit est manuscrit à l'encre bleue, ce que les règles calculent est tapé à la machine. Elle refuse l'interface nette et générique, et ne s'enferme dans aucun genre : Oniria est un multivers de lunes.
 
-OWN-WORLD: Encre de nuit (#11131c) et surfaces à peine plus claires, os (#e8e2d3) pour le texte, argent (#a9b1c2) pour le secondaire, or de lampe (#d9a441) pour l'interaction ; jour = papier os et encre. Filets d'un pixel, pas d'ombre au repos, coins de 2 px. Spectral pour noms et chiffres tabulaires, Alegreya Sans SC en petites capitales espacées pour les en-têtes, Alegreya Sans pour l'interface.
+OWN-WORLD: « Le carnet d'Oniria ». Papier crème à grain, lignes-guides et marge rouge, double cadre imprimé, bandeau-titre aux phases de lune entre deux fleurons. Encre d'imprimerie brune, encre bleue du stylo pour l'écrit et l'interaction. Courier Prime (machine à écrire), Caveat (main), Special Elite (tampon). Géométries d'atlas (planètes sur orbite, sphère armillaire, constellations), lavis d'aquarelle, gribouillis à la plume. Jour : feuille sur table claire ; Nuit : la même feuille à la bougie.
 
-STORY: Le joueur ouvre sa fiche et voit d'un coup sa lune (portrait, Aspect, Devenir), ses Existences en phases et toutes ses valeurs de jeu ; il clique −/+ quand il prend un coup, survole un libellé pour la règle de Noème, et rien ne bouge d'autre.
+STORY: Le joueur ouvre sa feuille et retrouve son personnage écrit de sa main : le nom sur sa ligne, le portrait dans son cadre sur un lavis de sa lune, ses Existences en petites planètes dont les points se cochent à la plume. Il clique −/+ quand il prend un coup, survole un libellé tapé pour la règle de Noème, et rien d'autre ne bouge.
 
-FIRST VIEWPORT: Barre fine (retour, ONIRIA, thème, ⋯). Plaque du personnage : portrait cerclé de sa teinte, nom en Spectral, joueur·euse et table, Aspect et Devenir en colonnes d'éphéméride. Bande d'éphéméride collée en haut : Santé, Équilibre, Éclat, Maï en disques de phase entourés d'un arc de traits (un trait par point), valeur / max, seuil, −/+. Dessous, onglets ; à gauche Caractères en grand (trois colonnes, valeur du groupe, verrou), Facultés en tableau serré ; à droite la colonne combat.
+FIRST VIEWPORT: Bandeau-titre imprimé (retour, FEUILLE DE PERSONNAGE, phases de lune, ONIRIA, affichage, ⋯). Plaque en encadré imprimé : portrait cadré sur un lavis de la teinte, NOM écrit à la main sur sa ligne, joueur·euse et table tapés, Âge, Aspect et Devenir manuscrits. Encadré des Existences collé en haut : Santé, Équilibre, Éclat, Maï en planètes d'atlas (orbite, phase à l'aquarelle, un point coché par point), valeur manuscrite, max et seuil tapés, −/+. Dessous, onglets ; dès 1440 px, Caractères (valeurs manuscrites, totaux tapés), Facultés (tapées) et combat côte à côte.
 
-FORM: Éphémérides des Lunes, rang 1 de ma liste (choisi par l'utilisateur comme carte « choix d'Impeccable »), avec la correction utilisateur : arcs de traits de la ligne claire autour des lunes. seed:e5fa620fd594e6e0
+FORM: Le carnet d'Oniria, synthèse choisie par l'utilisateur après deux séries de propositions (cadre et bandeau de la feuille d'antan, géométries de l'atlas des lunes, douceur de la rêverie, ambiance du carnet du voyageur), avec la règle manuscrit / machine à écrire et la nuit à la bougie. Hors tirage.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
