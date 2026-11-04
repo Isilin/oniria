@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import { Constellation } from '../atoms/ornaments';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
 import AbilitiesCard from './abilities-card';
@@ -97,13 +98,16 @@ const SheetContent = ({ id }: { id: string }) => {
             alignItems: 'start',
             gridTemplateColumns: {
               xs: 'minmax(0, 1fr)',
-              md: 'minmax(0, 1fr) 260px',
-              lg: 'minmax(0, 1.1fr) minmax(0, 1fr) 236px',
+              md: 'minmax(0, 1fr) 210px',
             },
             gridTemplateAreas: {
               xs: '"car" "fac" "com" "xp"',
               md: '"car com" "fac com" "xp xp"',
-              lg: '"car fac com" "xp xp xp"',
+            },
+            // Écrit en clair pour venir après les paliers de MUI.
+            '@media (min-width: 1440px)': {
+              gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr) 210px',
+              gridTemplateAreas: '"car fac com" "xp xp xp"',
             },
             '& > *': { minWidth: 0 },
             columnGap: { md: 0 },
@@ -114,13 +118,15 @@ const SheetContent = ({ id }: { id: string }) => {
           <Box sx={{ gridArea: 'car', pr: { md: 3 } }}>
             <CharactersCard id={id} />
           </Box>
-          {/* Colonnes séparées par un filet d'un pixel, comme une table. */}
+          {/* Colonnes séparées par un filet imprimé, comme sur la feuille. */}
           <Box
             sx={{
               gridArea: 'fac',
-              pr: { lg: 3 },
-              pl: { lg: 3 },
-              borderLeft: { lg: '1px solid var(--mui-palette-rule)' },
+              pr: { md: 3 },
+              '@media (min-width: 1440px)': {
+                pl: 3,
+                borderLeft: '1px solid var(--mui-palette-text-primary)',
+              },
             }}
           >
             <AbilitiesCard id={id} />
@@ -129,10 +135,21 @@ const SheetContent = ({ id }: { id: string }) => {
             sx={{
               gridArea: 'com',
               pl: { md: 3 },
-              borderLeft: { md: '1px solid var(--mui-palette-rule)' },
+              borderLeft: { md: '1px solid var(--mui-palette-text-primary)' },
             }}
           >
             <CombatCard id={id} />
+            {/* Une constellation pâle dans le blanc sous le combat. */}
+            <Constellation
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                width: '100%',
+                height: 'auto',
+                maxWidth: 220,
+                mt: 4,
+                mx: 'auto',
+              }}
+            />
           </Box>
           <Box sx={{ gridArea: 'xp' }}>
             <ExperienceCard id={id} />

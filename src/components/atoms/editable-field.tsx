@@ -18,7 +18,10 @@ interface Props {
   minWidth?: number;
   fullWidth?: boolean;
   'aria-label'?: string;
-  /** Style du texte affiché (ex. `numeral` pour une valeur de la fiche). */
+  /**
+   * Style du texte affiché. Par défaut `hand` : ce que le joueur écrit est
+   * manuscrit, à l'encre bleue (voir DESIGN.md).
+   */
   variant?: TypographyProps['variant'];
 }
 
@@ -32,7 +35,7 @@ const EditableField = ({
   minWidth,
   fullWidth,
   'aria-label': ariaLabel,
-  variant = 'body1',
+  variant = 'hand',
 }: Props) => {
   const asString = value === null || value === undefined ? '' : `${value}`;
   // Brouillon pendant l'édition ; null = on affiche la valeur reçue, qui
@@ -56,13 +59,25 @@ const EditableField = ({
   };
 
   const shown = display ?? (asString || placeholder);
+  const handwritten = variant === 'hand';
+  // L'encre bleue pour ce qui est écrit ; le tiret d'une case vide reste pâle.
+  const ink = !asString
+    ? 'text.secondary'
+    : variant === 'inherit'
+      ? 'inherit'
+      : handwritten
+        ? 'primary.main'
+        : 'text.primary';
 
   if (!editable) {
     return (
       <Typography
         variant={variant}
         component="span"
-        sx={{ whiteSpace: type === 'multiline' ? 'pre-line' : undefined }}
+        sx={{
+          color: ink,
+          whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+        }}
       >
         {shown}
       </Typography>
@@ -87,8 +102,8 @@ const EditableField = ({
             setFocused(true);
           }
         }}
-        color={asString ? 'textPrimary' : 'textSecondary'}
         sx={{
+          color: ink,
           cursor: 'pointer',
           borderBottom: '1px dashed transparent',
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,

@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { visuallyHidden } from '@mui/utils';
 import { MouseEvent, PointerEvent, ReactNode, useEffect, useRef } from 'react';
 import StepperFrame, {
   stepperCell,
@@ -145,21 +146,36 @@ const PointStepper = ({ label, points, canAdd, canRemove, onStep }: Props) => (
 );
 
 /**
- * Les points en attente d'un caractère (« +2 », « −1 »), devant sa valeur.
- * Toujours présent, vide sans point en attente, pour être annoncé.
+ * La valeur enregistrée d'un caractère, barrée devant la nouvelle tant que
+ * des points attendent, comme une correction à la main. Toujours présente
+ * (vide sans point en attente), pour être annoncée.
  */
-export const PendingPoints = ({ points }: { points: number }) => (
+export const PendingPoints = ({
+  points,
+  before,
+}: {
+  points: number;
+  before: number;
+}) => (
   <Typography
-    variant="caption"
+    variant="hand"
     component="span"
     aria-live="polite"
     sx={{
-      fontWeight: 700,
-      fontVariantNumeric: 'tabular-nums',
-      color: points > 0 ? 'success.main' : 'warning.main',
+      fontSize: '1.375rem',
+      opacity: 0.45,
+      textDecoration: 'line-through',
+      textDecorationThickness: '1.5px',
     }}
   >
-    {points === 0 ? '' : points > 0 ? `+${points}` : `−${-points}`}
+    {points !== 0 && (
+      <>
+        <Box component="span" sx={visuallyHidden}>
+          avant :{' '}
+        </Box>
+        {before}
+      </>
+    )}
   </Typography>
 );
 

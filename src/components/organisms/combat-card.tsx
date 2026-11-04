@@ -62,7 +62,7 @@ const CombatCard = ({ id }: { id: string }) => {
     <SectionCard title="Combat" section="combat">
       {rows.map((row) => (
         <StatRow key={row.label} label={row.label} tooltip={row.tooltip}>
-          <Typography variant="numeral" sx={{ fontSize: '1.0625rem' }}>
+          <Typography variant="numeral" sx={{ fontSize: '0.9375rem' }}>
             {row.value}
           </Typography>
         </StatRow>

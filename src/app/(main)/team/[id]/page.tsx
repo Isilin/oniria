@@ -33,6 +33,7 @@ const Page = async ({
         <HeaderSlot side="start">
           <BackButton href="/team" />
         </HeaderSlot>
+        <HeaderSlot side="title">Table de jeu</HeaderSlot>
         <HeaderSlot side="end">
           <DeleteTeamButton id={params.id} />
         </HeaderSlot>

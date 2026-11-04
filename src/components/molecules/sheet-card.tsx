@@ -1,7 +1,7 @@
 'use client';
 
 import { SheetWithUser } from '@/lib/db/sheet';
-import { devenirIntensity, tintOf } from '@/lib/tints';
+import { tintOf } from '@/lib/tints';
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import Link from 'next/link';
 import Portrait from '../atoms/portrait';
@@ -12,44 +12,39 @@ interface Props {
 }
 
 /**
- * Une fiche dans la liste : le portrait cerclé de sa teinte de lune, le nom,
- * et l'Aspect, comme la plaque de la fiche en plus petit.
+ * Une fiche dans la liste : une fiche cartonnée, le portrait dans son cadre
+ * imprimé, le nom écrit à la main, puis le joueur ou l'Aspect, tapés.
  */
 const SheetCard = ({ sheet, userVisible }: Props) => {
   const tint = tintOf(sheet.tint);
-  const { level } = devenirIntensity(sheet.become);
-  const ring = Math.round(35 + 65 * level);
 
   return (
-    <Card
-      sx={(theme) => ({
-        '--tint': tint.night,
-        ...theme.applyStyles('light', { '--tint': tint.day }),
-        width: 250,
-        borderTop: '2px solid',
-        borderTopColor: `color-mix(in srgb, var(--tint) ${ring}%, transparent)`,
-      })}
-    >
+    <Card sx={{ '--tint': tint.day, width: 250 }}>
       {/* Un vrai lien : Next précharge la page de la fiche. */}
       <CardActionArea
         component={Link}
         href={`/sheet/${sheet.id}`}
-        sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 2 }}
+        sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5 }}
       >
-        <Portrait
-          avatar={sheet.avatar}
-          name={sheet.name}
-          size={56}
+        <Box
           sx={{
-            border: '2px solid',
-            borderColor: `color-mix(in srgb, var(--tint) ${ring}%, transparent)`,
+            width: 56,
+            height: 64,
+            flexShrink: 0,
+            border: '1.5px solid',
+            borderColor: 'text.primary',
+            display: 'grid',
+            placeItems: 'center',
+            overflow: 'hidden',
           }}
-        />
+        >
+          <Portrait avatar={sheet.avatar} name={sheet.name} size={44} framed />
+        </Box>
         <Box sx={{ minWidth: 0 }}>
           <Typography
-            variant="h5"
+            variant="hand"
             component="h3"
-            sx={{ overflowWrap: 'anywhere' }}
+            sx={{ fontSize: '1.625rem', overflowWrap: 'anywhere' }}
           >
             {sheet.name}
           </Typography>

@@ -16,13 +16,12 @@ const AbilitiesCard = ({ id }: { id: string }) => {
       <Box
         sx={{
           display: 'grid',
-          // Trois colonnes fixes dès 520 px (demi-écran) : jamais de groupe
-          // renvoyé sous un autre.
+          // Trois colonnes dès 640 px (demi-écran) ; deux en dessous.
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          '@media (min-width: 520px)': {
+          '@media (min-width: 640px)': {
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           },
-          columnGap: 2,
+          columnGap: 1.5,
           rowGap: 2,
         }}
       >
@@ -35,8 +34,8 @@ const AbilitiesCard = ({ id }: { id: string }) => {
               sx={{
                 display: 'block',
                 pb: 0.5,
-                borderBottom: 1,
-                borderColor: 'rule',
+                borderBottom: '1.5px solid',
+                borderColor: 'text.primary',
               }}
             >
               {column.label}
@@ -76,7 +75,7 @@ const AbilitiesCard = ({ id }: { id: string }) => {
                     </>
                   }
                 >
-                  <Typography variant="numeral" sx={{ fontSize: '1rem' }}>
+                  <Typography variant="numeral" sx={{ fontSize: '0.875rem' }}>
                     <PreviewValue
                       before={before.value}
                       delta={now.value - before.value}

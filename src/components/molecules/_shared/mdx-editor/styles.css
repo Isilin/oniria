@@ -1,6 +1,58 @@
+/* Les notes s'écrivent sur la feuille : barre d'outils imprimée, texte à la
+   main et à l'encre bleue, comme les autres valeurs écrites par le joueur. */
 .mdxeditor {
-  border: 1px solid var(--baseBg);
-  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+  --basePageBg: transparent;
+  --baseBase: var(--mui-palette-background-paper);
+  --baseBgSubtle: var(--mui-palette-background-paper);
+  --baseBg: var(--mui-palette-raised);
+  --baseBgHover: color-mix(
+    in srgb,
+    var(--mui-palette-text-primary) 8%,
+    transparent
+  );
+  --baseBgActive: color-mix(
+    in srgb,
+    var(--mui-palette-text-primary) 14%,
+    transparent
+  );
+  --baseLine: color-mix(
+    in srgb,
+    var(--mui-palette-text-primary) 24%,
+    transparent
+  );
+  --baseBorder: color-mix(
+    in srgb,
+    var(--mui-palette-text-primary) 40%,
+    transparent
+  );
+  --baseBorderHover: var(--mui-palette-text-primary);
+  --baseText: var(--mui-palette-text-secondary);
+  --baseTextContrast: var(--mui-palette-text-primary);
+  --accentSolid: var(--mui-palette-primary-main);
+  --accentText: var(--mui-palette-primary-main);
+  --accentBorder: var(--mui-palette-primary-main);
+  font-family: var(--font-type), monospace;
+  border: 1px solid var(--mui-palette-text-primary);
+  border-radius: 0;
+}
+
+.mdxeditor [role='toolbar'] {
+  border-radius: 0;
+  border-bottom: 1px solid var(--mui-palette-text-primary);
+}
+
+.mdxeditor .prose {
+  font-family: var(--font-hand), cursive;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 30px;
+  color: var(--mui-palette-primary-main);
+}
+
+.mdxeditor .prose :is(h1, h2, h3, h4, strong) {
+  font-family: var(--font-hand), cursive;
+  font-weight: 700;
+  color: var(--mui-palette-primary-main);
 }
 
 .mdxeditor-popup-container div {

@@ -4,6 +4,7 @@ import { FullSheet } from '@/lib/db/sheet';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { PAPER_GRAIN } from '@/theme/theme';
 import MoonGauge from '../molecules/moon-gauge';
 
 type Field =
@@ -33,7 +34,12 @@ const Caption = ({
       [WIDE]: { display: 'flex' },
       alignItems: 'center',
       gap: 1,
-      '&::after': { content: '""', flex: 1, height: '1px', bgcolor: 'rule' },
+      '&::after': {
+        content: '""',
+        flex: 1,
+        height: '1px',
+        bgcolor: 'text.primary',
+      },
     }}
   >
     {children}
@@ -41,8 +47,8 @@ const Caption = ({
 );
 
 /**
- * La bande d'éphéméride : les trois Existences, puis le Maï à part, en
- * phases de lune. Collée en haut de la fiche sur tous les onglets.
+ * L'encadré des Existences : les trois Existences, puis le Maï à part, en
+ * petites planètes. Collé en haut de la fiche sur tous les onglets.
  */
 const EphemerisBand = ({ id }: { id: string }) => {
   const { sheet, computed, base, canEdit, update } = useSheet(id);
@@ -115,10 +121,12 @@ const EphemerisBand = ({ id }: { id: string }) => {
         rowGap: 0.75,
         px: { xs: 1, md: 2 },
         py: { xs: 0.75, md: 1 },
+        // Un encadré imprimé, opaque : il reste collé en haut pendant qu'on
+        // fait défiler la feuille sous lui.
         bgcolor: 'background.paper',
-        borderTop: 1,
-        borderBottom: 1,
-        borderColor: 'rule',
+        backgroundImage: PAPER_GRAIN,
+        border: '1.5px solid',
+        borderColor: 'text.primary',
         gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
         gridTemplateAreas: '"ce ce ce" "g1 g2 g3" "g4 g4 g4"',
         [WIDE]: {
@@ -144,13 +152,13 @@ const EphemerisBand = ({ id }: { id: string }) => {
               // Téléphone : filets entre les trois Existences, le Maï sous un filet.
               borderLeft: index === 1 || index === 2 ? 1 : 0,
               borderTop: index === 3 ? 1 : 0,
-              borderColor: 'rule',
+              borderColor: 'text.primary',
               ...(index === 3 && { pt: 0.75 }),
               [WIDE]: {
                 borderLeft: index > 0 ? 1 : 0,
                 borderTop: 0,
                 pt: 0,
-                borderColor: 'rule',
+                borderColor: 'text.primary',
               },
             }}
           >

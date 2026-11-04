@@ -18,9 +18,9 @@ const nextPointCost = (value: number) =>
     : characteristicCost(value + 1) - characteristicCost(value);
 
 /**
- * Les Caractères, en grand : la valeur que l'on cherche du regard en jeu.
- * Les points s'ajoutent un par un, en aperçu, avant d'être validés (barre
- * des points en attente).
+ * Les Caractères : la valeur écrite à la main, à l'encre bleue, et le total
+ * de chaque groupe tapé à la machine (il est calculé). Les points s'ajoutent
+ * un par un, en aperçu, avant d'être validés (barre des points en attente).
  */
 const CharactersCard = ({ id }: { id: string }) => {
   const { computed, base, canEdit, isLocked, points } = useSheet(id);
@@ -30,13 +30,13 @@ const CharactersCard = ({ id }: { id: string }) => {
       <Box
         sx={{
           display: 'grid',
-          // Trois colonnes fixes dès 520 px (demi-écran) : jamais de groupe
-          // renvoyé sous un autre.
+          // Trois colonnes dès 640 px (demi-écran) : jamais de groupe renvoyé
+          // sous un autre. En dessous, deux (la machine à écrire est large).
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          '@media (min-width: 520px)': {
+          '@media (min-width: 640px)': {
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           },
-          columnGap: 2,
+          columnGap: 1.5,
           rowGap: 2,
         }}
       >
@@ -52,8 +52,8 @@ const CharactersCard = ({ id }: { id: string }) => {
                   gap: 0.5,
                   pb: 0.75,
                   mb: 0.25,
-                  borderBottom: 1,
-                  borderColor: 'text.secondary',
+                  borderBottom: '1.5px solid',
+                  borderColor: 'text.primary',
                 }}
               >
                 <Typography variant="h5" component="h3">
@@ -73,8 +73,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                     tabIndex={0}
                     sx={{
                       ml: 'auto',
-                      fontSize: '1.75rem',
-                      fontStyle: 'italic',
+                      fontSize: '1.375rem',
                       cursor: 'help',
                     }}
                   >
@@ -111,8 +110,20 @@ const CharactersCard = ({ id }: { id: string }) => {
                       ) : undefined
                     }
                   >
-                    {canEdit && <PendingPoints points={pending} />}
-                    <Typography variant="numeral" sx={{ fontSize: '1.375rem' }}>
+                    {canEdit && (
+                      <PendingPoints
+                        points={pending}
+                        before={base.values[c.key]}
+                      />
+                    )}
+                    <Typography
+                      variant="hand"
+                      sx={{
+                        fontSize: '1.625rem',
+                        fontWeight: 700,
+                        lineHeight: 0.9,
+                      }}
+                    >
                       <PreviewValue before={base.values[c.key]} delta={pending}>
                         {value}
                       </PreviewValue>

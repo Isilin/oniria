@@ -6,6 +6,7 @@ import ExpandIcon from '@mui/icons-material/ExpandMore';
 import { Box, Collapse, IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { PropsWithChildren, ReactNode, useId } from 'react';
+import { Armillary } from '../atoms/ornaments';
 
 interface Props {
   title: ReactNode;
@@ -16,9 +17,9 @@ interface Props {
 }
 
 /**
- * Une section de la fiche, posée sur le fond comme une colonne
- * d'éphéméride : un titre en petites capitales suivi d'un filet courant,
- * puis son contenu. Repliable quand `section` est donné.
+ * Une section de la feuille : un titre frappé au tampon, précédé d'une
+ * sphère armillaire et suivi d'un filet imprimé, puis son contenu.
+ * Repliable quand `section` est donné.
  */
 const SectionCard = ({
   title,
@@ -53,10 +54,11 @@ const SectionCard = ({
               content: '""',
               flex: 1,
               height: '1px',
-              bgcolor: 'rule',
+              bgcolor: 'text.primary',
             },
           }}
         >
+          <Armillary />
           {title}
         </Typography>
         {adornment}

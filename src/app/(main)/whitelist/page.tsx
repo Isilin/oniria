@@ -22,14 +22,6 @@ const Page = async () => {
           <BackButton href="/" />
         </HeaderSlot>
         <Typography
-          variant="h1"
-          sx={{
-            textAlign: 'center',
-          }}
-        >
-          ONIRIA
-        </Typography>
-        <Typography
           variant="h3"
           sx={{
             textAlign: 'center',

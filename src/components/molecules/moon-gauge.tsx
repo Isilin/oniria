@@ -3,15 +3,12 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
+import { litPath } from '../atoms/ornaments';
 import PreviewValue from '../atoms/preview-value';
 import StepperFrame, {
   stepperCell,
   stepperIconSize,
 } from '../atoms/stepper-frame';
-
-/** Mélange compatible avec les variables CSS du thème (nuit / jour). */
-const mix = (color: string, percent: number) =>
-  `color-mix(in srgb, ${color} ${percent}%, transparent)`;
 
 interface Props {
   label: string;
@@ -24,7 +21,7 @@ interface Props {
   hint?: string;
   editable?: boolean;
   onChange?: (value: number) => void;
-  /** Disque plus petit (le Maï, à côté des trois Existences). */
+  /** Planète plus petite (le Maï, à côté des trois Existences). */
   small?: boolean;
   /** −|+ sur la même ligne que la valeur, à toutes les largeurs. */
   inline?: boolean;
@@ -34,32 +31,31 @@ interface Props {
   before?: { max: number; threshold?: number };
 }
 
-const SIZE = 64;
-const C = SIZE / 2;
-const DISC = 17;
-const ARC = 27;
-/** L'arc fait les trois quarts du tour, ouvert en bas. */
+const C = 32;
+const DISC = 15;
+/** Les points sont posés sur un arc de trois quarts de tour, ouvert en bas. */
+const DOTS = 26;
 const ARC_START = 135;
 const ARC_SPAN = 270;
-/** Au-delà, les traits seraient trop fins : l'arc devient continu. */
-const MAX_TICKS = 24;
+/** Au-delà, les points se toucheraient : l'arc devient un trait continu. */
+const MAX_DOTS = 24;
+
+const PRINT = 'var(--mui-palette-text-primary)';
+const PEN = 'var(--mui-palette-primary-main)';
+const PAPER = 'var(--mui-palette-background-paper)';
 
 const point = (angle: number, radius: number) => {
   const rad = (angle * Math.PI) / 180;
-  return `${(C + radius * Math.cos(rad)).toFixed(2)} ${(C + radius * Math.sin(rad)).toFixed(2)}`;
+  return [C + radius * Math.cos(rad), C + radius * Math.sin(rad)] as const;
 };
 
-const arc = (from: number, to: number) =>
-  `M ${point(from, ARC)} A ${ARC} ${ARC} 0 ${to - from > 180 ? 1 : 0} 1 ${point(to, ARC)}`;
-
-/** Partie éclairée d'une lune : croissant à droite, puis gibbeuse. */
-const litPath = (fraction: number) => {
-  if (fraction <= 0 || fraction >= 1) return null;
-  const rx = DISC * Math.abs(1 - 2 * fraction);
-  return `M ${C} ${C - DISC} A ${DISC} ${DISC} 0 0 1 ${C} ${C + DISC} A ${rx.toFixed(2)} ${DISC} 0 0 ${fraction > 0.5 ? 1 : 0} ${C} ${C - DISC} Z`;
+const arc = (from: number, to: number) => {
+  const [x1, y1] = point(from, DOTS);
+  const [x2, y2] = point(to, DOTS);
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${DOTS} ${DOTS} 0 ${to - from > 180 ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
 };
 
-/** − et + joints, comme une case d'éphéméride : l'or de lampe au survol. */
+/** − et + joints, dans le cadre imprimé des −|+ de toute la fiche. */
 const Stepper = ({
   label,
   onStep,
@@ -88,9 +84,10 @@ const Stepper = ({
 );
 
 /**
- * Une Existence comme une phase de lune : le disque s'éclaire selon la
- * valeur, l'arc compte les points (un trait par point), −/+ en un geste.
- * La phase et l'arc glissent vers leur nouvelle valeur.
+ * Une Existence comme une petite planète d'atlas : imprimée sur son orbite,
+ * sa part éclairée peinte au lavis selon la valeur, et un point coché à la
+ * plume par point d'Existence. La valeur courante est écrite à la main ;
+ * le maximum et le seuil sont tapés. −/+ en un geste.
  */
 const MoonGauge = ({
   label,
@@ -107,18 +104,14 @@ const MoonGauge = ({
   before,
 }: Props) => {
   const fraction = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
-  const lit = litPath(fraction);
-  const track = 'var(--mui-palette-rule)';
-  const ticks = Math.max(0, Math.round(max));
-  const segmented = ticks > 0 && ticks <= MAX_TICKS;
-  const span = segmented ? ARC_SPAN / ticks : ARC_SPAN;
-  const gap = segmented ? Math.min(6, span * 0.35) : 0;
-  // Même boîte pour toutes les lunes (les valeurs restent sur une ligne) ;
+  const lit = litPath(fraction, C, C, DISC);
+  const dots = Math.max(0, Math.round(max));
+  const dotted = dots > 0 && dots <= MAX_DOTS;
+  const span = dotted ? ARC_SPAN / dots : ARC_SPAN;
+  // Même boîte pour toutes les planètes (les valeurs restent sur une ligne) ;
   // le Maï est seulement dessiné plus petit à l'intérieur.
-  const disc = { xs: 34, md: 60 };
-  const viewBox = small
-    ? `-10 -10 ${SIZE + 20} ${SIZE + 20}`
-    : `0 0 ${SIZE} ${SIZE}`;
+  const size = { xs: 40, md: 64 };
+  const viewBox = small ? '-16 -16 96 96' : '-4 -4 72 72';
   const stepper = editable && onChange;
 
   const labelNode = (
@@ -131,8 +124,8 @@ const MoonGauge = ({
       sx={{
         display: 'block',
         // Sur téléphone, le libellé doit tenir en entier : « L'Équilibre ».
-        fontSize: { xs: '0.6875rem', md: '0.8125rem' },
-        letterSpacing: { xs: '0.03em', md: '0.08em' },
+        fontSize: { xs: '0.625rem', md: '0.75rem' },
+        letterSpacing: { xs: '0.06em', md: '0.14em' },
         ...(hint && { cursor: 'help' }),
         ...(labelHiddenWide && {
           // Masqué mais présent : la valeur reste sur la ligne des autres.
@@ -155,26 +148,31 @@ const MoonGauge = ({
         columnGap: 1,
         rowGap: 0.5,
         minWidth: 0,
+        // Téléphone : le libellé au-dessus, sur toute la largeur de la colonne
+        // (la machine à écrire est large) ; dès 520 px, à côté de la planète.
         gridTemplateColumns: 'auto minmax(0, 1fr)',
-        gridTemplateAreas: '"disc text"',
+        gridTemplateAreas: '"label label" "disc text"',
+        '@media (min-width: 520px)': {
+          gridTemplateAreas: '"disc label" "disc text"',
+        },
         ...(stepper && {
           // −|+ sous la valeur quand la colonne est étroite ; à côté sinon
           // (sur une ligne entière au téléphone, et dès 1200 px).
           gridTemplateAreas: inline
-            ? '"disc text step"'
-            : '"disc text" "step step"',
+            ? '"label label label" "disc text step"'
+            : '"label label" "disc text" "step step"',
           gridTemplateColumns: inline
             ? 'auto minmax(0, max-content) auto'
             : 'auto minmax(0, 1fr)',
           '@media (min-width: 520px)': {
-            gridTemplateAreas: '"disc text" "step step"',
+            gridTemplateAreas: '"disc label" "disc text" "step step"',
             gridTemplateColumns: 'auto minmax(0, 1fr)',
           },
           // Écrit en clair (et non theme.breakpoints) pour venir après la règle
           // des 520 px : MUI range ses propres paliers en premier.
           '@media (min-width: 1200px)': {
             columnGap: 2,
-            gridTemplateAreas: '"disc text step"',
+            gridTemplateAreas: '"disc label step" "disc text step"',
             // Les −|+ suivent la valeur au lieu d'être rejetés en bout de colonne.
             gridTemplateColumns: 'auto minmax(0, max-content) auto',
           },
@@ -187,30 +185,78 @@ const MoonGauge = ({
         aria-hidden
         sx={{
           gridArea: 'disc',
-          width: disc,
-          height: disc,
+          width: size,
+          height: size,
           overflow: 'visible',
           '& .moon-anim': {
             transition:
-              'stroke 200ms ease-out, d 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+              'opacity 200ms ease-out, d 260ms cubic-bezier(0.22, 1, 0.36, 1)',
           },
           '@media (prefers-reduced-motion: reduce)': {
             '& .moon-anim': { transition: 'none' },
           },
         }}
       >
-        {segmented ? (
-          Array.from({ length: ticks }, (_, i) => {
-            const from = ARC_START + i * span + gap / 2;
+        <ellipse
+          cx={C}
+          cy={C}
+          rx="31"
+          ry="10.5"
+          transform={`rotate(-16 ${C} ${C})`}
+          fill="none"
+          stroke={PRINT}
+          strokeWidth="0.6"
+          strokeDasharray="1.5 3"
+          opacity="0.6"
+        />
+        <circle
+          cx={C}
+          cy={C}
+          r={DISC + 3}
+          fill={color}
+          fillOpacity="0.14"
+          filter="url(#oniria-wash)"
+        />
+        {lit && (
+          <path
+            className="moon-anim"
+            d={lit}
+            fill={color}
+            fillOpacity="0.62"
+            filter="url(#oniria-wash)"
+          />
+        )}
+        <circle
+          cx={C}
+          cy={C}
+          r={DISC}
+          fill="none"
+          stroke={PRINT}
+          strokeWidth="1.1"
+        />
+        {dotted ? (
+          Array.from({ length: dots }, (_, i) => {
+            const [x, y] = point(ARC_START + (i + 0.5) * span, DOTS);
             return (
-              <path
-                key={i}
-                className="moon-anim"
-                d={arc(from, from + span - gap)}
-                fill="none"
-                stroke={i < current ? color : track}
-                strokeWidth={3}
-              />
+              <g key={i}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="3.3"
+                  fill={PAPER}
+                  stroke={PRINT}
+                  strokeWidth="0.9"
+                />
+                <circle
+                  className="moon-anim"
+                  cx={x}
+                  cy={y}
+                  r="2.2"
+                  fill={PEN}
+                  filter="url(#oniria-ink)"
+                  opacity={i < current ? 1 : 0}
+                />
+              </g>
             );
           })
         ) : (
@@ -218,32 +264,24 @@ const MoonGauge = ({
             <path
               d={arc(ARC_START, ARC_START + ARC_SPAN)}
               fill="none"
-              stroke={track}
-              strokeWidth={3}
+              stroke={PRINT}
+              strokeOpacity="0.3"
+              strokeWidth="2"
             />
             {fraction > 0 && (
               <path
                 className="moon-anim"
                 d={arc(ARC_START, ARC_START + ARC_SPAN * fraction)}
                 fill="none"
-                stroke={color}
-                strokeWidth={3}
+                stroke={PEN}
+                strokeWidth="2.4"
+                strokeLinecap="round"
               />
             )}
           </>
         )}
-        <circle
-          cx={C}
-          cy={C}
-          r={DISC}
-          fill={mix(color, 10)}
-          stroke={mix(color, 45)}
-          strokeWidth={1}
-        />
-        {fraction >= 1 && <circle cx={C} cy={C} r={DISC} fill={color} />}
-        {lit && <path className="moon-anim" d={lit} fill={color} />}
       </Box>
-      <Box sx={{ gridArea: 'text', minWidth: 0 }}>
+      <Box sx={{ gridArea: 'label', minWidth: 0, alignSelf: 'end' }}>
         {hint ? (
           <Tooltip title={`Maximum : ${hint}`} describeChild>
             {labelNode}
@@ -251,6 +289,8 @@ const MoonGauge = ({
         ) : (
           labelNode
         )}
+      </Box>
+      <Box sx={{ gridArea: 'text', minWidth: 0, alignSelf: 'start' }}>
         <Box
           sx={{
             display: 'flex',
@@ -260,12 +300,16 @@ const MoonGauge = ({
           }}
         >
           <Typography
-            variant="numeral"
-            sx={{ fontSize: { xs: '1.25rem', md: '1.625rem' } }}
+            variant="hand"
+            sx={{
+              fontSize: { xs: '1.75rem', md: '2.375rem' },
+              fontWeight: 700,
+              lineHeight: 0.95,
+            }}
           >
             {current}
           </Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ ml: 0.5 }}>
             /{' '}
             <PreviewValue
               before={before?.max}

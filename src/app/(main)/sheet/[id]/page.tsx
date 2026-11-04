@@ -27,6 +27,7 @@ const Page = async ({
         <HeaderSlot side="start">
           <BackButton href="/" />
         </HeaderSlot>
+        <HeaderSlot side="title">Feuille de personnage</HeaderSlot>
         <HeaderSlot side="end">
           <DeleteSheetButton id={params.id} />
         </HeaderSlot>

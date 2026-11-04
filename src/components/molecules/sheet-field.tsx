@@ -96,7 +96,14 @@ const SheetField = ({
           editable={editable && !!onEdit}
           type={type}
           aria-label={label}
-          variant={type === 'number' ? 'numeral' : 'body1'}
+          // Écrit à la main s'il se modifie ; tapé à la machine s'il est calculé.
+          variant={
+            editable && onEdit
+              ? 'hand'
+              : type === 'number'
+                ? 'numeral'
+                : 'body1'
+          }
         />
       )}
       {postValue !== undefined && postValue !== null && (

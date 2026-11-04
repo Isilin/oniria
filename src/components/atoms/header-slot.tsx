@@ -4,8 +4,11 @@ import { PropsWithChildren, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Props {
-  /** `start` : avant le nom du jeu (retour) ; `end` : après l'affichage (⋯). */
-  side: 'start' | 'end';
+  /**
+   * `start` : avant le titre (retour) ; `title` : titre de la page, frappé
+   * avant ONIRIA ; `end` : après l'affichage (⋯).
+   */
+  side: 'start' | 'title' | 'end';
 }
 
 // L'emplacement fait partie de la barre du haut, rendue avant la page : rien

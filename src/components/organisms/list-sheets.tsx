@@ -1,15 +1,25 @@
 'use client';
 
 import { useSheets } from '@/lib/hooks/use-sheet';
-import {
-  CircularProgress,
-  Container,
-  Divider,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { Armillary } from '../atoms/ornaments';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';
+
+/** Titre de liste, comme un titre de section de la feuille. */
+const HEADING = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 1.5,
+  mb: 2,
+  '&::after': {
+    content: '""',
+    flex: 1,
+    height: '1px',
+    bgcolor: 'text.primary',
+  },
+};
 
 const ListSheets = () => {
   const { sheets, isLoading } = useSheets();
@@ -18,7 +28,10 @@ const ListSheets = () => {
 
   return (
     <Container>
-      <Typography variant="h4">Mes fiches</Typography>
+      <Typography variant="h4" component="h2" sx={HEADING}>
+        <Armillary />
+        Mes fiches
+      </Typography>
       <Grid
         container
         spacing={2}
@@ -32,8 +45,11 @@ const ListSheets = () => {
         ))}
         <AddSheetCard />
       </Grid>
-      <Divider sx={{ my: 2 }} variant="middle" />
-      <Typography variant="h4">Autres fiches</Typography>
+      <Box sx={{ height: 32 }} />
+      <Typography variant="h4" component="h2" sx={HEADING}>
+        <Armillary />
+        Autres fiches
+      </Typography>
       <Grid
         container
         spacing={2}

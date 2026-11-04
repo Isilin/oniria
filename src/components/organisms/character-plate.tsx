@@ -19,9 +19,10 @@ import {
 } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import { DottedPath, SketchMoon } from '../atoms/ornaments';
 import Portrait from '../atoms/portrait';
 
-/** Une colonne d'éphéméride : libellé en petites capitales, valeur dessous. */
+/** Un champ imprimé de la feuille : libellé tapé, valeur écrite sur un trait. */
 const Fact = ({
   label,
   children,
@@ -33,14 +34,26 @@ const Fact = ({
     <Typography variant="overline" component="p" color="textSecondary">
       {label}
     </Typography>
-    <Box sx={{ overflowWrap: 'anywhere' }}>{children}</Box>
+    <Box
+      sx={{
+        overflowWrap: 'anywhere',
+        borderBottom: 1,
+        borderColor: 'text.primary',
+        pb: 0.25,
+        minHeight: 30,
+      }}
+    >
+      {children}
+    </Box>
   </Box>
 );
 
 /**
- * La plaque du personnage : portrait cerclé de sa teinte de lune, nom,
- * Aspect et Devenir. La teinte est d'autant plus présente que le Devenir est
- * élevé ; au-delà de 100, un second cercle marque la transcendance.
+ * La plaque du personnage, en tête de la feuille : le portrait dans son
+ * cadre, posé sur un lavis de sa teinte de lune, et les champs écrits à la
+ * main (nom, âge, Aspect, Devenir). Le lavis est d'autant plus présent que
+ * le Devenir est élevé ; au-delà de 100, un second cadre marque la
+ * transcendance.
  */
 const CharacterPlate = ({ id }: { id: string }) => {
   const { sheet, canEdit, update } = useSheet(id);
@@ -50,9 +63,8 @@ const CharacterPlate = ({ id }: { id: string }) => {
 
   const tint = tintOf(sheet.tint);
   const { level, transcendent } = devenirIntensity(sheet.become);
-  // De 6 % à 18 % de teinte sur le fond de la plaque, de 35 % à 100 % sur le cercle.
-  const wash = Math.round(6 + 12 * level);
-  const ring = Math.round(35 + 65 * level);
+  // Lavis de 14 % à 34 % de teinte selon le Devenir.
+  const wash = 0.14 + 0.2 * level;
 
   const saveImage = (e: SyntheticEvent<HTMLElement>) => {
     e.preventDefault();
@@ -67,45 +79,97 @@ const CharacterPlate = ({ id }: { id: string }) => {
   return (
     <Box
       component="header"
-      sx={(theme) => ({
-        '--tint': tint.night,
-        ...theme.applyStyles('light', { '--tint': tint.day }),
+      sx={{
+        '--tint': tint.day,
+        position: 'relative',
         width: '100%',
         display: 'grid',
         gridTemplateColumns: 'auto minmax(0, 1fr)',
-        // Dès 520 px (demi-écran à côté de Discord), tout tient sur une ligne.
-        '@media (min-width: 520px)': {
+        // Dès 760 px, tout tient sur une ligne ; en dessous, les champs Âge,
+        // Aspect et Devenir passent sous le nom (la machine à écrire est large).
+        '@media (min-width: 760px)': {
           gridTemplateColumns: 'auto minmax(0, 1fr) auto',
         },
-        alignItems: 'center',
+        alignItems: 'start',
         columnGap: { xs: 2, md: 3 },
         rowGap: 2,
-        px: { xs: 2, md: 2.5 },
-        py: { xs: 1.25, md: 1.75 },
-        border: 1,
-        borderColor: 'rule',
-        borderTop: '2px solid',
-        borderTopColor: `color-mix(in srgb, var(--tint) ${ring}%, transparent)`,
-        bgcolor: 'background.paper',
-        backgroundImage: `linear-gradient(color-mix(in srgb, var(--tint) ${wash}%, transparent), color-mix(in srgb, var(--tint) ${wash}%, transparent))`,
-        borderRadius: 1,
-      })}
+        px: { xs: 1.5, md: 2.5 },
+        pt: { xs: 1.5, md: 2 },
+        pb: { xs: 1.5, md: 2.5 },
+        border: '1.5px solid',
+        borderColor: 'text.primary',
+      }}
     >
-      <Box sx={{ position: 'relative', width: { xs: 56, md: 88 } }}>
-        <Portrait
-          avatar={sheet.avatar}
-          name={sheet.name}
-          size={{ xs: 56, md: 88 }}
-          sx={{
-            bgcolor: sheet.avatar ? 'raised' : undefined,
-            border: '2px solid',
-            borderColor: `color-mix(in srgb, var(--tint) ${ring}%, transparent)`,
-            // Transcendance : un second cercle, détaché du premier.
-            boxShadow: transcendent
-              ? '0 0 0 3px var(--mui-palette-background-paper), 0 0 0 4px var(--tint)'
-              : 'none',
-          }}
+      {/* Le lavis de la teinte, qui déborde du portrait comme de l'aquarelle. */}
+      <Box
+        component="svg"
+        viewBox="0 0 300 170"
+        aria-hidden
+        sx={{
+          position: 'absolute',
+          left: { xs: -24, md: -40 },
+          top: { xs: -10, md: -6 },
+          width: { xs: 180, md: 300 },
+          height: { xs: 110, md: 170 },
+          overflow: 'visible',
+          pointerEvents: 'none',
+        }}
+      >
+        <ellipse
+          cx="150"
+          cy="85"
+          rx="125"
+          ry="62"
+          fill="var(--tint)"
+          fillOpacity={wash}
+          filter="url(#oniria-wash-wide)"
         />
+        <ellipse
+          cx="120"
+          cy="95"
+          rx="70"
+          ry="46"
+          fill="var(--tint)"
+          fillOpacity={wash}
+          filter="url(#oniria-wash-wide)"
+        />
+      </Box>
+
+      <Box sx={{ position: 'relative', pb: { md: 2.25 } }}>
+        <Box
+          sx={{
+            width: { xs: 64, md: 96 },
+            height: { xs: 72, md: 108 },
+            border: '1.5px solid',
+            borderColor: 'text.primary',
+            display: 'grid',
+            placeItems: 'center',
+            overflow: 'hidden',
+            // Transcendance : un second cadre, dans la teinte.
+            outline: transcendent ? '1.5px solid var(--tint)' : 'none',
+            outlineOffset: 4,
+          }}
+        >
+          <Portrait
+            avatar={sheet.avatar}
+            name={sheet.name}
+            size={{ xs: 52, md: 80 }}
+            framed
+          />
+        </Box>
+        <Typography
+          variant="overline"
+          color="textSecondary"
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            lineHeight: 1,
+          }}
+        >
+          Portrait
+        </Typography>
         {canEdit && (
           <Tooltip title="Changer l'image">
             <IconButton
@@ -114,11 +178,11 @@ const CharacterPlate = ({ id }: { id: string }) => {
               onClick={() => setImageOpen(true)}
               sx={{
                 position: 'absolute',
-                right: -6,
-                bottom: -6,
+                right: -12,
+                top: { xs: 50, md: 86 },
                 bgcolor: 'raised',
                 border: 1,
-                borderColor: 'rule',
+                borderColor: 'text.primary',
                 '&:hover': { bgcolor: 'raised' },
               }}
             >
@@ -128,14 +192,22 @@ const CharacterPlate = ({ id }: { id: string }) => {
         )}
       </Box>
 
-      <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ minWidth: 0, position: 'relative' }}>
+        <Typography variant="overline" component="p" color="textSecondary">
+          Nom
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
           <Typography
             variant="h2"
             component="h1"
             sx={{
-              fontSize: { xs: '1.625rem', md: '2.5rem' },
+              fontSize: { xs: '2rem', md: '3rem' },
+              color: 'primary.main',
               overflowWrap: 'anywhere',
+              borderBottom: 1,
+              borderColor: 'text.primary',
+              pr: { xs: 1, md: 4 },
+              minWidth: { md: 280 },
             }}
           >
             {canEdit ? (
@@ -156,25 +228,60 @@ const CharacterPlate = ({ id }: { id: string }) => {
                 aria-label={`Changer la teinte (${tint.label})`}
                 aria-haspopup="dialog"
                 onClick={(e) => setTintAnchor(e.currentTarget)}
-                sx={{ color: 'var(--tint)' }}
+                sx={{ color: 'var(--tint)', mb: 0.5 }}
               >
                 <PaletteIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
         </Box>
-        <Typography variant="body2" color="textSecondary">
-          Joueur·euse : {sheet.user.name}
-          {sheet.teams.length > 0 &&
-            ` · Table : ${sheet.teams.map((t) => t.name).join(', ')}`}
-          {!canEdit && ' · lecture seule'}
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            columnGap: 3,
+            rowGap: 0.5,
+            mt: 1,
+          }}
+        >
+          <Box>
+            <Typography variant="overline" component="p" color="textSecondary">
+              Joueur·euse
+            </Typography>
+            <Typography variant="body2">{sheet.user.name}</Typography>
+          </Box>
+          {sheet.teams.length > 0 && (
+            <Box>
+              <Typography
+                variant="overline"
+                component="p"
+                color="textSecondary"
+              >
+                Table
+              </Typography>
+              <Typography variant="body2">
+                {sheet.teams.map((t) => t.name).join(', ')}
+              </Typography>
+            </Box>
+          )}
+          {!canEdit && (
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ alignSelf: 'flex-end' }}
+            >
+              lecture seule
+            </Typography>
+          )}
+        </Box>
       </Box>
 
       <Box
         sx={{
+          position: 'relative',
+          zIndex: 1,
           gridColumn: '1 / -1',
-          '@media (min-width: 520px)': { gridColumn: 'auto' },
+          '@media (min-width: 760px)': { gridColumn: 'auto' },
           display: 'grid',
           gridTemplateColumns: 'repeat(3, auto)',
           columnGap: { xs: 2, md: 3 },
@@ -185,14 +292,12 @@ const CharacterPlate = ({ id }: { id: string }) => {
           <EditableField
             value={sheet.age}
             type="number"
-            variant="numeral"
             aria-label="l'âge"
             editable={canEdit}
             onChange={(v) => update({ age: v ? Number(v) : null })}
           />
           {sheet.age ? (
-            <Typography component="span" variant="body2" color="textSecondary">
-              {' '}
+            <Typography component="span" variant="hand" sx={{ ml: 0.75 }}>
               ans
             </Typography>
           ) : null}
@@ -208,7 +313,6 @@ const CharacterPlate = ({ id }: { id: string }) => {
         <Fact label={transcendent ? 'Devenir · transcendé' : 'Devenir'}>
           <EditableField
             value={sheet.become}
-            variant="numeral"
             aria-label="le Devenir"
             editable={canEdit}
             onChange={(v) => update({ become: v })}
@@ -216,16 +320,30 @@ const CharacterPlate = ({ id }: { id: string }) => {
         </Fact>
       </Box>
 
+      {/* Un croquis de voyage, dans le blanc sous les champs (grands écrans). */}
+      <Box
+        aria-hidden
+        sx={{
+          display: { xs: 'none', lg: 'flex' },
+          alignItems: 'center',
+          position: 'absolute',
+          right: 20,
+          bottom: 10,
+          width: '34%',
+          gap: 1,
+          pointerEvents: 'none',
+        }}
+      >
+        <SketchMoon size={30} />
+        <DottedPath sx={{ flex: 1, height: 28 }} />
+      </Box>
+
       <Popover
         open={Boolean(tintAnchor)}
         anchorEl={tintAnchor}
         onClose={() => setTintAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        slotProps={{
-          paper: {
-            sx: { p: 1.5, bgcolor: 'raised', border: 1, borderColor: 'rule' },
-          },
-        }}
+        slotProps={{ paper: { sx: { p: 1.5 } } }}
       >
         <Typography variant="overline" component="p" color="textSecondary">
           Teinte de lune
@@ -253,17 +371,16 @@ const CharacterPlate = ({ id }: { id: string }) => {
                     update({ tint: t.key });
                     setTintAnchor(null);
                   }}
-                  sx={(theme) => ({
+                  sx={{
                     width: 36,
                     height: 36,
                     borderRadius: '50%',
                     cursor: 'pointer',
-                    bgcolor: t.night,
-                    ...theme.applyStyles('light', { bgcolor: t.day }),
+                    bgcolor: t.day,
                     border: '2px solid',
                     borderColor: selected ? 'text.primary' : 'transparent',
                     outlineOffset: 2,
-                  })}
+                  }}
                 />
               </Tooltip>
             );

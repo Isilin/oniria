@@ -25,6 +25,7 @@ const StatRow = ({ label, tooltip, children, after }: Props) => {
       tabIndex={tooltip ? 0 : undefined}
       sx={{
         minWidth: 0,
+        fontSize: '0.75rem',
         ...(tooltip && {
           cursor: 'help',
           '&:hover, &:focus-visible': { color: 'text.primary' },
