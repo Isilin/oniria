@@ -4,7 +4,9 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import { litPath } from '../atoms/ornaments';
+import { EASE } from '@/theme/theme';
 import PreviewValue from '../atoms/preview-value';
+import Written from '../atoms/written';
 import StepperFrame, {
   stepperCell,
   stepperIconSize,
@@ -189,11 +191,19 @@ const MoonGauge = ({
           height: size,
           overflow: 'visible',
           '& .moon-anim': {
-            transition:
-              'opacity 200ms ease-out, d 260ms cubic-bezier(0.22, 1, 0.36, 1)',
+            transition: `opacity 200ms ease-out, d 260ms ${EASE}`,
           },
+          // Une goutte d'encre : le point s'étale depuis son centre.
+          '& .moon-dot': {
+            transformBox: 'fill-box',
+            transformOrigin: 'center',
+            transition: `opacity 160ms ease-out, transform 280ms ${EASE}`,
+          },
+          '& .moon-dot.off': { transform: 'scale(0.2)' },
           '@media (prefers-reduced-motion: reduce)': {
             '& .moon-anim': { transition: 'none' },
+            '& .moon-dot': { transition: 'opacity 160ms ease-out' },
+            '& .moon-dot.off': { transform: 'none' },
           },
         }}
       >
@@ -248,7 +258,7 @@ const MoonGauge = ({
                   strokeWidth="0.9"
                 />
                 <circle
-                  className="moon-anim"
+                  className={i < current ? 'moon-dot' : 'moon-dot off'}
                   cx={x}
                   cy={y}
                   r="2.2"
@@ -307,7 +317,7 @@ const MoonGauge = ({
               lineHeight: 0.95,
             }}
           >
-            {current}
+            <Written value={current}>{current}</Written>
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ ml: 0.5 }}>
             /{' '}

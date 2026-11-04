@@ -3,6 +3,7 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
+import Written from './written';
 
 export type EditableValue = string | number | null | undefined;
 
@@ -79,7 +80,7 @@ const EditableField = ({
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
         }}
       >
-        {shown}
+        <Written value={shown}>{shown}</Written>
       </Typography>
     );
   }
@@ -119,7 +120,7 @@ const EditableField = ({
           },
         }}
       >
-        {shown}
+        <Written value={shown}>{shown}</Written>
         <EditIcon
           className="edit-mark"
           aria-hidden

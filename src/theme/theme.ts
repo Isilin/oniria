@@ -59,6 +59,26 @@ export const HAND = 'var(--font-hand), "Segoe Print", cursive';
 /** Tampon : titres de page et de section. */
 export const STAMP = 'var(--font-stamp), var(--font-type), monospace';
 
+/**
+ * Le mouvement du carnet. Une seule signature : l'écriture. Une valeur
+ * écrite ou changée se trace de gauche à droite comme à la plume ; validée,
+ * elle sèche (couleur d'aperçu → encre). Le reste explique un état ou une
+ * continuité, vite. Voir DESIGN.md.
+ */
+export const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+/** La plume : un tracé régulier, qui ralentit seulement en fin de mot. */
+export const EASE_PEN = 'cubic-bezier(0.45, 0.05, 0.35, 1)';
+export const MOTION = {
+  /** Retour immédiat : survol, appui. */
+  quick: 120,
+  /** Changement d'état courant. */
+  state: 220,
+  /** Une valeur qui s'écrit. */
+  write: 420,
+  /** L'encre qui sèche (aperçu validé). */
+  dry: 600,
+} as const;
+
 /** Grain du papier, pour les encadrés opaques posés sur la feuille. */
 export const PAPER_GRAIN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
 
@@ -268,6 +288,46 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             scrollbarColor: `color-mix(in srgb, ${theme.vars.palette.text.primary} 30%, transparent) transparent`,
           },
           a: { textUnderlineOffset: '0.2em' },
+          // L'écriture : la valeur se trace de gauche à droite (la marge
+          // négative laisse dépasser la pente de l'écriture).
+          '@keyframes oniria-write': {
+            from: { clipPath: 'inset(-25% 100% -25% -10%)' },
+            to: { clipPath: 'inset(-25% -15% -25% -10%)' },
+          },
+          '.oniria-write': {
+            display: 'inline-block',
+            animation: `oniria-write ${MOTION.write}ms ${EASE_PEN} both`,
+          },
+          // Le trait qui barre une ancienne valeur, tiré à la plume.
+          '@keyframes oniria-strike': {
+            from: { backgroundSize: '0% 1.5px' },
+            to: { backgroundSize: '100% 1.5px' },
+          },
+          // Un onglet qui s'ouvre, une feuille qui se pose.
+          '@keyframes oniria-panel': {
+            from: { opacity: 0, transform: 'translateY(6px)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          '@keyframes oniria-fade': {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+          },
+          // La bougie : elle s'allume, puis vacille à peine.
+          '@keyframes oniria-flicker': {
+            '0%, 100%': { opacity: 1 },
+            '19%': { opacity: 0.9 },
+            '37%': { opacity: 0.97 },
+            '58%': { opacity: 0.86 },
+            '76%': { opacity: 0.95 },
+          },
+          // Bascule Jour / Nuit (View Transitions) : un fondu enchaîné.
+          '::view-transition-old(root), ::view-transition-new(root)': {
+            animationDuration: '450ms',
+            animationTimingFunction: 'ease-out',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            '.oniria-write': { animation: 'none' },
+          },
           // Les deux thèmes sont du papier clair : contrôles natifs clairs.
           ':root, :root.dark': { colorScheme: 'light' },
           // Les messages (notistack) : un billet de papier, tapé à la machine.
@@ -310,10 +370,15 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
               background:
                 'radial-gradient(ellipse 60% 70% at 26% 12%, rgba(255, 168, 76, 0.3), rgba(255, 140, 50, 0.08) 45%, transparent 75%)',
               mixBlendMode: 'soft-light',
+              animation: `oniria-fade 700ms ease-out both, oniria-flicker 9s ease-in-out 700ms infinite`,
             },
             'body::after': {
               background:
                 'radial-gradient(ellipse 95% 110% at 34% 18%, transparent 55%, rgba(20, 10, 4, 0.12) 80%, rgba(8, 4, 2, 0.45) 100%)',
+              animation: 'oniria-fade 700ms ease-out both',
+            },
+            '@media (prefers-reduced-motion: reduce)': {
+              'body::before': { animation: 'oniria-fade 300ms ease-out both' },
             },
             '@media (prefers-contrast: more)': {
               'body::before, body::after': { display: 'none' },
@@ -321,6 +386,8 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           }),
         }),
       },
+      // Pas d'onde Material : un bouton pressé s'enfonce, comme un tampon.
+      MuiButtonBase: { defaultProps: { disableRipple: true } },
       MuiPaper: {
         defaultProps: { elevation: 0 },
         styleOverrides: { root: { backgroundImage: 'none' } },
@@ -346,9 +413,23 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           disableElevation: true,
           size: compact ? 'small' : 'medium',
         },
-        styleOverrides: { root: { borderRadius: 2 } },
+        styleOverrides: {
+          root: {
+            borderRadius: 2,
+            transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
+            '&:active': { transform: 'translateY(1px)' },
+          },
+        },
       },
-      MuiIconButton: { defaultProps: { size: compact ? 'small' : 'medium' } },
+      MuiIconButton: {
+        defaultProps: { size: compact ? 'small' : 'medium' },
+        styleOverrides: {
+          root: {
+            transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
+            '&:active': { transform: 'translateY(1px)' },
+          },
+        },
+      },
       // Ce qu'on saisit s'écrit à la main, comme sur la feuille.
       MuiInputBase: {
         styleOverrides: {

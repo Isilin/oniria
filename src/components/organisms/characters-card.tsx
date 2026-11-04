@@ -6,6 +6,7 @@ import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
 import { Box, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PreviewValue from '../atoms/preview-value';
+import Written from '../atoms/written';
 import ScopeLock from '../atoms/scope-lock';
 import PointStepper, { PendingPoints } from '../molecules/point-stepper';
 import SectionCard from '../molecules/section-card';
@@ -125,7 +126,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                       }}
                     >
                       <PreviewValue before={base.values[c.key]} delta={pending}>
-                        {value}
+                        <Written value={value}>{value}</Written>
                       </PreviewValue>
                     </Typography>
                   </StatRow>

@@ -27,6 +27,11 @@ Première version complète des fiches de personnages d'Oniria.
   transcendance, second cadre autour du portrait).
 - Réglages enregistrés sur le compte : thème, densité (confort ou
   compacte) et sections repliées.
+- Mouvement : une valeur écrite ou modifiée se trace comme à la plume,
+  l’aperçu validé « sèche » vers l’encre, les points d’Existence se
+  cochent en goutte d’encre, la barre des points glisse depuis le bas, la
+  bougie s’allume et vacille à peine, Jour et Nuit passent en fondu
+  enchaîné. Rien ne bouge au chargement ; mouvement réduit respecté.
 - Fiches complètes reprenant les règles du tableur « Lunes d'Oniria » :
   caractères et coût en XP, facultés et marges (bonus du Corpus), santé,
   équilibre, éclat, Maï, protection et encombrement calculés.

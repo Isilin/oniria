@@ -15,6 +15,7 @@ import {
 import { useColorScheme } from '@mui/material/styles';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 
 /**
  * Réglages d'affichage : thème et densité. Connecté, ils sont enregistrés
@@ -31,7 +32,15 @@ const ThemeSwitch = () => {
 
   const changeTheme = (value: ThemeMode | null) => {
     if (!value) return;
-    setMode(value);
+    // Jour ↔ bougie : un fondu enchaîné de toute la page (View Transitions)
+    // là où le navigateur le permet, sinon la bascule est immédiate.
+    const apply = () => flushSync(() => setMode(value));
+    const quiet = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !quiet) {
+      document.startViewTransition(apply);
+    } else {
+      apply();
+    }
     if (signedIn) save({ theme: value });
   };
 

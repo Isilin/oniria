@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import { EASE } from '@/theme/theme';
 import { DottedPath, SketchMoon } from '../atoms/ornaments';
 import Portrait from '../atoms/portrait';
 
@@ -113,6 +114,14 @@ const CharacterPlate = ({ id }: { id: string }) => {
           height: { xs: 110, md: 170 },
           overflow: 'visible',
           pointerEvents: 'none',
+          animation: 'oniria-fade 700ms ease-out both',
+          '& ellipse': {
+            transition: 'fill 500ms ease-out, fill-opacity 500ms ease-out',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            animation: 'none',
+            '& ellipse': { transition: 'none' },
+          },
         }}
       >
         <ellipse
@@ -145,9 +154,11 @@ const CharacterPlate = ({ id }: { id: string }) => {
             display: 'grid',
             placeItems: 'center',
             overflow: 'hidden',
-            // Transcendance : un second cadre, dans la teinte.
-            outline: transcendent ? '1.5px solid var(--tint)' : 'none',
-            outlineOffset: 4,
+            // Transcendance : un second cadre, dans la teinte, qui se détache.
+            outline: '1.5px solid',
+            outlineColor: transcendent ? 'var(--tint)' : 'transparent',
+            outlineOffset: transcendent ? 4 : 0,
+            transition: `outline-color 500ms ease-out, outline-offset 600ms ${EASE}`,
           }}
         >
           <Portrait

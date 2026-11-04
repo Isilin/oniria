@@ -7,6 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
+import { EASE_PEN, MOTION } from '@/theme/theme';
 import { MouseEvent, PointerEvent, ReactNode, useEffect, useRef } from 'react';
 import StepperFrame, {
   stepperCell,
@@ -158,14 +159,25 @@ export const PendingPoints = ({
   before: number;
 }) => (
   <Typography
+    // Nouvelle clé quand des points arrivent : le trait se tire à nouveau.
+    key={points !== 0 ? 'barree' : 'vide'}
     variant="hand"
     component="span"
     aria-live="polite"
     sx={{
       fontSize: '1.375rem',
       opacity: 0.45,
-      textDecoration: 'line-through',
-      textDecorationThickness: '1.5px',
+      // Un trait d'encre tiré de gauche à droite (et non un barré du texte).
+      backgroundImage: 'linear-gradient(currentColor, currentColor)',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: '0 58%',
+      backgroundSize: '100% 1.5px',
+      // Le trait se tire seulement quand une valeur est barrée.
+      animation:
+        points !== 0
+          ? `oniria-strike ${MOTION.write}ms ${EASE_PEN} both`
+          : 'none',
+      '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
     }}
   >
     {points !== 0 && (
