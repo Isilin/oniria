@@ -38,6 +38,8 @@ export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
     const { user } = await requireSheetEditor(params.id);
     const body = await readJson(req);
     const data = sanitizeFields(SHEET_FIELDS, body);
+    // Un personnage garde toujours un nom, comme à sa création.
+    if ('name' in data && !data.name) data.name = 'Sans nom';
     const payload = readXpPayload(body);
 
     for (const key of STAT_KEYS) {

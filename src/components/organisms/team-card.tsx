@@ -207,7 +207,8 @@ const TeamCard = ({ id }: { id: string }) => {
           <EditableField
             value={team.name}
             aria-label="Nom de la table"
-            onChange={(name) => name && rename(name)}
+            // Un nom fait d'espaces ne remplace pas le nom de la table.
+            onChange={(name) => name.trim() && rename(name.trim())}
           />
         </Typography>
         <Typography variant="subtitle1">

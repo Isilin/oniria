@@ -1,6 +1,7 @@
 'use client';
 
 import { Amounts, zero } from '@/lib/rules/xp';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import {
   Box,
   Button,
@@ -100,6 +101,7 @@ const XpGrantDialog = ({
           label="Libellé"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           fullWidth
           size="small"
           margin="dense"

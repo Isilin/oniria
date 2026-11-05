@@ -50,6 +50,7 @@ const CreateWhitelistDialog = ({ open, onClose }: Props) => {
           name="email"
           label="Adresse email"
           type="email"
+          slotProps={{ htmlInput: { maxLength: 254 } }}
           autoComplete="off"
           fullWidth
           variant="standard"

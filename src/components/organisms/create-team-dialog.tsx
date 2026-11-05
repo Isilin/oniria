@@ -1,5 +1,6 @@
 import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useTeams } from '@/lib/hooks/use-team';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -53,6 +54,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
           margin="dense"
           id="name"
           name="name"
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           label="Nom"
           type="text"
           fullWidth

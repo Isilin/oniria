@@ -1,4 +1,6 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSheets } from '@/lib/hooks/use-sheet';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import {
   Button,
   CircularProgress,
@@ -9,7 +11,6 @@ import {
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
 
@@ -55,6 +56,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
           margin="dense"
           id="name"
           name="name"
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           label="Nom"
           type="text"
           fullWidth

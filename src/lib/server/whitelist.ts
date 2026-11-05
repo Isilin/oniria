@@ -21,7 +21,8 @@ export const normalizeEmail = (email: unknown) => {
   const normalized = String(email ?? '')
     .trim()
     .toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+$/.test(normalized)) {
+  // 254 caractères : la plus longue adresse email possible.
+  if (normalized.length > 254 || !/^[^\s@]+@[^\s@]+$/.test(normalized)) {
     throw new HttpError(400, 'Adresse email invalide.');
   }
   return normalized;

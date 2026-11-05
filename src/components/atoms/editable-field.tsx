@@ -1,6 +1,7 @@
 'use client';
 
 import EditIcon from '@mui/icons-material/Edit';
+import { STRING_MAX, TEXT_MAX } from '@/lib/sheet/fields';
 import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
 import Written from './written';
@@ -18,6 +19,11 @@ interface Props {
   display?: string;
   minWidth?: number;
   fullWidth?: boolean;
+  /**
+   * Longueur maximale. Par défaut, celle que le serveur accepte : un champ
+   * court (200) sur une ligne, un texte sur plusieurs.
+   */
+  maxLength?: number;
   'aria-label'?: string;
   /**
    * Style du texte affiché. Par défaut `hand` : ce que le joueur écrit est
@@ -35,6 +41,7 @@ const EditableField = ({
   display,
   minWidth,
   fullWidth,
+  maxLength,
   'aria-label': ariaLabel,
   variant = 'hand',
 }: Props) => {
@@ -155,7 +162,15 @@ const EditableField = ({
       type={type === 'number' ? 'number' : 'text'}
       multiline={type === 'multiline'}
       fullWidth={fullWidth}
-      slotProps={{ htmlInput: { 'aria-label': ariaLabel } }}
+      slotProps={{
+        htmlInput: {
+          'aria-label': ariaLabel,
+          maxLength:
+            type === 'number'
+              ? undefined
+              : (maxLength ?? (type === 'multiline' ? TEXT_MAX : STRING_MAX)),
+        },
+      }}
       sx={{
         minWidth: minWidth ?? (type === 'number' ? 60 : 120),
         maxWidth: fullWidth ? undefined : 400,

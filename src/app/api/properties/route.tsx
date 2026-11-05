@@ -6,6 +6,7 @@ import {
   requireAdmin,
   requireUser,
 } from '@/lib/server/api';
+import { readName, TEXT_MAX } from '@/lib/sheet/fields';
 import { NextRequest } from 'next/server';
 
 export const GET = () =>
@@ -19,8 +20,12 @@ export const POST = (req: NextRequest) =>
   handle(async () => {
     await requireAdmin();
     const { name, description } = await readJson(req);
-    const trimmed = String(name ?? '').trim();
+    const trimmed = readName(name);
     if (!trimmed) throw new HttpError(400, 'Nom manquant.');
+    const text = description ? String(description) : null;
+    if (text && text.length > TEXT_MAX) {
+      throw new HttpError(400, 'Description trop longue.');
+    }
     const existing = await prisma.property.findFirst({
       where: { name: { equals: trimmed, mode: 'insensitive' } },
     });
@@ -28,7 +33,7 @@ export const POST = (req: NextRequest) =>
     return prisma.property.create({
       data: {
         name: trimmed,
-        description: description ? String(description) : null,
+        description: text,
       },
     });
   });

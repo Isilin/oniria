@@ -1,6 +1,7 @@
 'use client';
 
 import { useSheet } from '@/lib/hooks/use-sheet';
+import { URL_MAX } from '@/lib/sheet/fields';
 import { devenirIntensity, TINTS, tintOf } from '@/lib/tints';
 import PaletteIcon from '@mui/icons-material/PaletteOutlined';
 import PhotoIcon from '@mui/icons-material/PhotoCameraOutlined';
@@ -237,7 +238,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
                 value={sheet.name}
                 aria-label="le nom"
                 variant="inherit"
-                onChange={(name) => update({ name: name || 'Sans nom' })}
+                onChange={(name) => update({ name: name.trim() || 'Sans nom' })}
               />
             ) : (
               sheet.name
@@ -422,9 +423,11 @@ const CharacterPlate = ({ id }: { id: string }) => {
             autoFocus
             margin="dense"
             name="avatar"
+            type="url"
             label="Adresse (URL) de l'image"
             placeholder="https://…"
             defaultValue={sheet.avatar ?? ''}
+            slotProps={{ htmlInput: { maxLength: URL_MAX } }}
             fullWidth
             variant="standard"
           />

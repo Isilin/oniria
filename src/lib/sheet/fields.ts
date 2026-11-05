@@ -12,7 +12,21 @@ export interface FieldSpec {
   type: FieldType;
   /** Valeurs autorisées pour un champ `enum`. */
   values?: readonly string[];
+  /** Longueur maximale d'un champ `string` ou `text`, si autre que l'usuelle. */
+  max?: number;
 }
+
+/**
+ * Plus grand entier que la base accepte (int4 de PostgreSQL) : au-delà, elle
+ * refuse l'écriture. Une borne technique, pas une règle du jeu.
+ */
+export const INT_LIMIT = 2_147_483_647;
+/** Longueur maximale d'un champ court : nom, Aspect, incantation… */
+export const STRING_MAX = 200;
+/** Longueur maximale d'un texte : notes, descriptions. */
+export const TEXT_MAX = 100_000;
+/** Longueur maximale d'une adresse (portrait). */
+export const URL_MAX = 2048;
 
 export type FieldSpecs = Record<string, FieldSpec>;
 
@@ -54,7 +68,7 @@ export const ARMOR_TYPES = ['LOW', 'PARTIAL', 'FULL'] as const;
 
 export const SHEET_FIELDS: FieldSpecs = {
   name: string,
-  avatar: string,
+  avatar: { type: 'string', max: URL_MAX },
   age: int,
   current_mai: int,
   aspect: string,
@@ -160,7 +174,7 @@ export const COLLECTIONS = {
   },
   items: {
     model: 'item',
-    fields: { name: string, description: string, quantity: int },
+    fields: { name: string, description: text, quantity: int },
   },
 } as const satisfies Record<string, { model: string; fields: FieldSpecs }>;
 
@@ -190,13 +204,28 @@ const coerce = (key: string, spec: FieldSpec, value: unknown) => {
   }
   switch (spec.type) {
     case 'string':
-    case 'text':
+    case 'text': {
+      // Un champ court ne garde pas les espaces autour : « Lyse » et non
+      // « Lyse  ». Un texte (notes en markdown) reste tel quel.
+      const string =
+        spec.type === 'string' ? String(value).trim() : String(value);
+      const max = spec.max ?? (spec.type === 'string' ? STRING_MAX : TEXT_MAX);
+      if (string.length > max) {
+        throw new ValidationError(
+          `« ${key} »\u00a0: ${max.toLocaleString('fr-FR')} caractères au plus.`,
+        );
+      }
+      return string || null;
+    }
     case 'ref':
       return String(value);
     case 'int': {
       const number = Number(value);
       if (!Number.isFinite(number)) {
         throw new ValidationError(`« ${key} » doit être un nombre.`);
+      }
+      if (Math.abs(number) > INT_LIMIT) {
+        throw new ValidationError(`« ${key} »\u00a0: nombre trop grand.`);
       }
       return Math.trunc(number);
     }
@@ -223,4 +252,19 @@ export const sanitizeFields = (
       .filter(([key]) => Object.prototype.hasOwnProperty.call(specs, key))
       .map(([key, value]) => [key, coerce(key, specs[key], value)]),
   );
+};
+
+/**
+ * Nom d'une fiche, d'une table ou d'une propriété : sans espaces autour, et
+ * jamais plus long qu'un champ court. Vide : `null` (à l'appelant de dire ce
+ * qu'il en fait).
+ */
+export const readName = (value: unknown) => {
+  const name = String(value ?? '').trim();
+  if (name.length > STRING_MAX) {
+    throw new ValidationError(
+      `Le nom\u00a0: ${STRING_MAX} caractères au plus.`,
+    );
+  }
+  return name || null;
 };

@@ -24,6 +24,7 @@ import {
   xpSummary,
   xpTotals,
 } from '@/lib/rules/xp';
+import { INT_LIMIT } from '@/lib/sheet/fields';
 import { Prisma, Role } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
@@ -52,6 +53,10 @@ const toInt = (value: unknown, label: string) => {
   const number = Number(value ?? 0);
   if (!Number.isInteger(number)) {
     throw new HttpError(400, `Montant invalide en ${label}.`);
+  }
+  // Au-delà, la base refuse l'écriture (int4).
+  if (Math.abs(number) > INT_LIMIT) {
+    throw new HttpError(400, `Montant trop grand en ${label}.`);
   }
   return number;
 };

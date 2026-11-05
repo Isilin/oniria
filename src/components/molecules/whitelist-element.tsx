@@ -50,6 +50,7 @@ const WhitelistElement = ({ element }: { element: Whitelist }) => {
             autoFocus
             label="Adresse"
             type="email"
+            slotProps={{ htmlInput: { maxLength: 254 } }}
             size="small"
             fullWidth
             value={draft}
