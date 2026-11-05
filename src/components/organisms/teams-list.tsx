@@ -1,7 +1,8 @@
 'use client';
 
 import { useTeams } from '@/lib/hooks/use-team';
-import { Box, CircularProgress, Container, Typography } from '@mui/material';
+import { CircularProgress, Container, Typography } from '@mui/material';
+import CardRow from '../atoms/card-row';
 import LoadError from '../atoms/load-error';
 import TeamAddButton from '../molecules/team-add-button';
 import TeamListElement from '../molecules/team-list-element';
@@ -33,12 +34,12 @@ const TeamsList = () => {
           Aucune table de jeu.
         </Typography>
       )}
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+      <CardRow>
         {teams.map((team) => (
           <TeamListElement team={team} key={team.id} />
         ))}
         <TeamAddButton />
-      </Box>
+      </CardRow>
     </Container>
   );
 };

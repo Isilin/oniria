@@ -3,6 +3,7 @@
 import { TeamSummary } from '@/lib/hooks/use-team';
 import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
+import { CARD_WIDTH } from '../atoms/card-row';
 
 interface Props {
   team: TeamSummary;
@@ -10,7 +11,7 @@ interface Props {
 
 const TeamListElement = ({ team }: Props) => {
   return (
-    <Card sx={{ width: 250 }}>
+    <Card sx={{ width: CARD_WIDTH }}>
       <CardActionArea component={Link} href={`/team/${team.id}`}>
         <CardContent>
           <Typography

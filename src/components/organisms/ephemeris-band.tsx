@@ -20,14 +20,12 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
+import { RUNNING_RULE } from '../atoms/section-heading';
 import Written from '../atoms/written';
 import MoonGauge from '../molecules/moon-gauge';
 
 type Field =
-  | 'current_health'
-  | 'current_stability'
-  | 'current_radiance'
-  | 'current_mai';
+  'current_health' | 'current_stability' | 'current_radiance' | 'current_mai';
 
 /** Une planète en miniature, pour la bande : le disque et sa couleur. */
 const MiniPlanet = ({ color }: { color: string }) => (
@@ -70,12 +68,7 @@ const Caption = ({
       [MEDIA.planetsRow]: { display: 'flex' },
       alignItems: 'center',
       gap: 1,
-      '&::after': {
-        content: '""',
-        flex: 1,
-        height: '1px',
-        bgcolor: 'text.primary',
-      },
+      ...RUNNING_RULE,
     }}
   >
     {children}

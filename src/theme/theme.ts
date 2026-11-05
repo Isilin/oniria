@@ -593,10 +593,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       },
       MuiTabs: {
         styleOverrides: {
-          root: ({ theme }) => ({
-            minHeight: 44,
-            borderBottom: RULES.ink,
-          }),
+          root: { minHeight: 44, borderBottom: RULES.ink },
           indicator: { height: 2 },
         },
       },
@@ -643,10 +640,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       },
       MuiTableCell: {
         styleOverrides: {
-          root: ({ theme }) => ({
-            borderBottom: RULES.hairline,
-            fontSize: '0.875rem',
-          }),
+          root: { borderBottom: RULES.hairline, fontSize: '0.875rem' },
           head: ({ theme }) => ({
             fontWeight: 400,
             letterSpacing: '0.14em',
