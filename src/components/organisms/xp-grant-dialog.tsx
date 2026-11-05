@@ -2,19 +2,9 @@
 
 import { Amounts, zero } from '@/lib/rules/xp';
 import { STRING_MAX } from '@/lib/sheet/fields';
-import {
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
+import { Box, Chip, DialogContentText, TextField } from '@mui/material';
 import { ReactNode, useState } from 'react';
-import BusyButton from '../atoms/busy-button';
+import ActionDialog from '../molecules/_shared/action-dialog';
 import { AmountsFields } from './xp-dialogs';
 
 export interface Grant extends Amounts {
@@ -65,14 +55,10 @@ const XpGrantDialog = ({
 }: Props) => {
   const [label, setLabel] = useState(`Session du ${today()}`);
   const [amounts, setAmounts] = useState<Amounts>(zero());
-  const [loading, setLoading] = useState(false);
   const empty = !amounts.feel && !amounts.learn && !amounts.live;
 
   const submit = async () => {
-    setLoading(true);
-    const ok = await onSubmit({ label, ...amounts });
-    setLoading(false);
-    if (ok) {
+    if (await onSubmit({ label, ...amounts })) {
       setAmounts(zero());
       setLabel(`Session du ${today()}`);
       onClose();
@@ -80,49 +66,42 @@ const XpGrantDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText variant="body2">
-          Un montant négatif retire de l&apos;XP.
-        </DialogContentText>
-        {creationShortcut && (
-          <Box sx={{ display: 'flex', gap: 1, my: 1, flexWrap: 'wrap' }}>
-            <Chip
-              label={`Création : ${CREATION_XP} Vivre`}
-              onClick={() => {
-                setLabel('Création');
-                setAmounts({ feel: 0, learn: 0, live: CREATION_XP });
-              }}
-            />
-          </Box>
-        )}
-        <TextField
-          label="Libellé"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
-          fullWidth
-          size="small"
-          margin="dense"
-        />
-        <AmountsFields value={amounts} onChange={setAmounts} allowNegative />
-        {children}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          Annuler
-        </Button>
-        <BusyButton
-          variant="contained"
-          onClick={submit}
-          busy={loading}
-          disabled={empty || disabled}
-        >
-          {submitLabel(amounts, recipients)}
-        </BusyButton>
-      </DialogActions>
-    </Dialog>
+    <ActionDialog
+      open={open}
+      onClose={onClose}
+      title={title}
+      confirmLabel={submitLabel(amounts, recipients)}
+      onConfirm={submit}
+      confirmDisabled={empty || disabled}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogContentText variant="body2">
+        Un montant négatif retire de l&apos;XP.
+      </DialogContentText>
+      {creationShortcut && (
+        <Box sx={{ display: 'flex', gap: 1, my: 1, flexWrap: 'wrap' }}>
+          <Chip
+            label={`Création : ${CREATION_XP} Vivre`}
+            onClick={() => {
+              setLabel('Création');
+              setAmounts({ feel: 0, learn: 0, live: CREATION_XP });
+            }}
+          />
+        </Box>
+      )}
+      <TextField
+        label="Libellé"
+        value={label}
+        onChange={(e) => setLabel(e.target.value)}
+        slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
+        fullWidth
+        size="small"
+        margin="dense"
+      />
+      <AmountsFields value={amounts} onChange={setAmounts} allowNegative />
+      {children}
+    </ActionDialog>
   );
 };
 

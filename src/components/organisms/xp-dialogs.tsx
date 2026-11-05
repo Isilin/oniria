@@ -17,12 +17,7 @@ import {
 import {
   Alert,
   Box,
-  Button,
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControlLabel,
   Radio,
   RadioGroup,
@@ -37,6 +32,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import ActionDialog from '../molecules/_shared/action-dialog';
 
 /** Réponse d'un dialogue : ce qu'on envoie à l'API dans `xp`. */
 export interface XpAnswer {
@@ -172,60 +168,56 @@ const PurchaseDialog = ({
     : checkSplit(split, change.delta, change.scope, balance);
 
   return (
-    <Dialog open onClose={() => onClose(null)} maxWidth="sm" fullWidth>
-      <DialogTitle>Dépenser de l&apos;expérience</DialogTitle>
-      <DialogContent>
-        <Typography variant="h6">{change.label}</Typography>
-        <Typography gutterBottom>
-          Coût : <strong>{change.delta} XP</strong>
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {scope.label} se paie avec :{' '}
-          {scope.pools.map((p) => POOL_LABELS[p]).join(', ')}. La dépense est
-          définitive : seul le MJ pourra la reprendre.
-        </Typography>
-        {!gift && (
-          <AmountsFields
-            value={split}
-            onChange={setSplit}
-            allowed={scope.pools}
-            balance={balance}
-          />
-        )}
-        {!gift && suggestion.missing > 0 && (
-          <Alert severity="warning" sx={{ mt: 2 }}>
-            XP insuffisante : il manque {suggestion.missing} XP.
-          </Alert>
-        )}
-        {!gift && error && suggestion.missing === 0 && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {isAdmin && (
-          <FormControlLabel
-            sx={{ mt: 1, display: 'flex' }}
-            control={
-              <Checkbox
-                checked={gift}
-                onChange={(e) => setGift(e.target.checked)}
-              />
-            }
-            label="Offert par le MJ (aucune XP dépensée)"
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => onClose(null)}>Annuler</Button>
-        <Button
-          variant="contained"
-          disabled={!!error}
-          onClick={() => onClose(gift ? { gift: true } : { split })}
-        >
-          {gift ? 'Offrir' : `Dépenser ${sum(split)} XP`}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ActionDialog
+      open
+      onClose={() => onClose(null)}
+      title="Dépenser de l'expérience"
+      confirmLabel={gift ? 'Offrir' : `Dépenser ${sum(split)} XP`}
+      onConfirm={() => onClose(gift ? { gift: true } : { split })}
+      confirmDisabled={!!error}
+      maxWidth="sm"
+      fullWidth
+    >
+      <Typography variant="h6">{change.label}</Typography>
+      <Typography gutterBottom>
+        Coût : <strong>{change.delta} XP</strong>
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        {scope.label} se paie avec :{' '}
+        {scope.pools.map((p) => POOL_LABELS[p]).join(', ')}. La dépense est
+        définitive : seul le MJ pourra la reprendre.
+      </Typography>
+      {!gift && (
+        <AmountsFields
+          value={split}
+          onChange={setSplit}
+          allowed={scope.pools}
+          balance={balance}
+        />
+      )}
+      {!gift && suggestion.missing > 0 && (
+        <Alert severity="warning" sx={{ mt: 2 }}>
+          XP insuffisante : il manque {suggestion.missing} XP.
+        </Alert>
+      )}
+      {!gift && error && suggestion.missing === 0 && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {isAdmin && (
+        <FormControlLabel
+          sx={{ mt: 1, display: 'flex' }}
+          control={
+            <Checkbox
+              checked={gift}
+              onChange={(e) => setGift(e.target.checked)}
+            />
+          }
+          label="Offert par le MJ (aucune XP dépensée)"
+        />
+      )}
+    </ActionDialog>
   );
 };
 
@@ -240,52 +232,48 @@ const RemovalDialog = ({
   const paid = sum(refund.amounts);
 
   return (
-    <Dialog open onClose={() => onClose(null)} maxWidth="sm" fullWidth>
-      <DialogTitle>Reprendre un élément validé</DialogTitle>
-      <DialogContent>
-        <Typography variant="h6">{change.label}</Typography>
-        <Typography gutterBottom>
-          Valeur : <strong>{-change.delta} XP</strong>
-          {refund.offered > 0 && ` (dont ${refund.offered} offerts)`}
-        </Typography>
-        <RadioGroup
-          value={mode}
-          onChange={(e) => setMode(e.target.value as 'refund' | 'loss')}
-        >
-          <FormControlLabel
-            value="refund"
-            control={<Radio />}
-            label={
-              paid > 0
-                ? `Rembourser : ${formatAmounts(refund.amounts)}`
-                : 'Rembourser (rien à rendre : rien n’a été payé)'
-            }
-          />
-          <FormControlLabel
-            value="loss"
-            control={<Radio />}
-            label="Ne pas rembourser : l'XP est perdue"
-          />
-        </RadioGroup>
-        {refund.missing > 0 && (
-          <Alert severity="info" sx={{ mt: 1 }}>
-            {refund.missing} XP de cette valeur n&apos;apparaissent pas dans le
-            journal (fiche reprise ou compte inexact) : ils ne peuvent pas être
-            rendus.
-          </Alert>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => onClose(null)}>Annuler</Button>
-        <Button
-          variant="contained"
-          color="warning"
-          onClick={() => onClose({ refund: mode === 'refund' })}
-        >
-          Confirmer
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ActionDialog
+      open
+      onClose={() => onClose(null)}
+      title="Reprendre un élément validé"
+      confirmLabel="Confirmer"
+      confirmColor="warning"
+      onConfirm={() => onClose({ refund: mode === 'refund' })}
+      maxWidth="sm"
+      fullWidth
+    >
+      <Typography variant="h6">{change.label}</Typography>
+      <Typography gutterBottom>
+        Valeur : <strong>{-change.delta} XP</strong>
+        {refund.offered > 0 && ` (dont ${refund.offered} offerts)`}
+      </Typography>
+      <RadioGroup
+        value={mode}
+        onChange={(e) => setMode(e.target.value as 'refund' | 'loss')}
+      >
+        <FormControlLabel
+          value="refund"
+          control={<Radio />}
+          label={
+            paid > 0
+              ? `Rembourser : ${formatAmounts(refund.amounts)}`
+              : 'Rembourser (rien à rendre : rien n’a été payé)'
+          }
+        />
+        <FormControlLabel
+          value="loss"
+          control={<Radio />}
+          label="Ne pas rembourser : l'XP est perdue"
+        />
+      </RadioGroup>
+      {refund.missing > 0 && (
+        <Alert severity="info" sx={{ mt: 1 }}>
+          {refund.missing} XP de cette valeur n&apos;apparaissent pas dans le
+          journal (fiche reprise ou compte inexact) : ils ne peuvent pas être
+          rendus.
+        </Alert>
+      )}
+    </ActionDialog>
   );
 };
 
@@ -328,124 +316,120 @@ const PointsDialog = ({
   const unrecorded = plan.removals.reduce((t, r) => t + r.missing, 0);
 
   return (
-    <Dialog open onClose={() => onClose(null)} maxWidth="sm" fullWidth>
-      <DialogTitle>Valider les points</DialogTitle>
-      <DialogContent>
-        <Box component="ul" sx={{ pl: 2.5, mt: 0 }}>
-          {plan.lines.map((line) => (
-            <Typography component="li" key={line.key}>
-              {line.label} : <strong>{lineCost(line)}</strong>
-            </Typography>
-          ))}
-        </Box>
-        {plan.lines.some((l) => l.free) && (
-          <Typography variant="body2" color="textSecondary" gutterBottom>
-            Les parties débloquées ne coûtent rien maintenant : leur coût sera
-            payé à la validation de la fiche.
+    <ActionDialog
+      open
+      onClose={() => onClose(null)}
+      title="Valider les points"
+      confirmLabel={buying ? `Dépenser ${plan.cost} XP` : 'Valider'}
+      onConfirm={() =>
+        onClose({ splits: buying ? splits : undefined, gift, refund })
+      }
+      confirmDisabled={buying && !!plan.error}
+      maxWidth="sm"
+      fullWidth
+    >
+      <Box component="ul" sx={{ pl: 2.5, mt: 0 }}>
+        {plan.lines.map((line) => (
+          <Typography component="li" key={line.key}>
+            {line.label} : <strong>{lineCost(line)}</strong>
           </Typography>
-        )}
-        {buying && (
-          <>
-            <Typography gutterBottom sx={{ mt: 1 }}>
-              Coût : <strong>{plan.cost} XP</strong>
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              La dépense est définitive : seul le MJ pourra la reprendre.
-            </Typography>
-            {plan.dues.map((due) => {
-              const scope = SCOPE_BY_KEY[due.scope];
-              return (
-                <Box key={due.scope} sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2">
-                    {scope.label} : {due.amount} XP, payés avec{' '}
-                    {scope.pools.map((p) => POOL_LABELS[p]).join(', ')}
-                  </Typography>
-                  <AmountsFields
-                    value={splits[due.scope] ?? zero()}
-                    onChange={(split) =>
-                      setSplits({ ...splits, [due.scope]: split })
-                    }
-                    allowed={scope.pools}
-                    balance={plan.balance}
-                  />
-                </Box>
-              );
-            })}
-          </>
-        )}
-        {buying && suggestion.missing > 0 && (
-          <Alert severity="warning" sx={{ mt: 2 }}>
-            XP insuffisante : il manque {suggestion.missing} XP.
-          </Alert>
-        )}
-        {buying && plan.error && suggestion.missing === 0 && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {plan.error}
-          </Alert>
-        )}
-        {isAdmin && plan.dues.length > 0 && (
-          <FormControlLabel
-            sx={{ mt: 1, display: 'flex' }}
-            control={
-              <Checkbox
-                checked={gift}
-                onChange={(e) => setGift(e.target.checked)}
-              />
-            }
-            label="Offert par le MJ (aucune XP dépensée)"
-          />
-        )}
-        {plan.removals.length > 0 && (
-          <>
-            <Typography variant="subtitle2" sx={{ mt: 2 }}>
-              Baisses
-            </Typography>
-            <RadioGroup
-              value={refund ? 'refund' : 'loss'}
-              onChange={(e) => {
-                const value = e.target.value === 'refund';
-                setRefund(value);
-                setSplits(evaluate({ refund: value }).splits);
-              }}
-            >
-              <FormControlLabel
-                value="refund"
-                control={<Radio />}
-                label={
-                  sum(refunded) > 0
-                    ? `Rembourser : ${formatAmounts(refunded)}`
-                    : 'Rembourser (rien à rendre : rien n’a été payé)'
-                }
-              />
-              <FormControlLabel
-                value="loss"
-                control={<Radio />}
-                label="Ne pas rembourser : l'XP est perdue"
-              />
-            </RadioGroup>
-            {unrecorded > 0 && (
-              <Alert severity="info" sx={{ mt: 1 }}>
-                {unrecorded} XP de cette valeur n&apos;apparaissent pas dans le
-                journal (fiche reprise ou compte inexact) : ils ne peuvent pas
-                être rendus.
-              </Alert>
-            )}
-          </>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => onClose(null)}>Annuler</Button>
-        <Button
-          variant="contained"
-          disabled={buying && !!plan.error}
-          onClick={() =>
-            onClose({ splits: buying ? splits : undefined, gift, refund })
+        ))}
+      </Box>
+      {plan.lines.some((l) => l.free) && (
+        <Typography variant="body2" color="textSecondary" gutterBottom>
+          Les parties débloquées ne coûtent rien maintenant : leur coût sera
+          payé à la validation de la fiche.
+        </Typography>
+      )}
+      {buying && (
+        <>
+          <Typography gutterBottom sx={{ mt: 1 }}>
+            Coût : <strong>{plan.cost} XP</strong>
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            La dépense est définitive : seul le MJ pourra la reprendre.
+          </Typography>
+          {plan.dues.map((due) => {
+            const scope = SCOPE_BY_KEY[due.scope];
+            return (
+              <Box key={due.scope} sx={{ mt: 2 }}>
+                <Typography variant="subtitle2">
+                  {scope.label} : {due.amount} XP, payés avec{' '}
+                  {scope.pools.map((p) => POOL_LABELS[p]).join(', ')}
+                </Typography>
+                <AmountsFields
+                  value={splits[due.scope] ?? zero()}
+                  onChange={(split) =>
+                    setSplits({ ...splits, [due.scope]: split })
+                  }
+                  allowed={scope.pools}
+                  balance={plan.balance}
+                />
+              </Box>
+            );
+          })}
+        </>
+      )}
+      {buying && suggestion.missing > 0 && (
+        <Alert severity="warning" sx={{ mt: 2 }}>
+          XP insuffisante : il manque {suggestion.missing} XP.
+        </Alert>
+      )}
+      {buying && plan.error && suggestion.missing === 0 && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {plan.error}
+        </Alert>
+      )}
+      {isAdmin && plan.dues.length > 0 && (
+        <FormControlLabel
+          sx={{ mt: 1, display: 'flex' }}
+          control={
+            <Checkbox
+              checked={gift}
+              onChange={(e) => setGift(e.target.checked)}
+            />
           }
-        >
-          {buying ? `Dépenser ${plan.cost} XP` : 'Valider'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          label="Offert par le MJ (aucune XP dépensée)"
+        />
+      )}
+      {plan.removals.length > 0 && (
+        <>
+          <Typography variant="subtitle2" sx={{ mt: 2 }}>
+            Baisses
+          </Typography>
+          <RadioGroup
+            value={refund ? 'refund' : 'loss'}
+            onChange={(e) => {
+              const value = e.target.value === 'refund';
+              setRefund(value);
+              setSplits(evaluate({ refund: value }).splits);
+            }}
+          >
+            <FormControlLabel
+              value="refund"
+              control={<Radio />}
+              label={
+                sum(refunded) > 0
+                  ? `Rembourser : ${formatAmounts(refunded)}`
+                  : 'Rembourser (rien à rendre : rien n’a été payé)'
+              }
+            />
+            <FormControlLabel
+              value="loss"
+              control={<Radio />}
+              label="Ne pas rembourser : l'XP est perdue"
+            />
+          </RadioGroup>
+          {unrecorded > 0 && (
+            <Alert severity="info" sx={{ mt: 1 }}>
+              {unrecorded} XP de cette valeur n&apos;apparaissent pas dans le
+              journal (fiche reprise ou compte inexact) : ils ne peuvent pas
+              être rendus.
+            </Alert>
+          )}
+        </>
+      )}
+    </ActionDialog>
   );
 };
 

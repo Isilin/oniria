@@ -7,22 +7,18 @@ import PaletteIcon from '@mui/icons-material/PaletteOutlined';
 import PhotoIcon from '@mui/icons-material/PhotoCameraOutlined';
 import {
   Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Popover,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { SyntheticEvent, useState } from 'react';
+import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import { EASE, MEDIA, RULES } from '@/theme/theme';
 import { DottedPath, SketchMoon } from '../atoms/ornaments';
 import Portrait from '../atoms/portrait';
+import ActionDialog from '../molecules/_shared/action-dialog';
 
 /** Un champ imprimé de la feuille : libellé tapé, valeur écrite sur un trait. */
 const Fact = ({
@@ -68,12 +64,8 @@ const CharacterPlate = ({ id }: { id: string }) => {
   // Lavis de 14 % à 34 % de teinte selon le Devenir.
   const wash = 0.14 + 0.2 * level;
 
-  const saveImage = (e: SyntheticEvent<HTMLElement>) => {
-    e.preventDefault();
-    const url =
-      new FormData(e.currentTarget as HTMLFormElement)
-        .get('avatar')
-        ?.toString() ?? '';
+  const saveImage = (fields?: FormData) => {
+    const url = fields?.get('avatar')?.toString() ?? '';
     update({ avatar: url.trim() || null });
     setImageOpen(false);
   };
@@ -409,34 +401,28 @@ const CharacterPlate = ({ id }: { id: string }) => {
         </Box>
       </Popover>
 
-      <Dialog
+      <ActionDialog
         open={imageOpen}
         onClose={() => setImageOpen(false)}
+        title="Image du personnage"
+        confirmLabel="Enregistrer"
+        onConfirm={saveImage}
+        form
         fullWidth
-        slotProps={{ paper: { component: 'form', onSubmit: saveImage } }}
       >
-        <DialogTitle>Image du personnage</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="avatar"
-            type="url"
-            label="Adresse (URL) de l'image"
-            placeholder="https://…"
-            defaultValue={sheet.avatar ?? ''}
-            slotProps={{ htmlInput: { maxLength: URL_MAX } }}
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setImageOpen(false)}>Annuler</Button>
-          <Button type="submit" variant="contained">
-            Enregistrer
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <TextField
+          autoFocus
+          margin="dense"
+          name="avatar"
+          type="url"
+          label="Adresse (URL) de l'image"
+          placeholder="https://…"
+          defaultValue={sheet.avatar ?? ''}
+          slotProps={{ htmlInput: { maxLength: URL_MAX } }}
+          fullWidth
+          variant="standard"
+        />
+      </ActionDialog>
     </Box>
   );
 };

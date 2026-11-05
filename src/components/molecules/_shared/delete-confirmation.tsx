@@ -1,15 +1,7 @@
 'use client';
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
-import { useState } from 'react';
-import BusyButton from '../../atoms/busy-button';
+import DialogContentText from '@mui/material/DialogContentText';
+import ActionDialog from './action-dialog';
 
 interface Props {
   open: boolean;
@@ -37,43 +29,26 @@ const DeleteConfirmation = ({
   confirmLabel = 'Supprimer',
   waitForResult = false,
 }: Props) => {
-  // Un double clic ne supprime qu'une fois.
-  const [busy, setBusy] = useState(false);
-
-  const handleClick = async () => {
-    if (busy) return;
-    setBusy(true);
+  const remove = async () => {
     if (!waitForResult) onClose();
     try {
       await onValidated();
     } finally {
-      setBusy(false);
       if (waitForResult) onClose();
     }
   };
 
   return (
-    <Dialog open={open} onClose={busy ? undefined : onClose}>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={busy}>
-          Annuler
-        </Button>
-        <BusyButton
-          onClick={handleClick}
-          color="error"
-          variant="contained"
-          // La boîte qui attend montre la roue ; l'autre est déjà fermée.
-          busy={busy && waitForResult}
-          disabled={busy}
-        >
-          {confirmLabel}
-        </BusyButton>
-      </DialogActions>
-    </Dialog>
+    <ActionDialog
+      open={open}
+      onClose={onClose}
+      title={title}
+      confirmLabel={confirmLabel}
+      confirmColor="error"
+      onConfirm={remove}
+    >
+      <DialogContentText>{message}</DialogContentText>
+    </ActionDialog>
   );
 };
 
