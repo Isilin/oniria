@@ -73,6 +73,11 @@ const ListSheets = () => {
         {sheets.others.map((sheet) => (
           <SheetCard key={sheet.id} sheet={sheet} userVisible={true} />
         ))}
+        {sheets.others.length === 0 && (
+          <Typography color="textSecondary">
+            Aucune autre fiche pour l&apos;instant.
+          </Typography>
+        )}
       </Grid>
     </Container>
   );

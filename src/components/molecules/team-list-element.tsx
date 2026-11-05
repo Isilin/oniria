@@ -16,7 +16,7 @@ const TeamListElement = ({ team }: Props) => {
           <Typography
             variant="hand"
             component="h3"
-            sx={{ fontSize: '1.625rem' }}
+            sx={{ fontSize: '1.625rem', overflowWrap: 'anywhere' }}
           >
             {team.name}
           </Typography>

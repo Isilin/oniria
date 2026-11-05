@@ -199,7 +199,11 @@ const TeamCard = ({ id }: { id: string }) => {
           textAlign: 'center',
         }}
       >
-        <Typography variant="h2" component="h1">
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{ overflowWrap: 'anywhere' }}
+        >
           {team.name}
         </Typography>
         <Typography variant="body2" component="div">
