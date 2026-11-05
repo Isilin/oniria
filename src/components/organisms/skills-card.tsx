@@ -24,6 +24,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import LoadError from '../atoms/load-error';
 import ScopeLock from '../atoms/scope-lock';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 import SectionCard from '../molecules/section-card';
@@ -304,7 +305,7 @@ const AddSkill = ({
 };
 
 const SkillsCard = ({ id }: { id: string }) => {
-  const { catalog } = useCatalog();
+  const { catalog, error: catalogError, retry: retryCatalog } = useCatalog();
   const {
     sheet,
     canEdit,
@@ -315,7 +316,19 @@ const SkillsCard = ({ id }: { id: string }) => {
     deleteItem,
   } = useSheet(id);
 
-  if (!catalog) return <CircularProgress />;
+  if (!catalog) {
+    // Sans catalogue, pas de compétences à montrer : on le dit au lieu de
+    // tourner sans fin.
+    return catalogError ? (
+      <LoadError
+        what="Les compétences n'ont pas pu être lues."
+        error={catalogError}
+        onRetry={retryCatalog}
+      />
+    ) : (
+      <CircularProgress />
+    );
+  }
 
   const byId = new Map(catalog.skills.map((s) => [s.id, s]));
   const ownedIds = new Set(sheet.skills.map((s) => s.skillId));

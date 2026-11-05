@@ -4,6 +4,7 @@ import { Whitelist } from '@prisma/client';
 import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
 import fetcher, { request } from '../helpers/swr';
+import { useNotifyError } from './use-notify-error';
 
 const URL = '/api/whitelist';
 
@@ -13,6 +14,7 @@ const URL = '/api/whitelist';
  */
 export const useWhitelist = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const {
     data: whitelist,
     error,
@@ -27,7 +29,7 @@ export const useWhitelist = () => {
       enqueueSnackbar(success, { variant: 'info' });
       return true;
     } catch (e) {
-      enqueueSnackbar((e as Error).message, { variant: 'error' });
+      notifyError(e);
       await mutate();
       return false;
     }
@@ -37,6 +39,7 @@ export const useWhitelist = () => {
     whitelist,
     error,
     isLoading,
+    retry: () => mutate(),
     addToWhitelist: (email: string) =>
       run(
         () => request('POST', URL, { email }),

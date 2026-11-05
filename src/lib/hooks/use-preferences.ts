@@ -1,10 +1,10 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
 import fetcher, { request } from '../helpers/swr';
 import { Preferences, SectionKey } from '../preferences';
+import { useNotifyError } from './use-notify-error';
 
 const URL = '/api/me/preferences';
 
@@ -14,7 +14,7 @@ const URL = '/api/me/preferences';
  */
 export const usePreferences = () => {
   const { status } = useSession();
-  const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { data, mutate } = useSWR<Preferences>(
     status === 'authenticated' ? URL : null,
     fetcher,
@@ -30,7 +30,7 @@ export const usePreferences = () => {
         revalidate: false,
       });
     } catch (e) {
-      enqueueSnackbar((e as Error).message, { variant: 'error' });
+      notifyError(e);
     }
   };
 

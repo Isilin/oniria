@@ -7,7 +7,6 @@ import { computeSheet, FACULTIES, formatFaculty } from '@/lib/rules';
 import { ALL_SCOPES, unlockedScopes, xpSummary } from '@/lib/rules/xp';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import {
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -33,6 +32,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import LoadError from '../atoms/load-error';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 import { formatAmounts } from './xp-dialogs';
 import XpGrantDialog from './xp-grant-dialog';
@@ -150,8 +150,16 @@ const MemberRow = ({
 };
 
 const TeamCard = ({ id }: { id: string }) => {
-  const { team, isLoading, error, rename, addMember, removeMember, grantXp } =
-    useTeam(id);
+  const {
+    team,
+    isLoading,
+    error,
+    retry,
+    rename,
+    addMember,
+    removeMember,
+    grantXp,
+  } = useTeam(id);
   const { sheets } = useSheets();
   const [grantOpen, setGrantOpen] = useState(false);
   const [recipients, setRecipients] = useState<string[] | null>(null);
@@ -159,7 +167,11 @@ const TeamCard = ({ id }: { id: string }) => {
   if (isLoading && !team) return <CircularProgress />;
   if (!team)
     return (
-      <Alert severity="error">{error?.message ?? 'Table introuvable.'}</Alert>
+      <LoadError
+        what="La table n'a pas pu être ouverte."
+        error={error ?? new Error('Table introuvable.')}
+        onRetry={retry}
+      />
     );
 
   const memberIds = new Set(team.members.map((m) => m.id));

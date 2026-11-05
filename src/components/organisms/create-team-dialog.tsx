@@ -1,3 +1,4 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useTeams } from '@/lib/hooks/use-team';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -14,6 +15,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createTeam } = useTeams();
 
   const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
@@ -29,7 +31,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
       enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
       router.push(`/team/${team.id}`);
     } catch (error) {
-      enqueueSnackbar((error as Error).message, { variant: 'error' });
+      notifyError(error);
     } finally {
       setLoading(false);
     }

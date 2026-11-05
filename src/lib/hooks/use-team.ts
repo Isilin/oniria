@@ -1,9 +1,9 @@
 'use client';
 
-import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
 import { TeamSummary, TeamWithMembers } from '../db/sheet';
 import fetcher, { request } from '../helpers/swr';
+import { useNotifyError } from './use-notify-error';
 
 export type { TeamSummary, TeamWithMembers };
 
@@ -21,12 +21,12 @@ export const useTeams = () => {
     return team;
   };
 
-  return { teams, error, isLoading, createTeam };
+  return { teams, error, isLoading, retry: () => mutate(), createTeam };
 };
 
 export const useTeam = (id: string) => {
   const url = `/api/teams/${id}`;
-  const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const {
     data: team,
     error,
@@ -40,7 +40,7 @@ export const useTeam = (id: string) => {
       await mutate();
       return true;
     } catch (e) {
-      enqueueSnackbar((e as Error).message, { variant: 'error' });
+      notifyError(e);
       return false;
     }
   };
@@ -49,6 +49,7 @@ export const useTeam = (id: string) => {
     team,
     error,
     isLoading,
+    retry: () => mutate(),
     rename: (name: string) => run(() => request('PATCH', url, { name })),
     addMember: (sheetId: string) =>
       run(() => request('POST', `${url}/members`, { sheetId })),

@@ -32,6 +32,7 @@ import useSWR from 'swr';
 import { FullSheet, SheetGetResult } from '../db/sheet';
 import fetcher, { request } from '../helpers/swr';
 import { useCatalog } from './use-catalog';
+import { useNotifyError } from './use-notify-error';
 import { EMPTY_DRAFT, PointsDraft, usePointsDraft } from './use-points-draft';
 
 export const useSheets = () => {
@@ -48,7 +49,7 @@ export const useSheets = () => {
     return sheet;
   };
 
-  return { sheets, error, isLoading, createSheet };
+  return { sheets, error, isLoading, retry: () => mutate(), createSheet };
 };
 
 export type CollectionItem<K extends CollectionKey> = FullSheet[K][number];
@@ -204,14 +205,7 @@ export const useSheet = (id: string) => {
     [sheet],
   );
 
-  const notifyError = useCallback(
-    (e: unknown) => {
-      enqueueSnackbar(e instanceof Error ? e.message : 'Erreur inconnue.', {
-        variant: 'error',
-      });
-    },
-    [enqueueSnackbar],
-  );
+  const notifyError = useNotifyError();
 
   /**
    * Applique un changement à la fiche affichée, toujours sur sa version la
@@ -635,6 +629,8 @@ export const useSheet = (id: string) => {
 
   return {
     sheet,
+    /** Relit la fiche (après une erreur de lecture). */
+    retry: () => mutate(),
     computed,
     base,
     xp,

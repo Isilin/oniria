@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
 
@@ -16,6 +17,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createSheet } = useSheets();
 
   const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
@@ -31,7 +33,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
       enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
       router.push(`/sheet/${sheet.id}`);
     } catch (error) {
-      enqueueSnackbar((error as Error).message, { variant: 'error' });
+      notifyError(error);
     } finally {
       setLoading(false);
     }
