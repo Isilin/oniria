@@ -30,7 +30,7 @@ Première version complète des fiches de personnages d'Oniria.
 - Mouvement : une valeur écrite ou modifiée se trace comme à la plume,
   l’aperçu validé « sèche » vers l’encre, les points d’Existence se
   cochent en goutte d’encre, la barre des points glisse depuis le bas, la
-  bougie s’allume et vacille à peine, Jour et Nuit passent en fondu
+  bougie s’allume puis reste fixe, Jour et Nuit passent en fondu
   enchaîné. Rien ne bouge au chargement ; mouvement réduit respecté.
 - Fiches complètes reprenant les règles du tableur « Lunes d'Oniria » :
   caractères et coût en XP, facultés et marges (bonus du Corpus), santé,
@@ -120,6 +120,13 @@ Première version complète des fiches de personnages d'Oniria.
   l'inventaire tient sur une ligne. Les compétences passent sur deux
   colonnes jusqu'à 1200 px. La page des tables de jeu reprend la
   présentation de l'accueil, avec une carte « Nouvelle table de jeu ».
+- Fiche plus réactive et plus sobre :
+  - un −/+ (Existence, Maï, caractère) ne redessine plus toute la fiche,
+    seulement ce qui change : il s'affiche environ deux fois plus vite
+    (React Compiler) et la page devient utilisable plus tôt au chargement ;
+  - en Nuit, la bougie ne vacille plus en boucle : la page ne se redessine
+    plus en continu au repos, ce qui ménage le processeur graphique et la
+    batterie pendant toute une soirée à côté de Discord.
 
 ### Corrigé
 
