@@ -451,6 +451,8 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             borderRadius: 2,
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
+            // Au doigt, 44 px de haut : le texte ne grossit pas, la cible si.
+            '@media (pointer: coarse)': { minHeight: 44 },
           },
         },
       },
@@ -460,6 +462,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           root: {
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
+            '@media (pointer: coarse)': { minWidth: 44, minHeight: 44 },
           },
         },
       },
@@ -516,7 +519,13 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         },
       },
       MuiTooltip: {
-        defaultProps: { arrow: true },
+        // Au doigt, la règle s'ouvre d'un toucher (et non d'un appui long)
+        // et reste le temps de la lire.
+        defaultProps: {
+          arrow: true,
+          enterTouchDelay: 0,
+          leaveTouchDelay: 5000,
+        },
         styleOverrides: {
           tooltip: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,

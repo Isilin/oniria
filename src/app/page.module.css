@@ -63,6 +63,14 @@
   }
 }
 
+/* Grand écran : la feuille s'élargit, pour que les tableaux de l'inventaire
+   (quinze colonnes pour une arme de tir) tiennent sans défiler. */
+@media (min-width: 1800px) {
+  .leaf {
+    max-width: 1680px;
+  }
+}
+
 /* Le cadre imprimé : un trait fort, un trait fin à l'intérieur. */
 .leaf::before,
 .leaf::after {

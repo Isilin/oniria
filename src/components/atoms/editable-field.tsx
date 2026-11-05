@@ -118,6 +118,20 @@ const EditableField = ({
             borderBottomColor:
               'color-mix(in srgb, var(--mui-palette-text-secondary) 40%, transparent)',
           },
+          // Au doigt, une zone de 44 px autour de la valeur, invisible : « 31 »
+          // ou « 38 » se touchent sans viser, sans rien déplacer.
+          '@media (pointer: coarse)': {
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              width: 'max(100%, 44px)',
+              height: 'max(100%, 44px)',
+              transform: 'translate(-50%, -50%)',
+            },
+          },
         }}
       >
         <Written value={shown}>{shown}</Written>

@@ -66,8 +66,9 @@ const SheetContent = ({ id }: { id: string }) => {
           window.location.hash = String(newVal);
         }}
         variant="scrollable"
+        // Sur téléphone, pas de flèches (80 px de pris) : les onglets se
+        // font glisser au doigt, l'onglet coupé au bord montre la suite.
         scrollButtons="auto"
-        allowScrollButtonsMobile
         // Étirés sur toute la largeur : le filet court sous toute la page et
         // la lecture commence à la marge gauche.
         sx={{ alignSelf: 'stretch', width: '100%', maxWidth: '100%' }}

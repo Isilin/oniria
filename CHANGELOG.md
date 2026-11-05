@@ -91,6 +91,16 @@ Première version complète des fiches de personnages d'Oniria.
   catégories, jamais entre « Vivre » et son montant.
 - Pages plus légères : l'italique de la machine à écrire, jamais utilisé,
   n'est plus préchargé (deux fichiers de police en moins).
+- Téléphone et grand écran :
+  - sur téléphone, l'encadré des Existences ne reste plus collé en haut (il
+    prenait un quart de l'écran, un tiers en paysage) : une bande d'une
+    ligne le remplace quand on fait défiler, et un toucher la déplie avec
+    ses −/+ ;
+  - les tableaux deviennent des blocs lisibles sans défiler de côté ;
+  - au doigt, les −/+, boutons et valeurs modifiables offrent une cible de
+    44 px, et les règles s'ouvrent d'un toucher ;
+  - sur grand écran, la feuille s'élargit pour que les tableaux de
+    l'inventaire tiennent sans défiler.
 - Mise en page : les onglets Traits, Schémas & Compétences et Inventaire
   sont rangés comme l'onglet Caractéristiques, en sections de la feuille
   (titre frappé et filet) au lieu de cartes empilées ; le résumé de

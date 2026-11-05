@@ -17,7 +17,9 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { ReactNode, useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
@@ -87,6 +89,10 @@ function CollectionTable<R extends Row>({
   confirmDelete = true,
 }: Props<R>) {
   const [toDelete, setToDelete] = useState<R | null>(null);
+  // Sur téléphone, un tableau de quinze colonnes ne se lit qu'en défilant de
+  // côté : chaque ligne devient un bloc sur la feuille, le nom en tête.
+  const theme = useTheme();
+  const phone = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderCell = (row: R, column: Column<R>) => {
     if (column.render) return column.render(row);
@@ -160,6 +166,133 @@ function CollectionTable<R extends Row>({
     );
   };
 
+  const columnLabel = (column: Column<R>) =>
+    column.tooltip ? (
+      <Tooltip title={column.tooltip} arrow>
+        <span style={{ textDecoration: 'underline dotted' }}>
+          {column.label}
+        </span>
+      </Tooltip>
+    ) : (
+      column.label
+    );
+
+  const deleteButton = (row: R) =>
+    editable &&
+    deletable && (
+      <IconButton
+        size="small"
+        aria-label="Supprimer"
+        onClick={() => (confirmDelete ? setToDelete(row) : onDelete(row.id))}
+        sx={{ flexShrink: 0 }}
+      >
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    );
+
+  // Téléphone : le nom (ou la première colonne) en tête de bloc, les cases à
+  // cocher devant lui, la corbeille au bout ; le reste en libellés et valeurs.
+  const titleColumn =
+    columns.find((c) => c.key === 'name') ??
+    columns.find((c) => c.type !== 'boolean') ??
+    columns[0];
+  const leadColumns = columns.filter(
+    (c) => c.type === 'boolean' && c !== titleColumn,
+  );
+  const fieldColumns = columns.filter(
+    (c) => c !== titleColumn && !leadColumns.includes(c),
+  );
+
+  const list = (
+    <Box
+      component="ul"
+      sx={{
+        listStyle: 'none',
+        m: 0,
+        p: 0,
+        borderTop: '1.5px solid',
+        borderColor: 'text.primary',
+      }}
+    >
+      {rows.length === 0 && (
+        <Box
+          component="li"
+          sx={{ py: 1, borderBottom: 1, borderColor: 'rule' }}
+        >
+          <Typography variant="body2" color="textSecondary">
+            {emptyLabel}
+          </Typography>
+        </Box>
+      )}
+      {rows.map((row) => (
+        <Box
+          component="li"
+          key={row.id}
+          sx={{ py: 1, borderBottom: 1, borderColor: 'rule' }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {leadColumns.map((column) => (
+              <Box
+                key={column.key}
+                sx={{ display: 'flex', alignItems: 'center', ml: -1 }}
+              >
+                {renderCell(row, column)}
+                <Typography
+                  variant="overline"
+                  color="textSecondary"
+                  aria-hidden
+                >
+                  {column.label}
+                </Typography>
+              </Box>
+            ))}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              {renderCell(row, titleColumn)}
+            </Box>
+            {deleteButton(row)}
+          </Box>
+          {fieldColumns.length > 0 && (
+            <Box
+              component="dl"
+              sx={{
+                m: 0,
+                mt: 0.5,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(7.5rem, 1fr))',
+                columnGap: 2,
+                rowGap: 1,
+              }}
+            >
+              {fieldColumns.map((column) => (
+                <Box
+                  key={column.key}
+                  sx={{
+                    minWidth: 0,
+                    ...(column.type === 'multiline' && {
+                      gridColumn: '1 / -1',
+                    }),
+                  }}
+                >
+                  <Typography
+                    component="dt"
+                    variant="overline"
+                    color="textSecondary"
+                    sx={{ display: 'block' }}
+                  >
+                    {columnLabel(column)}
+                  </Typography>
+                  <Box component="dd" sx={{ m: 0 }}>
+                    {renderCell(row, column)}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+      ))}
+    </Box>
+  );
+
   return (
     <Box
       sx={{
@@ -175,70 +308,56 @@ function CollectionTable<R extends Row>({
         ) : (
           title
         ))}
-      <TableContainer>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.key}
-                  align={column.align}
-                  sx={{
-                    width: column.width,
-                    minWidth:
-                      column.minWidth ??
-                      (column.key === 'name' ? NAME_MIN_WIDTH : undefined),
-                  }}
-                >
-                  {column.tooltip ? (
-                    <Tooltip title={column.tooltip} arrow>
-                      <span style={{ textDecoration: 'underline dotted' }}>
-                        {column.label}
-                      </span>
-                    </Tooltip>
-                  ) : (
-                    column.label
-                  )}
-                </TableCell>
-              ))}
-              {editable && deletable && <TableCell sx={{ width: 40 }} />}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.length === 0 && (
+      {phone ? (
+        list
+      ) : (
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={columns.length + 1}>
-                  <Typography variant="body2" color="textSecondary">
-                    {emptyLabel}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-            {rows.map((row) => (
-              <TableRow key={row.id} hover>
                 {columns.map((column) => (
-                  <TableCell key={column.key} align={column.align}>
-                    {renderCell(row, column)}
+                  <TableCell
+                    key={column.key}
+                    align={column.align}
+                    sx={{
+                      width: column.width,
+                      minWidth:
+                        column.minWidth ??
+                        (column.key === 'name' ? NAME_MIN_WIDTH : undefined),
+                    }}
+                  >
+                    {columnLabel(column)}
                   </TableCell>
                 ))}
-                {editable && deletable && (
-                  <TableCell padding="none">
-                    <IconButton
-                      size="small"
-                      aria-label="Supprimer"
-                      onClick={() =>
-                        confirmDelete ? setToDelete(row) : onDelete(row.id)
-                      }
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                )}
+                {editable && deletable && <TableCell sx={{ width: 40 }} />}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {rows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={columns.length + 1}>
+                    <Typography variant="body2" color="textSecondary">
+                      {emptyLabel}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+              {rows.map((row) => (
+                <TableRow key={row.id} hover>
+                  {columns.map((column) => (
+                    <TableCell key={column.key} align={column.align}>
+                      {renderCell(row, column)}
+                    </TableCell>
+                  ))}
+                  {editable && deletable && (
+                    <TableCell padding="none">{deleteButton(row)}</TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
       {footer}
       {editable && onAdd && (
         <Box>

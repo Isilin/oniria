@@ -195,6 +195,17 @@ const CharacterPlate = ({ id }: { id: string }) => {
                 border: 1,
                 borderColor: 'text.primary',
                 '&:hover': { bgcolor: 'raised' },
+                // Au doigt : la pastille garde sa taille sur le portrait, la
+                // zone de toucher seule fait 44 px.
+                '@media (pointer: coarse)': {
+                  minWidth: 0,
+                  minHeight: 0,
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    inset: -8,
+                  },
+                },
               }}
             >
               <PhotoIcon sx={{ fontSize: 16 }} />

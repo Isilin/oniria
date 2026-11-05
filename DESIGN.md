@@ -354,6 +354,18 @@ The other tabs follow the same structure: sections on the paper, one after the o
 
 Tables keep a handwritten name readable: the name column never narrows below 9rem, so a name takes two lines at most; when columns run out of room, the table scrolls sideways instead. In a skill tree, the degree chip leads and the bin stays at the end of the line; only the name and its précision wrap.
 
+### Phone, touch and wide screens
+The sheet is used beside Discord on a computer and on its own on a phone, so it adapts to the screen and to the finger, not only to the width.
+- **Existences on a small screen** (below 600px wide, or below 500px tall in landscape): the full box scrolls with the sheet instead of sticking, since it would take a quarter to a third of the screen. When it leaves the screen, a 44px band slides down in its place: a small planet, the handwritten value and "/ max" for each Existence, and a chevron. A tap unfolds the full box with its −|+ over the page ("Replier" folds it); scrolling back to the top folds it too.
+- **Touch** (`pointer: coarse`), whatever the width:
+  - steppers, icon buttons and buttons have a 44px target (a stepper cell is 44×44);
+  - an editable value keeps its size but gets an invisible 44px touch area, so "31" or "38" can be tapped without aiming;
+  - below 520px, characteristic groups go one per row so that label, value and the larger −|+ sit side by side;
+  - a rule tooltip opens on a tap, not a long press, and stays 5 seconds.
+- **Tables on a phone** (below 600px): each row becomes a block on the paper, with no box around it. The check boxes (Porté) and the handwritten name lead, the bin is at the end of the line, and the other columns follow as typed labels over their values, two per line; descriptions take the full line. Nothing scrolls sideways.
+- **Tabs on a phone** have no arrows: they scroll under the finger, and the tab cut at the edge shows there is more.
+- **Wide screens** (from 1800px): the sheet widens from 1400px to 1680px, so the inventory tables (fifteen columns for a ranged weapon) fit without scrolling.
+
 The lists outside the sheet (Mes fiches, Autres fiches, Tables de jeu) are rows of 250px cards aligned to the left margin of the content, 32px apart, ending with a dashed card that creates a new one ("Nouvelle fiche", "Nouvelle table de jeu").
 
 Key widths:
@@ -440,7 +452,7 @@ The head of the sheet, as printed fields:
 - **Motion:** the wash blooms in over 700ms on arrival and changes colour softly (500ms) when the tint changes. Crossing Devenir 100 detaches the second frame (outline offset 0 → 4px, 600ms).
 
 ### Existences Box (signature)
-A sticky, opaque printed box. Typed captions "Existences" and "Maï" run into printed rules, and the four planets sit in columns separated by 1px printed rules.
+A sticky, opaque printed box (on a small screen, it scrolls and a one-line band takes over; see Layout). Typed captions "Existences" and "Maï" run into printed rules, and the four planets sit in columns separated by 1px printed rules.
 
 ### Stat Row
 One printed line: a typed 12px label on the left (tooltip with the rule) and the value on the right. The value is handwritten if the player sets it, typed if the rules compute it. A hairline sits under each row.
@@ -449,6 +461,8 @@ One printed line: a typed 12px label on the left (tooltip with the rule) and the
 A joined −|+ in a printed frame (1px rule, 2px corners). It has two sizes:
 - **md**, on planets: 34×32 cells;
 - **sm**, on characteristic rows: 24×24 cells, the 2.5.8 minimum.
+
+On a touch screen, both sizes become 44×44 cells.
 
 Cells are pale ink at rest. On hover or focus they turn blue ink over a 10% ink wash in 120ms, and the focus ring is drawn inside the frame. Characteristic steppers always show both cells, so values stay in a column. "−" is disabled while nothing can be removed. A click steps 1 point, Shift+click steps 5, and holding repeats from 400ms down to 40ms. Pressed cells and buttons sink by 1px for 80ms; there is no ripple.
 
