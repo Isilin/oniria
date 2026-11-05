@@ -1,5 +1,6 @@
 'use client';
 
+import { RULES } from '@/theme/theme';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {
@@ -210,8 +211,7 @@ function CollectionTable<R extends Row>({
         listStyle: 'none',
         m: 0,
         p: 0,
-        borderTop: '1.5px solid',
-        borderColor: 'text.primary',
+        borderTop: RULES.group,
       }}
     >
       {rows.length === 0 && (

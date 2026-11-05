@@ -73,17 +73,67 @@ export const STAMP = 'var(--font-stamp), var(--font-type), monospace';
  * continuité, vite. Voir DESIGN.md.
  */
 export const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+/** Ce qui s'en va : il accélère et quitte la feuille. */
+export const EASE_LEAVE = 'cubic-bezier(0.4, 0, 1, 1)';
 /** La plume : un tracé régulier, qui ralentit seulement en fin de mot. */
 export const EASE_PEN = 'cubic-bezier(0.45, 0.05, 0.35, 1)';
 export const MOTION = {
   /** Retour immédiat : survol, appui. */
   quick: 120,
+  /** Ce qui s'en va : plus vite qu'il n'est arrivé. */
+  leave: 160,
   /** Changement d'état courant. */
   state: 220,
+  /**
+   * Ce qui arrive sur la feuille : la barre des points, le bandeau des
+   * Existences, un billet, un point gagné.
+   */
+  arrive: 280,
   /** Une valeur qui s'écrit. */
   write: 420,
   /** L'encre qui sèche (aperçu validé). */
   dry: 600,
+} as const;
+
+/**
+ * Les filets imprimés (voir DESIGN.md, Shapes). Des valeurs CSS complètes :
+ * `border`, `borderBottom`, `outline`… les prennent telles quelles, et
+ * l'encre suit le thème (variables CSS).
+ */
+export const RULES = {
+  /** Encadré imprimé : plaque, Existences, portrait, dialogue. */
+  frame: '1.5px solid var(--mui-palette-text-primary)',
+  /** Sous un titre de groupe ou une tête de tableau. */
+  group: '1.5px solid var(--mui-palette-text-primary)',
+  /** Filet d'encre : papier relevé, séparation de colonnes, onglets. */
+  ink: '1px solid var(--mui-palette-text-primary)',
+  /** Filet fin entre deux lignes, et cadre des −|+. */
+  hairline: '1px solid var(--mui-palette-rule)',
+} as const;
+
+/**
+ * Les requêtes de la feuille, nommées d'après DESIGN.md (Layout). Avec
+ * `@media` : elles servent de clé dans `sx`, et `useMediaQuery` les accepte
+ * telles quelles.
+ */
+export const MEDIA = {
+  /** Au doigt, quelle que soit la largeur : cibles de 44 px. */
+  touch: '@media (pointer: coarse)',
+  /** Au doigt, sous 520 px : un groupe de caractères par ligne. */
+  touchNarrow: '@media (pointer: coarse) and (max-width: 519.95px)',
+  /**
+   * Petit écran (étroit, ou paysage peu haut) : l'encadré des Existences
+   * défile avec la feuille, un bandeau d'une ligne prend sa place.
+   */
+  smallScreen: '@media (max-width: 599.95px), (max-height: 500px)',
+  /** Les quatre planètes des Existences sur une ligne. */
+  planetsRow: '@media (min-width: 520px)',
+  /** Trois groupes de caractères (et colonnes de Facultés) côte à côte. */
+  threeGroups: '@media (min-width: 640px)',
+  /** Portrait, nom et faits de la plaque sur une ligne. */
+  plateRow: '@media (min-width: 760px)',
+  /** Caractères, Facultés et combat sur un seul écran. */
+  oneScreen: '@media (min-width: 1440px)',
 } as const;
 
 /** Grain du papier, pour les encadrés opaques posés sur la feuille. */
@@ -407,10 +457,10 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           '.notistack-MuiContent': {
             backgroundColor: theme.vars.palette.raised,
             color: theme.vars.palette.text.primary,
-            border: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.ink,
             fontFamily: TYPE,
             boxShadow: '0 8px 20px -10px rgba(0, 0, 0, 0.45)',
-            animation: `oniria-billet 280ms ${EASE} both`,
+            animation: `oniria-billet ${MOTION.arrive}ms ${EASE} both`,
           },
           '.notistack-MuiContent-success': {
             borderColor: theme.vars.palette.success.main,
@@ -471,7 +521,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       MuiCard: {
         styleOverrides: {
           root: ({ theme }) => ({
-            border: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.ink,
             backgroundColor: theme.vars.palette.raised,
           }),
         },
@@ -495,7 +545,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
             // Au doigt, 44 px de haut : le texte ne grossit pas, la cible si.
-            '@media (pointer: coarse)': { minHeight: 44 },
+            [MEDIA.touch]: { minHeight: 44 },
           },
         },
       },
@@ -505,7 +555,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           root: {
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
-            '@media (pointer: coarse)': { minWidth: 44, minHeight: 44 },
+            [MEDIA.touch]: { minWidth: 44, minHeight: 44 },
           },
         },
       },
@@ -545,7 +595,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         styleOverrides: {
           root: ({ theme }) => ({
             minHeight: 44,
-            borderBottom: `1px solid ${theme.vars.palette.text.primary}`,
+            borderBottom: RULES.ink,
           }),
           indicator: { height: 2 },
         },
@@ -573,7 +623,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           tooltip: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
             color: theme.vars.palette.text.primary,
-            border: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.ink,
             fontFamily: TYPE,
             fontSize: '0.875rem',
             fontWeight: 400,
@@ -586,7 +636,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           arrow: ({ theme }) => ({
             color: theme.vars.palette.raised,
             '&::before': {
-              border: `1px solid ${theme.vars.palette.text.primary}`,
+              border: RULES.ink,
             },
           }),
         },
@@ -594,7 +644,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       MuiTableCell: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderBottom: `1px solid ${theme.vars.palette.rule}`,
+            borderBottom: RULES.hairline,
             fontSize: '0.875rem',
           }),
           head: ({ theme }) => ({
@@ -606,7 +656,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             // tableau défile plutôt.
             whiteSpace: 'nowrap',
             color: theme.vars.palette.text.secondary,
-            borderBottom: `1.5px solid ${theme.vars.palette.text.primary}`,
+            borderBottom: RULES.group,
           }),
         },
       },
@@ -616,12 +666,14 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       },
       MuiDialog: {
         // Il se pose (260 ms) et s'en va plus vite qu'il n'arrive.
-        defaultProps: { transitionDuration: { enter: 260, exit: 160 } },
+        defaultProps: {
+          transitionDuration: { enter: 260, exit: MOTION.leave },
+        },
         styleOverrides: {
           paper: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
-            border: `1.5px solid ${theme.vars.palette.text.primary}`,
-            outline: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.frame,
+            outline: RULES.ink,
             outlineOffset: -6,
             boxShadow: `0 24px 48px -12px ${alpha('#000', 0.45)}`,
             animation: `oniria-pose 260ms ${EASE} both`,
@@ -642,7 +694,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         styleOverrides: {
           paper: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
-            border: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.ink,
           }),
         },
       },
@@ -650,7 +702,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         styleOverrides: {
           paper: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
-            border: `1px solid ${theme.vars.palette.text.primary}`,
+            border: RULES.ink,
           }),
         },
       },

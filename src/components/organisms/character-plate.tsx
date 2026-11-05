@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 import EditableField from '../atoms/editable-field';
-import { EASE } from '@/theme/theme';
+import { EASE, MEDIA, RULES } from '@/theme/theme';
 import { DottedPath, SketchMoon } from '../atoms/ornaments';
 import Portrait from '../atoms/portrait';
 
@@ -89,7 +89,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
         gridTemplateColumns: 'auto minmax(0, 1fr)',
         // Dès 760 px, tout tient sur une ligne ; en dessous, les champs Âge,
         // Aspect et Devenir passent sous le nom (la machine à écrire est large).
-        '@media (min-width: 760px)': {
+        [MEDIA.plateRow]: {
           gridTemplateColumns: 'auto minmax(0, 1fr) auto',
         },
         alignItems: 'start',
@@ -98,8 +98,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
         px: { xs: 1.5, md: 2.5 },
         pt: { xs: 1.5, md: 2 },
         pb: { xs: 1.5, md: 2.5 },
-        border: '1.5px solid',
-        borderColor: 'text.primary',
+        border: RULES.frame,
       }}
     >
       {/* Le lavis de la teinte, qui déborde du portrait comme de l'aquarelle. */}
@@ -150,8 +149,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
           sx={{
             width: { xs: 64, md: 96 },
             height: { xs: 72, md: 108 },
-            border: '1.5px solid',
-            borderColor: 'text.primary',
+            border: RULES.frame,
             display: 'grid',
             placeItems: 'center',
             overflow: 'hidden',
@@ -198,7 +196,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
                 '&:hover': { bgcolor: 'raised' },
                 // Au doigt : la pastille garde sa taille sur le portrait, la
                 // zone de toucher seule fait 44 px.
-                '@media (pointer: coarse)': {
+                [MEDIA.touch]: {
                   minWidth: 0,
                   minHeight: 0,
                   '&::after': {
@@ -304,7 +302,7 @@ const CharacterPlate = ({ id }: { id: string }) => {
           position: 'relative',
           zIndex: 1,
           gridColumn: '1 / -1',
-          '@media (min-width: 760px)': { gridColumn: 'auto' },
+          [MEDIA.plateRow]: { gridColumn: 'auto' },
           display: 'grid',
           gridTemplateColumns: 'repeat(3, auto)',
           columnGap: { xs: 2, md: 3 },

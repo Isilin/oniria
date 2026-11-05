@@ -2,6 +2,7 @@
 
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTIC_BY_KEY, FACULTIES, FACULTY_COLUMNS } from '@/lib/rules';
+import { MEDIA, RULES } from '@/theme/theme';
 import { Box, Typography } from '@mui/material';
 import PreviewValue from '../atoms/preview-value';
 import SectionCard from '../molecules/section-card';
@@ -18,7 +19,7 @@ const AbilitiesCard = ({ id }: { id: string }) => {
           display: 'grid',
           // Trois colonnes dès 640 px (demi-écran) ; deux en dessous.
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          '@media (min-width: 640px)': {
+          [MEDIA.threeGroups]: {
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           },
           columnGap: 1.5,
@@ -34,8 +35,7 @@ const AbilitiesCard = ({ id }: { id: string }) => {
               sx={{
                 display: 'block',
                 pb: 0.5,
-                borderBottom: '1.5px solid',
-                borderColor: 'text.primary',
+                borderBottom: RULES.group,
               }}
             >
               {column.label}

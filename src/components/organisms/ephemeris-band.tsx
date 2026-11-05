@@ -2,7 +2,14 @@
 
 import { FullSheet } from '@/lib/db/sheet';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { EASE, PAPER_GRAIN } from '@/theme/theme';
+import {
+  EASE,
+  EASE_LEAVE,
+  MEDIA,
+  MOTION,
+  PAPER_GRAIN,
+  RULES,
+} from '@/theme/theme';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Box,
@@ -17,20 +24,10 @@ import Written from '../atoms/written';
 import MoonGauge from '../molecules/moon-gauge';
 
 type Field =
-  'current_health' | 'current_stability' | 'current_radiance' | 'current_mai';
-
-/** Au-delà de cette largeur, les quatre lunes tiennent sur une ligne. */
-const WIDE = '@media (min-width: 520px)';
-
-/**
- * Téléphone (portrait ou paysage) : l'encadré complet prendrait un quart à
- * un tiers de l'écran s'il restait collé. Il défile avec la feuille, et une
- * bande d'une ligne prend sa place en haut ; un toucher la déplie.
- */
-const SMALL_SCREEN = '(max-width: 599.95px), (max-height: 500px)';
-// Clé de style déjà écrite : le React Compiler ne sait pas mémoriser un
-// objet dont une clé est un gabarit (`@media ${…}`).
-const SMALL_SCREEN_MEDIA = `@media ${SMALL_SCREEN}`;
+  | 'current_health'
+  | 'current_stability'
+  | 'current_radiance'
+  | 'current_mai';
 
 /** Une planète en miniature, pour la bande : le disque et sa couleur. */
 const MiniPlanet = ({ color }: { color: string }) => (
@@ -70,7 +67,7 @@ const Caption = ({
     sx={{
       gridArea: area,
       display: wideOnly ? 'none' : 'flex',
-      [WIDE]: { display: 'flex' },
+      [MEDIA.planetsRow]: { display: 'flex' },
       alignItems: 'center',
       gap: 1,
       '&::after': {
@@ -92,7 +89,10 @@ const Caption = ({
 const EphemerisBand = ({ id }: { id: string }) => {
   const { sheet, computed, base, canEdit, update } = useSheet(id);
   const theme = useTheme();
-  const smallScreen = useMediaQuery(SMALL_SCREEN);
+  // Téléphone (portrait ou paysage) : l'encadré complet prendrait un quart
+  // à un tiers de l'écran s'il restait collé. Il défile avec la feuille, et
+  // une bande d'une ligne prend sa place en haut ; un toucher la déplie.
+  const smallScreen = useMediaQuery(MEDIA.smallScreen);
   const boxRef = useRef<HTMLElement>(null);
   // L'encadré est passé au-dessus de l'écran : la bande le remplace.
   const [scrolledPast, setScrolledPast] = useState(false);
@@ -184,11 +184,10 @@ const EphemerisBand = ({ id }: { id: string }) => {
     // fait défiler la feuille sous lui.
     bgcolor: 'background.paper',
     backgroundImage: PAPER_GRAIN,
-    border: '1.5px solid',
-    borderColor: 'text.primary',
+    border: RULES.frame,
     gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
     gridTemplateAreas: '"ce ce ce" "g1 g2 g3" "g4 g4 g4"',
-    [WIDE]: {
+    [MEDIA.planetsRow]: {
       gridTemplateColumns: 'repeat(3, minmax(0, 3fr)) minmax(0, 2.4fr)',
       gridTemplateAreas: '"ce ce ce cm" "g1 g2 g3 g4"',
     },
@@ -215,7 +214,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
               borderTop: index === 3 ? 1 : 0,
               borderColor: 'text.primary',
               ...(index === 3 && { pt: 0.75 }),
-              [WIDE]: {
+              [MEDIA.planetsRow]: {
                 borderLeft: index > 0 ? 1 : 0,
                 borderTop: 0,
                 pt: 0,
@@ -254,11 +253,11 @@ const EphemerisBand = ({ id }: { id: string }) => {
         sx={{
           ...grid,
           // Collé en haut sur tous les onglets, sauf sur petit écran (voir
-          // SMALL_SCREEN) où la bande prend le relais.
+          // MEDIA.smallScreen) où la bande prend le relais.
           position: 'sticky',
           top: 0,
           zIndex: 'appBar',
-          [SMALL_SCREEN_MEDIA]: { position: 'static' },
+          [MEDIA.smallScreen]: { position: 'static' },
         }}
       >
         {content}
@@ -276,8 +275,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
             pt: 'env(safe-area-inset-top)',
             bgcolor: 'background.paper',
             backgroundImage: PAPER_GRAIN,
-            borderBottom: '1.5px solid',
-            borderColor: 'text.primary',
+            borderBottom: RULES.frame,
             maxHeight: '100svh',
             overflowY: 'auto',
             // Elle descend comme la barre des points monte : vite à
@@ -285,14 +283,14 @@ const EphemerisBand = ({ id }: { id: string }) => {
             transform: showBand ? 'none' : 'translateY(-100%)',
             visibility: showBand ? 'visible' : 'hidden',
             transition: showBand
-              ? `transform 280ms ${EASE}, visibility 0s`
-              : 'transform 160ms ease-in, visibility 0s linear 160ms',
+              ? `transform ${MOTION.arrive}ms ${EASE}, visibility 0s`
+              : `transform ${MOTION.leave}ms ${EASE_LEAVE}, visibility 0s linear ${MOTION.leave}ms`,
             '@media (prefers-reduced-motion: reduce)': {
               transform: 'none',
               opacity: showBand ? 1 : 0,
               transition: showBand
-                ? 'opacity 160ms ease-out, visibility 0s'
-                : 'opacity 160ms ease-out, visibility 0s linear 160ms',
+                ? `opacity ${MOTION.leave}ms ease-out, visibility 0s`
+                : `opacity ${MOTION.leave}ms ease-out, visibility 0s linear ${MOTION.leave}ms`,
             },
           }}
         >

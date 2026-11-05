@@ -27,7 +27,7 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { EASE } from '@/theme/theme';
+import { EASE, MEDIA } from '@/theme/theme';
 import { useState } from 'react';
 import BusyButton from '../atoms/busy-button';
 import CreationSteps from '../molecules/creation-steps';
@@ -113,7 +113,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
         // l'encadré des Existences collé en haut, ou sous la bande de 44 px
         // qui le remplace sur petit écran.
         scrollMarginTop: 140,
-        '@media (max-width: 599.95px), (max-height: 500px)': {
+        [MEDIA.smallScreen]: {
           scrollMarginTop: 64,
         },
       }}

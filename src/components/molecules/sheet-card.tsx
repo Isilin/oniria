@@ -2,6 +2,7 @@
 
 import { SheetListItem } from '@/lib/db/sheet';
 import { tintOf } from '@/lib/tints';
+import { RULES } from '@/theme/theme';
 import { Box, Card, CardActionArea, Chip, Typography } from '@mui/material';
 import Link from 'next/link';
 import Portrait from '../atoms/portrait';
@@ -36,8 +37,7 @@ const SheetCard = ({ sheet, userVisible }: Props) => {
             width: 56,
             height: 64,
             flexShrink: 0,
-            border: '1.5px solid',
-            borderColor: 'text.primary',
+            border: RULES.frame,
             display: 'grid',
             placeItems: 'center',
             overflow: 'hidden',

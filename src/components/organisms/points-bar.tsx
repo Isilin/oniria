@@ -3,7 +3,7 @@
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTIC_BY_KEY } from '@/lib/rules';
 import { SCOPE_BY_KEY, Scope } from '@/lib/rules/xp';
-import { EASE } from '@/theme/theme';
+import { EASE, EASE_LEAVE, MOTION } from '@/theme/theme';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
@@ -76,7 +76,7 @@ const PointsBar = ({ id }: { id: string }) => {
           border: 1,
           borderRadius: 1,
           borderColor: missing ? 'error.main' : 'success.main',
-          transition: 'border-color 220ms ease-out',
+          transition: `border-color ${MOTION.state}ms ease-out`,
         }}
       >
         <Box sx={{ minWidth: 0 }}>
@@ -129,8 +129,8 @@ const PointsBar = ({ id }: { id: string }) => {
       appear
       mountOnEnter
       unmountOnExit
-      timeout={{ enter: 280, exit: 160 }}
-      easing={{ enter: EASE, exit: 'cubic-bezier(0.4, 0, 1, 1)' }}
+      timeout={{ enter: MOTION.arrive, exit: MOTION.leave }}
+      easing={{ enter: EASE, exit: EASE_LEAVE }}
     >
       {bar}
     </Slide>
