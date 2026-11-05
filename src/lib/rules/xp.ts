@@ -616,6 +616,19 @@ export const xpSummary = (sheet: XpSheetInput): XpSummary => {
   };
 };
 
+/**
+ * Où en est une fiche en création, en trois temps :
+ * 1. recevoir l'XP de création du MJ ;
+ * 2. répartir les points (tout se modifie librement) ;
+ * 3. valider : le coût est payé et la fiche se verrouille.
+ * `null` hors création (fiche validée, ou reset d'une partie seulement).
+ */
+export const creationStep = (summary: XpSummary): 1 | 2 | 3 | null => {
+  if (summary.unlocked.length !== ALL_SCOPES.length) return null;
+  if (summary.allocation.feasible) return 3;
+  return sum(summary.gained) === 0 ? 1 : 2;
+};
+
 /* -------------------------------------------------------------------------- */
 /*                               Changements                                  */
 /* -------------------------------------------------------------------------- */
