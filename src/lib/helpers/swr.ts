@@ -14,8 +14,8 @@ export class RequestError extends Error {
  */
 const offlineMessage = (method: string) =>
   method === 'GET'
-    ? "Connexion perdue : rien n'a pu être lu. Vérifie ta connexion, puis réessaie."
-    : "Connexion perdue : la modification n'est pas enregistrée. Vérifie ta connexion, puis réessaie.";
+    ? "Connexion perdue\u00a0: rien n'a pu être lu. Vérifie ta connexion, puis réessaie."
+    : "Connexion perdue\u00a0: la modification n'est pas enregistrée. Vérifie ta connexion, puis réessaie.";
 
 /**
  * Message d'une réponse en erreur. Les erreurs de l'API sont déjà en
@@ -23,9 +23,9 @@ const offlineMessage = (method: string) =>
  * quoi faire.
  */
 const errorMessage = (status: number, error: unknown) => {
-  if (status === 401) return 'Ta session a expiré : reconnecte-toi.';
+  if (status === 401) return 'Ta session a expiré\u00a0: reconnecte-toi.';
   if (status >= 500) {
-    return "Le serveur n'a pas pu répondre. Réessaie dans un instant ; si ça recommence, préviens le MJ.";
+    return "Le serveur n'a pas pu répondre. Réessaie dans un instant\u00a0; si ça recommence, préviens le MJ.";
   }
   return typeof error === 'string' && error ? error : `Erreur ${status}.`;
 };

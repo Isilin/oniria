@@ -5,7 +5,7 @@ import DeleteSheetButton from '@/components/molecules/delete-sheet-button';
 import Sheet from '@/components/organisms/sheet';
 import { asJson, findSheet } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 const Page = async ({
@@ -19,7 +19,9 @@ const Page = async ({
 
   // La fiche arrive avec la page : pas d'attente d'un appel à l'API.
   const sheet = await findSheet(params.id);
-  const fallback = sheet ? { [`/api/sheets/${params.id}`]: asJson(sheet) } : {};
+  // Fiche supprimée ou adresse fausse : la page « introuvable » (404).
+  if (!sheet) notFound();
+  const fallback = { [`/api/sheets/${params.id}`]: asJson(sheet) };
 
   return (
     <Suspense>
