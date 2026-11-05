@@ -69,10 +69,17 @@ export const requireSheetEditor = async (sheetId: string) => {
   return { user, sheet };
 };
 
+/** Corps de la requête : toujours un objet JSON (sinon, 400). */
 export const readJson = async (req: Request) => {
+  let body: unknown;
   try {
-    return await req.json();
+    body = await req.json();
   } catch {
     throw new HttpError(400, 'JSON invalide.');
   }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    throw new HttpError(400, 'Données invalides.');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return body as Record<string, any>;
 };

@@ -1,7 +1,8 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSheets } from '@/lib/hooks/use-sheet';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,11 +12,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 const CreateSheetDialog = ({ open, onClose }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createSheet } = useSheets();
 
   const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
@@ -31,7 +34,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
       enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
       router.push(`/sheet/${sheet.id}`);
     } catch (error) {
-      enqueueSnackbar((error as Error).message, { variant: 'error' });
+      notifyError(error);
     } finally {
       setLoading(false);
     }
@@ -53,6 +56,7 @@ const CreateSheetDialog = ({ open, onClose }) => {
           margin="dense"
           id="name"
           name="name"
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           label="Nom"
           type="text"
           fullWidth
@@ -63,9 +67,9 @@ const CreateSheetDialog = ({ open, onClose }) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress size={20} /> : 'Créer'}
-        </Button>
+        <BusyButton type="submit" busy={loading}>
+          Créer
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

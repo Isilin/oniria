@@ -1,6 +1,8 @@
 'use client';
 
+import { initialOf } from '@/lib/helpers/initial';
 import { Box, SxProps, Theme } from '@mui/material';
+import { useState } from 'react';
 
 interface Props {
   avatar?: string | null;
@@ -24,8 +26,11 @@ const PEN = 'var(--mui-palette-primary-main)';
  */
 const Portrait = ({ avatar, name, size, framed = false, sx }: Props) => {
   const extra = Array.isArray(sx) ? sx : [sx];
+  // Adresse d'image morte (lien expiré, image supprimée) : la lune à
+  // l'initiale reprend sa place, au lieu de l'icône d'image cassée.
+  const [broken, setBroken] = useState<string | null>(null);
 
-  if (avatar) {
+  if (avatar && broken !== avatar) {
     return (
       <Box
         component="img"
@@ -33,6 +38,11 @@ const Portrait = ({ avatar, name, size, framed = false, sx }: Props) => {
         alt={`Portrait de ${name ?? 'ce personnage'}`}
         loading="lazy"
         decoding="async"
+        onError={() => setBroken(avatar)}
+        // L'image a pu échouer avant que la page ne soit interactive.
+        ref={(img: HTMLImageElement | null) => {
+          if (img?.complete && img.naturalWidth === 0) setBroken(avatar);
+        }}
         sx={[
           {
             display: 'block',
@@ -49,7 +59,7 @@ const Portrait = ({ avatar, name, size, framed = false, sx }: Props) => {
     );
   }
 
-  const initial = (name ?? '?').trim().charAt(0).toUpperCase() || '?';
+  const initial = initialOf(name);
   return (
     <Box
       component="svg"

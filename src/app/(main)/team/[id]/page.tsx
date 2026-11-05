@@ -5,7 +5,7 @@ import DeleteTeamButton from '@/components/molecules/delete-team-button';
 import TeamCard from '@/components/organisms/team-card';
 import { asJson, findTeam, listSheets } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 const Page = async ({
@@ -22,9 +22,11 @@ const Page = async ({
     findTeam(params.id),
     listSheets(session.user.id),
   ]);
+  // Table supprimée ou adresse fausse : la page « introuvable » (404).
+  if (!team) notFound();
   const fallback = {
     '/api/sheets': asJson(sheets),
-    ...(team && { [`/api/teams/${params.id}`]: asJson(team) }),
+    [`/api/teams/${params.id}`]: asJson(team),
   };
 
   return (

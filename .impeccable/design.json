@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-05T13:02:12.464Z",
+  "generatedAt": "2026-11-05T17:52:17.422Z",
   "title": "Design System: Oniria",
   "extensions": {
     "colorMeta": {
@@ -1056,7 +1056,8 @@
       "**Do** keep everything used in play visible without scrolling from 1440px; below that, keep Combat beside Caractères and Facultés.",
       "**Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.",
       "**Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, \"Avant : N\" in a tooltip.",
-      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.",
+      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet, and when that first read fails, say so with \"Réessayer\" (`LoadError`).",
+      "**Do** keep a button blocked while its action is in flight, so a double click never sends twice.",
       "**Do** honour both densities and both lights for every new surface.",
       "**Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes."
     ],

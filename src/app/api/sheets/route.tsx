@@ -2,6 +2,7 @@ import prisma from '@/lib/db/prisma';
 import { SheetGetResult } from '@/lib/db/sheet';
 import { handle, readJson, requireUser } from '@/lib/server/api';
 import { listSheets } from '@/lib/server/queries';
+import { readName } from '@/lib/sheet/fields';
 import { NextRequest } from 'next/server';
 
 export const GET = () =>
@@ -18,7 +19,8 @@ export const POST = (req: NextRequest) =>
     return prisma.sheet.create({
       data: {
         user: { connect: { id: user.id } },
-        name: name ? String(name) : 'Sans nom',
+        // Sans espaces autour ; vide (ou fait d'espaces) : « Sans nom ».
+        name: readName(name) ?? 'Sans nom',
         // Une fiche neuve n'a pas d'Aspect : la valeur par défaut du schéma
         // (« Type ») s'écrivait à l'encre bleue comme si le joueur l'avait
         // choisie. Les fiches existantes gardent la leur.

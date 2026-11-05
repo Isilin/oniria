@@ -197,7 +197,7 @@ components:
     textColor: "{colors.encre-imprimee-jour}"
     rounded: "{rounded.sm}"
     padding: "8px 12px"
-    width: "380px"
+    width: "calc(46ch + 24px)"
   stepper-cell:
     textColor: "{colors.encre-pale-jour}"
     width: "34px"
@@ -339,6 +339,7 @@ Cream paper, brown printing ink, blue fountain-pen ink, four Existence watercolo
 - Headings balance their lines (`text-wrap: balance`); body text avoids a lone last word (`pretty`).
 - Rules text in tooltips runs at 46 characters per line; notes at 75 at most (34rem), while tables and images keep the full width.
 - An amount stays glued to its category, and the middle dot never starts a line ("Éprouver 30 · Apprendre 10", with non-breaking spaces). The same goes for French double punctuation: a non-breaking space before ":", ";" and "!", written `\u00a0` in the code so it stays visible. In tables, a value comes first and its threshold sits under it as a caption ("6/6", "seuil 10").
+- A word with no end (a pasted address, a name with no space) wraps instead of overflowing: `overflow-wrap: break-word` on written values and notes, so a table keeps its columns and scrolls; `anywhere` on names that head a card or a page (sheet, table).
 
 ### Named Rules
 **The Machine à écrire Rule.** Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.
@@ -414,6 +415,7 @@ Rules come in three weights:
 - **Primary (contained):** blue ink with raised-paper text, typewriter bold, sentence case, no elevation.
 - **Text:** blue ink; sanguine for rare secondary actions.
 - **Focus:** a 2px blue-ink outline offset by 2px, applied globally.
+- **Busy** (`BusyButton`): while its action waits for the server, a button keeps its width and its own ink; only the label gives way to a small fixed-arc spinner (18px) in the same place. It is disabled, so neither a second click nor Enter in its form sends again, and it keeps its accessible name (`aria-busy`). Busy is not unavailable: it never takes the greyed disabled look.
 
 ### Chips
 - **Style:** outlined by default, 2px radius, typewriter bold. Status colour comes only from the état inks.
@@ -426,6 +428,7 @@ Rules come in three weights:
 ### Inputs / Fields
 - **Handwritten fields.** An editable value reads as handwriting on a printed field line. On hover or focus, a dashed underline and a small pencil appear. On touch there is no pencil, only a dotted underline. Enter or a click opens a standard text field in the same hand, at the same place. Escape cancels; blur commits.
 - **Inputs everywhere** (dialogs, whitelist, selects) are handwritten in blue ink, with a printing-ink underline (55% at rest, full on hover). Outlined inputs use a 45% printing-ink border.
+- **Limits.** A field stops at what the server keeps: 200 characters for a short field (name, Aspect, label), 100 000 for a text (notes, descriptions), 2048 for the portrait's address, 254 for an email. Short fields lose their surrounding spaces; a sheet name made of spaces becomes "Sans nom", and a table cannot be renamed to nothing.
 
 ### Navigation
 - **Title band:** sits inside the frame at the top of the sheet, with back on the left and display settings and ⋯ on the right. In the centre, between two fleurons: the stamped page title (from md), the moon-phase frieze (from lg) and ONIRIA. On home, only the frieze shows, since ONIRIA is already the display title.
@@ -452,7 +455,7 @@ An Existence as a small atlas planet:
 
 ### Character Plate (signature)
 The head of the sheet, as printed fields:
-- **Portrait:** a square printed frame (96×108px; 64×72px on phone) labelled PORTRAIT. It holds the image, or a tint planet with the initial written in blue.
+- **Portrait:** a square printed frame (96×108px; 64×72px on phone) labelled PORTRAIT. It holds the image, or a tint planet with the initial written in blue. An image that fails to load (dead link) gives way to the tint planet, never a broken-image icon. The initial is the name's first grapheme, so an emoji or a composed letter stays whole.
 - **Name:** written large on a field line, with the tint button beside it.
 - **Joueur·euse and Table:** typed under their labels.
 - **Âge, Aspect and Devenir:** handwritten on field lines.
@@ -499,9 +502,18 @@ A sheet in creation shows its three steps in the Expérience section, inside an 
 - **No alarm before the XP arrives:** the note stays info; only the missing amount is coloured.
 - **Reminder:** while the sheet is in creation, an info line under the Existences box gives the step ("étape 1 sur 3 : …") and a text button "Voir les étapes" that opens Caractéristiques and scrolls to them, stopping under the sticky box (or the phone band). The button sits at the right of the line and drops under the sentence on phone.
 
+### Errors and failed reads
+Something that failed says what is missing, why, and the one action that helps. Never a blank page, a spinner that turns forever, or an empty list that is really a failed read.
+- **A page that cannot show** (unknown address, deleted sheet or table, server error) sits on the sheet like any page: a pale constellation, the stamped page title ("Page introuvable", "La page n'a pas pu s'afficher"), one typed sentence in pale ink, then "Réessayer" (contained) and "Retour à l'accueil" (text), or only the return when retrying cannot help. A server error adds "Référence : …" as a caption, to pass on to the MJ. When the layout itself fails, the same notice sits under ONIRIA on a bare sheet ("Le carnet n'a pas pu s'ouvrir").
+- **A failed read inside a page** (sheet list, a sheet, tables, whitelist, skills catalogue) is an error alert: what could not be read as its title, the reason below, then one action: "Réessayer", "Retour à l'accueil" for a missing sheet, or "Se reconnecter" for an expired session. As in the creation reminder, the action follows the reason on one line and drops under it, at the right, when the line runs out (phone); its label never wraps.
+- **A failed write** comes back as an error slip that stays until it is closed (other slips leave after 2 seconds), and the screen returns to the saved value. Messages say what to do: "Connexion perdue : la modification n'est pas enregistrée. Vérifie ta connexion, puis réessaie." An expired session adds "Se reconnecter" to the slip.
+- **Actions in flight** keep their button busy until the server answers (see Buttons): creating a sheet, a table or an address, awarding XP, granting a reset, validating, deleting a sheet or table, signing in with Google, and "Réessayer" on an error page while the server prepares it again.
+- **One sentence per failure.** The server not answering always reads "Le serveur n'a pas répondu. Réessaie dans un instant ; si ça recommence, préviens le MJ." (slips and pages alike). A lost connection says what to do without repeating the title: "Connexion perdue : vérifie ta connexion, puis réessaie."
+- **Semantics.** An error that just happened (an error page, a failed read) is announced as an alert; "Page introuvable" is a page like any other, carried by its title.
+
 ### Ornaments
 All ornaments are decorative and `aria-hidden`:
-- **Printed** (ink): the armillary sphere at section heads, fleurons and the moon-phase frieze in the title band, a pale constellation under the combat column (from md).
+- **Printed** (ink): the armillary sphere at section heads, fleurons and the moon-phase frieze in the title band, a pale constellation under the combat column (from md) and above an error notice.
 - **Pen** (blue): the sketched moon and dotted path in the plate (from lg).
 
 ### Notes
@@ -522,7 +534,8 @@ The notes editor always uses its light theme. It has a printed toolbar with a pr
 - **Do** keep everything used in play visible without scrolling from 1440px; below that, keep Combat beside Caractères and Facultés.
 - **Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.
 - **Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, "Avant : N" in a tooltip.
-- **Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet.
+- **Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet, and when that first read fails, say so with "Réessayer" (`LoadError`).
+- **Do** keep a button blocked while its action is in flight, so a double click never sends twice.
 - **Do** honour both densities and both lights for every new surface.
 - **Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes.
 

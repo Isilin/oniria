@@ -1,6 +1,7 @@
 'use client';
 
 import { useCatalog } from '@/lib/hooks/use-catalog';
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, meetsPrerequisite, normalizeStat } from '@/lib/rules';
 import WarningIcon from '@mui/icons-material/WarningAmber';
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import { useSnackbar } from 'notistack';
 import EditableField from '../atoms/editable-field';
 import SectionCard from '../molecules/section-card';
 import SheetField from '../molecules/sheet-field';
@@ -55,7 +55,7 @@ const Properties = ({
   const { canEdit } = useSheet(id);
   const { catalog, createProperty } = useCatalog();
   const { data: session } = useSession();
-  const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const isAdmin = session?.user?.role === 'ADMIN';
   const value = row.properties ?? [];
 
@@ -100,7 +100,7 @@ const Properties = ({
           );
           onChange(ids);
         } catch (error) {
-          enqueueSnackbar((error as Error).message, { variant: 'error' });
+          notifyError(error);
         }
       }}
       renderInput={(params) => (

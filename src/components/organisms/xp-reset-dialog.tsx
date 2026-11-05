@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 const GROUPS: { label: string; scopes: Scope[] }[] = [
   { label: 'Caractéristiques', scopes: ['body', 'spirit', 'soul'] },
@@ -116,14 +116,15 @@ const XpResetDialog = ({ open, onClose, unlocked, onSubmit }: Props) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button
+        <BusyButton
           variant="contained"
           color="warning"
           onClick={submit}
-          disabled={loading || selected.length === 0}
+          busy={loading}
+          disabled={selected.length === 0}
         >
-          {loading ? <CircularProgress size={20} /> : 'Accorder le reset'}
-        </Button>
+          Accorder le reset
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

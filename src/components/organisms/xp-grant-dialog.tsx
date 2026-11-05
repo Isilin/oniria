@@ -1,11 +1,11 @@
 'use client';
 
 import { Amounts, zero } from '@/lib/rules/xp';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,6 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import { AmountsFields } from './xp-dialogs';
 
 export interface Grant extends Amounts {
@@ -100,6 +101,7 @@ const XpGrantDialog = ({
           label="Libellé"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           fullWidth
           size="small"
           margin="dense"
@@ -111,17 +113,14 @@ const XpGrantDialog = ({
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button
+        <BusyButton
           variant="contained"
           onClick={submit}
-          disabled={loading || empty || disabled}
+          busy={loading}
+          disabled={empty || disabled}
         >
-          {loading ? (
-            <CircularProgress size={20} />
-          ) : (
-            submitLabel(amounts, recipients)
-          )}
-        </Button>
+          {submitLabel(amounts, recipients)}
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

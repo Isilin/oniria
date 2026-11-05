@@ -3,6 +3,7 @@
 import { useSheets } from '@/lib/hooks/use-sheet';
 import { Box, CircularProgress, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import LoadError from '../atoms/load-error';
 import { Armillary } from '../atoms/ornaments';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';
@@ -22,9 +23,20 @@ const HEADING = {
 };
 
 const ListSheets = () => {
-  const { sheets, isLoading } = useSheets();
+  const { sheets, error, isLoading, retry } = useSheets();
 
-  if (isLoading && !sheets) return <CircularProgress />;
+  // Sans liste (lecture en échec), l'accueil le dit au lieu de tomber.
+  if (!sheets) {
+    return isLoading || !error ? (
+      <CircularProgress />
+    ) : (
+      <LoadError
+        what="Les fiches n'ont pas pu être lues."
+        error={error}
+        onRetry={retry}
+      />
+    );
+  }
 
   return (
     <Container>
@@ -61,6 +73,11 @@ const ListSheets = () => {
         {sheets.others.map((sheet) => (
           <SheetCard key={sheet.id} sheet={sheet} userVisible={true} />
         ))}
+        {sheets.others.length === 0 && (
+          <Typography color="textSecondary">
+            Aucune autre fiche pour l&apos;instant.
+          </Typography>
+        )}
       </Grid>
     </Container>
   );

@@ -25,5 +25,12 @@ export const useCatalog = () => {
     return property;
   };
 
-  return { catalog, error, isLoading, createProperty };
+  return {
+    catalog,
+    error,
+    isLoading,
+    /** Relit les catalogues (après une erreur de lecture). */
+    retry: () => mutate(),
+    createProperty,
+  };
 };

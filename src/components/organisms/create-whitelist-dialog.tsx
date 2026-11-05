@@ -2,7 +2,6 @@
 
 import { useWhitelist } from '@/lib/hooks/use-whitelist';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,6 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { SyntheticEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 interface Props {
   open: boolean;
@@ -50,6 +50,7 @@ const CreateWhitelistDialog = ({ open, onClose }: Props) => {
           name="email"
           label="Adresse email"
           type="email"
+          slotProps={{ htmlInput: { maxLength: 254 } }}
           autoComplete="off"
           fullWidth
           variant="standard"
@@ -60,9 +61,9 @@ const CreateWhitelistDialog = ({ open, onClose }: Props) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button type="submit" variant="contained" disabled={loading}>
-          {loading ? <CircularProgress size={20} /> : 'Ajouter'}
-        </Button>
+        <BusyButton type="submit" variant="contained" busy={loading}>
+          Ajouter
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

@@ -1,6 +1,7 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useTeams } from '@/lib/hooks/use-team';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,11 +10,13 @@ import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createTeam } = useTeams();
 
   const handleSubmit = async (e: SyntheticEvent<HTMLElement>) => {
@@ -29,7 +32,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
       enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
       router.push(`/team/${team.id}`);
     } catch (error) {
-      enqueueSnackbar((error as Error).message, { variant: 'error' });
+      notifyError(error);
     } finally {
       setLoading(false);
     }
@@ -51,6 +54,7 @@ const CreateTeamDialog = ({ open, onClose }) => {
           margin="dense"
           id="name"
           name="name"
+          slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
           label="Nom"
           type="text"
           fullWidth
@@ -61,9 +65,9 @@ const CreateTeamDialog = ({ open, onClose }) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress size={20} /> : 'Ajouter'}
-        </Button>
+        <BusyButton type="submit" busy={loading}>
+          Ajouter
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

@@ -29,6 +29,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { EASE } from '@/theme/theme';
 import { useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import CreationSteps from '../molecules/creation-steps';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
@@ -57,6 +58,9 @@ const ExperienceCard = ({ id }: { id: string }) => {
   const [grantOpen, setGrantOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [confirmValidate, setConfirmValidate] = useState(false);
+  // Pendant l'envoi, « Valider » ne repart pas (un double clic validait puis
+  // affichait « La fiche est déjà validée. »).
+  const [validating, setValidating] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
 
   // Le tampon « Validée » s'abat quand la fiche est validée, puis à chaque
@@ -367,7 +371,10 @@ const ExperienceCard = ({ id }: { id: string }) => {
         </Collapse>
       </Box>
 
-      <Dialog open={confirmValidate} onClose={() => setConfirmValidate(false)}>
+      <Dialog
+        open={confirmValidate}
+        onClose={validating ? undefined : () => setConfirmValidate(false)}
+      >
         <DialogTitle>Valider la fiche ?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -380,15 +387,24 @@ const ExperienceCard = ({ id }: { id: string }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmValidate(false)}>Annuler</Button>
           <Button
+            onClick={() => setConfirmValidate(false)}
+            disabled={validating}
+          >
+            Annuler
+          </Button>
+          <BusyButton
             variant="contained"
+            busy={validating}
             onClick={async () => {
-              if (await validate()) setConfirmValidate(false);
+              setValidating(true);
+              const ok = await validate();
+              setValidating(false);
+              if (ok) setConfirmValidate(false);
             }}
           >
             Valider
-          </Button>
+          </BusyButton>
         </DialogActions>
       </Dialog>
       {isAdmin && (

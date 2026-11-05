@@ -3,12 +3,12 @@
 import useAnchor from '@/lib/hooks/use-anchor';
 import { PointsDraftProvider } from '@/lib/hooks/use-points-draft';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
+import LoadError from '../atoms/load-error';
 import { Constellation } from '../atoms/ornaments';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
@@ -46,7 +46,7 @@ const Sheet = ({ id }: { id: string }) => (
 const SheetContent = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
-  const { sheet, isLoading, error, canEdit } = useSheet(id);
+  const { sheet, isLoading, error, canEdit, retry } = useSheet(id);
   // Le sens de la page qui tourne : vers l'onglet de droite ou de gauche.
   const [shown, setShown] = useState(value);
   const [direction, setDirection] = useState<-1 | 0 | 1>(0);
@@ -61,7 +61,11 @@ const SheetContent = ({ id }: { id: string }) => {
   if (!sheet) {
     if (isLoading) return <CircularProgress />;
     return (
-      <Alert severity="error">{error?.message ?? 'Fiche introuvable.'}</Alert>
+      <LoadError
+        what="La fiche n'a pas pu être ouverte."
+        error={error ?? new Error('Fiche introuvable.')}
+        onRetry={retry}
+      />
     );
   }
 

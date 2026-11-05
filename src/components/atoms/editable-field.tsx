@@ -1,6 +1,7 @@
 'use client';
 
 import EditIcon from '@mui/icons-material/Edit';
+import { STRING_MAX, TEXT_MAX } from '@/lib/sheet/fields';
 import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
 import Written from './written';
@@ -18,6 +19,11 @@ interface Props {
   display?: string;
   minWidth?: number;
   fullWidth?: boolean;
+  /**
+   * Longueur maximale. Par défaut, celle que le serveur accepte : un champ
+   * court (200) sur une ligne, un texte sur plusieurs.
+   */
+  maxLength?: number;
   'aria-label'?: string;
   /**
    * Style du texte affiché. Par défaut `hand` : ce que le joueur écrit est
@@ -35,6 +41,7 @@ const EditableField = ({
   display,
   minWidth,
   fullWidth,
+  maxLength,
   'aria-label': ariaLabel,
   variant = 'hand',
 }: Props) => {
@@ -78,6 +85,11 @@ const EditableField = ({
         sx={{
           color: ink,
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+          // Un mot sans fin (une adresse, un nom collé) passe à la ligne au
+          // lieu de déborder, même dans une rangée « libellé : valeur » ; un
+          // tableau garde sa largeur et défile.
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
         }}
       >
         <Written value={shown}>{shown}</Written>
@@ -108,6 +120,8 @@ const EditableField = ({
           cursor: 'pointer',
           borderBottom: '1px dashed transparent',
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
           '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
           ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
           ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
@@ -155,7 +169,15 @@ const EditableField = ({
       type={type === 'number' ? 'number' : 'text'}
       multiline={type === 'multiline'}
       fullWidth={fullWidth}
-      slotProps={{ htmlInput: { 'aria-label': ariaLabel } }}
+      slotProps={{
+        htmlInput: {
+          'aria-label': ariaLabel,
+          maxLength:
+            type === 'number'
+              ? undefined
+              : (maxLength ?? (type === 'multiline' ? TEXT_MAX : STRING_MAX)),
+        },
+      }}
       sx={{
         minWidth: minWidth ?? (type === 'number' ? 60 : 120),
         maxWidth: fullWidth ? undefined : 400,

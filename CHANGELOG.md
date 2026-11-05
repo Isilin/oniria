@@ -175,6 +175,40 @@ Première version complète des fiches de personnages d'Oniria.
 - Les noms écrits dans les tableaux (armes, armures, objets, traits) ne se
   coupent plus mot par mot ; la corbeille d'une compétence ne se retrouve
   plus seule sur sa ligne.
+- Notes : un simple clic dans l'éditeur puis ailleurs pouvait réenregistrer
+  l'ancienne version par-dessus des notes changées entre-temps sur un autre
+  appareil. Seul ce qui a été tapé s'enregistre, l'éditeur montre la
+  version à jour, et quitter la page avec des notes non enregistrées
+  demande confirmation.
+- L'accueil tombait en page blanche quand la liste des fiches ne se lisait
+  pas ; une lecture en échec (fiches, fiche, tables, whitelist,
+  compétences) le dit, avec « Réessayer », au lieu d'un chargement sans fin
+  ou d'une liste faussement vide (« Aucune adresse »). Sur téléphone, le
+  bouton passe sous la phrase au lieu de l'écraser.
+- Un double clic sur « Valider » validait la fiche puis affichait « La
+  fiche est déjà validée. » ; les suppressions et la connexion Google ne
+  partent plus deux fois. Pendant l'envoi, un bouton garde sa place et sa
+  couleur, et une petite roue remplace son libellé (il rétrécissait jusqu'à
+  presque disparaître) ; « Réessayer » sur une page d'erreur fait de même
+  pendant que le serveur la reprépare.
+- Réseau coupé : le message disait « Failed to fetch ». Il dit désormais ce
+  qui s'est passé et quoi faire ; une session expirée propose de se
+  reconnecter, et les billets d'erreur restent jusqu'à ce qu'on les ferme.
+- Une adresse inconnue, une fiche ou une table supprimée, une erreur du
+  serveur affichaient la page anglaise de Next : elles ont leur page dans
+  le carnet (« Page introuvable », « La page n'a pas pu s'afficher »), avec
+  le retour à l'accueil et, pour une erreur, « Réessayer » et une référence
+  à donner au MJ.
+- Un nombre trop grand (âge, quantité, montant d'XP) donnait « Erreur
+  serveur. » ; il est refusé avec un message clair. Les textes ont une
+  longueur maximale, un nom fait d'espaces donne « Sans nom » pour une
+  fiche et n'est plus accepté pour une table.
+- Une image de portrait introuvable montrait l'icône d'image cassée : la
+  lune à l'initiale reprend sa place. L'initiale d'un nom commençant par
+  un emoji n'est plus coupée en deux.
+- Un mot sans fin (adresse collée, nom sans espace) débordait de sa ligne,
+  ou se faisait rogner dans une rangée « libellé : valeur » ;
+  « Autres fiches » sans fiche affichait un titre seul.
 
 ### Sécurité
 

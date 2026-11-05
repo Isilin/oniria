@@ -1,32 +1,28 @@
 'use client';
 
-import { Button, CircularProgress } from '@mui/material';
+import { ButtonProps } from '@mui/material';
 import { useState } from 'react';
+import BusyButton from './busy-button';
 
-const LoadingButton = ({ ...props }) => {
+interface Props extends Omit<ButtonProps, 'onClick'> {
+  /** Action attendue : le bouton reste occupé jusqu'à sa fin. */
+  onClick?: () => unknown;
+}
+
+/** Un bouton qui attend la fin de son action : un double clic ne part pas. */
+const LoadingButton = ({ onClick, ...props }: Props) => {
   const [loading, setLoading] = useState(false);
   const handleClick = async () => {
+    if (loading) return;
     setLoading(true);
-    props.onClick?.();
-    setLoading(false);
+    try {
+      await onClick?.();
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <Button
-      {...props}
-      onClick={handleClick}
-      disabled={loading}
-      variant={loading ? 'outlined' : props?.variant}
-      startIcon={!loading && props?.startIcon}
-      sx={{ minWidth: 'fit-content' }}
-    >
-      {loading ? (
-        <CircularProgress size={24.5} sx={{ color: 'action.disabled' }} />
-      ) : (
-        props.children
-      )}
-    </Button>
-  );
+  return <BusyButton {...props} busy={loading} onClick={handleClick} />;
 };
 
 export default LoadingButton;
