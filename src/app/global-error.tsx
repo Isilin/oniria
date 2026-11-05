@@ -2,6 +2,7 @@
 
 import SvgDefs from '@/components/atoms/svg-defs';
 import ErrorNotice from '@/components/organisms/error-notice';
+import { SERVER_DOWN } from '@/lib/helpers/swr';
 import { FONT_VARIABLES } from '@/theme/fonts';
 import { createOniriaTheme } from '@/theme/theme';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
@@ -55,9 +56,9 @@ const GlobalError = ({
                     headingLevel="h2"
                     onRetry={retry}
                     digest={digest}
+                    alert
                   >
-                    Le serveur ne répond pas pour l&apos;instant. Réessaie dans
-                    un instant{'\u00a0'}; si ça recommence, préviens le MJ.
+                    {SERVER_DOWN}
                   </ErrorNotice>
                 </main>
               </div>

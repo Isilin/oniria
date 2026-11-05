@@ -30,7 +30,7 @@ describe('request', () => {
     const read = await failure(request('GET', '/api/sheets'));
     expect(read.status).toBe(0);
     expect(read.message).toMatch(/^Connexion perdue/);
-    expect(read.message).toMatch(/rien n'a pu être lu/);
+    expect(read.message).toMatch(/vérifie ta connexion/);
     const write = await failure(request('PATCH', '/api/sheets/1', {}));
     expect(write.message).toMatch(/n'est pas enregistrée/);
   });

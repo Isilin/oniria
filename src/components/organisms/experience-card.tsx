@@ -18,7 +18,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Collapse,
   Dialog,
   DialogActions,
@@ -30,6 +29,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { EASE } from '@/theme/theme';
 import { useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import CreationSteps from '../molecules/creation-steps';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
@@ -393,9 +393,9 @@ const ExperienceCard = ({ id }: { id: string }) => {
           >
             Annuler
           </Button>
-          <Button
+          <BusyButton
             variant="contained"
-            disabled={validating}
+            busy={validating}
             onClick={async () => {
               setValidating(true);
               const ok = await validate();
@@ -403,12 +403,8 @@ const ExperienceCard = ({ id }: { id: string }) => {
               if (ok) setConfirmValidate(false);
             }}
           >
-            {validating ? (
-              <CircularProgress size={20} color="inherit" />
-            ) : (
-              'Valider'
-            )}
-          </Button>
+            Valider
+          </BusyButton>
         </DialogActions>
       </Dialog>
       {isAdmin && (

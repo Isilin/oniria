@@ -3,7 +3,6 @@ import { useSheets } from '@/lib/hooks/use-sheet';
 import { STRING_MAX } from '@/lib/sheet/fields';
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,6 +12,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 const CreateSheetDialog = ({ open, onClose }) => {
   const router = useRouter();
@@ -67,9 +67,9 @@ const CreateSheetDialog = ({ open, onClose }) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress size={20} /> : 'Créer'}
-        </Button>
+        <BusyButton type="submit" busy={loading}>
+          Créer
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

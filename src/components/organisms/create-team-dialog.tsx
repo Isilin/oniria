@@ -2,7 +2,6 @@ import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useTeams } from '@/lib/hooks/use-team';
 import { STRING_MAX } from '@/lib/sheet/fields';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 
 const CreateTeamDialog = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -65,9 +65,9 @@ const CreateTeamDialog = ({ open, onClose }) => {
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress size={20} /> : 'Ajouter'}
-        </Button>
+        <BusyButton type="submit" busy={loading}>
+          Ajouter
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

@@ -415,6 +415,7 @@ Rules come in three weights:
 - **Primary (contained):** blue ink with raised-paper text, typewriter bold, sentence case, no elevation.
 - **Text:** blue ink; sanguine for rare secondary actions.
 - **Focus:** a 2px blue-ink outline offset by 2px, applied globally.
+- **Busy** (`BusyButton`): while its action waits for the server, a button keeps its width and its own ink; only the label gives way to a small fixed-arc spinner (18px) in the same place. It is disabled, so neither a second click nor Enter in its form sends again, and it keeps its accessible name (`aria-busy`). Busy is not unavailable: it never takes the greyed disabled look.
 
 ### Chips
 - **Style:** outlined by default, 2px radius, typewriter bold. Status colour comes only from the état inks.
@@ -504,9 +505,11 @@ A sheet in creation shows its three steps in the Expérience section, inside an 
 ### Errors and failed reads
 Something that failed says what is missing, why, and the one action that helps. Never a blank page, a spinner that turns forever, or an empty list that is really a failed read.
 - **A page that cannot show** (unknown address, deleted sheet or table, server error) sits on the sheet like any page: a pale constellation, the stamped page title ("Page introuvable", "La page n'a pas pu s'afficher"), one typed sentence in pale ink, then "Réessayer" (contained) and "Retour à l'accueil" (text), or only the return when retrying cannot help. A server error adds "Référence : …" as a caption, to pass on to the MJ. When the layout itself fails, the same notice sits under ONIRIA on a bare sheet ("Le carnet n'a pas pu s'ouvrir").
-- **A failed read inside a page** (sheet list, a sheet, tables, whitelist, skills catalogue) is an error alert: what could not be read as its title, the reason below, and one action at the right: "Réessayer", "Retour à l'accueil" for a missing sheet, or "Se reconnecter" for an expired session.
+- **A failed read inside a page** (sheet list, a sheet, tables, whitelist, skills catalogue) is an error alert: what could not be read as its title, the reason below, then one action: "Réessayer", "Retour à l'accueil" for a missing sheet, or "Se reconnecter" for an expired session. As in the creation reminder, the action follows the reason on one line and drops under it, at the right, when the line runs out (phone); its label never wraps.
 - **A failed write** comes back as an error slip that stays until it is closed (other slips leave after 2 seconds), and the screen returns to the saved value. Messages say what to do: "Connexion perdue : la modification n'est pas enregistrée. Vérifie ta connexion, puis réessaie." An expired session adds "Se reconnecter" to the slip.
-- **Actions in flight** block their button until the server answers (validation, deletion of a sheet or table, Google sign-in), with a small spinner in place of the label where the dialog stays open.
+- **Actions in flight** keep their button busy until the server answers (see Buttons): creating a sheet, a table or an address, awarding XP, granting a reset, validating, deleting a sheet or table, signing in with Google, and "Réessayer" on an error page while the server prepares it again.
+- **One sentence per failure.** The server not answering always reads "Le serveur n'a pas répondu. Réessaie dans un instant ; si ça recommence, préviens le MJ." (slips and pages alike). A lost connection says what to do without repeating the title: "Connexion perdue : vérifie ta connexion, puis réessaie."
+- **Semantics.** An error that just happened (an error page, a failed read) is announced as an alert; "Page introuvable" is a page like any other, carried by its title.
 
 ### Ornaments
 All ornaments are decorative and `aria-hidden`:

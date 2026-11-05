@@ -2,7 +2,6 @@
 
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { useState } from 'react';
+import BusyButton from '../../atoms/busy-button';
 
 interface Props {
   open: boolean;
@@ -62,18 +62,16 @@ const DeleteConfirmation = ({
         <Button onClick={onClose} disabled={busy}>
           Annuler
         </Button>
-        <Button
+        <BusyButton
           onClick={handleClick}
           color="error"
           variant="contained"
+          // La boîte qui attend montre la roue ; l'autre est déjà fermée.
+          busy={busy && waitForResult}
           disabled={busy}
         >
-          {busy && waitForResult ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            confirmLabel
-          )}
-        </Button>
+          {confirmLabel}
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

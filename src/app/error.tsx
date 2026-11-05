@@ -1,6 +1,7 @@
 'use client';
 
 import ErrorNotice from '@/components/organisms/error-notice';
+import { SERVER_DOWN } from '@/lib/helpers/swr';
 import { useEffect } from 'react';
 
 /**
@@ -22,9 +23,9 @@ const PageError = ({ error, retry }: { error: unknown; retry: () => void }) => {
       title="La page n'a pas pu s'afficher"
       onRetry={retry}
       digest={digest}
+      alert
     >
-      Le serveur n&apos;a pas répondu. Réessaie dans un instant{'\u00a0'}; si ça
-      recommence, préviens le MJ.
+      {SERVER_DOWN}
     </ErrorNotice>
   );
 };

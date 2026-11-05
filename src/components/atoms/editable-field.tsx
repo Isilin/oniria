@@ -86,8 +86,10 @@ const EditableField = ({
           color: ink,
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
           // Un mot sans fin (une adresse, un nom collé) passe à la ligne au
-          // lieu de déborder ; un tableau garde sa largeur et défile.
+          // lieu de déborder, même dans une rangée « libellé : valeur » ; un
+          // tableau garde sa largeur et défile.
           overflowWrap: 'break-word',
+          maxWidth: '100%',
         }}
       >
         <Written value={shown}>{shown}</Written>
@@ -119,6 +121,7 @@ const EditableField = ({
           borderBottom: '1px dashed transparent',
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
           overflowWrap: 'break-word',
+          maxWidth: '100%',
           '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
           ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
           ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },

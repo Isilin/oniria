@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import { AmountsFields } from './xp-dialogs';
 
 export interface Grant extends Amounts {
@@ -113,17 +113,14 @@ const XpGrantDialog = ({
         <Button onClick={onClose} disabled={loading}>
           Annuler
         </Button>
-        <Button
+        <BusyButton
           variant="contained"
           onClick={submit}
-          disabled={loading || empty || disabled}
+          busy={loading}
+          disabled={empty || disabled}
         >
-          {loading ? (
-            <CircularProgress size={20} />
-          ) : (
-            submitLabel(amounts, recipients)
-          )}
-        </Button>
+          {submitLabel(amounts, recipients)}
+        </BusyButton>
       </DialogActions>
     </Dialog>
   );

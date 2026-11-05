@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Whitelist } from '@prisma/client';
 import { FormEvent, useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import WhitelistDeleteButton from './whitelist-delete-button';
 
 /**
@@ -61,9 +62,9 @@ const WhitelistElement = ({ element }: { element: Whitelist }) => {
           <Button onClick={() => setDraft(null)} disabled={saving}>
             Annuler
           </Button>
-          <Button type="submit" variant="contained" disabled={saving}>
+          <BusyButton type="submit" variant="contained" busy={saving}>
             Enregistrer
-          </Button>
+          </BusyButton>
         </Box>
       </ListItem>
     );
