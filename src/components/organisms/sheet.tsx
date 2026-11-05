@@ -16,6 +16,7 @@ import AbilitiesCard from './abilities-card';
 import CharacterPlate from './character-plate';
 import CharactersCard from './characters-card';
 import CombatCard from './combat-card';
+import CreationReminder from './creation-reminder';
 import EphemerisBand from './ephemeris-band';
 import ExperienceCard from './experience-card';
 import InventoryTab from './inventory-tab';
@@ -68,6 +69,7 @@ const SheetContent = ({ id }: { id: string }) => {
     <>
       <CharacterPlate id={id} />
       <EphemerisBand id={id} />
+      <CreationReminder id={id} />
       <Tabs
         value={value}
         onChange={(e, newVal) => {

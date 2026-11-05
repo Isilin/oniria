@@ -39,6 +39,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: 'database',
   },
+  // Un refus (adresse hors whitelist) ou un échec revient à l'accueil, qui
+  // l'explique dans le carnet (`?error=…`), au lieu de la page d'Auth.js.
+  pages: { error: '/' },
   adapter: PrismaAdapter(prisma),
   providers: [Google],
 });

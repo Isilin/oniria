@@ -5,6 +5,7 @@ import {
   characteristicChange,
   checkSplit,
   corpusChange,
+  creationStep,
   corpusCost,
   investedIn,
   offeredTo,
@@ -333,6 +334,38 @@ describe('fiche', () => {
     expect(summary.dues).toEqual([
       expect.objectContaining({ target: 'spyree:a', amount: 30 }),
     ]);
+  });
+});
+
+describe('étapes de la création', () => {
+  it("1 : la fiche neuve attend l'XP de création du MJ", () => {
+    const summary = xpSummary({ ...stats(25), unlocked: ALL });
+    expect(creationStep(summary)).toBe(1);
+  });
+
+  it("2 : l'XP est reçue, mais ne couvre pas encore la fiche", () => {
+    const summary = xpSummary({
+      ...stats(25),
+      unlocked: ALL,
+      xpEntries: journal(entry('GAIN', { live: 100 })),
+    });
+    expect(creationStep(summary)).toBe(2);
+  });
+
+  it("3 : l'XP couvre la fiche, il reste à valider", () => {
+    const summary = xpSummary({
+      ...stats(25),
+      unlocked: ALL,
+      xpEntries: journal(entry('GAIN', { live: 700 })),
+    });
+    expect(creationStep(summary)).toBe(3);
+  });
+
+  it('aucune étape pour une fiche validée ou un reset partiel', () => {
+    expect(creationStep(xpSummary({ ...stats(25), unlocked: [] }))).toBe(null);
+    expect(
+      creationStep(xpSummary({ ...stats(25), unlocked: ['spyree'] })),
+    ).toBe(null);
   });
 });
 

@@ -1,19 +1,24 @@
 'use client';
 
-import { SheetWithUser } from '@/lib/db/sheet';
+import { SheetListItem } from '@/lib/db/sheet';
 import { tintOf } from '@/lib/tints';
-import { Box, Card, CardActionArea, Typography } from '@mui/material';
+import { Box, Card, CardActionArea, Chip, Typography } from '@mui/material';
 import Link from 'next/link';
 import Portrait from '../atoms/portrait';
 
 interface Props {
-  sheet: SheetWithUser;
+  sheet: SheetListItem;
   userVisible: boolean;
 }
 
+/** Les mêmes puces que dans la vue d'ensemble d'une table. */
+const STATUS_LABEL = { creation: 'en création', ready: 'à valider' } as const;
+
 /**
  * Une fiche dans la liste : une fiche cartonnée, le portrait dans son cadre
- * imprimé, le nom écrit à la main, puis le joueur ou l'Aspect, tapés.
+ * imprimé, le nom écrit à la main, puis le joueur ou l'Aspect, tapés. Une
+ * fiche qui attend (l'XP de création, la validation) le dit d'une puce : le
+ * MJ voit d'un coup d'œil laquelle a besoin de lui.
  */
 const SheetCard = ({ sheet, userVisible }: Props) => {
   const tint = tintOf(sheet.tint);
@@ -51,6 +56,14 @@ const SheetCard = ({ sheet, userVisible }: Props) => {
           <Typography variant="body2" color="textSecondary" noWrap>
             {userVisible ? sheet.user.name : sheet.aspect}
           </Typography>
+          {sheet.xpStatus && (
+            <Chip
+              size="small"
+              color="warning"
+              label={STATUS_LABEL[sheet.xpStatus]}
+              sx={{ mt: 0.5 }}
+            />
+          )}
         </Box>
       </CardActionArea>
     </Card>

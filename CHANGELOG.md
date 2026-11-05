@@ -50,6 +50,18 @@ Première version complète des fiches de personnages d'Oniria.
 - Tables de jeu : ajout et retrait de personnages, vue d'ensemble pour le MJ.
 - Connexion de test et personnages fictifs, réservés aux aperçus.
 - Migrations Prisma, avec vérification de la base avant toute modification.
+- Premiers pas :
+  - l'accueil dit en une ligne ce qu'est l'application et que la connexion
+    est réservée au groupe (le MJ ajoute l'adresse Google) ;
+  - une fiche en création montre ses trois étapes (recevoir l'XP de
+    création du MJ, répartir les points, valider), cochées à la plume au
+    fil de l'eau, avec ce qu'il faut faire ensuite et qui doit le faire ;
+    une ligne en haut de la fiche y mène tant qu'elle n'est pas validée ;
+  - sur l'accueil, une fiche qui attend son XP ou sa validation porte la
+    puce « en création » ou « à valider », comme dans la vue d'ensemble
+    des tables ;
+  - une page de notes vide invite à écrire, et la barre d'outils de
+    l'éditeur est en français.
 
 ### Modifié
 
@@ -130,6 +142,13 @@ Première version complète des fiches de personnages d'Oniria.
 
 ### Corrigé
 
+- Une adresse Google absente de la whitelist arrivait sur la page d'erreur
+  d'Auth.js, en anglais et hors de l'application ; elle revient à
+  l'accueil avec une note qui explique quoi faire (demander au MJ de
+  l'ajouter). Les autres échecs de connexion y reviennent aussi.
+- Une fiche neuve affichait « Type » comme Aspect, écrit à l'encre bleue
+  comme si on l'avait choisi ; l'Aspect reste vide jusqu'à ce qu'on
+  l'écrive (les fiches existantes gardent le leur).
 - Une modification pouvait disparaître de l'écran quand un autre
   enregistrement se terminait juste après (ex. modifier un objet puis
   cliquer aussitôt sur « Ajouter »).

@@ -1,7 +1,14 @@
 'use client';
 
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { ALL_SCOPES, POOLS, SCOPE_BY_KEY, Scope, sum } from '@/lib/rules/xp';
+import {
+  ALL_SCOPES,
+  creationStep,
+  POOLS,
+  SCOPE_BY_KEY,
+  Scope,
+  sum,
+} from '@/lib/rules/xp';
 import HistoryIcon from '@mui/icons-material/History';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import LockOpenIcon from '@mui/icons-material/LockOpenOutlined';
@@ -22,6 +29,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { EASE } from '@/theme/theme';
 import { useState } from 'react';
+import CreationSteps from '../molecules/creation-steps';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
 import XpGrantDialog from './xp-grant-dialog';
@@ -75,6 +83,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
 
   const draft = xp.unlocked.length > 0;
   const creation = xp.unlocked.length === ALL_SCOPES.length;
+  const creationAt = creationStep(xp);
   const due = xp.dues.reduce((t, d) => t + d.amount, 0);
   const missing = Object.values(xp.missingByScope).reduce((t, m) => t + m, 0);
   const waiting = points.plan.lines.length > 0;
@@ -91,7 +100,20 @@ const ExperienceCard = ({ id }: { id: string }) => {
   );
 
   return (
-    <Box component="section" sx={{ minWidth: 0 }}>
+    <Box
+      component="section"
+      id="experience"
+      sx={{
+        minWidth: 0,
+        // Atteinte depuis le rappel de création : le titre s'arrête sous
+        // l'encadré des Existences collé en haut, ou sous la bande de 44 px
+        // qui le remplace sur petit écran.
+        scrollMarginTop: 140,
+        '@media (max-width: 599.95px), (max-height: 500px)': {
+          scrollMarginTop: 64,
+        },
+      }}
+    >
       <Box>
         <Box
           sx={{
@@ -155,7 +177,79 @@ const ExperienceCard = ({ id }: { id: string }) => {
         </Grid>
         <XpBarLegend parts={legend} />
 
-        {draft && (
+        {creationAt !== null && (
+          // La création en trois temps : on sait toujours quoi faire ensuite
+          // (et qui doit le faire), sans alerte tant que l'XP n'est pas là.
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <AlertTitle>Créer la fiche en trois temps</AlertTitle>
+            <CreationSteps
+              step={creationAt}
+              details={{
+                1:
+                  creationAt === 1 ? (
+                    isAdmin ? (
+                      <Button size="small" onClick={() => setGrantOpen(true)}>
+                        Attribuer l&apos;XP de création
+                      </Button>
+                    ) : (
+                      <Typography variant="body2" color="textSecondary">
+                        En attente du MJ.
+                      </Typography>
+                    )
+                  ) : (
+                    <Typography variant="body2" color="textSecondary">
+                      Reçue{'\u00a0'}: {formatAmounts(xp.gained)}.
+                    </Typography>
+                  ),
+                2: creationAt === 2 && (
+                  <Typography variant="body2" sx={{ color: 'warning.main' }}>
+                    Il manque {missing}
+                    {'\u00a0'}XP{'\u00a0'}:{' '}
+                    {Object.entries(xp.missingByScope)
+                      .map(([s, m]) => `${SCOPE_BY_KEY[s as Scope].label} ${m}`)
+                      .join(', ')}
+                    .
+                  </Typography>
+                ),
+                3: creationAt === 3 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      columnGap: 2,
+                      rowGap: 0.5,
+                    }}
+                  >
+                    <Typography variant="body2">
+                      {due === 0
+                        ? 'Rien à payer.'
+                        : `À payer\u00a0: ${due}\u00a0XP (${formatAmounts(xp.allocation.total)}).`}
+                    </Typography>
+                    {canEdit && (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        disabled={waiting}
+                        onClick={() => setConfirmValidate(true)}
+                      >
+                        Valider la fiche
+                      </Button>
+                    )}
+                  </Box>
+                ),
+              }}
+            />
+            {waiting && (
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Ces montants comptent les points en attente : valide-les ou
+                annule-les avant de valider la fiche.
+              </Typography>
+            )}
+          </Alert>
+        )}
+
+        {draft && !creation && (
           <Alert
             severity={xp.allocation.feasible ? 'info' : 'warning'}
             sx={{ mt: 2 }}
@@ -173,9 +267,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
             }
           >
             <AlertTitle>
-              {creation
-                ? 'Création : tout se modifie librement'
-                : `Reset : ${scopeList(xp.unlocked)} se modifie librement`}
+              Reset : {scopeList(xp.unlocked)} se modifie librement
             </AlertTitle>
             {due === 0
               ? 'Rien à payer pour le moment.'

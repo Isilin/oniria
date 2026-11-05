@@ -338,7 +338,7 @@ Cream paper, brown printing ink, blue fountain-pen ink, four Existence watercolo
 ### Line breaks and measure
 - Headings balance their lines (`text-wrap: balance`); body text avoids a lone last word (`pretty`).
 - Rules text in tooltips runs at 46 characters per line; notes at 75 at most (34rem), while tables and images keep the full width.
-- An amount stays glued to its category, and the middle dot never starts a line ("Éprouver 30 · Apprendre 10", with non-breaking spaces). In tables, a value comes first and its threshold sits under it as a caption ("6/6", "seuil 10").
+- An amount stays glued to its category, and the middle dot never starts a line ("Éprouver 30 · Apprendre 10", with non-breaking spaces). The same goes for French double punctuation: a non-breaking space before ":", ";" and "!", written `\u00a0` in the code so it stays visible. In tables, a value comes first and its threshold sits under it as a caption ("6/6", "seuil 10").
 
 ### Named Rules
 **The Machine à écrire Rule.** Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.
@@ -421,7 +421,7 @@ Rules come in three weights:
 ### Cards / Containers
 - **Sheet sections are not cards,** on any tab. Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule (`SectionCard`). The sections of the Caractéristiques tab also have a collapse chevron saved on the account.
 - **Printed boxes** (plate, Existences): square, 1.5px printing-ink border. The Existences box is opaque paper with grain, so it can stick above the scrolling sheet.
-- **Cards** (sheet list, add-sheet, teams): raised paper, 1px printing-ink border, 2px radius. A sheet card shows a square portrait frame, the name handwritten, and the player or Aspect typed. The add card is dashed.
+- **Cards** (sheet list, add-sheet, teams): raised paper, 1px printing-ink border, 2px radius. A sheet card shows a square portrait frame, the name handwritten, and the player or Aspect typed; a sheet waiting for its creation XP or its validation adds the overview's warning chip ("en création", "à valider"). The add card is dashed.
 
 ### Inputs / Fields
 - **Handwritten fields.** An editable value reads as handwriting on a printed field line. On hover or focus, a dashed underline and a small pencil appear. On touch there is no pencil, only a dotted underline. Enter or a click opens a standard text field in the same hand, at the same place. Escape cancels; blur commits.
@@ -492,13 +492,20 @@ A 16px segmented bar:
 - remaining: 14% blue ink with a 1.5px inset blue outline;
 - negative: erreur.
 
+### Creation Steps
+A sheet in creation shows its three steps in the Expérience section, inside an info note: receive the creation XP from the MJ, distribute the points, validate the sheet.
+- **Markers:** a 24px printed ring per step with its typed number: 1.5px printing ink for the current step, faint for the steps to come. A step done gets a blue pen tick in its ring, traced like a written value (`Written`) when it is ticked.
+- **Text:** typed; the current step is bold in printing ink, the steps to come in pale ink. Under the current step sit what it needs: the MJ's "Attribuer l'XP de création" or "En attente du MJ.", the missing XP in avertissement ink, then the cost and the "Valider la fiche" contained button.
+- **No alarm before the XP arrives:** the note stays info; only the missing amount is coloured.
+- **Reminder:** while the sheet is in creation, an info line under the Existences box gives the step ("étape 1 sur 3 : …") and a text button "Voir les étapes" that opens Caractéristiques and scrolls to them, stopping under the sticky box (or the phone band). The button sits at the right of the line and drops under the sentence on phone.
+
 ### Ornaments
 All ornaments are decorative and `aria-hidden`:
 - **Printed** (ink): the armillary sphere at section heads, fleurons and the moon-phase frieze in the title band, a pale constellation under the combat column (from md).
 - **Pen** (blue): the sketched moon and dotted path in the plate (from lg).
 
 ### Notes
-The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, typed like the rest of the print (its menus too). The text is handwritten in blue at 1.375rem on 30px lines, like a page of a notebook:
+The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, typed like the rest of the print (its menus too), with its labels in French. An empty page shows an invitation in the same hand but in pale ink, so it never passes for a note already written. The text is handwritten in blue at 1.375rem on 30px lines, like a page of a notebook:
 - every block, headings included, stays on the 30px line, with one blank line between blocks and one above a heading;
 - lines run to 75 characters at most; tables and images keep the full width;
 - a quote is the same hand with a 1px pen stroke in the margin;

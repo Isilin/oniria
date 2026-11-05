@@ -55,10 +55,19 @@ export type SheetWithUser = Prisma.SheetGetPayload<{
   include: typeof SHEET_SUMMARY_INCLUDE;
 }>;
 
+/**
+ * Où en est l'XP d'une fiche de la liste, comme dans la vue d'ensemble des
+ * tables : `creation` (en création, ou reset en cours, et l'XP ne couvre
+ * pas encore ce qui est à payer), `ready` (à valider), `null` (validée).
+ */
+export type SheetXpStatus = 'creation' | 'ready' | null;
+
+export type SheetListItem = SheetWithUser & { xpStatus: SheetXpStatus };
+
 /** Fiches de l'accueil : les siennes, puis celles des autres. */
 export interface SheetGetResult {
-  own: SheetWithUser[];
-  others: SheetWithUser[];
+  own: SheetListItem[];
+  others: SheetListItem[];
 }
 
 /* -------------------------------------------------------------------------- */

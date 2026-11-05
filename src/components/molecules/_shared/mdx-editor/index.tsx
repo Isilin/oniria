@@ -27,6 +27,7 @@ import {
 // Styles chargés avec l'éditeur (onglet Notes), et non sur toutes les pages.
 import '@mdxeditor/editor/style.css';
 import './styles.css';
+import { translateEditor } from './translation';
 
 interface EditorProps {
   markdown: string;
@@ -51,6 +52,13 @@ export default function InitializedMDXEditor({
       onBlur={onBlur}
       markdown={markdown}
       readOnly={readOnly}
+      translation={translateEditor}
+      // Une page de carnet vide invite à écrire, à la main comme le reste.
+      placeholder={
+        readOnly
+          ? undefined
+          : 'Écris ici ce que ton personnage sait, cherche ou doit…'
+      }
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (
