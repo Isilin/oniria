@@ -19,6 +19,10 @@ export const POST = (req: NextRequest) =>
       data: {
         user: { connect: { id: user.id } },
         name: name ? String(name) : 'Sans nom',
+        // Une fiche neuve n'a pas d'Aspect : la valeur par défaut du schéma
+        // (« Type ») s'écrivait à l'encre bleue comme si le joueur l'avait
+        // choisie. Les fiches existantes gardent la leur.
+        aspect: null,
       },
     });
   });
