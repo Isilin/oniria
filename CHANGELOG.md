@@ -139,6 +139,11 @@ Première version complète des fiches de personnages d'Oniria.
   autres libellés (ils tombaient à 10 px).
 - Les en-têtes de colonnes ne se coupent plus en deux (« Enc. (%) ») et ceux
   de l'inventaire reprennent le style des autres libellés.
+- Des −/+ rapides sur une Existence se perdaient : trois − puis trois +
+  à partir de 3 finissaient à 2. Une réponse du serveur remettait l'écran
+  en arrière et le clic suivant partait de cette valeur. Désormais la
+  dernière modification fait foi à l'écran, et les enregistrements d'une
+  fiche partent l'un après l'autre (le dernier clic est le dernier écrit).
 - Sur téléphone, « seuil N » des Existences débordait sur le filet de la
   colonne voisine ; il passe sur sa propre ligne, sous la planète.
 - Les noms écrits dans les tableaux (armes, armures, objets, traits) ne se
