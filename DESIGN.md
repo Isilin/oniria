@@ -260,11 +260,11 @@ Motion has one signature: **writing**. A value the player writes, or that change
   - a dialog is laid on the sheet, dropping 10px with a 0.6° tilt that straightens (260ms, leaves in 160ms).
 - **Bars and light:**
   - the points bar slides up from the bottom (280ms) and leaves faster (160ms); the phone's Existences band slides down the same way;
-  - the candle lights in 700ms, then barely flickers on a 9s loop;
+  - the candle lights in 700ms, then holds still: a flame that flickers in a loop would recomposite the whole page on every frame for as long as the sheet stays open beside Discord;
   - Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
   - buttons press like a stamp (1px down), with no Material ripple.
 
-Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising, tilting and flickering stop; fades and colour changes that carry state remain:
+Nothing moves on load except the plate's wash, which blooms in, and nothing loops on a sheet at rest: once a movement has played, the page stays still until something changes. Under `prefers-reduced-motion`, tracing, sliding, rising and tilting stop; fades and colour changes that carry state remain:
 - pages, slips, dialogs, the stamp and the XP fill fade;
 - the blow's ripple lights up and goes out in place, without growing.
 

@@ -389,14 +389,6 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             },
             to: { opacity: 1, transform: 'none' },
           },
-          // La bougie : elle s'allume, puis vacille à peine.
-          '@keyframes oniria-flicker': {
-            '0%, 100%': { opacity: 1 },
-            '19%': { opacity: 0.9 },
-            '37%': { opacity: 0.97 },
-            '58%': { opacity: 0.86 },
-            '76%': { opacity: 0.95 },
-          },
           // Bascule Jour / Nuit (View Transitions) : un fondu enchaîné.
           '::view-transition-old(root), ::view-transition-new(root)': {
             animationDuration: '450ms',
@@ -439,7 +431,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             color: theme.vars.palette.warning.main,
           },
           // La bougie : un halo ambré en haut à gauche et l'ombre sur les
-          // bords seulement, pour que toute la feuille reste lisible.
+          // bords seulement, pour que toute la feuille reste lisible. Elle
+          // s'allume, puis reste fixe : un vacillement en boucle ferait
+          // recomposer toute la page à chaque image, tant qu'elle est ouverte.
           ...theme.applyStyles('dark', {
             'body::before, body::after': {
               content: '""',
@@ -452,7 +446,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
               background:
                 'radial-gradient(ellipse 60% 70% at 26% 12%, rgba(255, 168, 76, 0.3), rgba(255, 140, 50, 0.08) 45%, transparent 75%)',
               mixBlendMode: 'soft-light',
-              animation: `oniria-fade 700ms ease-out both, oniria-flicker 9s ease-in-out 700ms infinite`,
+              animation: 'oniria-fade 700ms ease-out both',
             },
             'body::after': {
               background:
