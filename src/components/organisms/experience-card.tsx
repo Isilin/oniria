@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { EASE } from '@/theme/theme';
 import { useState } from 'react';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
@@ -49,6 +50,27 @@ const ExperienceCard = ({ id }: { id: string }) => {
   const [resetOpen, setResetOpen] = useState(false);
   const [confirmValidate, setConfirmValidate] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
+
+  // Le tampon « Validée » s'abat quand la fiche est validée, puis à chaque
+  // achat validé (l'XP dépensée augmente). Rien au premier affichage.
+  const status = !xp
+    ? null
+    : xp.unlocked.length === 0
+      ? 'Validée'
+      : xp.unlocked.length === ALL_SCOPES.length
+        ? 'En création'
+        : 'Reset en cours';
+  const spentTotal = xp ? sum(xp.spent) : 0;
+  const [stamp, setStamp] = useState({ status, spentTotal, count: 0 });
+  if (status !== stamp.status || spentTotal !== stamp.spentTotal) {
+    // Valeur dérivée pendant le rendu (et non dans un effet).
+    const pressed =
+      status === 'Validée' &&
+      stamp.status !== null &&
+      (stamp.status !== 'Validée' || spentTotal > stamp.spentTotal);
+    setStamp({ status, spentTotal, count: stamp.count + (pressed ? 1 : 0) });
+  }
+
   if (!sheet || !xp) return null;
 
   const draft = xp.unlocked.length > 0;
@@ -84,11 +106,21 @@ const ExperienceCard = ({ id }: { id: string }) => {
             Expérience
           </Typography>
           <Chip
+            // Nouvelle clé à chaque coup de tampon : l'animation repart.
+            key={stamp.count}
             size="small"
             icon={draft ? <LockOpenIcon /> : <LockIcon />}
             color={draft ? 'warning' : 'default'}
-            label={
-              !draft ? 'Validée' : creation ? 'En création' : 'Reset en cours'
+            label={status}
+            sx={
+              stamp.count > 0
+                ? {
+                    animation: `oniria-stamp 300ms ${EASE} both`,
+                    '@media (prefers-reduced-motion: reduce)': {
+                      animation: 'oniria-fade 200ms ease-out both',
+                    },
+                  }
+                : undefined
             }
           />
           <Box

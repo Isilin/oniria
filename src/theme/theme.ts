@@ -345,6 +345,50 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             from: { opacity: 0 },
             to: { opacity: 1 },
           },
+          // Une page du carnet qui tourne : le contenu arrive du côté de
+          // l'onglet choisi.
+          '@keyframes oniria-page-next': {
+            from: { opacity: 0, transform: 'translateX(16px)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          '@keyframes oniria-page-prev': {
+            from: { opacity: 0, transform: 'translateX(-16px)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          // Un point perdu : une onde d'encre part de la planète.
+          '@keyframes oniria-ripple': {
+            from: { opacity: 0.6, transform: 'scale(1)' },
+            to: { opacity: 0, transform: 'scale(1.9)' },
+          },
+          // Même onde en mouvement réduit : elle s'allume et s'éteint sur place.
+          '@keyframes oniria-ripple-flash': {
+            '0%, 100%': { opacity: 0 },
+            '30%': { opacity: 0.55 },
+          },
+          // Le tampon s'abat : un peu grand et penché, il se pose.
+          '@keyframes oniria-stamp': {
+            '0%': { opacity: 0, transform: 'scale(1.4) rotate(-7deg)' },
+            '55%': { opacity: 1, transform: 'scale(0.94) rotate(-1deg)' },
+            '100%': { opacity: 1, transform: 'none' },
+          },
+          // L'XP reçue : la part restante se remplit de gauche à droite.
+          '@keyframes oniria-fill': {
+            from: { transform: 'scaleX(0)' },
+            to: { transform: 'scaleX(1)' },
+          },
+          // Un billet glissé sur la feuille, à peine penché.
+          '@keyframes oniria-billet': {
+            from: { opacity: 0, transform: 'translateX(28px) rotate(-1.5deg)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          // Un dialogue qui se pose sur la feuille.
+          '@keyframes oniria-pose': {
+            from: {
+              opacity: 0,
+              transform: 'translateY(-10px) rotate(0.6deg) scale(0.985)',
+            },
+            to: { opacity: 1, transform: 'none' },
+          },
           // La bougie : elle s'allume, puis vacille à peine.
           '@keyframes oniria-flicker': {
             '0%, 100%': { opacity: 1 },
@@ -360,6 +404,10 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           },
           '@media (prefers-reduced-motion: reduce)': {
             '.oniria-write': { animation: 'none' },
+            // Billets et dialogues : un fondu, sans glissement ni rotation.
+            '.notistack-MuiContent, .MuiDialog-paper': {
+              animationName: 'oniria-fade !important',
+            },
           },
           // Les deux thèmes sont du papier clair : contrôles natifs clairs.
           ':root, :root.dark': { colorScheme: 'light' },
@@ -370,6 +418,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             border: `1px solid ${theme.vars.palette.text.primary}`,
             fontFamily: TYPE,
             boxShadow: '0 8px 20px -10px rgba(0, 0, 0, 0.45)',
+            animation: `oniria-billet 280ms ${EASE} both`,
           },
           '.notistack-MuiContent-success': {
             borderColor: theme.vars.palette.success.main,
@@ -572,6 +621,8 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         styleOverrides: { root: { borderRadius: 2, fontWeight: 700 } },
       },
       MuiDialog: {
+        // Il se pose (260 ms) et s'en va plus vite qu'il n'arrive.
+        defaultProps: { transitionDuration: { enter: 260, exit: 160 } },
         styleOverrides: {
           paper: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
@@ -579,6 +630,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             outline: `1px solid ${theme.vars.palette.text.primary}`,
             outlineOffset: -6,
             boxShadow: `0 24px 48px -12px ${alpha('#000', 0.45)}`,
+            animation: `oniria-pose 260ms ${EASE} both`,
           }),
         },
       },

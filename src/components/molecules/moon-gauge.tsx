@@ -3,6 +3,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import { litPath } from '../atoms/ornaments';
 import { EASE } from '@/theme/theme';
 import PreviewValue from '../atoms/preview-value';
@@ -105,6 +106,20 @@ const MoonGauge = ({
   labelHiddenWide = false,
   before,
 }: Props) => {
+  // Un point perdu (un coup reçu) : une onde d'encre part de la planète,
+  // plus marquée quand l'Existence tombe à 0. Rien au premier affichage.
+  const [previous, setPrevious] = useState(current);
+  const [hit, setHit] = useState<{ count: number; empty: boolean } | null>(
+    null,
+  );
+  if (current !== previous) {
+    // Valeur dérivée pendant le rendu (et non dans un effet).
+    setPrevious(current);
+    if (current < previous) {
+      setHit({ count: (hit?.count ?? 0) + 1, empty: current <= 0 });
+    }
+  }
+
   const fraction = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
   const lit = litPath(fraction, C, C, DISC);
   const dots = Math.max(0, Math.round(max));
@@ -251,10 +266,24 @@ const MoonGauge = ({
             transition: `opacity 160ms ease-out, transform 280ms ${EASE}`,
           },
           '& .moon-dot.off': { transform: 'scale(0.2)' },
+          '& .moon-ripple': {
+            transformBox: 'fill-box',
+            transformOrigin: 'center',
+            opacity: 0,
+            animation: `oniria-ripple 560ms ${EASE} both`,
+          },
+          // À 0, une seconde onde, plus lente.
+          '& .moon-ripple.late': {
+            animationDelay: '140ms',
+            animationDuration: '760ms',
+          },
           '@media (prefers-reduced-motion: reduce)': {
             '& .moon-anim': { transition: 'none' },
             '& .moon-dot': { transition: 'opacity 160ms ease-out' },
             '& .moon-dot.off': { transform: 'none' },
+            '& .moon-ripple': {
+              animation: 'oniria-ripple-flash 360ms ease-out both',
+            },
           },
         }}
       >
@@ -295,6 +324,33 @@ const MoonGauge = ({
           stroke={PRINT}
           strokeWidth="1.1"
         />
+        {hit && (
+          // Nouvelle clé à chaque point perdu : l'onde repart.
+          <g key={hit.count}>
+            <circle
+              className="moon-ripple"
+              cx={C}
+              cy={C}
+              r={DISC}
+              fill="none"
+              stroke={color}
+              strokeWidth={hit.empty ? 2 : 1.2}
+              vectorEffect="non-scaling-stroke"
+            />
+            {hit.empty && (
+              <circle
+                className="moon-ripple late"
+                cx={C}
+                cy={C}
+                r={DISC}
+                fill="none"
+                stroke={color}
+                strokeWidth="1.2"
+                vectorEffect="non-scaling-stroke"
+              />
+            )}
+          </g>
+        )}
         {dotted ? (
           Array.from({ length: dots }, (_, i) => {
             const [x, y] = point(ARC_START + (i + 0.5) * span, DOTS);

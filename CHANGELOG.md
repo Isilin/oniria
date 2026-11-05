@@ -91,6 +91,19 @@ Première version complète des fiches de personnages d'Oniria.
   catégories, jamais entre « Vivre » et son montant.
 - Pages plus légères : l'italique de la machine à écrire, jamais utilisé,
   n'est plus préchargé (deux fichiers de police en moins).
+- Mouvement, pour l'immersion :
+  - un onglet s'ouvre comme une page qui tourne, du côté de l'onglet choisi ;
+  - un point d'Existence perdu fait partir une onde d'encre de sa planète,
+    plus marquée quand l'Existence tombe à 0 ;
+  - « Validée » s'abat comme un tampon à la validation de la fiche et à
+    chaque achat ;
+  - l'XP reçue remplit sa barre à la plume ;
+  - les messages arrivent comme un billet glissé sur la feuille, et les
+    dialogues se posent dessus ;
+  - les valeurs de la bande du téléphone s'écrivent comme les autres.
+
+  Tout se joue une fois, en moins d'une seconde, et rien ne bouge au
+  chargement ; en mouvement réduit, il ne reste que des fondus.
 - Téléphone et grand écran :
   - sur téléphone, l'encadré des Existences ne reste plus collé en haut (il
     prenait un quart de l'écran, un tiers en paysage) : une bande d'une

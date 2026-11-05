@@ -2,6 +2,8 @@
 
 import { Box, Tooltip, Typography } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
+import { EASE_PEN, MOTION } from '@/theme/theme';
+import { useState } from 'react';
 
 /** Variables CSS du thème : la couleur suit la nuit et le jour. */
 const PRIMARY = 'var(--mui-palette-primary-main)';
@@ -69,6 +71,16 @@ const XpBar = ({
   pending = 0,
   draft = 0,
 }: Props) => {
+  // De l'XP reçue : la part restante se remplit à la plume, de gauche à
+  // droite. Rien au premier affichage.
+  const [previous, setPrevious] = useState(gained);
+  const [fills, setFills] = useState(0);
+  if (gained !== previous) {
+    // Valeur dérivée pendant le rendu (et non dans un effet).
+    setPrevious(gained);
+    if (gained > previous) setFills(fills + 1);
+  }
+
   const negative = Math.max(0, -left);
   const reserved = Math.min(pending, Math.max(0, left));
   const drafted = Math.min(draft, Math.max(0, left - reserved));
@@ -133,7 +145,13 @@ const XpBar = ({
         {parts.map(({ part, value }) => {
           const text = `${XP_BAR_PARTS[part].label} : ${part === 'negative' ? `−${value}` : value} XP`;
           return (
-            <Tooltip key={part} title={text} arrow enterTouchDelay={0}>
+            <Tooltip
+              // La part restante repart de zéro à chaque XP reçue.
+              key={part === 'left' ? `left-${fills}` : part}
+              title={text}
+              arrow
+              enterTouchDelay={0}
+            >
               <Box
                 tabIndex={0}
                 aria-label={text}
@@ -149,6 +167,14 @@ const XpBar = ({
                     },
                   },
                   XP_BAR_PARTS[part].sx,
+                  part === 'left' &&
+                    fills > 0 && {
+                      transformOrigin: 'left',
+                      animation: `oniria-fill ${MOTION.write}ms ${EASE_PEN} both`,
+                      '@media (prefers-reduced-motion: reduce)': {
+                        animation: 'oniria-fade 300ms ease-out both',
+                      },
+                    },
                 ]}
               />
             </Tooltip>

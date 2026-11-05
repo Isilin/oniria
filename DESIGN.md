@@ -250,14 +250,23 @@ The system rests on one rule of writing. What the player writes is handwritten i
 
 There are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.
 
-Motion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback:
-- tabs settle with a short fade and rise (220ms);
-- the points bar slides up from the bottom (280ms) and leaves faster (160ms);
-- the candle lights in 700ms, then barely flickers on a 9s loop;
-- Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
-- buttons press like a stamp (1px down), with no Material ripple.
+Motion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback, played once, never on load:
+- **Turning page:** a tab opens like a page of the notebook, sliding in from the side of the tab chosen (16px and a fade, 220ms); the first tab shown settles with a short fade and rise.
+- **The blow:** a point lost on an Existence sends one ink ripple out of its planet, in the Existence's watercolour (560ms); at 0 a second, slower ripple follows. It only answers a loss, never the threshold, whose role the rules in this repository do not state.
+- **The stamp:** "Validée" comes down like a rubber stamp, slightly large and tilted, then settles (300ms), when the sheet is validated and at each validated purchase.
+- **Ink filling:** XP received fills the remaining part of its bar from left to right at the pen's pace (420ms).
+- **Slips and cards:**
+  - a toast arrives as a slip of paper pushed onto the sheet, tilted −1.5°, then straightens (280ms, leaves in 160ms);
+  - a dialog is laid on the sheet, dropping 10px with a 0.6° tilt that straightens (260ms, leaves in 160ms).
+- **Bars and light:**
+  - the points bar slides up from the bottom (280ms) and leaves faster (160ms); the phone's Existences band slides down the same way;
+  - the candle lights in 700ms, then barely flickers on a 9s loop;
+  - Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
+  - buttons press like a stamp (1px down), with no Material ripple.
 
-Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising and flickering stop; fades and colour changes that carry state remain.
+Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising, tilting and flickering stop; fades and colour changes that carry state remain:
+- pages, slips, dialogs, the stamp and the XP fill fade;
+- the blow's ripple lights up and goes out in place, without growing.
 
 The system rejects the clean "tool" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.
 

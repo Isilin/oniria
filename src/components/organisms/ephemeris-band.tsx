@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
+import Written from '../atoms/written';
 import MoonGauge from '../molecules/moon-gauge';
 
 type Field =
@@ -336,7 +337,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
                     <MiniPlanet color={g.color} />
                   </Box>
                   <Typography variant="hand" sx={{ fontWeight: 700 }}>
-                    {g.current}
+                    <Written value={g.current}>{g.current}</Written>
                   </Typography>
                   <Typography variant="caption" color="textSecondary">
                     / {g.max}
