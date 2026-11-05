@@ -197,7 +197,7 @@ components:
     textColor: "{colors.encre-imprimee-jour}"
     rounded: "{rounded.sm}"
     padding: "8px 12px"
-    width: "380px"
+    width: "calc(46ch + 24px)"
   stepper-cell:
     textColor: "{colors.encre-pale-jour}"
     width: "34px"
