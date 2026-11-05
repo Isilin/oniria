@@ -41,6 +41,7 @@ const DeleteTeamButton = ({ id }: { id: string }) => {
         title={`Supprimer la table « ${team?.name ?? ''} » ?`}
         message="Les fiches des personnages sont conservées ; seule la table disparaît."
         confirmLabel="Supprimer la table"
+        waitForResult
       />
     </>
   );

@@ -35,7 +35,7 @@ interface EditorProps {
   onBlur?: () => void;
   changed: boolean;
   readOnly?: boolean;
-  editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
+  editorRef?: React.RefObject<MDXEditorMethods | null>;
 }
 
 export default function InitializedMDXEditor({

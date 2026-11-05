@@ -50,6 +50,7 @@ const DeleteSheetButton = ({ id }: { id: string }) => {
         title={`Supprimer « ${name} » ?`}
         message="La fiche disparaît avec son inventaire, ses notes et tout son historique d'expérience. Cette action est irréversible."
         confirmLabel="Supprimer la fiche"
+        waitForResult
       />
     </>
   );

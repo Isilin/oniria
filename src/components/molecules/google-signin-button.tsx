@@ -5,23 +5,17 @@ import { Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
 import LoadingButton from '../atoms/loading-button';
 
-const GoogleSigninButton = () => {
-  const handleClick = async () => {
-    signIn('google', { callbackUrl: '/' });
-  };
-
-  return (
-    <LoadingButton
-      variant="outlined"
-      onClick={() => {
-        handleClick();
-      }}
-      startIcon={<GoogleIcon />}
-      sx={{ width: 'fit-content' }}
-    >
-      <Typography variant="button">Continuer avec Google</Typography>
-    </LoadingButton>
-  );
-};
+const GoogleSigninButton = () => (
+  <LoadingButton
+    variant="outlined"
+    // Le bouton attend le départ vers Google : un second clic ne relance pas
+    // la connexion.
+    onClick={() => signIn('google', { callbackUrl: '/' })}
+    startIcon={<GoogleIcon />}
+    sx={{ width: 'fit-content' }}
+  >
+    <Typography variant="button">Continuer avec Google</Typography>
+  </LoadingButton>
+);
 
 export default GoogleSigninButton;
