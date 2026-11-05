@@ -75,7 +75,7 @@ const AbilitiesCard = ({ id }: { id: string }) => {
                     </>
                   }
                 >
-                  <Typography variant="numeral" sx={{ fontSize: '0.875rem' }}>
+                  <Typography variant="numeral">
                     <PreviewValue
                       before={before.value}
                       delta={now.value - before.value}

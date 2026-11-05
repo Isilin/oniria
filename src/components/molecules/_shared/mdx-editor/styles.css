@@ -41,6 +41,16 @@
   border-bottom: 1px solid var(--mui-palette-text-primary);
 }
 
+/* La barre d'outils et ses menus sont imprimés : machine à écrire, jamais la
+   police système. Les menus s'ouvrent hors de l'éditeur (portail). */
+.mdxeditor [role='toolbar'] :is(button, select, span),
+.mdxeditor-popup-container {
+  font-family: var(--font-type), monospace;
+  font-size: 0.875rem;
+}
+
+/* Une page de cahier : tout tombe sur la ligne de 30 px (titres compris), un
+   blanc d'une ligne entre deux blocs, et des lignes d'au plus 75 signes. */
 .mdxeditor .prose {
   font-family: var(--font-hand), cursive;
   font-size: 1.375rem;
@@ -49,10 +59,72 @@
   color: var(--mui-palette-primary-main);
 }
 
-.mdxeditor .prose :is(h1, h2, h3, h4, strong) {
+.mdxeditor .prose > * {
+  margin-block: 0 30px;
+}
+
+.mdxeditor .prose > :last-child {
+  margin-block-end: 0;
+}
+
+.mdxeditor .prose > :is(p, h1, h2, h3, h4, h5, h6, ul, ol, blockquote) {
+  max-inline-size: 34rem;
+  text-wrap: pretty;
+}
+
+.mdxeditor .prose li {
+  margin: 0;
+}
+
+.mdxeditor .prose :is(h1, h2, h3, h4, h5, h6, strong) {
   font-family: var(--font-hand), cursive;
   font-weight: 700;
   color: var(--mui-palette-primary-main);
+}
+
+.mdxeditor .prose :is(h1, h2, h3, h4, h5, h6) {
+  line-height: 30px;
+  text-wrap: balance;
+}
+
+.mdxeditor .prose h1 {
+  font-size: 2rem;
+}
+
+.mdxeditor .prose h2 {
+  font-size: 1.625rem;
+}
+
+/* Les petits titres gardent la taille du texte : soulignés à la plume. */
+.mdxeditor .prose :is(h3, h4, h5, h6) {
+  font-size: 1.375rem;
+  text-decoration: underline 1.5px;
+  text-underline-offset: 5px;
+}
+
+/* Une citation : écrite de la même main, un trait de plume dans la marge
+   plutôt qu'une bordure épaisse. */
+.mdxeditor .prose blockquote {
+  color: inherit;
+  border-inline-start: 1px solid currentColor;
+}
+
+/* Un titre ouvre un passage : une ligne blanche au-dessus, rien dessous. */
+.mdxeditor .prose > :is(h1, h2, h3, h4, h5, h6) {
+  margin-block-end: 0;
+}
+
+.mdxeditor .prose > :not(:first-child):is(h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 30px;
+}
+
+/* Ce qui est tapé dans une note (code) est tapé à la machine. */
+.mdxeditor .prose code {
+  font-family: var(--font-type), monospace;
+  font-size: 0.75em;
+  font-weight: 400;
+  /* Reste dans la ligne de 30 px. */
+  line-height: 1;
 }
 
 .mdxeditor-popup-container div {

@@ -5,7 +5,7 @@ import { usePreferences } from '@/lib/hooks/use-preferences';
 import type { Density } from '@/lib/preferences';
 import { createOniriaTheme } from '@/theme/theme';
 import DeleteIcon from '@mui/icons-material/Close';
-import { IconButton } from '@mui/material';
+import { Fade, IconButton } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, useColorScheme } from '@mui/material/styles';
@@ -63,6 +63,10 @@ export default function Providers({
             disableWindowBlurListener={true}
             maxSnack={5}
             preventDuplicate={true}
+            // Le billet glisse de lui-même (thème, oniria-billet) : la boîte
+            // ne fait que paraître et s'en va vite.
+            TransitionComponent={Fade}
+            transitionDuration={{ enter: 280, exit: 160 }}
             action={(id) => (
               <IconButton
                 aria-label="Fermer"

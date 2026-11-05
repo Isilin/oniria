@@ -10,8 +10,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
-  CardContent,
   TextField,
   Tooltip,
   Typography,
@@ -19,6 +17,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import ScopeLock from '../atoms/scope-lock';
+import SectionCard from '../molecules/section-card';
 import SheetCollection from './sheet-collection';
 
 const SPYREE_TOOLTIP = `Prix de chaque passage de rang : ${SPYREE_STEPS.map(
@@ -99,113 +98,108 @@ const SchemesCard = ({ id }: { id: string }) => {
     corpusTypes.find((t) => !usedTypes.has(t.id)) ?? corpusTypes[0];
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h4" align="center" gutterBottom>
-          Schémas
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <SheetCollection
-              id={id}
-              collection="corpus"
-              title={
-                <Typography variant="h5">
-                  Le Corpus
-                  <ScopeLock locked={corpusLocked} />
-                </Typography>
-              }
-              defaults={nextType ? { typeId: nextType.id } : undefined}
-              addLabel={`Ajouter un aspect (${corpusAspectCost(sheet.corpus.length + 1)} XP)`}
-              deletable={!corpusLocked || isAdmin}
-              confirmDelete={!corpusLocked}
-              emptyLabel="Aucun aspect."
-              itemLabel={(c) => `${c.type?.name ?? ''} : ${c.name ?? ''}`}
-              columns={[
-                {
-                  key: 'typeId',
-                  label: 'Type',
-                  type: 'select',
-                  required: true,
-                  options: corpusTypes.map((t) => ({
-                    value: t.id,
-                    label: t.name,
-                  })),
-                },
-                { key: 'name', label: 'Nom' },
-                {
-                  key: 'stat',
-                  label: 'Bonus',
-                  type: 'select',
-                  options: STAT_OPTIONS,
-                  normalize: (v) => normalizeStat(v as string),
-                  tooltip:
-                    "Le bonus s'ajoute à la marge des facultés dont ce caractère est le majeur (ou à la santé maximale).",
-                },
-                { key: 'bonus', label: '+', type: 'number', width: 60 },
-                { key: 'description', label: 'Description', type: 'multiline' },
-              ]}
-            />
-          </Grid>
-          <Grid
-            size={{ xs: 12, lg: 6 }}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 3,
-            }}
-          >
-            <SheetCollection
-              id={id}
-              collection="spyree"
-              title={
-                <Typography variant="h5">
-                  La Spyrée
-                  <ScopeLock locked={spyreeLocked} />
-                </Typography>
-              }
-              emptyLabel="Aucun potentiel."
-              deletable={!spyreeLocked || isAdmin}
-              confirmDelete={!spyreeLocked}
-              addControl={<AddPotential id={id} />}
-              itemLabel={(s) => s.potential?.name ?? ''}
-              columns={[
-                {
-                  key: 'potentialId',
-                  label: 'Potentiel',
-                  render: (row) => (
-                    <Tooltip title={row.potential.description} arrow>
-                      <span style={{ textDecoration: 'underline dotted' }}>
-                        {potentialLabel(row.potential)}
-                      </span>
-                    </Tooltip>
-                  ),
-                },
-                {
-                  key: 'level',
-                  label: 'Rang',
-                  type: 'number',
-                  width: 80,
-                  tooltip: SPYREE_TOOLTIP,
-                  display: (row) => toRoman(row.level),
-                },
-              ]}
-            />
-            <SheetCollection
-              id={id}
-              collection="amee"
-              title="L'Âmée"
-              addLabel="Ajouter"
-              emptyLabel="Aucune âmée."
-              columns={[
-                { key: 'name', label: 'Nom' },
-                { key: 'description', label: 'Notes', type: 'multiline' },
-              ]}
-            />
-          </Grid>
+    <SectionCard title="Schémas">
+      <Grid container spacing={4}>
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <SheetCollection
+            id={id}
+            collection="corpus"
+            title={
+              <Typography variant="h5">
+                Le Corpus
+                <ScopeLock locked={corpusLocked} />
+              </Typography>
+            }
+            defaults={nextType ? { typeId: nextType.id } : undefined}
+            addLabel={`Ajouter un aspect (${corpusAspectCost(sheet.corpus.length + 1)} XP)`}
+            deletable={!corpusLocked || isAdmin}
+            confirmDelete={!corpusLocked}
+            emptyLabel="Aucun aspect."
+            itemLabel={(c) => `${c.type?.name ?? ''} : ${c.name ?? ''}`}
+            columns={[
+              {
+                key: 'typeId',
+                label: 'Type',
+                type: 'select',
+                required: true,
+                options: corpusTypes.map((t) => ({
+                  value: t.id,
+                  label: t.name,
+                })),
+              },
+              { key: 'name', label: 'Nom' },
+              {
+                key: 'stat',
+                label: 'Bonus',
+                type: 'select',
+                options: STAT_OPTIONS,
+                normalize: (v) => normalizeStat(v as string),
+                tooltip:
+                  "Le bonus s'ajoute à la marge des facultés dont ce caractère est le majeur (ou à la santé maximale).",
+              },
+              { key: 'bonus', label: '+', type: 'number', width: 60 },
+              { key: 'description', label: 'Description', type: 'multiline' },
+            ]}
+          />
         </Grid>
-      </CardContent>
-    </Card>
+        <Grid
+          size={{ xs: 12, lg: 6 }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+          }}
+        >
+          <SheetCollection
+            id={id}
+            collection="spyree"
+            title={
+              <Typography variant="h5">
+                La Spyrée
+                <ScopeLock locked={spyreeLocked} />
+              </Typography>
+            }
+            emptyLabel="Aucun potentiel."
+            deletable={!spyreeLocked || isAdmin}
+            confirmDelete={!spyreeLocked}
+            addControl={<AddPotential id={id} />}
+            itemLabel={(s) => s.potential?.name ?? ''}
+            columns={[
+              {
+                key: 'potentialId',
+                label: 'Potentiel',
+                render: (row) => (
+                  <Tooltip title={row.potential.description} arrow>
+                    <span style={{ textDecoration: 'underline dotted' }}>
+                      {potentialLabel(row.potential)}
+                    </span>
+                  </Tooltip>
+                ),
+              },
+              {
+                key: 'level',
+                label: 'Rang',
+                type: 'number',
+                width: 80,
+                tooltip: SPYREE_TOOLTIP,
+                display: (row) => toRoman(row.level),
+              },
+            ]}
+          />
+          <SheetCollection
+            id={id}
+            collection="amee"
+            title="L'Âmée"
+            addLabel="Ajouter"
+            emptyLabel="Aucune âmée."
+            columns={[
+              { key: 'name', label: 'Nom' },
+              { key: 'description', label: 'Notes', type: 'multiline' },
+            ]}
+          />
+        </Grid>
+      </Grid>
+    </SectionCard>
   );
 };
 

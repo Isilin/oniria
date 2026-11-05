@@ -34,6 +34,11 @@ const CharactersCard = ({ id }: { id: string }) => {
           // Trois colonnes dès 640 px (demi-écran) : jamais de groupe renvoyé
           // sous un autre. En dessous, deux (la machine à écrire est large).
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          // Au doigt sur téléphone, les −|+ grandissent : un groupe par ligne
+          // pour que libellé, valeur et −|+ tiennent côte à côte.
+          '@media (pointer: coarse) and (max-width: 519.95px)': {
+            gridTemplateColumns: 'minmax(0, 1fr)',
+          },
           '@media (min-width: 640px)': {
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           },
@@ -117,14 +122,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                         before={base.values[c.key]}
                       />
                     )}
-                    <Typography
-                      variant="hand"
-                      sx={{
-                        fontSize: '1.625rem',
-                        fontWeight: 700,
-                        lineHeight: 0.9,
-                      }}
-                    >
+                    <Typography variant="handValue">
                       <PreviewValue before={base.values[c.key]} delta={pending}>
                         <Written value={value}>{value}</Written>
                       </PreviewValue>

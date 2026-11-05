@@ -3,6 +3,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import { litPath } from '../atoms/ornaments';
 import { EASE } from '@/theme/theme';
 import PreviewValue from '../atoms/preview-value';
@@ -105,6 +106,20 @@ const MoonGauge = ({
   labelHiddenWide = false,
   before,
 }: Props) => {
+  // Un point perdu (un coup reçu) : une onde d'encre part de la planète,
+  // plus marquée quand l'Existence tombe à 0. Rien au premier affichage.
+  const [previous, setPrevious] = useState(current);
+  const [hit, setHit] = useState<{ count: number; empty: boolean } | null>(
+    null,
+  );
+  if (current !== previous) {
+    // Valeur dérivée pendant le rendu (et non dans un effet).
+    setPrevious(current);
+    if (current < previous) {
+      setHit({ count: (hit?.count ?? 0) + 1, empty: current <= 0 });
+    }
+  }
+
   const fraction = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
   const lit = litPath(fraction, C, C, DISC);
   const dots = Math.max(0, Math.round(max));
@@ -116,6 +131,42 @@ const MoonGauge = ({
   const viewBox = small ? '-16 -16 96 96' : '-4 -4 72 72';
   const stepper = editable && onChange;
 
+  const hasThreshold = threshold !== undefined;
+  // Sur téléphone (trois planètes par ligne), « seuil 10 » ne tient pas à
+  // côté de la planète : il passe sur sa propre ligne, sous la planète. Dès
+  // 520 px, il reprend sa place après « / max ».
+  const thresholdNode = (narrow: boolean) =>
+    hasThreshold && (
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        sx={{
+          whiteSpace: 'nowrap',
+          ...(narrow
+            ? {
+                gridArea: 'seuil',
+                display: 'block',
+                '@media (min-width: 520px)': { display: 'none' },
+              }
+            : {
+                ml: 0.5,
+                display: 'none',
+                '@media (min-width: 520px)': { display: 'inline' },
+              }),
+        }}
+      >
+        seuil{' '}
+        <PreviewValue
+          before={before?.threshold}
+          delta={
+            before?.threshold !== undefined ? threshold - before.threshold : 0
+          }
+        >
+          {threshold}
+        </PreviewValue>
+      </Typography>
+    );
+
   const labelNode = (
     <Typography
       variant="overline"
@@ -125,14 +176,15 @@ const MoonGauge = ({
       noWrap
       sx={{
         display: 'block',
-        // Sur téléphone, le libellé doit tenir en entier : « L'Équilibre ».
-        fontSize: { xs: '0.625rem', md: '0.75rem' },
-        letterSpacing: { xs: '0.06em', md: '0.14em' },
-        ...(hint && { cursor: 'help' }),
-        ...(labelHiddenWide && {
+        // Taille des libellés partout ; sur téléphone (trois planètes par
+        // ligne), l'espacement se resserre pour que « L'Équilibre » tienne.
+        letterSpacing: '0.06em',
+        '@media (min-width: 520px)': {
+          letterSpacing: '0.14em',
           // Masqué mais présent : la valeur reste sur la ligne des autres.
-          '@media (min-width: 520px)': { visibility: 'hidden' },
-        }),
+          ...(labelHiddenWide && { visibility: 'hidden' }),
+        },
+        ...(hint && { cursor: 'help' }),
       }}
     >
       {label}
@@ -150,31 +202,45 @@ const MoonGauge = ({
         columnGap: 1,
         rowGap: 0.5,
         minWidth: 0,
-        // Téléphone : le libellé au-dessus, sur toute la largeur de la colonne
-        // (la machine à écrire est large) ; dès 520 px, à côté de la planète.
+        // Le libellé au-dessus, sur toute la largeur de la colonne (la machine
+        // à écrire est large) ; à côté de la planète dès 900 px, quand la
+        // colonne laisse la place à « L'Équilibre » en entier.
         gridTemplateColumns: 'auto minmax(0, 1fr)',
-        gridTemplateAreas: '"label label" "disc text"',
-        '@media (min-width: 520px)': {
-          gridTemplateAreas: '"disc label" "disc text"',
-        },
+        gridTemplateAreas: hasThreshold
+          ? '"label label" "disc text" "seuil seuil"'
+          : '"label label" "disc text"',
+        // Pas de clé commune avec le cas des −|+ ci-dessous : une clé écrasée
+        // garde sa place et passerait avant la règle des 520 px.
+        ...(!stepper && {
+          '@media (min-width: 900px)': {
+            gridTemplateAreas: '"disc label" "disc text"',
+          },
+        }),
         ...(stepper && {
           // −|+ sous la valeur quand la colonne est étroite ; à côté sinon
           // (sur une ligne entière au téléphone, et dès 1200 px).
           gridTemplateAreas: inline
             ? '"label label label" "disc text step"'
-            : '"label label" "disc text" "step step"',
+            : hasThreshold
+              ? '"label label" "disc text" "seuil seuil" "step step"'
+              : '"label label" "disc text" "step step"',
           gridTemplateColumns: inline
             ? 'auto minmax(0, max-content) auto'
             : 'auto minmax(0, 1fr)',
           '@media (min-width: 520px)': {
-            gridTemplateAreas: '"disc label" "disc text" "step step"',
+            gridTemplateAreas: '"label label" "disc text" "step step"',
             gridTemplateColumns: 'auto minmax(0, 1fr)',
+          },
+          '@media (min-width: 900px)': {
+            gridTemplateAreas: '"disc label" "disc text" "step step"',
           },
           // Écrit en clair (et non theme.breakpoints) pour venir après la règle
           // des 520 px : MUI range ses propres paliers en premier.
           '@media (min-width: 1200px)': {
             columnGap: 2,
-            gridTemplateAreas: '"disc label step" "disc text step"',
+            // Le libellé passe au-dessus des −|+ : « L'Équilibre » en entier
+            // dès 1200 px, et les −|+ face à la valeur qu'ils changent.
+            gridTemplateAreas: '"disc label label" "disc text step"',
             // Les −|+ suivent la valeur au lieu d'être rejetés en bout de colonne.
             gridTemplateColumns: 'auto minmax(0, max-content) auto',
           },
@@ -200,10 +266,24 @@ const MoonGauge = ({
             transition: `opacity 160ms ease-out, transform 280ms ${EASE}`,
           },
           '& .moon-dot.off': { transform: 'scale(0.2)' },
+          '& .moon-ripple': {
+            transformBox: 'fill-box',
+            transformOrigin: 'center',
+            opacity: 0,
+            animation: `oniria-ripple 560ms ${EASE} both`,
+          },
+          // À 0, une seconde onde, plus lente.
+          '& .moon-ripple.late': {
+            animationDelay: '140ms',
+            animationDuration: '760ms',
+          },
           '@media (prefers-reduced-motion: reduce)': {
             '& .moon-anim': { transition: 'none' },
             '& .moon-dot': { transition: 'opacity 160ms ease-out' },
             '& .moon-dot.off': { transform: 'none' },
+            '& .moon-ripple': {
+              animation: 'oniria-ripple-flash 360ms ease-out both',
+            },
           },
         }}
       >
@@ -244,6 +324,33 @@ const MoonGauge = ({
           stroke={PRINT}
           strokeWidth="1.1"
         />
+        {hit && (
+          // Nouvelle clé à chaque point perdu : l'onde repart.
+          <g key={hit.count}>
+            <circle
+              className="moon-ripple"
+              cx={C}
+              cy={C}
+              r={DISC}
+              fill="none"
+              stroke={color}
+              strokeWidth={hit.empty ? 2 : 1.2}
+              vectorEffect="non-scaling-stroke"
+            />
+            {hit.empty && (
+              <circle
+                className="moon-ripple late"
+                cx={C}
+                cy={C}
+                r={DISC}
+                fill="none"
+                stroke={color}
+                strokeWidth="1.2"
+                vectorEffect="non-scaling-stroke"
+              />
+            )}
+          </g>
+        )}
         {dotted ? (
           Array.from({ length: dots }, (_, i) => {
             const [x, y] = point(ARC_START + (i + 0.5) * span, DOTS);
@@ -309,14 +416,7 @@ const MoonGauge = ({
             flexWrap: 'wrap',
           }}
         >
-          <Typography
-            variant="hand"
-            sx={{
-              fontSize: { xs: '1.75rem', md: '2.375rem' },
-              fontWeight: 700,
-              lineHeight: 0.95,
-            }}
-          >
+          <Typography variant="handExistence">
             <Written value={current}>{current}</Written>
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ ml: 0.5 }}>
@@ -328,27 +428,10 @@ const MoonGauge = ({
               {max}
             </PreviewValue>
           </Typography>
-          {threshold !== undefined && (
-            <Typography
-              variant="caption"
-              color="textSecondary"
-              sx={{ ml: 0.5, whiteSpace: 'nowrap' }}
-            >
-              seuil{' '}
-              <PreviewValue
-                before={before?.threshold}
-                delta={
-                  before?.threshold !== undefined
-                    ? threshold - before.threshold
-                    : 0
-                }
-              >
-                {threshold}
-              </PreviewValue>
-            </Typography>
-          )}
+          {thresholdNode(false)}
         </Box>
       </Box>
+      {thresholdNode(true)}
       {stepper && (
         <Stepper label={label} onStep={(d) => onChange(current + d)} />
       )}

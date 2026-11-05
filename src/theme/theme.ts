@@ -1,5 +1,5 @@
 import type { Density } from '@/lib/preferences';
-import { alpha, createTheme } from '@mui/material/styles';
+import { alpha, createTheme, type TypographyStyle } from '@mui/material/styles';
 
 /**
  * « Le carnet d'Oniria » : la fiche est une feuille de personnage imprimée,
@@ -37,10 +37,15 @@ declare module '@mui/material/styles' {
   interface TypographyVariants {
     numeral: React.CSSProperties;
     hand: React.CSSProperties;
+    handValue: React.CSSProperties;
+    // Style MUI (et non React) : la taille change avec la largeur.
+    handExistence: TypographyStyle;
   }
   interface TypographyVariantsOptions {
     numeral?: React.CSSProperties;
     hand?: React.CSSProperties;
+    handValue?: React.CSSProperties;
+    handExistence?: TypographyStyle;
   }
 }
 
@@ -48,6 +53,8 @@ declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     numeral: true;
     hand: true;
+    handValue: true;
+    handExistence: true;
   }
 }
 
@@ -187,6 +194,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontSize: '3.5rem',
         letterSpacing: '0.3em',
         lineHeight: 1.1,
+        textWrap: 'balance',
       },
       // Le nom du personnage ou de la table : écrit à la main.
       h2: {
@@ -194,6 +202,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontWeight: 600,
         fontSize: '3rem',
         lineHeight: 1,
+        textWrap: 'balance',
       },
       // Titre de page (Tables de jeu, Whitelist).
       h3: {
@@ -203,6 +212,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
         lineHeight: 1.3,
+        textWrap: 'balance',
       },
       // Titre de section : frappé au tampon, suivi d'un filet.
       h4: {
@@ -212,6 +222,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
         lineHeight: 1.4,
+        textWrap: 'balance',
       },
       // Titre de groupe (Le Corps, Vue d'ensemble…).
       h5: {
@@ -221,12 +232,14 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.04em',
         textTransform: 'uppercase',
         lineHeight: 1.4,
+        textWrap: 'balance',
       },
       h6: {
         fontFamily: TYPE,
         fontWeight: 700,
         fontSize: '0.9375rem',
         lineHeight: 1.35,
+        textWrap: 'balance',
       },
       subtitle1: { fontFamily: TYPE, fontSize: '0.9375rem', lineHeight: 1.5 },
       subtitle2: {
@@ -236,8 +249,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
       },
-      body1: { fontSize: '0.9375rem', lineHeight: 1.55 },
-      body2: { fontSize: '0.875rem', lineHeight: 1.5 },
+      // Pas de mot seul en fin de paragraphe (descriptions, règles).
+      body1: { fontSize: '0.9375rem', lineHeight: 1.55, textWrap: 'pretty' },
+      body2: { fontSize: '0.875rem', lineHeight: 1.5, textWrap: 'pretty' },
       caption: { fontSize: '0.75rem', lineHeight: 1.4 },
       // Libellé de champ imprimé : NOM, ÂGE, LA SANTÉ…
       overline: {
@@ -255,10 +269,12 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         letterSpacing: '0.02em',
         textTransform: 'none',
       },
-      // Valeur calculée par les règles : tapée à la machine.
+      // Valeur calculée par les règles : tapée à la machine. Une seule taille
+      // sur les lignes (Facultés, combat) ; les totaux la grossissent.
       numeral: {
         fontFamily: TYPE,
         fontWeight: 700,
+        fontSize: '0.9375rem',
         fontVariantNumeric: 'lining-nums tabular-nums',
         lineHeight: 1.2,
       },
@@ -269,6 +285,23 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         fontSize: '1.375rem',
         lineHeight: 1.05,
         color: 'var(--mui-palette-primary-main)',
+      },
+      // Un caractère, écrit sur sa ligne (Force, Raisonnement…).
+      handValue: {
+        fontFamily: HAND,
+        fontWeight: 700,
+        fontSize: '1.625rem',
+        lineHeight: 0.9,
+        color: 'var(--mui-palette-primary-main)',
+      },
+      // L'Existence en cours, à côté de sa planète.
+      handExistence: {
+        fontFamily: HAND,
+        fontWeight: 700,
+        fontSize: '1.75rem',
+        lineHeight: 0.95,
+        color: 'var(--mui-palette-primary-main)',
+        '@media (min-width: 900px)': { fontSize: '2.375rem' },
       },
     },
     components: {
@@ -312,6 +345,50 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             from: { opacity: 0 },
             to: { opacity: 1 },
           },
+          // Une page du carnet qui tourne : le contenu arrive du côté de
+          // l'onglet choisi.
+          '@keyframes oniria-page-next': {
+            from: { opacity: 0, transform: 'translateX(16px)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          '@keyframes oniria-page-prev': {
+            from: { opacity: 0, transform: 'translateX(-16px)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          // Un point perdu : une onde d'encre part de la planète.
+          '@keyframes oniria-ripple': {
+            from: { opacity: 0.6, transform: 'scale(1)' },
+            to: { opacity: 0, transform: 'scale(1.9)' },
+          },
+          // Même onde en mouvement réduit : elle s'allume et s'éteint sur place.
+          '@keyframes oniria-ripple-flash': {
+            '0%, 100%': { opacity: 0 },
+            '30%': { opacity: 0.55 },
+          },
+          // Le tampon s'abat : un peu grand et penché, il se pose.
+          '@keyframes oniria-stamp': {
+            '0%': { opacity: 0, transform: 'scale(1.4) rotate(-7deg)' },
+            '55%': { opacity: 1, transform: 'scale(0.94) rotate(-1deg)' },
+            '100%': { opacity: 1, transform: 'none' },
+          },
+          // L'XP reçue : la part restante se remplit de gauche à droite.
+          '@keyframes oniria-fill': {
+            from: { transform: 'scaleX(0)' },
+            to: { transform: 'scaleX(1)' },
+          },
+          // Un billet glissé sur la feuille, à peine penché.
+          '@keyframes oniria-billet': {
+            from: { opacity: 0, transform: 'translateX(28px) rotate(-1.5deg)' },
+            to: { opacity: 1, transform: 'none' },
+          },
+          // Un dialogue qui se pose sur la feuille.
+          '@keyframes oniria-pose': {
+            from: {
+              opacity: 0,
+              transform: 'translateY(-10px) rotate(0.6deg) scale(0.985)',
+            },
+            to: { opacity: 1, transform: 'none' },
+          },
           // La bougie : elle s'allume, puis vacille à peine.
           '@keyframes oniria-flicker': {
             '0%, 100%': { opacity: 1 },
@@ -327,6 +404,10 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           },
           '@media (prefers-reduced-motion: reduce)': {
             '.oniria-write': { animation: 'none' },
+            // Billets et dialogues : un fondu, sans glissement ni rotation.
+            '.notistack-MuiContent, .MuiDialog-paper': {
+              animationName: 'oniria-fade !important',
+            },
           },
           // Les deux thèmes sont du papier clair : contrôles natifs clairs.
           ':root, :root.dark': { colorScheme: 'light' },
@@ -337,6 +418,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             border: `1px solid ${theme.vars.palette.text.primary}`,
             fontFamily: TYPE,
             boxShadow: '0 8px 20px -10px rgba(0, 0, 0, 0.45)',
+            animation: `oniria-billet 280ms ${EASE} both`,
           },
           '.notistack-MuiContent-success': {
             borderColor: theme.vars.palette.success.main,
@@ -418,6 +500,8 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             borderRadius: 2,
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
+            // Au doigt, 44 px de haut : le texte ne grossit pas, la cible si.
+            '@media (pointer: coarse)': { minHeight: 44 },
           },
         },
       },
@@ -427,6 +511,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
           root: {
             transition: `background-color ${MOTION.quick}ms ease-out, color ${MOTION.quick}ms ease-out, transform 80ms ease-out`,
             '&:active': { transform: 'translateY(1px)' },
+            '@media (pointer: coarse)': { minWidth: 44, minHeight: 44 },
           },
         },
       },
@@ -483,7 +568,13 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         },
       },
       MuiTooltip: {
-        defaultProps: { arrow: true },
+        // Au doigt, la règle s'ouvre d'un toucher (et non d'un appui long)
+        // et reste le temps de la lire.
+        defaultProps: {
+          arrow: true,
+          enterTouchDelay: 0,
+          leaveTouchDelay: 5000,
+        },
         styleOverrides: {
           tooltip: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
@@ -494,7 +585,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             fontWeight: 400,
             lineHeight: 1.45,
             padding: '8px 12px',
-            maxWidth: 380,
+            // Le texte des règles se lit : 46 signes par ligne, pas moins.
+            maxWidth: 'calc(46ch + 24px)',
+            textWrap: 'pretty',
           }),
           arrow: ({ theme }) => ({
             color: theme.vars.palette.raised,
@@ -515,6 +608,9 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
             fontSize: '0.75rem',
+            // Un libellé de colonne ne se coupe pas (« Enc. (%) ») : le
+            // tableau défile plutôt.
+            whiteSpace: 'nowrap',
             color: theme.vars.palette.text.secondary,
             borderBottom: `1.5px solid ${theme.vars.palette.text.primary}`,
           }),
@@ -525,6 +621,8 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
         styleOverrides: { root: { borderRadius: 2, fontWeight: 700 } },
       },
       MuiDialog: {
+        // Il se pose (260 ms) et s'en va plus vite qu'il n'arrive.
+        defaultProps: { transitionDuration: { enter: 260, exit: 160 } },
         styleOverrides: {
           paper: ({ theme }) => ({
             backgroundColor: theme.vars.palette.raised,
@@ -532,6 +630,7 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
             outline: `1px solid ${theme.vars.palette.text.primary}`,
             outlineOffset: -6,
             boxShadow: `0 24px 48px -12px ${alpha('#000', 0.45)}`,
+            animation: `oniria-pose 260ms ${EASE} both`,
           }),
         },
       },

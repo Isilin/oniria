@@ -12,12 +12,19 @@ const CELL = {
   sm: { width: 24, height: 24, icon: 16 },
 } as const;
 
+/** Au doigt (écran tactile), des cases de 44 px : on ne vise pas. */
+const CELL_TOUCH = {
+  md: { width: 44, height: 44 },
+  sm: { width: 44, height: 44 },
+} as const;
+
 export const stepperIconSize = (size: StepperSize) => CELL[size].icon;
 
 /** Une case de −|+ : argent au repos, or de lampe au survol ou au focus. */
 export const stepperCell = (size: StepperSize) => ({
   width: CELL[size].width,
   height: CELL[size].height,
+  '@media (pointer: coarse)': CELL_TOUCH[size],
   borderRadius: 0,
   color: 'text.secondary',
   transition:

@@ -19,6 +19,12 @@ import {
   xpSummary,
 } from '@/lib/rules/xp';
 import { CollectionKey } from '@/lib/sheet/fields';
+import {
+  confirmedFields,
+  createFieldVersions,
+  createQueue,
+  undoneFields,
+} from '@/lib/sheet/sync';
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import { useCallback, useMemo } from 'react';
@@ -101,16 +107,12 @@ const previousValues = (current: Fields, patch: Fields) =>
   Object.fromEntries(Object.keys(patch).map((k) => [k, current[k]]));
 
 /**
- * Ce que le serveur confirme : les champs envoyés et les relations (type,
- * propriétés, journal d'XP…). Une autre modification encore en cours reste
- * affichée.
+ * Enregistrements rapprochés d'une même fiche ou d'un même élément : la
+ * dernière modification de chaque champ fait foi à l'écran, et les envois
+ * partent l'un après l'autre (voir sync.ts).
  */
-const confirmed = (saved: Fields, patch: Fields) =>
-  Object.fromEntries(
-    Object.entries(saved ?? {}).filter(
-      ([k, v]) => k in patch || (v !== null && typeof v === 'object'),
-    ),
-  );
+const versions = createFieldVersions();
+const inOrder = createQueue();
 
 /**
  * Valeurs calculées, partagées par toutes les cartes de la fiche : calculées
@@ -283,6 +285,8 @@ export const useSheet = (id: string) => {
    */
   const save = useCallback(
     async (patch: Partial<FullSheet>, paid: Paid = {}, shown?: () => void) => {
+      const sent = versions.bump(url, Object.keys(patch));
+      const isCurrent = (key: string) => versions.isLatest(url, key, sent[key]);
       let previous: Fields = {};
       await apply((current) => {
         previous = previousValues(current, patch);
@@ -291,14 +295,22 @@ export const useSheet = (id: string) => {
       shown?.();
       try {
         const { entries, rest } = splitEntries(
-          await request<Fields>('PATCH', url, { ...patch, ...paid }),
+          await inOrder(url, () =>
+            request<Fields>('PATCH', url, { ...patch, ...paid }),
+          ),
         );
         await apply((current) =>
-          withEntries({ ...current, ...confirmed(rest, patch) }, entries),
+          withEntries(
+            { ...current, ...confirmedFields(rest, patch, isCurrent) },
+            entries,
+          ),
         );
         return true;
       } catch (e) {
-        await fail(e, (current) => ({ ...current, ...previous }));
+        await fail(e, (current) => ({
+          ...current,
+          ...undoneFields(previous, isCurrent),
+        }));
         return false;
       }
     },
@@ -483,6 +495,10 @@ export const useSheet = (id: string) => {
             i.id === itemId ? { ...i, ...values(i) } : i,
           ),
         });
+      const itemUrl = `${url}/${collection}/${itemId}`;
+      const sent = versions.bump(itemUrl, Object.keys(fields));
+      const isCurrent = (key: string) =>
+        versions.isLatest(itemUrl, key, sent[key]);
       const optimistic = scalarPart(fields);
       let previous: Fields = {};
       await apply(
@@ -492,20 +508,21 @@ export const useSheet = (id: string) => {
         }),
       );
       try {
-        const saved = await request<Fields>(
-          'PATCH',
-          `${url}/${collection}/${itemId}`,
-          { ...fields, ...paid },
+        const saved = await inOrder(itemUrl, () =>
+          request<Fields>('PATCH', itemUrl, { ...fields, ...paid }),
         );
         const { entries, rest } = splitEntries(saved);
         await apply((current) =>
-          withEntries(replace(() => confirmed(rest, fields))(current), entries),
+          withEntries(
+            replace(() => confirmedFields(rest, fields, isCurrent))(current),
+            entries,
+          ),
         );
         return true;
       } catch (e) {
         await fail(
           e,
-          replace(() => previous),
+          replace(() => undoneFields(previous, isCurrent)),
         );
         return false;
       }

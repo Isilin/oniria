@@ -16,10 +16,11 @@ const hand = Caveat({
   weight: ['400', '500', '600', '700'],
   variable: '--font-hand',
 });
+// Pas d'italique dans le texte tapé (DESIGN.md) : seulement le romain, pour
+// ne pas précharger deux fichiers que personne ne lit.
 const type = Courier_Prime({
   subsets: ['latin'],
   weight: ['400', '700'],
-  style: ['normal', 'italic'],
   variable: '--font-type',
 });
 const stamp = Special_Elite({

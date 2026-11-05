@@ -103,6 +103,13 @@ typography:
     letterSpacing: "0.02em"
   numeral:
     fontFamily: "Courier Prime, Courier New, monospace"
+    fontSize: "0.9375rem"
+    fontWeight: 700
+    lineHeight: 1.2
+    fontFeature: "lnum, tnum"
+  numeral-total:
+    fontFamily: "Courier Prime, Courier New, monospace"
+    fontSize: "1.375rem"
     fontWeight: 700
     lineHeight: 1.2
     fontFeature: "lnum, tnum"
@@ -126,6 +133,26 @@ typography:
     fontSize: "2.375rem"
     fontWeight: 700
     lineHeight: 0.95
+  hand-existence-phone:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.75rem"
+    fontWeight: 700
+    lineHeight: 0.95
+  note:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.375rem"
+    fontWeight: 500
+    lineHeight: "30px"
+  note-title:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "2rem"
+    fontWeight: 700
+    lineHeight: "30px"
+  note-heading:
+    fontFamily: "Caveat, Segoe Print, cursive"
+    fontSize: "1.625rem"
+    fontWeight: 700
+    lineHeight: "30px"
 rounded:
   none: "0px"
   sm: "2px"
@@ -223,14 +250,23 @@ The system rests on one rule of writing. What the player writes is handwritten i
 
 There are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.
 
-Motion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback:
-- tabs settle with a short fade and rise (220ms);
-- the points bar slides up from the bottom (280ms) and leaves faster (160ms);
-- the candle lights in 700ms, then barely flickers on a 9s loop;
-- Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
-- buttons press like a stamp (1px down), with no Material ripple.
+Motion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback, played once, never on load:
+- **Turning page:** a tab opens like a page of the notebook, sliding in from the side of the tab chosen (16px and a fade, 220ms); the first tab shown settles with a short fade and rise.
+- **The blow:** a point lost on an Existence sends one ink ripple out of its planet, in the Existence's watercolour (560ms); at 0 a second, slower ripple follows. It only answers a loss, never the threshold, whose role the rules in this repository do not state.
+- **The stamp:** "Validée" comes down like a rubber stamp, slightly large and tilted, then settles (300ms), when the sheet is validated and at each validated purchase.
+- **Ink filling:** XP received fills the remaining part of its bar from left to right at the pen's pace (420ms).
+- **Slips and cards:**
+  - a toast arrives as a slip of paper pushed onto the sheet, tilted −1.5°, then straightens (280ms, leaves in 160ms);
+  - a dialog is laid on the sheet, dropping 10px with a 0.6° tilt that straightens (260ms, leaves in 160ms).
+- **Bars and light:**
+  - the points bar slides up from the bottom (280ms) and leaves faster (160ms); the phone's Existences band slides down the same way;
+  - the candle lights in 700ms, then barely flickers on a 9s loop;
+  - Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);
+  - buttons press like a stamp (1px down), with no Material ripple.
 
-Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising and flickering stop; fades and colour changes that carry state remain.
+Nothing moves on load except the plate's wash, which blooms in. Under `prefers-reduced-motion`, tracing, sliding, rising, tilting and flickering stop; fades and colour changes that carry state remain:
+- pages, slips, dialogs, the stamp and the XP fill fade;
+- the blow's ripple lights up and goes out in place, without growing.
 
 The system rejects the clean "tool" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.
 
@@ -292,16 +328,22 @@ Cream paper, brown printing ink, blue fountain-pen ink, four Existence watercolo
 - **Section** (Special Elite, 0.9375rem, +0.22em, uppercase): section headings, preceded by an armillary sphere and followed by a printed rule. Also the title band.
 - **Group** (Courier Prime 700, 0.9375rem, +0.04em, uppercase): LE CORPS, L'ESPRIT, VUE D'ENSEMBLE.
 - **Dialog title** (Special Elite, 1.0625rem, +0.12em): dialog headings.
-- **Label** (Courier Prime, 0.75rem, +0.14em, uppercase): field labels (NOM, ÂGE, LA SANTÉ), table heads, column captions.
+- **Label** (Courier Prime, 0.75rem, +0.14em, uppercase): field labels (NOM, ÂGE, LA SANTÉ), table heads, column captions. Never smaller: where a column is narrow (three planets per row on phone), the tracking tightens to +0.06em instead. Table heads never wrap; the table scrolls.
 - **Body** (Courier Prime, 0.9375rem, 1.55) and **Body small** (0.875rem): interface text, player and table names, descriptions.
 - **Row label** (Courier Prime, 0.75rem): stat-row labels. The typewriter is wide; 12px keeps "Concentration" beside its value.
-- **Numeral** (Courier Prime 700, tabular): every computed value (group totals, Facultés, combat, XP).
-- **Hand** (Caveat 600, 1.375rem) for written text, **Hand value** (Caveat 700, 1.625rem) for characteristics, **Hand existence** (Caveat 700, 2.375rem; 1.75rem on phone) for current Existences.
+- **Numeral** (Courier Prime 700, tabular, 0.9375rem): every computed value on a row (Facultés, combat); **Numeral total** (1.375rem) for group totals and the XP left. One size per role, so Facultés and Combat read as one column of figures.
+- **Hand** (Caveat 600, 1.375rem) for written text, **Hand value** (Caveat 700, 1.625rem) for characteristics, **Hand existence** (Caveat 700, 2.375rem; 1.75rem below 900px) for current Existences. Each is a theme variant (`hand`, `handValue`, `handExistence`), never sizes set by hand.
+- **Note** (Caveat 500, 1.375rem on 30px lines): the notes. **Note title** (Caveat 700, 2rem) and **Note heading** (1.625rem) stay on the 30px line; smaller headings keep the text size, underlined with the pen.
+
+### Line breaks and measure
+- Headings balance their lines (`text-wrap: balance`); body text avoids a lone last word (`pretty`).
+- Rules text in tooltips runs at 46 characters per line; notes at 75 at most (34rem), while tables and images keep the full width.
+- An amount stays glued to its category, and the middle dot never starts a line ("Éprouver 30 · Apprendre 10", with non-breaking spaces). In tables, a value comes first and its threshold sits under it as a caption ("6/6", "seuil 10").
 
 ### Named Rules
 **The Machine à écrire Rule.** Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.
 
-**The Pas d'italique Rule.** Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant.
+**The Pas d'italique Rule.** Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant. Courier Prime is served in roman only (400, 700), so no italic file is ever preloaded.
 
 ## Layout
 
@@ -314,12 +356,33 @@ Order, top to bottom: the title band (back, page title, moon phases, ONIRIA, dis
 
 Columns are separated by a 1px printed rule with 24px inner padding.
 
+The other tabs follow the same structure: sections on the paper, one after the other, 32px apart (4 spacing units), each under its stamped heading. Inside a section, groups (Le Corpus, La Spyrée, Générales…) sit under a typed group title, 4 units apart, and the table, list or tree follows tightly.
+- **Traits:** Traits innés, then Traits acquis (the line explaining acquired traits sits under its heading).
+- **Schémas & Compétences:** Schémas (Corpus beside Spyrée and Âmée from lg), Compétences (one column, two from 900px, three from 1200px, so a skill tree never runs on 240px), then Sortilèges and Golem side by side from lg.
+- **Inventaire:** a typed line with what the worn equipment gives to combat (Dégâts, Protection, Encombrement), then Armes de mêlée, Armes de tir, Armures, Objets.
+
+Tables keep a handwritten name readable: the name column never narrows below 9rem, so a name takes two lines at most; when columns run out of room, the table scrolls sideways instead. In a skill tree, the degree chip leads and the bin stays at the end of the line; only the name and its précision wrap.
+
+### Phone, touch and wide screens
+The sheet is used beside Discord on a computer and on its own on a phone, so it adapts to the screen and to the finger, not only to the width.
+- **Existences on a small screen** (below 600px wide, or below 500px tall in landscape): the full box scrolls with the sheet instead of sticking, since it would take a quarter to a third of the screen. When it leaves the screen, a 44px band slides down in its place: a small planet, the handwritten value and "/ max" for each Existence, and a chevron. A tap unfolds the full box with its −|+ over the page ("Replier" folds it); scrolling back to the top folds it too.
+- **Touch** (`pointer: coarse`), whatever the width:
+  - steppers, icon buttons and buttons have a 44px target (a stepper cell is 44×44);
+  - an editable value keeps its size but gets an invisible 44px touch area, so "31" or "38" can be tapped without aiming;
+  - below 520px, characteristic groups go one per row so that label, value and the larger −|+ sit side by side;
+  - a rule tooltip opens on a tap, not a long press, and stays 5 seconds.
+- **Tables on a phone** (below 600px): each row becomes a block on the paper, with no box around it. The check boxes (Porté) and the handwritten name lead, the bin is at the end of the line, and the other columns follow as typed labels over their values, two per line; descriptions take the full line. Nothing scrolls sideways.
+- **Tabs on a phone** have no arrows: they scroll under the finger, and the tab cut at the edge shows there is more.
+- **Wide screens** (from 1800px): the sheet widens from 1400px to 1680px, so the inventory tables (fifteen columns for a ranged weapon) fit without scrolling.
+
+The lists outside the sheet (Mes fiches, Autres fiches, Tables de jeu) are rows of 250px cards aligned to the left margin of the content, 32px apart, ending with a dashed card that creates a new one ("Nouvelle fiche", "Nouvelle table de jeu").
+
 Key widths:
 - **Characteristic groups:** three side by side from 640px, two below.
 - **Faculty columns:** same rule.
 - **Plate:** portrait, name and facts on one line from 760px; below that, Âge, Aspect and Devenir go under the name.
-- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row with labels above the planets, and Maï drops under a rule.
-- **Planet steppers:** move inline after the value from 1200px.
+- **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row, and Maï drops under a rule; there, "seuil N" takes its own line under the planet, since it cannot fit beside it. Labels sit above the planets below 900px and beside them from 900px, so "L'Équilibre" is never cut.
+- **Planet steppers:** move inline after the value from 1200px; the label then runs over the value and the stepper.
 
 ## Elevation & Depth
 
@@ -356,7 +419,7 @@ Rules come in three weights:
 - **Style:** outlined by default, 2px radius, typewriter bold. Status colour comes only from the état inks.
 
 ### Cards / Containers
-- **Sheet sections are not cards.** Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule, and has a collapse chevron saved on the account.
+- **Sheet sections are not cards,** on any tab. Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule (`SectionCard`). The sections of the Caractéristiques tab also have a collapse chevron saved on the account.
 - **Printed boxes** (plate, Existences): square, 1.5px printing-ink border. The Existences box is opaque paper with grain, so it can stick above the scrolling sheet.
 - **Cards** (sheet list, add-sheet, teams): raised paper, 1px printing-ink border, 2px radius. A sheet card shows a square portrait frame, the name handwritten, and the player or Aspect typed. The add card is dashed.
 
@@ -376,7 +439,7 @@ An Existence as a small atlas planet:
 - **Phase:** the lit part is painted in watercolour, waxing as a crescent from the right, then gibbous, then full, over a faint wash of the same colour.
 - **Points:** one printed ring per point on a 270° arc open at the bottom, filled with a pen dot up to the current value. Above 24 points, the arc becomes a continuous pen stroke.
 - **Text:**
-  - the label is typed (placed above the planet on phone);
+  - the label is typed (placed above the planet below 900px);
   - the current value is handwritten;
   - "/ max" and "seuil N" are typed.
 - **Size:** 64px from md, 40px on phone. Maï is drawn smaller in the same box.
@@ -398,7 +461,7 @@ The head of the sheet, as printed fields:
 - **Motion:** the wash blooms in over 700ms on arrival and changes colour softly (500ms) when the tint changes. Crossing Devenir 100 detaches the second frame (outline offset 0 → 4px, 600ms).
 
 ### Existences Box (signature)
-A sticky, opaque printed box. Typed captions "Existences" and "Maï" run into printed rules, and the four planets sit in columns separated by 1px printed rules.
+A sticky, opaque printed box (on a small screen, it scrolls and a one-line band takes over; see Layout). Typed captions "Existences" and "Maï" run into printed rules, and the four planets sit in columns separated by 1px printed rules.
 
 ### Stat Row
 One printed line: a typed 12px label on the left (tooltip with the rule) and the value on the right. The value is handwritten if the player sets it, typed if the rules compute it. A hairline sits under each row.
@@ -407,6 +470,8 @@ One printed line: a typed 12px label on the left (tooltip with the rule) and the
 A joined −|+ in a printed frame (1px rule, 2px corners). It has two sizes:
 - **md**, on planets: 34×32 cells;
 - **sm**, on characteristic rows: 24×24 cells, the 2.5.8 minimum.
+
+On a touch screen, both sizes become 44×44 cells.
 
 Cells are pale ink at rest. On hover or focus they turn blue ink over a 10% ink wash in 120ms, and the focus ring is drawn inside the frame. Characteristic steppers always show both cells, so values stay in a column. "−" is disabled while nothing can be removed. A click steps 1 point, Shift+click steps 5, and holding repeats from 400ms down to 40ms. Pressed cells and buttons sink by 1px for 80ms; there is no ripple.
 
@@ -433,7 +498,11 @@ All ornaments are decorative and `aria-hidden`:
 - **Pen** (blue): the sketched moon and dotted path in the plate (from lg).
 
 ### Notes
-The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, and its text is handwritten in blue at 1.375rem on 30px lines.
+The notes editor always uses its light theme. It has a printed toolbar with a printing-ink rule, typed like the rest of the print (its menus too). The text is handwritten in blue at 1.375rem on 30px lines, like a page of a notebook:
+- every block, headings included, stays on the 30px line, with one blank line between blocks and one above a heading;
+- lines run to 75 characters at most; tables and images keep the full width;
+- a quote is the same hand with a 1px pen stroke in the margin;
+- inline code is typed (Courier Prime) at 0.75em, inside the line.
 
 ## Do's and Don'ts
 

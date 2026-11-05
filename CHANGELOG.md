@@ -81,6 +81,45 @@ Première version complète des fiches de personnages d'Oniria.
   pour une fiche en création, le bouton dit ce qu'il fait (« Attribuer 30 XP
   à 2 personnages ») et « Accorder un reset » disparaît d'une fiche encore
   en création.
+- Typographie : les notes s'écrivent comme une page de cahier (titres et
+  paragraphes sur la ligne de 30 px, 75 signes par ligne au plus, petits
+  titres soulignés, citation marquée d'un trait de plume, code tapé à la
+  machine) et leur barre d'outils est tapée à la machine. Les chiffres des
+  Facultés et du combat ont la même taille ; les règles en infobulle se
+  lisent sur des lignes plus longues ; dans la vue d'ensemble d'une table,
+  le seuil passe sous la valeur et l'XP restante se coupe entre les
+  catégories, jamais entre « Vivre » et son montant.
+- Pages plus légères : l'italique de la machine à écrire, jamais utilisé,
+  n'est plus préchargé (deux fichiers de police en moins).
+- Mouvement, pour l'immersion :
+  - un onglet s'ouvre comme une page qui tourne, du côté de l'onglet choisi ;
+  - un point d'Existence perdu fait partir une onde d'encre de sa planète,
+    plus marquée quand l'Existence tombe à 0 ;
+  - « Validée » s'abat comme un tampon à la validation de la fiche et à
+    chaque achat ;
+  - l'XP reçue remplit sa barre à la plume ;
+  - les messages arrivent comme un billet glissé sur la feuille, et les
+    dialogues se posent dessus ;
+  - les valeurs de la bande du téléphone s'écrivent comme les autres.
+
+  Tout se joue une fois, en moins d'une seconde, et rien ne bouge au
+  chargement ; en mouvement réduit, il ne reste que des fondus.
+- Téléphone et grand écran :
+  - sur téléphone, l'encadré des Existences ne reste plus collé en haut (il
+    prenait un quart de l'écran, un tiers en paysage) : une bande d'une
+    ligne le remplace quand on fait défiler, et un toucher la déplie avec
+    ses −/+ ;
+  - les tableaux deviennent des blocs lisibles sans défiler de côté ;
+  - au doigt, les −/+, boutons et valeurs modifiables offrent une cible de
+    44 px, et les règles s'ouvrent d'un toucher ;
+  - sur grand écran, la feuille s'élargit pour que les tableaux de
+    l'inventaire tiennent sans défiler.
+- Mise en page : les onglets Traits, Schémas & Compétences et Inventaire
+  sont rangés comme l'onglet Caractéristiques, en sections de la feuille
+  (titre frappé et filet) au lieu de cartes empilées ; le résumé de
+  l'inventaire tient sur une ligne. Les compétences passent sur deux
+  colonnes jusqu'à 1200 px. La page des tables de jeu reprend la
+  présentation de l'accueil, avec une carte « Nouvelle table de jeu ».
 
 ### Corrigé
 
@@ -95,6 +134,21 @@ Première version complète des fiches de personnages d'Oniria.
 - Thème Nuit : contour de focus, sélection de texte et barre de défilement
   prenaient les couleurs du thème Jour (or trop sombre, défilement
   invisible), comme les rayures de la barre d'XP.
+- Le libellé « L'Équilibre » était coupé sur tablette et entre 1200 et
+  1440 px ; sur téléphone, les libellés des Existences gardent la taille des
+  autres libellés (ils tombaient à 10 px).
+- Les en-têtes de colonnes ne se coupent plus en deux (« Enc. (%) ») et ceux
+  de l'inventaire reprennent le style des autres libellés.
+- Des −/+ rapides sur une Existence se perdaient : trois − puis trois +
+  à partir de 3 finissaient à 2. Une réponse du serveur remettait l'écran
+  en arrière et le clic suivant partait de cette valeur. Désormais la
+  dernière modification fait foi à l'écran, et les enregistrements d'une
+  fiche partent l'un après l'autre (le dernier clic est le dernier écrit).
+- Sur téléphone, « seuil N » des Existences débordait sur le filet de la
+  colonne voisine ; il passe sur sa propre ligne, sous la planète.
+- Les noms écrits dans les tableaux (armes, armures, objets, traits) ne se
+  coupent plus mot par mot ; la corbeille d'une compétence ne se retrouve
+  plus seule sur sa ligne.
 
 ### Sécurité
 

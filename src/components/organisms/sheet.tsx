@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import { useState } from 'react';
 import { Constellation } from '../atoms/ornaments';
 import TabContent from '../atoms/tab-content';
 import NotesCard, { preloadEditor } from '../molecules/notes-card';
@@ -45,6 +46,14 @@ const SheetContent = ({ id }: { id: string }) => {
   const anchor = useAnchor();
   const value = anchor >= 0 && anchor < TABS.length ? anchor : 0;
   const { sheet, isLoading, error, canEdit } = useSheet(id);
+  // Le sens de la page qui tourne : vers l'onglet de droite ou de gauche.
+  const [shown, setShown] = useState(value);
+  const [direction, setDirection] = useState<-1 | 0 | 1>(0);
+  if (value !== shown) {
+    // Valeur dérivée pendant le rendu (et non dans un effet).
+    setShown(value);
+    setDirection(value > shown ? 1 : -1);
+  }
 
   // La fiche déjà affichée reste en place pendant qu'on la relit (retour sur
   // l'onglet après Discord, par exemple) : pas de clignotement.
@@ -66,8 +75,9 @@ const SheetContent = ({ id }: { id: string }) => {
           window.location.hash = String(newVal);
         }}
         variant="scrollable"
+        // Sur téléphone, pas de flèches (80 px de pris) : les onglets se
+        // font glisser au doigt, l'onglet coupé au bord montre la suite.
         scrollButtons="auto"
-        allowScrollButtonsMobile
         // Étirés sur toute la largeur : le filet court sous toute la page et
         // la lecture commence à la marge gauche.
         sx={{ alignSelf: 'stretch', width: '100%', maxWidth: '100%' }}
@@ -87,7 +97,7 @@ const SheetContent = ({ id }: { id: string }) => {
           />
         ))}
       </Tabs>
-      <TabContent index={0} active={value === 0}>
+      <TabContent index={0} active={value === 0} direction={direction}>
         {/* Tout ce qui sert en jeu tient sur un écran : Caractères, Facultés
             et combat côte à côte dès 1200 px, l'expérience dessous. */}
         <Box
@@ -156,16 +166,17 @@ const SheetContent = ({ id }: { id: string }) => {
           </Box>
         </Box>
       </TabContent>
-      <TabContent index={1} active={value === 1}>
+      <TabContent index={1} active={value === 1} direction={direction}>
         <TraitsTab id={id} />
       </TabContent>
-      <TabContent index={2} active={value === 2}>
+      <TabContent index={2} active={value === 2} direction={direction}>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: 4,
             width: '100%',
+            pt: 2,
           }}
         >
           <SchemesCard id={id} />
@@ -173,10 +184,14 @@ const SheetContent = ({ id }: { id: string }) => {
           <MagicCard id={id} />
         </Box>
       </TabContent>
-      <TabContent index={3} active={value === 3}>
+      <TabContent index={3} active={value === 3} direction={direction}>
         <InventoryTab id={id} />
       </TabContent>
-      <TabContent index={NOTES_TAB} active={value === NOTES_TAB}>
+      <TabContent
+        index={NOTES_TAB}
+        active={value === NOTES_TAB}
+        direction={direction}
+      >
         <Box
           sx={{
             width: '100%',
