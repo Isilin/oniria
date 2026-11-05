@@ -4,8 +4,8 @@ Application de gestion des fiches de personnages et des tables de jeu pour le
 JdR **Oniria**. Elle reprend les règles du tableur de référence
 « Lunes d'Oniria - Fiches de personnages » (onglet _Modèle_).
 
-Stack : Node.js 26, Next.js 16 (App Router), React 19, MUI 9, Prisma 7 +
-PostgreSQL, Auth.js v5 (Google), SWR.
+Stack : Node.js 26, Next.js 16 (App Router), React 19 avec React Compiler,
+MUI 9, Prisma 7 + PostgreSQL, Auth.js v5 (Google), SWR.
 
 ## Fonctionnalités
 
@@ -158,6 +158,13 @@ yarn lint
 Pour devenir MJ : ajouter son email dans la table `Whitelist`, se connecter une
 première fois, puis passer `role` à `ADMIN` dans la table `users`
 (`yarn prisma:studio`).
+
+Le React Compiler (`reactCompiler` dans `next.config.mjs`) mémorise les
+composants : un −/+ ne redessine que ce qui change. Il lit dès le rendu les
+valeurs qu'un gestionnaire d'événement utilise. Comme `strictNullChecks` est
+désactivé, TypeScript ne signale pas une valeur qui peut être nulle : dans un
+gestionnaire, la tester avant de lire ses champs (`if (!value) return;` avant
+`value.id`), sinon la page plante au rendu.
 
 ## Déploiement (Vercel)
 
