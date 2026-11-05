@@ -28,6 +28,9 @@ const WIDE = '@media (min-width: 520px)';
  * bande d'une ligne prend sa place en haut ; un toucher la déplie.
  */
 const SMALL_SCREEN = '(max-width: 599.95px), (max-height: 500px)';
+// Clé de style déjà écrite : le React Compiler ne sait pas mémoriser un
+// objet dont une clé est un gabarit (`@media ${…}`).
+const SMALL_SCREEN_MEDIA = `@media ${SMALL_SCREEN}`;
 
 /** Une planète en miniature, pour la bande : le disque et sa couleur. */
 const MiniPlanet = ({ color }: { color: string }) => (
@@ -255,7 +258,7 @@ const EphemerisBand = ({ id }: { id: string }) => {
           position: 'sticky',
           top: 0,
           zIndex: 'appBar',
-          [`@media ${SMALL_SCREEN}`]: { position: 'static' },
+          [SMALL_SCREEN_MEDIA]: { position: 'static' },
         }}
       >
         {content}

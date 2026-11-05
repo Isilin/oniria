@@ -77,6 +77,9 @@ const AddPotential = ({ id }: { id: string }) => {
         startIcon={<AddIcon />}
         disabled={!value}
         onClick={async () => {
+          // Garde explicite : le React Compiler lit `value.id` dès le rendu
+          // pour mémoriser ce gestionnaire, alors que `value` y est nul.
+          if (!value) return;
           if (await createItem('spyree', { potentialId: value.id, level: 1 }))
             setValue(null);
         }}
