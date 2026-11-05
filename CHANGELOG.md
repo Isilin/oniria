@@ -139,6 +139,15 @@ Première version complète des fiches de personnages d'Oniria.
   - en Nuit, la bougie ne vacille plus en boucle : la page ne se redessine
     plus en continu au repos, ce qui ménage le processeur graphique et la
     batterie pendant toute une soirée à côté de Discord.
+- Dialogues : tous se terminent par « Annuler » et une action en bouton
+  plein (« Créer » et « Ajouter », pour une nouvelle fiche ou une nouvelle
+  table, ne l'étaient pas encore). Pendant l'envoi, l'action est occupée, les
+  champs restent figés et le dialogue ne se ferme pas ; un double clic
+  n'envoie qu'une fois.
+- Système de design : les durées de mouvement, les filets imprimés et les
+  paliers d'écran sont des tokens du thème, et les titres de section, les
+  rangées de cartes, la carte « Nouvelle … » et les dialogues sont des
+  composants partagés (voir DESIGN.md).
 
 ### Corrigé
 

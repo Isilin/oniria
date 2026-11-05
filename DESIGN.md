@@ -376,7 +376,7 @@ The sheet is used beside Discord on a computer and on its own on a phone, so it 
 - **Tabs on a phone** have no arrows: they scroll under the finger, and the tab cut at the edge shows there is more.
 - **Wide screens** (from 1800px): the sheet widens from 1400px to 1680px, so the inventory tables (fifteen columns for a ranged weapon) fit without scrolling.
 
-The lists outside the sheet (Mes fiches, Autres fiches, Tables de jeu) are rows of 250px cards aligned to the left margin of the content, 32px apart, ending with a dashed card that creates a new one ("Nouvelle fiche", "Nouvelle table de jeu").
+The lists outside the sheet (Mes fiches, Autres fiches, Tables de jeu) are rows of 250px cards aligned to the left margin of the content, 4 spacing units apart (`CardRow`, `CARD_WIDTH`), ending with a dashed card that creates a new one (`AddCard`: "Nouvelle fiche", "Nouvelle table de jeu"). A list's heading is the sheet's section heading (`SectionHeading`).
 
 Key widths:
 - **Characteristic groups:** three side by side from 640px, two below.
@@ -384,6 +384,8 @@ Key widths:
 - **Plate:** portrait, name and facts on one line from 760px; below that, Âge, Aspect and Devenir go under the name.
 - **Existences:** all four planets on one row from 520px. Below 520px the three Existences share a row, and Maï drops under a rule; there, "seuil N" takes its own line under the planet, since it cannot fit beside it. Labels sit above the planets below 900px and beside them from 900px, so "L'Équilibre" is never cut.
 - **Planet steppers:** move inline after the value from 1200px; the label then runs over the value and the stepper.
+
+These thresholds are named once, in `MEDIA` (`src/theme/theme.ts`), and used as `sx` keys or with `useMediaQuery`: `planetsRow` (520px), `threeGroups` (640px), `plateRow` (760px), `oneScreen` (1440px), `smallScreen` (below 600px wide or 500px tall: the Existences band), `touch` (`pointer: coarse`) and `touchNarrow` (touch below 520px). The MUI breakpoints (600, 900, 1200px) stay MUI's.
 
 ## Elevation & Depth
 
@@ -408,6 +410,8 @@ Rules come in three weights:
 - **Group rule:** 1.5px printing ink under characteristic groups, faculty columns and table heads.
 - **Hairline:** 1px printing ink at 24% for rows, and the faint guide lines of the paper.
 
+In code, the rules are `RULES` in `src/theme/theme.ts`: `RULES.frame` (the 1.5px boxes and the dialog), `RULES.group`, `RULES.ink` (the 1px printing-ink border of raised paper, the column rules and the tab baseline) and `RULES.hairline`. A component takes one of them instead of writing a width and a colour.
+
 ## Components
 
 ### Buttons
@@ -417,11 +421,18 @@ Rules come in three weights:
 - **Focus:** a 2px blue-ink outline offset by 2px, applied globally.
 - **Busy** (`BusyButton`): while its action waits for the server, a button keeps its width and its own ink; only the label gives way to a small fixed-arc spinner (18px) in the same place. It is disabled, so neither a second click nor Enter in its form sends again, and it keeps its accessible name (`aria-busy`). Busy is not unavailable: it never takes the greyed disabled look.
 
+### Dialogs
+Every dialog that ends in a choice is an `ActionDialog`: the stamped title, its content, then "Annuler" (text) and one action, a contained button that says what it does ("Créer", "Supprimer la fiche", "Dépenser 30 XP").
+- **Colour of the action:** blue ink; erreur to delete; avertissement to take back a validated element or grant a reset.
+- **Waiting:** while the action runs, its button is busy, the fields stop changing but keep their ink, and "Annuler", Escape or a click outside do nothing. A double click or a second Enter sends once. The dialog closes when the action succeeds; a refusal leaves it open to correct and retry.
+- **Forms:** a dialog that asks for a value is a form, so Enter validates and required fields are checked.
+- **Optimistic removals** close at once; their button stays blocked until the removal is done.
+
 ### Chips
 - **Style:** outlined by default, 2px radius, typewriter bold. Status colour comes only from the état inks.
 
 ### Cards / Containers
-- **Sheet sections are not cards,** on any tab. Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule (`SectionCard`). The sections of the Caractéristiques tab also have a collapse chevron saved on the account.
+- **Sheet sections are not cards,** on any tab. Each sits on the paper under a stamped heading with an armillary sphere and a running printed rule (`SectionCard`, whose heading is `SectionHeading`; the running rule alone is `RUNNING_RULE`, also behind the "Existences" caption). The sections of the Caractéristiques tab also have a collapse chevron saved on the account.
 - **Printed boxes** (plate, Existences): square, 1.5px printing-ink border. The Existences box is opaque paper with grain, so it can stick above the scrolling sheet.
 - **Cards** (sheet list, add-sheet, teams): raised paper, 1px printing-ink border, 2px radius. A sheet card shows a square portrait frame, the name handwritten, and the player or Aspect typed; a sheet waiting for its creation XP or its validation adds the overview's warning chip ("en création", "à valider"). The add card is dashed.
 
@@ -538,6 +549,8 @@ The notes editor always uses its light theme. It has a printed toolbar with a pr
 - **Do** keep a button blocked while its action is in flight, so a double click never sends twice.
 - **Do** honour both densities and both lights for every new surface.
 - **Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes.
+- **Do** take durations and curves from `MOTION` (`quick` 120, `leave` 160, `state` 220, `arrive` 280, `write` 420, `dry` 600ms) and `EASE`, `EASE_LEAVE`, `EASE_PEN`; rules from `RULES`; thresholds from `MEDIA`. A value written by hand is a one-off that says why (the planet's 260ms phase, the wash's 700ms bloom).
+- **Do** reuse the shared pieces before writing a pattern again: `SectionHeading`, `CardRow` and `AddCard`, `ActionDialog`, `DeleteConfirmation`, `BusyButton`, `LoadError`, `StepperFrame`.
 
 ### Don't:
 - **Don't** use a system sans or a display serif: printed text is a typewriter, titles are a stamp, and the player's words are a hand.
