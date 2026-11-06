@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { request, RequestError } from './swr';
+import { request, RequestError, requestFile } from './swr';
 
 const respond = (status: number, body: unknown) =>
   vi.fn().mockResolvedValue(
@@ -57,5 +57,47 @@ describe('request', () => {
   it('renvoie les données', async () => {
     vi.stubGlobal('fetch', respond(200, { id: 'x' }));
     await expect(request('GET', '/api/sheets/x')).resolves.toEqual({ id: 'x' });
+  });
+});
+
+describe('requestFile', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('rend le fichier et le nom annoncé par le serveur', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response('%PDF-1.3', {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition':
+              'attachment; filename="Eclat.pdf"; filename*=UTF-8\'\'%C3%89clat.pdf',
+          },
+        }),
+      ),
+    );
+    const { blob, filename } = await requestFile('/api/sheets/1/pdf');
+    expect(filename).toBe('Éclat.pdf');
+    expect(await blob.text()).toBe('%PDF-1.3');
+  });
+
+  it("lit l'erreur JSON de l'API", async () => {
+    vi.stubGlobal('fetch', respond(403, { error: 'Réservé aux MJ.' }));
+    const e = await failure(requestFile('/api/teams/1/pdf'));
+    expect(e.status).toBe(403);
+    expect(e.message).toBe('Réservé aux MJ.');
+  });
+
+  it('dit que la connexion est perdue', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(new TypeError('Failed to fetch')),
+    );
+    const e = await failure(requestFile('/api/sheets/1/pdf'));
+    expect(e.status).toBe(0);
+    expect(e.message).toMatch(/^Connexion perdue/);
   });
 });

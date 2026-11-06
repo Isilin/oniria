@@ -1,10 +1,12 @@
 'use client';
 
 import { FullSheet } from '@/lib/db/sheet';
+import { useDownload } from '@/lib/hooks/use-download';
 import { useSheets } from '@/lib/hooks/use-sheet';
 import { useTeam } from '@/lib/hooks/use-team';
 import { computeSheet, FACULTIES, formatFaculty } from '@/lib/rules';
 import { ALL_SCOPES, unlockedScopes, xpSummary } from '@/lib/rules/xp';
+import { formatAmounts, xpListChip } from '@/lib/sheet/display';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import {
   Autocomplete,
@@ -31,10 +33,10 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { useState } from 'react';
+import BusyButton from '../atoms/busy-button';
 import EditableField from '../atoms/editable-field';
 import LoadError from '../atoms/load-error';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
-import { formatAmounts, xpListChip } from '@/lib/sheet/display';
 import XpGrantDialog from './xp-grant-dialog';
 
 /** Une Existence : la valeur, et son seuil en légende dessous. */
@@ -162,6 +164,7 @@ const TeamCard = ({ id }: { id: string }) => {
     grantXp,
   } = useTeam(id);
   const { sheets } = useSheets();
+  const { busy: exporting, download } = useDownload();
   const [grantOpen, setGrantOpen] = useState(false);
   const [recipients, setRecipients] = useState<string[] | null>(null);
 
@@ -234,17 +237,34 @@ const TeamCard = ({ id }: { id: string }) => {
             <Typography variant="h5" gutterBottom>
               Vue d&apos;ensemble
             </Typography>
-            <Button
-              size="small"
-              variant="outlined"
-              disabled={team.members.length === 0}
-              onClick={() => {
-                setRecipients(null);
-                setGrantOpen(true);
-              }}
-            >
-              Distribuer de l&apos;XP
-            </Button>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <BusyButton
+                size="small"
+                variant="outlined"
+                busy={exporting}
+                disabled={team.members.length === 0}
+                onClick={() =>
+                  download(
+                    `/api/teams/${id}/pdf`,
+                    `${team.name || 'Table'}.pdf`,
+                    'Fiches exportées.',
+                  )
+                }
+              >
+                Exporter les fiches (PDF)
+              </BusyButton>
+              <Button
+                size="small"
+                variant="outlined"
+                disabled={team.members.length === 0}
+                onClick={() => {
+                  setRecipients(null);
+                  setGrantOpen(true);
+                }}
+              >
+                Distribuer de l&apos;XP
+              </Button>
+            </Box>
           </Box>
           <TableContainer>
             <Table size="small">

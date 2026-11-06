@@ -1,3 +1,5 @@
+import { filenameFromDisposition } from './download';
+
 export class RequestError extends Error {
   constructor(
     /** Code HTTP ; 0 quand la requête n'a pas abouti (réseau coupé). */
@@ -56,6 +58,29 @@ export const request = async <T = unknown>(
     throw new RequestError(res.status, errorMessage(res.status, data?.error));
   }
   return data as T;
+};
+
+/**
+ * Télécharge un fichier (export PDF). Les erreurs se lisent comme celles
+ * de `request` : l'API répond alors en JSON.
+ */
+export const requestFile = async (
+  url: string,
+): Promise<{ blob: Blob; filename: string | null }> => {
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch {
+    throw new RequestError(0, offlineMessage('GET'));
+  }
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new RequestError(res.status, errorMessage(res.status, data?.error));
+  }
+  return {
+    blob: await res.blob(),
+    filename: filenameFromDisposition(res.headers.get('Content-Disposition')),
+  };
 };
 
 export default function fetcher<T>(input: string): Promise<T> {
