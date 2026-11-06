@@ -22,8 +22,8 @@ import type { SKILL_DEGREES, SKILL_TYPES } from './fields';
 // et le point médian ne commence jamais une ligne.
 export const formatAmounts = (amounts: Amounts, empty = '0') =>
   POOLS.filter((p) => amounts[p.key])
-    .map((p) => `${p.label} ${amounts[p.key]}`)
-    .join(' · ') || empty;
+    .map((p) => `${p.label}\u00a0${amounts[p.key]}`)
+    .join('\u00a0· ') || empty;
 
 /* -------------------------------------------------------------------------- */
 /*                                 Compétences                                */
@@ -155,8 +155,8 @@ export const xpListChip = (xp: Pick<XpSummary, 'unlocked' | 'allocation'>) =>
  */
 export const CREATION_STEPS = [
   "Recevoir l'XP de création du MJ",
-  'Répartir les points : tout se modifie librement',
-  'Valider la fiche : son coût est payé, puis elle se verrouille',
+  'Répartir les points\u00a0: tout se modifie librement',
+  'Valider la fiche\u00a0: son coût est payé, puis elle se verrouille',
 ] as const;
 
 /** Libellé court d'une étape, pour le rappel en haut de la fiche. */

@@ -65,7 +65,7 @@ const attribute = (html: string, name: string) => {
 
 const decodeEntities = (text: string) =>
   text
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&nbsp;/g, '\u00a0')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
