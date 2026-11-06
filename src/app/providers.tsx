@@ -1,41 +1,86 @@
 'use client';
 
+import { XpDialogProvider } from '@/components/organisms/xp-dialogs';
+import { usePreferences } from '@/lib/hooks/use-preferences';
+import type { Density } from '@/lib/preferences';
+import { createOniriaTheme, MOTION } from '@/theme/theme';
 import DeleteIcon from '@mui/icons-material/Close';
-import { Button } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { Fade, IconButton } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import CssBaseline from '@mui/material/CssBaseline';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, useColorScheme } from '@mui/material/styles';
+import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 
-const theme = createTheme({
-  colorSchemes: { light: true, dark: true },
-  cssVariables: {
-    colorSchemeSelector: 'class',
-  },
-  palette: {
-    mode: 'dark',
-  },
-});
+interface Props {
+  /** Session lue par le serveur : le navigateur n'a pas à la redemander. */
+  session: Session | null;
+}
 
-export default function Providers({ children }) {
+/**
+ * Applique les réglages du compte (thème, densité) dès qu'ils arrivent :
+ * ils suivent le joueur d'un appareil à l'autre.
+ */
+const PreferencesSync = ({
+  onDensity,
+}: {
+  onDensity: (density: Density) => void;
+}) => {
+  const { preferences, loaded } = usePreferences();
+  const { mode, setMode } = useColorScheme();
+
+  useEffect(() => {
+    if (loaded && preferences.theme && preferences.theme !== mode) {
+      setMode(preferences.theme);
+    }
+    // Seulement à l'arrivée des réglages : un choix fait ensuite sur cet
+    // appareil l'emporte jusqu'à son enregistrement.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, preferences.theme]);
+
+  useEffect(() => {
+    onDensity(preferences.density ?? 'comfortable');
+  }, [preferences.density, onDensity]);
+
+  return null;
+};
+
+export default function Providers({
+  session,
+  children,
+}: PropsWithChildren<Props>) {
+  const [density, setDensity] = useState<Density>('comfortable');
+  const theme = useMemo(() => createOniriaTheme(density), [density]);
+
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme} defaultMode="dark">
-        <SessionProvider>
+        <SessionProvider session={session} refetchOnWindowFocus={false}>
           <SnackbarProvider
             autoHideDuration={2000}
             disableWindowBlurListener={true}
             maxSnack={5}
             preventDuplicate={true}
+            // Le billet glisse de lui-même (thème, oniria-billet) : la boîte
+            // ne fait que paraître et s'en va vite.
+            TransitionComponent={Fade}
+            transitionDuration={{ enter: MOTION.arrive, exit: MOTION.leave }}
             action={(id) => (
-              <Button onClick={() => closeSnackbar(id)}>
-                <DeleteIcon />
-              </Button>
+              <IconButton
+                aria-label="Fermer"
+                color="inherit"
+                size="small"
+                onClick={() => closeSnackbar(id)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
             )}
           >
             <CssBaseline />
-            {children}
+            <PreferencesSync onDensity={setDensity} />
+            <XpDialogProvider>{children}</XpDialogProvider>
           </SnackbarProvider>
         </SessionProvider>
       </ThemeProvider>

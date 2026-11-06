@@ -10,4 +10,4 @@ yarn.lock
 package-lock.json
 Dockerfile
 docker-compose.yml
-tailwind.config.ts
+tailwind.config.ts.yarn

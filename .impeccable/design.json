@@ -1,0 +1,1076 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T17:52:17.422Z",
+  "title": "Design System: Oniria",
+  "extensions": {
+    "colorMeta": {
+      "table-jour": {
+        "role": "neutral",
+        "displayName": "Table jour",
+        "canonical": "#e4dcc8",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#2e2c28",
+          "#5b5850",
+          "#898478",
+          "#b6b0a0",
+          "#e4dcc8",
+          "#ece7d9",
+          "#f3efe6",
+          "#faf8f4"
+        ]
+      },
+      "papier-jour": {
+        "role": "neutral",
+        "displayName": "Papier jour",
+        "canonical": "#efe6cf",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#302e29",
+          "#605c53",
+          "#8f8a7c",
+          "#bfb8a6",
+          "#efe6cf",
+          "#f4eedd",
+          "#f8f4e9",
+          "#fcfaf5"
+        ]
+      },
+      "papier-releve-jour": {
+        "role": "neutral",
+        "displayName": "Papier relevé jour",
+        "canonical": "#f6efdc",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#31302c",
+          "#626058",
+          "#948f84",
+          "#c5bfb0",
+          "#f6efdc",
+          "#f9f4e7",
+          "#fbf8ef",
+          "#fdfcf8"
+        ]
+      },
+      "encre-imprimee-jour": {
+        "role": "neutral",
+        "displayName": "Encre imprimée jour",
+        "canonical": "#3b3328",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0c0a08",
+          "#181410",
+          "#231f18",
+          "#2f2920",
+          "#3b3328",
+          "#767069",
+          "#a7a39e",
+          "#d8d6d4"
+        ]
+      },
+      "encre-pale-jour": {
+        "role": "neutral",
+        "displayName": "Encre pâle jour",
+        "canonical": "#665c4b",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#14120f",
+          "#29251e",
+          "#3d372d",
+          "#524a3c",
+          "#665c4b",
+          "#948d81",
+          "#bab6ae",
+          "#e0dedb"
+        ]
+      },
+      "encre-bleue-jour": {
+        "role": "primary",
+        "displayName": "Encre bleue jour",
+        "canonical": "#23336b",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#070a15",
+          "#0e142b",
+          "#151f40",
+          "#1c2956",
+          "#23336b",
+          "#657097",
+          "#9ca3bc",
+          "#d3d6e1"
+        ]
+      },
+      "sanguine-jour": {
+        "role": "secondary",
+        "displayName": "Sanguine jour",
+        "canonical": "#9a4a2a",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1f0f08",
+          "#3e1e11",
+          "#5c2c19",
+          "#7b3b22",
+          "#9a4a2a",
+          "#b8806a",
+          "#d2ae9f",
+          "#ebdbd4"
+        ]
+      },
+      "ligne-guide-jour": {
+        "role": "neutral",
+        "displayName": "Ligne-guide jour",
+        "canonical": "rgba(62, 79, 140, 0.12)",
+        "scheme": "jour",
+        "tonalRamp": []
+      },
+      "marge-jour": {
+        "role": "neutral",
+        "displayName": "Marge jour",
+        "canonical": "rgba(178, 70, 52, 0.32)",
+        "scheme": "jour",
+        "tonalRamp": []
+      },
+      "succes-jour": {
+        "role": "tertiary",
+        "displayName": "Succès jour",
+        "canonical": "#2f6640",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#09140d",
+          "#13291a",
+          "#1c3d26",
+          "#265233",
+          "#2f6640",
+          "#6d9479",
+          "#a1baa9",
+          "#d5e0d9"
+        ]
+      },
+      "avertissement-jour": {
+        "role": "tertiary",
+        "displayName": "Avertissement jour",
+        "canonical": "#924716",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1d0e04",
+          "#3a1c09",
+          "#582b0d",
+          "#753912",
+          "#924716",
+          "#b37e5c",
+          "#ceac96",
+          "#e9dad0"
+        ]
+      },
+      "erreur-jour": {
+        "role": "tertiary",
+        "displayName": "Erreur jour",
+        "canonical": "#a63a2a",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#210c08",
+          "#421711",
+          "#642319",
+          "#852e22",
+          "#a63a2a",
+          "#c1756a",
+          "#d7a69f",
+          "#edd8d4"
+        ]
+      },
+      "info-jour": {
+        "role": "tertiary",
+        "displayName": "Info jour",
+        "canonical": "#355d8a",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0b131c",
+          "#152537",
+          "#203853",
+          "#2a4a6e",
+          "#355d8a",
+          "#728ead",
+          "#a4b6ca",
+          "#d7dfe8"
+        ]
+      },
+      "table-bougie": {
+        "role": "neutral",
+        "displayName": "Table bougie",
+        "canonical": "#0d0906",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#030201",
+          "#050402",
+          "#080504",
+          "#0a0705",
+          "#0d0906",
+          "#565351",
+          "#92908f",
+          "#cfcecd"
+        ]
+      },
+      "papier-bougie": {
+        "role": "neutral",
+        "displayName": "Papier bougie",
+        "canonical": "#cfbc96",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#29261e",
+          "#534b3c",
+          "#7c715a",
+          "#a69678",
+          "#cfbc96",
+          "#ddd0b6",
+          "#e9e1d0",
+          "#f5f2ea"
+        ]
+      },
+      "papier-releve-bougie": {
+        "role": "neutral",
+        "displayName": "Papier relevé bougie",
+        "canonical": "#d9c8a3",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#2b2821",
+          "#575041",
+          "#827862",
+          "#aea082",
+          "#d9c8a3",
+          "#e4d9bf",
+          "#eee6d6",
+          "#f7f4ed"
+        ]
+      },
+      "encre-imprimee-bougie": {
+        "role": "neutral",
+        "displayName": "Encre imprimée bougie",
+        "canonical": "#3a2a1a",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#0c0805",
+          "#17110a",
+          "#231910",
+          "#2e2215",
+          "#3a2a1a",
+          "#756a5f",
+          "#a69f98",
+          "#d8d4d1"
+        ]
+      },
+      "encre-pale-bougie": {
+        "role": "neutral",
+        "displayName": "Encre pâle bougie",
+        "canonical": "#4a3824",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#0f0b07",
+          "#1e160e",
+          "#2c2216",
+          "#3b2d1d",
+          "#4a3824",
+          "#807466",
+          "#aea59c",
+          "#dbd7d3"
+        ]
+      },
+      "encre-bleue-bougie": {
+        "role": "primary",
+        "displayName": "Encre bleue bougie",
+        "canonical": "#22305a",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#070a12",
+          "#0e1324",
+          "#141d36",
+          "#1b2648",
+          "#22305a",
+          "#646e8c",
+          "#9ca2b5",
+          "#d3d6de"
+        ]
+      },
+      "sanguine-bougie": {
+        "role": "secondary",
+        "displayName": "Sanguine bougie",
+        "canonical": "#77321a",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#180a05",
+          "#30140a",
+          "#471e10",
+          "#5f2815",
+          "#77321a",
+          "#a0705f",
+          "#c2a398",
+          "#e4d6d1"
+        ]
+      },
+      "ligne-guide-bougie": {
+        "role": "neutral",
+        "displayName": "Ligne-guide bougie",
+        "canonical": "rgba(90, 52, 20, 0.13)",
+        "scheme": "bougie",
+        "tonalRamp": []
+      },
+      "marge-bougie": {
+        "role": "neutral",
+        "displayName": "Marge bougie",
+        "canonical": "rgba(150, 60, 30, 0.34)",
+        "scheme": "bougie",
+        "tonalRamp": []
+      },
+      "succes-bougie": {
+        "role": "tertiary",
+        "displayName": "Succès bougie",
+        "canonical": "#22542f",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#071109",
+          "#0e2213",
+          "#14321c",
+          "#1b4326",
+          "#22542f",
+          "#64876d",
+          "#9cb2a1",
+          "#d3ddd5"
+        ]
+      },
+      "avertissement-bougie": {
+        "role": "tertiary",
+        "displayName": "Avertissement bougie",
+        "canonical": "#78380e",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#180b03",
+          "#301606",
+          "#482208",
+          "#602d0b",
+          "#78380e",
+          "#a17456",
+          "#c2a593",
+          "#e4d7cf"
+        ]
+      },
+      "erreur-bougie": {
+        "role": "tertiary",
+        "displayName": "Erreur bougie",
+        "canonical": "#842a1c",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#1a0806",
+          "#35110b",
+          "#4f1911",
+          "#6a2216",
+          "#842a1c",
+          "#a96a60",
+          "#c89f99",
+          "#e6d4d2"
+        ]
+      },
+      "info-bougie": {
+        "role": "tertiary",
+        "displayName": "Info bougie",
+        "canonical": "#254a73",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#070f17",
+          "#0f1e2e",
+          "#162c45",
+          "#1e3b5c",
+          "#254a73",
+          "#66809d",
+          "#9daec0",
+          "#d3dbe3"
+        ]
+      },
+      "lueur-bougie": {
+        "role": "neutral",
+        "displayName": "Lueur bougie",
+        "canonical": "rgba(255, 168, 76, 0.3)",
+        "scheme": "bougie",
+        "tonalRamp": []
+      },
+      "sante-jour": {
+        "role": "tertiary",
+        "displayName": "Santé jour",
+        "canonical": "#a8432f",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#220d09",
+          "#431b13",
+          "#65281c",
+          "#863626",
+          "#a8432f",
+          "#c27b6d",
+          "#d8aaa1",
+          "#eed9d5"
+        ]
+      },
+      "equilibre-jour": {
+        "role": "tertiary",
+        "displayName": "Équilibre jour",
+        "canonical": "#3d6a99",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#0c151f",
+          "#182a3d",
+          "#25405c",
+          "#31557a",
+          "#3d6a99",
+          "#7797b8",
+          "#a8bcd1",
+          "#d8e1eb"
+        ]
+      },
+      "eclat-jour": {
+        "role": "tertiary",
+        "displayName": "Éclat jour",
+        "canonical": "#9a7414",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#1f1704",
+          "#3e2e08",
+          "#5c460c",
+          "#7b5d10",
+          "#9a7414",
+          "#b89e5b",
+          "#d2c095",
+          "#ebe3d0"
+        ]
+      },
+      "mai-jour": {
+        "role": "tertiary",
+        "displayName": "Maï jour",
+        "canonical": "#6a55a0",
+        "scheme": "jour",
+        "tonalRamp": [
+          "#151120",
+          "#2a2240",
+          "#403360",
+          "#554480",
+          "#6a55a0",
+          "#9788bd",
+          "#bcb3d4",
+          "#e1ddec"
+        ]
+      },
+      "sante-bougie": {
+        "role": "tertiary",
+        "displayName": "Santé bougie",
+        "canonical": "#9a3a28",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#1f0c08",
+          "#3e1710",
+          "#5c2318",
+          "#7b2e20",
+          "#9a3a28",
+          "#b87569",
+          "#d2a69e",
+          "#ebd8d4"
+        ]
+      },
+      "equilibre-bougie": {
+        "role": "tertiary",
+        "displayName": "Équilibre bougie",
+        "canonical": "#2f5a85",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#09121b",
+          "#132435",
+          "#1c3650",
+          "#26486a",
+          "#2f5a85",
+          "#6d8caa",
+          "#a1b5c8",
+          "#d5dee7"
+        ]
+      },
+      "eclat-bougie": {
+        "role": "tertiary",
+        "displayName": "Éclat bougie",
+        "canonical": "#86640c",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#1b1402",
+          "#362805",
+          "#503c07",
+          "#6b500a",
+          "#86640c",
+          "#aa9355",
+          "#c9b992",
+          "#e7e0ce"
+        ]
+      },
+      "mai-bougie": {
+        "role": "tertiary",
+        "displayName": "Maï bougie",
+        "canonical": "#5a4690",
+        "scheme": "bougie",
+        "tonalRamp": [
+          "#120e1d",
+          "#241c3a",
+          "#362a56",
+          "#483873",
+          "#5a4690",
+          "#8c7eb1",
+          "#b5accd",
+          "#dedae9"
+        ]
+      },
+      "lune-argent": {
+        "role": "tertiary",
+        "displayName": "Lune argent",
+        "canonical": "#5d6b85",
+        "scheme": "both",
+        "tonalRamp": [
+          "#13151b",
+          "#252b35",
+          "#384050",
+          "#4a566a",
+          "#5d6b85",
+          "#8e97aa",
+          "#b6bcc8",
+          "#dfe1e7"
+        ]
+      },
+      "lune-ambre": {
+        "role": "tertiary",
+        "displayName": "Lune ambre",
+        "canonical": "#94640f",
+        "scheme": "both",
+        "tonalRamp": [
+          "#1e1403",
+          "#3b2806",
+          "#593c09",
+          "#76500c",
+          "#94640f",
+          "#b49357",
+          "#cfb993",
+          "#eae0cf"
+        ]
+      },
+      "lune-rousse": {
+        "role": "tertiary",
+        "displayName": "Lune rousse",
+        "canonical": "#a24a28",
+        "scheme": "both",
+        "tonalRamp": [
+          "#200f08",
+          "#411e10",
+          "#612c18",
+          "#823b20",
+          "#a24a28",
+          "#be8069",
+          "#d5ae9e",
+          "#ecdbd4"
+        ]
+      },
+      "lune-jade": {
+        "role": "tertiary",
+        "displayName": "Lune jade",
+        "canonical": "#2e7a5c",
+        "scheme": "both",
+        "tonalRamp": [
+          "#091812",
+          "#123125",
+          "#1c4937",
+          "#25624a",
+          "#2e7a5c",
+          "#6da28d",
+          "#a1c3b6",
+          "#d5e4de"
+        ]
+      },
+      "lune-azur": {
+        "role": "tertiary",
+        "displayName": "Lune azur",
+        "canonical": "#2f6299",
+        "scheme": "both",
+        "tonalRamp": [
+          "#09141f",
+          "#13273d",
+          "#1c3b5c",
+          "#264e7a",
+          "#2f6299",
+          "#6d91b8",
+          "#a1b8d1",
+          "#d5e0eb"
+        ]
+      },
+      "lune-amethyste": {
+        "role": "tertiary",
+        "displayName": "Lune améthyste",
+        "canonical": "#6747a6",
+        "scheme": "both",
+        "tonalRamp": [
+          "#150e21",
+          "#291c42",
+          "#3e2b64",
+          "#523985",
+          "#6747a6",
+          "#957ec1",
+          "#bbacd7",
+          "#e1daed"
+        ]
+      },
+      "lune-corail": {
+        "role": "tertiary",
+        "displayName": "Lune corail",
+        "canonical": "#ab3f47",
+        "scheme": "both",
+        "tonalRamp": [
+          "#220d0e",
+          "#44191c",
+          "#67262b",
+          "#893239",
+          "#ab3f47",
+          "#c4797e",
+          "#d9a9ac",
+          "#eed9da"
+        ]
+      },
+      "lune-nacre": {
+        "role": "tertiary",
+        "displayName": "Lune nacre",
+        "canonical": "#7a6a4a",
+        "scheme": "both",
+        "tonalRamp": [
+          "#18150f",
+          "#312a1e",
+          "#49402c",
+          "#62553b",
+          "#7a6a4a",
+          "#a29780",
+          "#c3bcae",
+          "#e4e1db"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "ONIRIA on the home page, stamped."
+      },
+      "name": {
+        "displayName": "Name",
+        "purpose": "The character's name written on a printed field line (2rem on phone); team names use the same hand."
+      },
+      "page-title": {
+        "displayName": "Page title",
+        "purpose": "Tables de jeu, Whitelist: stamped, uppercase."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Section headings, preceded by an armillary sphere and followed by a printed rule; also the title band."
+      },
+      "group": {
+        "displayName": "Group",
+        "purpose": "LE CORPS, L’ESPRIT, VUE D’ENSEMBLE: typewriter bold, uppercase."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels (NOM, ÂGE, LA SANTÉ), table heads, column captions. Never smaller; tracking tightens to +0.06em in narrow columns. Table heads never wrap."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Interface text, player and table names, descriptions."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Secondary interface text and descriptions."
+      },
+      "row-label": {
+        "displayName": "Row label",
+        "purpose": "Stat-row labels at 12px: the typewriter is wide."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Buttons and tabs, typewriter bold, sentence case."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Every computed value on a row (Facultés, combat): one size per role."
+      },
+      "numeral-total": {
+        "displayName": "Numeral total",
+        "purpose": "Group totals and the XP left."
+      },
+      "dialog-title": {
+        "displayName": "Dialog title",
+        "purpose": "Dialog headings, stamped."
+      },
+      "hand": {
+        "displayName": "Hand",
+        "purpose": "Written text: traits, items, fields."
+      },
+      "hand-value": {
+        "displayName": "Hand value",
+        "purpose": "Characteristic values."
+      },
+      "hand-existence": {
+        "displayName": "Hand existence",
+        "purpose": "Current Existences beside their planet."
+      },
+      "hand-existence-phone": {
+        "displayName": "Hand existence (phone)",
+        "purpose": "Current Existences below 900px."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "The notes, on 30px lines, 75 characters per line at most."
+      },
+      "note-title": {
+        "displayName": "Note title",
+        "purpose": "Note titles, on the 30px line."
+      },
+      "note-heading": {
+        "displayName": "Note heading",
+        "purpose": "Note headings, on the 30px line; smaller headings keep the text size, underlined with the pen."
+      }
+    },
+    "shadows": [
+      {
+        "name": "feuille",
+        "value": "0 14px 34px -14px rgba(0, 0, 0, 0.4)",
+        "purpose": "The sheet on the table. None on phone, where the sheet fills the screen."
+      },
+      {
+        "name": "dialog",
+        "value": "0 24px 48px -12px rgba(0, 0, 0, 0.45)",
+        "purpose": "Modal dialogs, which also carry a double printed frame."
+      },
+      {
+        "name": "billet",
+        "value": "0 8px 20px -10px rgba(0, 0, 0, 0.45)",
+        "purpose": "Toasts, slips of paper pushed onto the sheet."
+      },
+      {
+        "name": "bougie-glow",
+        "value": "radial-gradient(ellipse 60% 70% at 26% 12%, rgba(255, 168, 76, 0.3), rgba(255, 140, 50, 0.08) 45%, transparent 75%)",
+        "purpose": "Night only: amber glow in soft-light, fixed overlay at z-index 1250 below modals. Lights in 700ms, then holds still."
+      },
+      {
+        "name": "bougie-shade",
+        "value": "radial-gradient(ellipse 95% 110% at 34% 18%, transparent 55%, rgba(20, 10, 4, 0.12) 80%, rgba(8, 4, 2, 0.45) 100%)",
+        "purpose": "Night only: brown shadow at the edges, under 12% until 80% of the radius; removed under prefers-contrast: more."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Arrivals: pages, ink dots, planet phase, stamp, slips, dialogs, points bar, second frame."
+      },
+      {
+        "name": "ease-pen",
+        "value": "cubic-bezier(0.45, 0.05, 0.35, 1)",
+        "purpose": "The pen stroke: steady, slowing only at the end of the word."
+      },
+      {
+        "name": "quick",
+        "value": "120ms ease-out",
+        "purpose": "Hover, focus, preview colour arriving, pencil mark on an editable value."
+      },
+      {
+        "name": "press",
+        "value": "80ms ease-out",
+        "purpose": "Buttons and stepper cells sink by 1px like a stamp; no Material ripple."
+      },
+      {
+        "name": "state",
+        "value": "220ms ease-out",
+        "purpose": "Turning page: a tab opens from the side of the tab chosen (16px and a fade); the first tab shown settles with a fade and a 6px rise."
+      },
+      {
+        "name": "write",
+        "value": "420ms ease-pen",
+        "purpose": "Signature: a written or changed value traces itself left to right (clip-path, the Written atom); the strike over a saved value and the XP fill are drawn at the same pace."
+      },
+      {
+        "name": "dry",
+        "value": "600ms ease-out",
+        "purpose": "A validated preview fades back to ink."
+      },
+      {
+        "name": "planet-phase",
+        "value": "260ms ease-out",
+        "purpose": "The watercolour phase glides to its new value."
+      },
+      {
+        "name": "ink-dot",
+        "value": "280ms ease-out",
+        "purpose": "A gained Existence point lands like an ink drop, growing from its centre."
+      },
+      {
+        "name": "blow",
+        "value": "560ms ease-out; at 0 a second ripple, 760ms after 140ms",
+        "purpose": "A point lost on an Existence sends one ink ripple out of its planet, in its watercolour. Under reduced motion it lights up and goes out in place."
+      },
+      {
+        "name": "stamp",
+        "value": "300ms ease-out",
+        "purpose": "\"Validée\" comes down slightly large and tilted, then settles: at validation and each validated purchase."
+      },
+      {
+        "name": "billet",
+        "value": "enter 280ms ease-out, exit 160ms",
+        "purpose": "A toast is pushed onto the sheet, tilted −1.5°, then straightens."
+      },
+      {
+        "name": "pose",
+        "value": "enter 260ms ease-out, exit 160ms",
+        "purpose": "A dialog is laid on the sheet, dropping 10px with a 0.6° tilt that straightens."
+      },
+      {
+        "name": "points-bar",
+        "value": "enter 280ms ease-out, exit 160ms",
+        "purpose": "Slides up from the bottom, keeping its last content while it leaves; the phone's Existences band slides down the same way. Fades under reduced motion."
+      },
+      {
+        "name": "theme-crossfade",
+        "value": "450ms ease-out",
+        "purpose": "Jour ↔ bougie crossfades the whole page (View Transitions)."
+      },
+      {
+        "name": "candle",
+        "value": "700ms ease-out fade-in, then still",
+        "purpose": "The night glow lights once and holds still: nothing loops on a sheet at rest."
+      },
+      {
+        "name": "wash-bloom",
+        "value": "700ms ease-out; tint change 500ms; second frame 600ms",
+        "purpose": "The plate's wash blooms in on arrival (the only movement on load); crossing Devenir 100 detaches the second frame (outline offset 0 → 4px)."
+      },
+      {
+        "name": "chevron",
+        "value": "160ms ease-out",
+        "purpose": "Section collapse chevron rotation."
+      },
+      {
+        "name": "collapse",
+        "value": "180ms",
+        "purpose": "Section content collapse; the state is saved on the account."
+      },
+      {
+        "name": "point-repeat",
+        "value": "400ms first repeat, ×0.75 per step, 40ms floor",
+        "purpose": "Held − or + on a characteristic stepper; Shift+click steps 5."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "existences-row",
+        "value": "520px",
+        "purpose": "All four planets on one row; below it Maï drops under a rule, \"seuil N\" takes its own line, and on touch screens characteristic groups go one per row."
+      },
+      {
+        "name": "phone",
+        "value": "600px (or 500px tall)",
+        "purpose": "Below it: the sheet fills the screen, the Existences box scrolls and a 44px band takes over, tables become blocks, tabs scroll without arrows."
+      },
+      {
+        "name": "groups-three",
+        "value": "640px",
+        "purpose": "Three characteristic groups and faculty columns side by side; two below."
+      },
+      {
+        "name": "plate-one-line",
+        "value": "760px",
+        "purpose": "Portrait, name and facts on one line; below it Âge, Aspect and Devenir go under the name."
+      },
+      {
+        "name": "md",
+        "value": "900px",
+        "purpose": "Planets 64px, labels beside them; Combat in a 210px column beside Caractères and Facultés; smaller page gutter."
+      },
+      {
+        "name": "lg",
+        "value": "1200px",
+        "purpose": "Planet steppers inline after the value; skills on three columns; doodle in the plate."
+      },
+      {
+        "name": "three-columns",
+        "value": "1440px",
+        "purpose": "Caractères, Facultés and Combat on one screen (1.2fr / 1fr / 210px)."
+      },
+      {
+        "name": "wide",
+        "value": "1800px",
+        "purpose": "The sheet widens from 1400px to 1680px so the inventory tables fit."
+      },
+      {
+        "name": "touch",
+        "value": "(pointer: coarse)",
+        "purpose": "Whatever the width: 44px targets for steppers and buttons, an invisible 44px touch area on editable values, tooltips open on a tap."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Blue-ink contained button, typewriter bold, sentence case, near-square; presses like a stamp.",
+      "html": "<button class=\"ds-btn-primary\">Valider</button>",
+      "css": ".ds-btn-primary { background: #23336b; color: #f6efdc; font: 700 0.875rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.02em; padding: 6px 16px; border: 0; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out, transform 80ms ease-out; } .ds-btn-primary:hover { background: #1a2654; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Blue-ink text button; sanguine only for rare secondary actions (Accorder un reset).",
+      "html": "<button class=\"ds-btn-text\">Annuler</button> <button class=\"ds-btn-text ds-sanguine\">Accorder un reset</button>",
+      "css": ".ds-btn-text { background: transparent; color: #23336b; font: 700 0.875rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.02em; padding: 6px 8px; border: 0; border-radius: 2px; cursor: pointer; transition: background-color 120ms ease-out, transform 80ms ease-out; } .ds-btn-text:hover { background: rgba(59, 51, 40, 0.06); } .ds-btn-text:active { transform: translateY(1px); } .ds-btn-text:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; } .ds-sanguine { color: #9a4a2a; }"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Typewriter tabs, 44px, with a 2px blue-ink indicator over a 1px printed rule; on phone they scroll without arrows.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab on\" role=\"tab\" aria-selected=\"true\">Caractéristiques</button><button class=\"ds-tab\" role=\"tab\">Traits</button><button class=\"ds-tab\" role=\"tab\">Inventaire</button></div>",
+      "css": ".ds-tabs { display: flex; border-bottom: 1px solid #3b3328; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-tab { min-height: 44px; padding: 0 14px; border: 0; background: none; font-family: 'Courier Prime', 'Courier New', monospace; font-weight: 700; font-size: 0.875rem; color: #665c4b; border-bottom: 2px solid transparent; cursor: pointer; } .ds-tab:hover { color: #3b3328; } .ds-tab.on { color: #23336b; border-bottom-color: #23336b; } .ds-tab:focus-visible { outline: 2px solid #23336b; outline-offset: -2px; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Outlined chip, 2px corners, typewriter bold; status colour only from the état inks (à valider, en création, écart).",
+      "html": "<span class=\"ds-chip ds-warn\">à valider</span> <span class=\"ds-chip ds-err\">écart</span> <span class=\"ds-chip\">Base</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border: 1px solid rgba(59, 51, 40, 0.24); border-radius: 2px; font: 700 0.8125rem 'Courier Prime', 'Courier New', monospace; color: #3b3328; background: transparent; } .ds-warn { color: #924716; border-color: #924716; } .ds-err { color: #a63a2a; border-color: #a63a2a; }"
+    },
+    {
+      "name": "Sheet Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A sheet in a list: raised paper, 1px printing-ink border, 2px corners; square portrait frame, the name handwritten, the player typed. The add card is dashed.",
+      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-portrait\"><svg width=\"44\" height=\"44\" viewBox=\"0 0 44 44\" aria-hidden=\"true\"><circle cx=\"22\" cy=\"22\" r=\"17\" fill=\"#5d6b85\" fill-opacity=\"0.3\" stroke=\"#3b3328\" stroke-width=\"1\"/><text x=\"22\" y=\"29\" text-anchor=\"middle\" font-family=\"Caveat, cursive\" font-weight=\"700\" font-size=\"22\" fill=\"#23336b\">L</text></svg></span><span><span class=\"ds-card-name\">Lyse</span><span class=\"ds-card-sub\">Joueuse de test</span></span></a> <a class=\"ds-card ds-card-add\" href=\"#\"><span class=\"ds-card-plus\">+</span><span class=\"ds-card-sub\">Nouvelle fiche</span></a>",
+      "css": ".ds-card { display: inline-flex; align-items: center; gap: 12px; width: 250px; padding: 12px; background: #f6efdc; border: 1px solid #3b3328; border-radius: 2px; color: #3b3328; text-decoration: none; vertical-align: top; transition: background-color 120ms ease-out; } .ds-card:hover { background: #efe6cf; } .ds-card:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; } .ds-portrait { display: grid; place-items: center; width: 56px; height: 64px; flex-shrink: 0; border: 1.5px solid #3b3328; } .ds-card-name { display: block; font: 600 1.625rem/1.05 'Caveat', 'Segoe Print', cursive; color: #23336b; } .ds-card-sub { display: block; font: 400 0.875rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; } .ds-card-add { border-style: dashed; background: transparent; } .ds-card-plus { display: grid; place-items: center; width: 56px; height: 64px; font: 700 1.5rem 'Courier Prime', 'Courier New', monospace; color: #23336b; }"
+    },
+    {
+      "name": "Handwritten Field",
+      "kind": "input",
+      "refersTo": "handwritten-value",
+      "description": "A printed label over a value written in blue ink on a field line; on hover or focus a dashed underline and a small pencil appear. Enter opens a field in the same hand, Escape cancels, blur commits.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-lbl\">ASPECT</span><span class=\"ds-val\" tabindex=\"0\" role=\"button\">Inspirée : la Lune<svg class=\"ds-pencil\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z\"/></svg></span></label>",
+      "css": ".ds-field { display: inline-grid; padding: 12px 16px; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-lbl { font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.14em; color: #665c4b; } .ds-val { display: inline-flex; align-items: center; gap: 6px; font: 600 1.375rem/1.05 'Caveat', 'Segoe Print', cursive; color: #23336b; border-bottom: 1px solid #3b3328; padding-bottom: 2px; cursor: pointer; } .ds-pencil { opacity: 0; transition: opacity 120ms ease-out; } .ds-val:hover, .ds-val:focus-visible { border-bottom-style: dashed; } .ds-val:hover .ds-pencil, .ds-val:focus-visible .ds-pencil { opacity: 1; } .ds-val:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Section and Stat Rows",
+      "kind": "custom",
+      "refersTo": "stat-row",
+      "description": "Stamped section heading with an armillary sphere and a running rule; rows with typed 12px labels, handwritten or typed values, and the Aperçu rule on a pending value.",
+      "html": "<section class=\"ds-sec\"><h2 class=\"ds-sec-h\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><ellipse cx=\"10\" cy=\"10\" rx=\"8\" ry=\"3\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.8\"/><ellipse cx=\"10\" cy=\"10\" rx=\"3\" ry=\"8\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.8\"/><circle cx=\"10\" cy=\"10\" r=\"1.4\" fill=\"#3b3328\"/></svg><span>CARACTÈRES</span></h2><div class=\"ds-gh\"><span>LE CORPS</span><b>18</b></div><div class=\"ds-row\"><span class=\"ds-k\">Force</span><span class=\"ds-was\">20</span><span class=\"ds-hand ds-up\">22</span></div><div class=\"ds-row\"><span class=\"ds-k\">Agilité</span><span class=\"ds-hand\">25</span></div><div class=\"ds-row\"><span class=\"ds-k\">Coup Brutal</span><span class=\"ds-typed\">44</span></div></section>",
+      "css": ".ds-sec { width: 260px; padding: 12px 16px; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-sec-h { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font: 400 0.9375rem 'Special Elite', 'Courier Prime', monospace; letter-spacing: 0.22em; } .ds-sec-h::after { content: ''; flex: 1; height: 1px; background: #3b3328; } .ds-gh { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.5px solid #3b3328; font: 700 0.9375rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.04em; } .ds-gh b { font-size: 1.375rem; font-variant-numeric: lining-nums tabular-nums; } .ds-row { display: flex; align-items: baseline; gap: 6px; padding: 4px 0; border-bottom: 1px solid rgba(59, 51, 40, 0.24); } .ds-k { margin-right: auto; font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; } .ds-hand { font: 700 1.625rem/0.9 'Caveat', 'Segoe Print', cursive; color: #23336b; } .ds-was { font: 600 1.375rem/0.9 'Caveat', 'Segoe Print', cursive; color: #23336b; opacity: 0.45; background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1.5px; } .ds-up { color: #2f6640; } .ds-typed { font: 700 0.9375rem/1.2 'Courier Prime', 'Courier New', monospace; font-variant-numeric: lining-nums tabular-nums; }"
+    },
+    {
+      "name": "Planet",
+      "kind": "custom",
+      "refersTo": "planet",
+      "description": "An Existence as an atlas planet: dashed printed orbit tilted −16°, watercolour phase, one pen dot per point on a 270° arc (a continuous stroke above 24); current value handwritten, max and threshold typed. 64px from 900px, 40px on phone.",
+      "html": "<div class=\"ds-planet\"><svg width=\"64\" height=\"64\" viewBox=\"-4 -4 72 72\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"32\" rx=\"31\" ry=\"10.5\" transform=\"rotate(-16 32 32)\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"0.6\" stroke-dasharray=\"1.5 3\" opacity=\"0.6\"/><circle cx=\"32\" cy=\"32\" r=\"18\" fill=\"#3d6a99\" fill-opacity=\"0.14\"/><path d=\"M 32 17 A 15 15 0 0 1 32 47 A 7.50 15 0 0 1 32 17 Z\" fill=\"#3d6a99\" fill-opacity=\"0.62\"/><circle cx=\"32\" cy=\"32\" r=\"15\" fill=\"none\" stroke=\"#3b3328\" stroke-width=\"1.1\"/><circle cx=\"6.5\" cy=\"37.1\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"6.5\" cy=\"37.1\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"17.6\" cy=\"10.4\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"17.6\" cy=\"10.4\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"46.4\" cy=\"10.4\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/><circle cx=\"46.4\" cy=\"10.4\" r=\"2.2\" fill=\"#23336b\"/><circle cx=\"57.5\" cy=\"37.1\" r=\"3.3\" fill=\"#efe6cf\" stroke=\"#3b3328\" stroke-width=\"0.9\"/></svg><div><span class=\"ds-lbl\">L'ÉQUILIBRE</span><div><span class=\"ds-cur\">3</span><span class=\"ds-mx\"> / 4</span></div><span class=\"ds-th\">seuil 8</span></div></div>",
+      "css": ".ds-planet { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border: 1.5px solid #3b3328; background-color: #efe6cf; background-image: repeating-linear-gradient(to bottom, transparent 0 29px, rgba(62, 79, 140, 0.12) 29px 30px); color: #3b3328; } .ds-lbl { font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; letter-spacing: 0.14em; color: #665c4b; } .ds-cur { font: 700 2.375rem/0.95 'Caveat', 'Segoe Print', cursive; color: #23336b; } .ds-mx { font: 400 0.875rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; } .ds-th { display: block; font: 400 0.75rem 'Courier Prime', 'Courier New', monospace; color: #665c4b; }"
+    },
+    {
+      "name": "Stepper",
+      "kind": "custom",
+      "refersTo": "stepper-cell-sm",
+      "description": "Joined −|+ in a printed frame (1px rule, 2px corners), in two sizes: md 34×32 on planets, sm 24×24 on characteristic rows, 44×44 on touch screens. Pale ink at rest, blue ink over a 10% wash on hover or focus; the focus ring stays inside the frame.",
+      "html": "<span class=\"ds-step\"><button aria-label=\"Retirer un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><button aria-label=\"Ajouter un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span> <span class=\"ds-step ds-step-md\"><button aria-label=\"Retirer un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13H5v-2h14z\"/></svg></button><button aria-label=\"Ajouter un point\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z\"/></svg></button></span>",
+      "css": ".ds-step { display: inline-flex; vertical-align: middle; border: 1px solid rgba(59, 51, 40, 0.24); border-radius: 2px; overflow: hidden; background: #efe6cf; } .ds-step button { width: 24px; height: 24px; padding: 0; border: 0; background: none; color: #665c4b; display: grid; place-items: center; cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out, transform 80ms ease-out; } .ds-step-md button { width: 34px; height: 32px; } .ds-step button + button { border-left: 1px solid rgba(59, 51, 40, 0.24); } .ds-step button:hover, .ds-step button:focus-visible { color: #23336b; background: rgba(35, 51, 107, 0.1); } .ds-step button:active { transform: translateY(1px); } .ds-step button:focus-visible { outline: 2px solid #23336b; outline-offset: -2px; } @media (pointer: coarse) { .ds-step button { width: 44px; height: 44px; } }"
+    },
+    {
+      "name": "Points Bar",
+      "kind": "custom",
+      "refersTo": "points-bar",
+      "description": "Sticky raised-paper strip while points are pending, with a 1px succès border (erreur when XP is missing): changes in bold type, cost below, Annuler and Valider on the right. No shadow.",
+      "html": "<div class=\"ds-pb\" role=\"region\" aria-label=\"Points en attente\"><div><div class=\"ds-pb-l\">Force +2 · Agilité +1</div><div class=\"ds-pb-d\">Coût : 4 XP</div></div><div class=\"ds-pb-a\"><button class=\"ds-pb-c\">Annuler</button><button class=\"ds-pb-v\">Valider</button></div></div>",
+      "css": ".ds-pb { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; width: 520px; background: #f6efdc; border: 1px solid #2f6640; border-radius: 2px; color: #3b3328; font-family: 'Courier Prime', 'Courier New', monospace; } .ds-pb-l { font-weight: 700; } .ds-pb-d { font-size: 0.875rem; color: #665c4b; } .ds-pb-a { display: flex; gap: 8px; margin-left: auto; } .ds-pb-c, .ds-pb-v { font: 700 0.875rem 'Courier Prime', 'Courier New', monospace; border: 0; border-radius: 2px; padding: 6px 16px; cursor: pointer; } .ds-pb-c { background: none; color: #23336b; padding: 6px 8px; } .ds-pb-v { background: #23336b; color: #f6efdc; } .ds-pb-c:focus-visible, .ds-pb-v:focus-visible { outline: 2px solid #23336b; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Fiche Immersive",
+    "overview": "The world is **Le carnet d'Oniria**. Every page is a character sheet printed on cream paper and filled in by hand, the way a sheet lives on the table across many evenings. A double printed frame runs around the page, and a title band carries a frieze of moon phases between two fleurons. The paper has its own grain, faint blue guide lines and a red margin. Over it sit pale atlas geometries (planets on their orbit, armillary spheres, constellations), soft watercolour washes and a few pen doodles. Oniria is a multiverse of moons (medieval, alien, steampunk worlds…), so the sheet belongs to no single genre: it speaks of moons, travel between worlds, and a story written game after game.\n\nThe system rests on one rule of writing. What the player writes is handwritten in blue ink (Caveat): the name, age, Aspect, Devenir, current Existences, characteristics, traits, items, notes. What the rules print or compute is typed (Courier Prime), with page and section titles stamped (Special Elite): labels, totals, maximums, thresholds, Facultés, combat values. Reading the sheet tells you at a glance what is yours and what the game derives.\n\nThere are two lights for the same paper. **Jour** is a sheet on a pale table. **Nuit** is the same sheet lit by a candle: warmer, muted paper, an amber glow from the top left, and brown shadow at the edges only, so the reading area keeps its contrast. Density is a per-account preference (Confort / Compact), and the layout keeps everything used in play visible without scrolling at 1440px and wider.\n\nMotion has one signature: **writing**. A value the player writes, or that changes (a saved field, a −/+ on an Existence, a point added), traces itself left to right like a pen stroke (420ms, steady `cubic-bezier(0.45, 0.05, 0.35, 1)`). A validated preview dries: its colour fades back to ink over 600ms. Everything else is quiet continuity or feedback, played once, never on load:\n- **Turning page:** a tab opens like a page of the notebook, sliding in from the side of the tab chosen (16px and a fade, 220ms); the first tab shown settles with a short fade and rise.\n- **The blow:** a point lost on an Existence sends one ink ripple out of its planet, in the Existence's watercolour (560ms); at 0 a second, slower ripple follows. It only answers a loss, never the threshold, whose role the rules in this repository do not state.\n- **The stamp:** \"Validée\" comes down like a rubber stamp, slightly large and tilted, then settles (300ms), when the sheet is validated and at each validated purchase.\n- **Ink filling:** XP received fills the remaining part of its bar from left to right at the pen's pace (420ms).\n- **Slips and cards:**\n  - a toast arrives as a slip of paper pushed onto the sheet, tilted −1.5°, then straightens (280ms, leaves in 160ms);\n  - a dialog is laid on the sheet, dropping 10px with a 0.6° tilt that straightens (260ms, leaves in 160ms).\n- **Bars and light:**\n  - the points bar slides up from the bottom (280ms) and leaves faster (160ms); the phone's Existences band slides down the same way;\n  - the candle lights in 700ms, then holds still: a flame that flickers in a loop would recomposite the whole page on every frame for as long as the sheet stays open beside Discord;\n  - Jour ↔ bougie crossfades the whole page (View Transitions, 450ms);\n  - buttons press like a stamp (1px down), with no Material ripple.\n\nNothing moves on load except the plate's wash, which blooms in, and nothing loops on a sheet at rest: once a movement has played, the page stays still until something changes. Under `prefers-reduced-motion`, tracing, sliding, rising and tilting stop; fades and colour changes that carry state remain:\n- pages, slips, dialogs, the stamp and the XP fill fade;\n- the blow's ripple lights up and goes out in place, without growing.\n\nThe system rejects the clean \"tool\" look (identical boxed cards, a sterile interface type, stock Material colours) and anything that tires the eyes over a long evening.",
+    "keyCharacteristics": [
+      "A printed sheet on paper: double frame, title band with moon phases, grain, guide lines and margin.",
+      "Handwritten blue ink for everything the player writes; typewriter for everything the rules print.",
+      "Existences as small atlas planets: printed orbit, watercolour phase, one pen-filled dot per point.",
+      "A personal moon tint per character, laid as a watercolour wash whose strength follows Devenir.",
+      "Two lights (Jour, bougie) on the same light paper, and two densities, chosen by the player.",
+      "One motion signature: values write themselves like a pen stroke, and previews dry into ink."
+    ],
+    "rules": [
+      {
+        "name": "The Plume Rule",
+        "body": "What the player writes is handwritten in blue ink; what the rules print or compute is typed in printing ink. A value never changes script when it changes state: an editable value is handwritten when read and when typed into.",
+        "section": "colors"
+      },
+      {
+        "name": "The Encre Bleue Rule",
+        "body": "Blue ink means \"written by the player\" or \"you can act here\". No other hue marks interaction, and nothing decorative is blue except pen doodles.",
+        "section": "colors"
+      },
+      {
+        "name": "The Couleur du Jeu Rule",
+        "body": "Existence colours appear only in the planets' watercolour, and moon tints only in a character's own identity (the plate wash, the portrait planet, the tint button). Neither becomes a UI accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lune Personnelle Rule",
+        "body": "The plate's tint wash runs from 14% to 34% opacity as Devenir goes from 0 to 100. Above 100 (transcendance), the portrait gets a second frame in the tint, 4px outside the first. A missing Devenir sits at mid strength.",
+        "section": "colors"
+      },
+      {
+        "name": "The Aperçu Rule",
+        "body": "A value changed by pending points is a preview, not a fact: it turns semibold in succès (rising) or avertissement (falling), its saved value stays struck through before it, and \"Avant : N\" waits in a tooltip. Nothing returns to ink until the points are validated or cancelled.",
+        "section": "colors"
+      },
+      {
+        "name": "The Machine à écrire Rule",
+        "body": "Printed text is typewriter, never a system sans. Titles are stamped, never set in a display serif.",
+        "section": "typography"
+      },
+      {
+        "name": "The Pas d'italique Rule",
+        "body": "Hierarchy comes from the three scripts, size and weight. Typed text has no italics; the hand carries its own slant. Courier Prime is served in roman only (400, 700), so no italic file is ever preloaded.",
+        "section": "typography"
+      },
+      {
+        "name": "The Papier Rule",
+        "body": "Nothing inside the sheet floats on a shadow. To lift something, lay raised paper on the sheet and give it a printed border.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Bougie Rule",
+        "body": "At night the candle is an overlay above the page and below modals (z-index 1250, no pointer events): an amber glow in soft-light at the top left, and a brown shadow that starts at 55% of the radius and stays under 12% opacity until 80%. Every ink keeps at least 4.5:1 where text sits. Under `prefers-contrast: more`, the candle is removed.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** write every value the player sets in Caveat, in blue ink, on a printed field line or row; type every computed value in Courier Prime.",
+      "**Do** stamp page and section titles in Special Elite, uppercase, with an armillary sphere and a running printed rule for sections.",
+      "**Do** frame printed areas (plate, Existences, portrait) as square boxes in printing ink; lay cards, menus and dialogs on the sheet as raised paper with a 1px border.",
+      "**Do** read colours through the theme's CSS variables (`var(--mui-palette-…)`, `theme.vars`, `color-mix()` for alpha); both themes are light paper, and the candle has its own inks.",
+      "**Do** keep every text ink at 4.5:1 or more on its paper, including near the candle's shadowed edges.",
+      "**Do** keep everything used in play visible without scrolling from 1440px; below that, keep Combat beside Caractères and Facultés.",
+      "**Do** keep doodles and constellations in blank areas, pale and `aria-hidden`, and never under a value.",
+      "**Do** show pending points as a preview across the whole sheet: semibold succès or avertissement, the saved value struck before, \"Avant : N\" in a tooltip.",
+      "**Do** keep loaded data on screen while it is re-read; show a spinner only when nothing has loaded yet, and when that first read fails, say so with \"Réessayer\" (`LoadError`).",
+      "**Do** keep a button blocked while its action is in flight, so a double click never sends twice.",
+      "**Do** honour both densities and both lights for every new surface.",
+      "**Do** animate a written value with the shared `.oniria-write` stroke (the `Written` atom), keep feedback under 300ms, and give every animation a reduced-motion path that keeps fades and colour changes."
+    ],
+    "donts": [
+      "**Don't** use a system sans or a display serif: printed text is a typewriter, titles are a stamp, and the player's words are a hand.",
+      "**Don't** handwrite something the rules compute, or type something the player wrote.",
+      "**Don't** use blue ink for decoration, or any other hue for interaction.",
+      "**Don't** use Existence colours or moon tints outside the planets and the character's identity.",
+      "**Don't** add shadows inside the sheet; lift things with raised paper and a printed border.",
+      "**Don't** reintroduce a dark ground for the night: the candle warms and dims the same paper.",
+      "**Don't** add another −/+ style; steppers share one printed frame in two sizes.",
+      "**Don't** bind the sheet to one genre (parchment, chrome, neon): Oniria's moons are many worlds.",
+      "**Don't** add load choreography, scroll reveals, staggers or Material ripples; the sheet moves only when something is written, changes state or needs continuity."
+    ]
+  }
+}

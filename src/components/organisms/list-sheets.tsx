@@ -1,37 +1,50 @@
 'use client';
 
 import { useSheets } from '@/lib/hooks/use-sheet';
-import {
-  CircularProgress,
-  Container,
-  Divider,
-  Typography,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
+import CardRow from '../atoms/card-row';
+import LoadError from '../atoms/load-error';
+import SectionHeading from '../atoms/section-heading';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';
 
 const ListSheets = () => {
-  const { sheets, isLoading } = useSheets();
+  const { sheets, error, isLoading, retry } = useSheets();
 
-  if (isLoading) return <CircularProgress />;
+  // Sans liste (lecture en échec), l'accueil le dit au lieu de tomber.
+  if (!sheets) {
+    return isLoading || !error ? (
+      <CircularProgress />
+    ) : (
+      <LoadError
+        what="Les fiches n'ont pas pu être lues."
+        error={error}
+        onRetry={retry}
+      />
+    );
+  }
 
   return (
     <Container>
-      <Typography variant="h4">Mes fiches</Typography>
-      <Grid container spacing={2} columns={12} gap={4}>
-        {[...sheets.own].map((sheet, index) => (
-          <SheetCard key={index} sheet={sheet} userVisible={false} />
+      <SectionHeading sx={{ mb: 2 }}>Mes fiches</SectionHeading>
+      <CardRow>
+        {sheets.own.map((sheet) => (
+          <SheetCard key={sheet.id} sheet={sheet} userVisible={false} />
         ))}
         <AddSheetCard />
-      </Grid>
-      <Divider sx={{ my: 2 }} variant="middle" />
-      <Typography variant="h4">Autres fiches</Typography>
-      <Grid container spacing={2} columns={12} gap={4}>
-        {[...sheets.others].map((sheet, index) => (
-          <SheetCard key={index} sheet={sheet} userVisible={true} />
+      </CardRow>
+      <Box sx={{ height: 32 }} />
+      <SectionHeading sx={{ mb: 2 }}>Autres fiches</SectionHeading>
+      <CardRow>
+        {sheets.others.map((sheet) => (
+          <SheetCard key={sheet.id} sheet={sheet} userVisible={true} />
         ))}
-      </Grid>
+        {sheets.others.length === 0 && (
+          <Typography color="textSecondary">
+            Aucune autre fiche pour l&apos;instant.
+          </Typography>
+        )}
+      </CardRow>
     </Container>
   );
 };

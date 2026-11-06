@@ -1,26 +1,26 @@
 import prisma from '@/lib/db/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import { handle, readJson, requireAdmin } from '@/lib/server/api';
+import { explainDuplicate, normalizeEmail } from '@/lib/server/whitelist';
+import { NextRequest } from 'next/server';
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  await prisma.whitelist.delete({
-    where: { id: params.id },
+type Params = { params: Promise<{ id: string }> };
+
+/** Corrige une adresse (mêmes règles qu'à l'ajout ; 409 si elle existe déjà). */
+export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
+  handle(async () => {
+    const params = await paramsPromise;
+    await requireAdmin();
+    const { email } = await readJson(req);
+    const data = { email: normalizeEmail(email) };
+    return explainDuplicate(() =>
+      prisma.whitelist.update({ where: { id: params.id }, data }),
+    );
   });
 
-  return NextResponse.json(null, { status: 200 });
-}
-
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const data = await req.json();
-
-  await prisma.whitelist.update({
-    where: { id: params.id },
-    data,
+export const DELETE = (req: NextRequest, { params: paramsPromise }: Params) =>
+  handle(async () => {
+    const params = await paramsPromise;
+    await requireAdmin();
+    await prisma.whitelist.delete({ where: { id: params.id } });
+    return null;
   });
-  return NextResponse.json(null, { status: 200 });
-}

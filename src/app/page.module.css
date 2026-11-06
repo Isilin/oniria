@@ -1,46 +1,121 @@
+/*
+ * La table et la feuille. Couleurs : variables du thème MUI
+ * (src/theme/theme.ts), pour suivre le Jour et la nuit à la bougie.
+ */
+
 .page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: start;
-  justify-items: center;
   min-height: 100svh;
-  padding: 10px 40px 40px 40px;
-  font-family: var(--font-geist-sans);
+  padding: 24px 24px 40px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+.leaf {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 1400px;
+  min-height: calc(100svh - 64px);
+  margin: 0 auto;
+  padding: 0 40px 28px 68px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 24px;
+  background-color: var(--mui-palette-background-paper);
+  background-image:
+    /* marge rouge du carnet */
+    linear-gradient(
+      to right,
+      transparent 46px,
+      var(--mui-palette-margin) 46px 47px,
+      transparent 47px
+    ),
+    /* lignes-guides */
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0 29px,
+        var(--mui-palette-guide) 29px 30px
+      ),
+    /* grain du papier */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    /* fibres */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.006 0.09' numOctaves='2' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+  background-position:
+    0 0,
+    0 16px,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, repeat, repeat, repeat;
+  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.4);
+}
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
+/* Dès 900 px : la feuille prend la place, pour les colonnes tapées. */
+@media (min-width: 900px) {
+  .page {
+    padding: 16px 16px 32px;
   }
+  .leaf {
+    min-height: calc(100svh - 48px);
+    padding: 0 32px 28px 60px;
+    background-position:
+      -6px 0,
+      0 16px,
+      0 0,
+      0 0;
+  }
+}
+
+/* Grand écran : la feuille s'élargit, pour que les tableaux de l'inventaire
+   (quinze colonnes pour une arme de tir) tiennent sans défiler. */
+@media (min-width: 1800px) {
+  .leaf {
+    max-width: 1680px;
+  }
+}
+
+/* Le cadre imprimé : un trait fort, un trait fin à l'intérieur. */
+.leaf::before,
+.leaf::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+.leaf::before {
+  inset: 10px;
+  border: 2px solid var(--mui-palette-text-primary);
+}
+.leaf::after {
+  inset: 16px;
+  border: 1px solid var(--mui-palette-text-primary);
 }
 
 .main {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 80%;
+  width: 100%;
+  min-width: 0;
   align-items: center;
 }
 
 @media (max-width: 600px) {
   .page {
-    padding: 24px;
-    padding-bottom: 80px;
+    padding: 0;
   }
-
-  .main {
-    align-items: center;
+  .leaf {
+    min-height: 100svh;
+    padding: 0 16px 28px;
+    gap: 16px;
+    box-shadow: none;
+    background-position:
+      -100px 0,
+      0 16px,
+      0 0,
+      0 0;
+  }
+  .leaf::before {
+    inset: 5px;
+  }
+  .leaf::after {
+    inset: 9px;
   }
 }
