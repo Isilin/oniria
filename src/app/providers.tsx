@@ -3,7 +3,7 @@
 import { XpDialogProvider } from '@/components/organisms/xp-dialogs';
 import { usePreferences } from '@/lib/hooks/use-preferences';
 import type { Density } from '@/lib/preferences';
-import { createOniriaTheme } from '@/theme/theme';
+import { createOniriaTheme, MOTION } from '@/theme/theme';
 import DeleteIcon from '@mui/icons-material/Close';
 import { Fade, IconButton } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
@@ -66,7 +66,7 @@ export default function Providers({
             // Le billet glisse de lui-même (thème, oniria-billet) : la boîte
             // ne fait que paraître et s'en va vite.
             TransitionComponent={Fade}
-            transitionDuration={{ enter: 280, exit: 160 }}
+            transitionDuration={{ enter: MOTION.arrive, exit: MOTION.leave }}
             action={(id) => (
               <IconButton
                 aria-label="Fermer"

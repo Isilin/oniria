@@ -4,9 +4,8 @@ import { usePreferences } from '@/lib/hooks/use-preferences';
 import type { SectionKey } from '@/lib/preferences';
 import ExpandIcon from '@mui/icons-material/ExpandMore';
 import { Box, Collapse, IconButton } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import { PropsWithChildren, ReactNode, useId } from 'react';
-import { Armillary } from '../atoms/ornaments';
+import SectionHeading from '../atoms/section-heading';
 
 interface Props {
   title: ReactNode;
@@ -42,25 +41,7 @@ const SectionCard = ({
           minHeight: 32,
         }}
       >
-        <Typography
-          variant="h4"
-          component="h2"
-          sx={{
-            flexGrow: 1,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
-            '&::after': {
-              content: '""',
-              flex: 1,
-              height: '1px',
-              bgcolor: 'text.primary',
-            },
-          }}
-        >
-          <Armillary />
-          {title}
-        </Typography>
+        <SectionHeading sx={{ flexGrow: 1 }}>{title}</SectionHeading>
         {adornment}
         {section && (
           <IconButton

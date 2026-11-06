@@ -3,6 +3,7 @@
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
 import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
+import { MEDIA, RULES } from '@/theme/theme';
 import { Box, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PreviewValue from '../atoms/preview-value';
@@ -36,10 +37,10 @@ const CharactersCard = ({ id }: { id: string }) => {
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
           // Au doigt sur téléphone, les −|+ grandissent : un groupe par ligne
           // pour que libellé, valeur et −|+ tiennent côte à côte.
-          '@media (pointer: coarse) and (max-width: 519.95px)': {
+          [MEDIA.touchNarrow]: {
             gridTemplateColumns: 'minmax(0, 1fr)',
           },
-          '@media (min-width: 640px)': {
+          [MEDIA.threeGroups]: {
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           },
           columnGap: 1.5,
@@ -58,8 +59,7 @@ const CharactersCard = ({ id }: { id: string }) => {
                   gap: 0.5,
                   pb: 0.75,
                   mb: 0.25,
-                  borderBottom: '1.5px solid',
-                  borderColor: 'text.primary',
+                  borderBottom: RULES.group,
                 }}
               >
                 <Typography variant="h5" component="h3">

@@ -5,7 +5,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import { litPath } from '../atoms/ornaments';
-import { EASE } from '@/theme/theme';
+import { EASE, MEDIA, MOTION } from '@/theme/theme';
 import PreviewValue from '../atoms/preview-value';
 import Written from '../atoms/written';
 import StepperFrame, {
@@ -146,12 +146,12 @@ const MoonGauge = ({
             ? {
                 gridArea: 'seuil',
                 display: 'block',
-                '@media (min-width: 520px)': { display: 'none' },
+                [MEDIA.planetsRow]: { display: 'none' },
               }
             : {
                 ml: 0.5,
                 display: 'none',
-                '@media (min-width: 520px)': { display: 'inline' },
+                [MEDIA.planetsRow]: { display: 'inline' },
               }),
         }}
       >
@@ -179,7 +179,7 @@ const MoonGauge = ({
         // Taille des libellés partout ; sur téléphone (trois planètes par
         // ligne), l'espacement se resserre pour que « L'Équilibre » tienne.
         letterSpacing: '0.06em',
-        '@media (min-width: 520px)': {
+        [MEDIA.planetsRow]: {
           letterSpacing: '0.14em',
           // Masqué mais présent : la valeur reste sur la ligne des autres.
           ...(labelHiddenWide && { visibility: 'hidden' }),
@@ -227,7 +227,7 @@ const MoonGauge = ({
           gridTemplateColumns: inline
             ? 'auto minmax(0, max-content) auto'
             : 'auto minmax(0, 1fr)',
-          '@media (min-width: 520px)': {
+          [MEDIA.planetsRow]: {
             gridTemplateAreas: '"label label" "disc text" "step step"',
             gridTemplateColumns: 'auto minmax(0, 1fr)',
           },
@@ -263,7 +263,7 @@ const MoonGauge = ({
           '& .moon-dot': {
             transformBox: 'fill-box',
             transformOrigin: 'center',
-            transition: `opacity 160ms ease-out, transform 280ms ${EASE}`,
+            transition: `opacity 160ms ease-out, transform ${MOTION.arrive}ms ${EASE}`,
           },
           '& .moon-dot.off': { transform: 'scale(0.2)' },
           '& .moon-ripple': {

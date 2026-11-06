@@ -3,6 +3,7 @@
 import useAnchor from '@/lib/hooks/use-anchor';
 import { PointsDraftProvider } from '@/lib/hooks/use-points-draft';
 import { useSheet } from '@/lib/hooks/use-sheet';
+import { MEDIA, RULES } from '@/theme/theme';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tab from '@mui/material/Tab';
@@ -120,8 +121,8 @@ const SheetContent = ({ id }: { id: string }) => {
               xs: '"car" "fac" "com" "xp"',
               md: '"car com" "fac com" "xp xp"',
             },
-            // Écrit en clair pour venir après les paliers de MUI.
-            '@media (min-width: 1440px)': {
+            // Après les paliers de MUI, pour passer devant eux.
+            [MEDIA.oneScreen]: {
               gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr) 210px',
               gridTemplateAreas: '"car fac com" "xp xp xp"',
             },
@@ -139,9 +140,9 @@ const SheetContent = ({ id }: { id: string }) => {
             sx={{
               gridArea: 'fac',
               pr: { md: 3 },
-              '@media (min-width: 1440px)': {
+              [MEDIA.oneScreen]: {
                 pl: 3,
-                borderLeft: '1px solid var(--mui-palette-text-primary)',
+                borderLeft: RULES.ink,
               },
             }}
           >
@@ -151,7 +152,7 @@ const SheetContent = ({ id }: { id: string }) => {
             sx={{
               gridArea: 'com',
               pl: { md: 3 },
-              borderLeft: { md: '1px solid var(--mui-palette-text-primary)' },
+              borderLeft: { md: RULES.ink },
             }}
           >
             <CombatCard id={id} />

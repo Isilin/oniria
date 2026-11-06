@@ -2,25 +2,11 @@
 
 import { useSheets } from '@/lib/hooks/use-sheet';
 import { Box, CircularProgress, Container, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import CardRow from '../atoms/card-row';
 import LoadError from '../atoms/load-error';
-import { Armillary } from '../atoms/ornaments';
+import SectionHeading from '../atoms/section-heading';
 import AddSheetCard from '../molecules/add-sheet-card';
 import SheetCard from '../molecules/sheet-card';
-
-/** Titre de liste, comme un titre de section de la feuille. */
-const HEADING = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 1.5,
-  mb: 2,
-  '&::after': {
-    content: '""',
-    flex: 1,
-    height: '1px',
-    bgcolor: 'text.primary',
-  },
-};
 
 const ListSheets = () => {
   const { sheets, error, isLoading, retry } = useSheets();
@@ -40,36 +26,16 @@ const ListSheets = () => {
 
   return (
     <Container>
-      <Typography variant="h4" component="h2" sx={HEADING}>
-        <Armillary />
-        Mes fiches
-      </Typography>
-      <Grid
-        container
-        spacing={2}
-        columns={12}
-        sx={{
-          gap: 4,
-        }}
-      >
+      <SectionHeading sx={{ mb: 2 }}>Mes fiches</SectionHeading>
+      <CardRow>
         {sheets.own.map((sheet) => (
           <SheetCard key={sheet.id} sheet={sheet} userVisible={false} />
         ))}
         <AddSheetCard />
-      </Grid>
+      </CardRow>
       <Box sx={{ height: 32 }} />
-      <Typography variant="h4" component="h2" sx={HEADING}>
-        <Armillary />
-        Autres fiches
-      </Typography>
-      <Grid
-        container
-        spacing={2}
-        columns={12}
-        sx={{
-          gap: 4,
-        }}
-      >
+      <SectionHeading sx={{ mb: 2 }}>Autres fiches</SectionHeading>
+      <CardRow>
         {sheets.others.map((sheet) => (
           <SheetCard key={sheet.id} sheet={sheet} userVisible={true} />
         ))}
@@ -78,7 +44,7 @@ const ListSheets = () => {
             Aucune autre fiche pour l&apos;instant.
           </Typography>
         )}
-      </Grid>
+      </CardRow>
     </Container>
   );
 };

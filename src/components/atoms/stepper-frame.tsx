@@ -1,5 +1,6 @@
 'use client';
 
+import { MEDIA, MOTION, RULES } from '@/theme/theme';
 import Box from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
 import { ReactNode } from 'react';
@@ -24,11 +25,10 @@ export const stepperIconSize = (size: StepperSize) => CELL[size].icon;
 export const stepperCell = (size: StepperSize) => ({
   width: CELL[size].width,
   height: CELL[size].height,
-  '@media (pointer: coarse)': CELL_TOUCH[size],
+  [MEDIA.touch]: CELL_TOUCH[size],
   borderRadius: 0,
   color: 'text.secondary',
-  transition:
-    'color 120ms ease-out, background-color 120ms ease-out, opacity 120ms ease-out',
+  transition: `color ${MOTION.quick}ms ease-out, background-color ${MOTION.quick}ms ease-out, opacity ${MOTION.quick}ms ease-out`,
   '&:hover, &.Mui-focusVisible': {
     color: 'primary.main',
     bgcolor:
@@ -58,10 +58,10 @@ const StepperFrame = ({
       {
         display: 'inline-flex',
         flexShrink: 0,
-        border: '1px solid var(--mui-palette-rule)',
+        border: RULES.hairline,
         borderRadius: 1,
         overflow: 'hidden',
-        '& > * + *': { borderLeft: '1px solid var(--mui-palette-rule)' },
+        '& > * + *': { borderLeft: RULES.hairline },
       },
       ...(Array.isArray(sx) ? sx : [sx]),
     ]}

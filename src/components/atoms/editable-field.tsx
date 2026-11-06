@@ -2,6 +2,7 @@
 
 import EditIcon from '@mui/icons-material/Edit';
 import { STRING_MAX, TEXT_MAX } from '@/lib/sheet/fields';
+import { MEDIA, MOTION } from '@/theme/theme';
 import { TextField, Typography, TypographyProps } from '@mui/material';
 import { KeyboardEvent, useState } from 'react';
 import Written from './written';
@@ -122,7 +123,10 @@ const EditableField = ({
           whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
           overflowWrap: 'break-word',
           maxWidth: '100%',
-          '& .edit-mark': { opacity: 0, transition: 'opacity 120ms ease-out' },
+          '& .edit-mark': {
+            opacity: 0,
+            transition: `opacity ${MOTION.quick}ms ease-out`,
+          },
           ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
           ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
           // Au toucher, pas de crayon : un pointillé discret signale la valeur modifiable.
@@ -134,7 +138,7 @@ const EditableField = ({
           },
           // Au doigt, une zone de 44 px autour de la valeur, invisible : « 31 »
           // ou « 38 » se touchent sans viser, sans rien déplacer.
-          '@media (pointer: coarse)': {
+          [MEDIA.touch]: {
             position: 'relative',
             '&::before': {
               content: '""',

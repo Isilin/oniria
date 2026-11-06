@@ -19,17 +19,13 @@ import {
   Button,
   Chip,
   Collapse,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { EASE } from '@/theme/theme';
+import { EASE, MEDIA } from '@/theme/theme';
 import { useState } from 'react';
-import BusyButton from '../atoms/busy-button';
+import ActionDialog from '../molecules/_shared/action-dialog';
 import CreationSteps from '../molecules/creation-steps';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
 import { formatAmounts } from './xp-dialogs';
@@ -57,10 +53,9 @@ const ExperienceCard = ({ id }: { id: string }) => {
   } = useSheet(id);
   const [grantOpen, setGrantOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [confirmValidate, setConfirmValidate] = useState(false);
   // Pendant l'envoi, « Valider » ne repart pas (un double clic validait puis
-  // affichait « La fiche est déjà validée. »).
-  const [validating, setValidating] = useState(false);
+  // affichait « La fiche est déjà validée. ») : ActionDialog attend.
+  const [confirmValidate, setConfirmValidate] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
 
   // Le tampon « Validée » s'abat quand la fiche est validée, puis à chaque
@@ -113,7 +108,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
         // l'encadré des Existences collé en haut, ou sous la bande de 44 px
         // qui le remplace sur petit écran.
         scrollMarginTop: 140,
-        '@media (max-width: 599.95px), (max-height: 500px)': {
+        [MEDIA.smallScreen]: {
           scrollMarginTop: 64,
         },
       }}
@@ -371,42 +366,24 @@ const ExperienceCard = ({ id }: { id: string }) => {
         </Collapse>
       </Box>
 
-      <Dialog
+      <ActionDialog
         open={confirmValidate}
-        onClose={validating ? undefined : () => setConfirmValidate(false)}
+        onClose={() => setConfirmValidate(false)}
+        title="Valider la fiche ?"
+        confirmLabel="Valider"
+        onConfirm={async () => {
+          if (await validate()) setConfirmValidate(false);
+        }}
       >
-        <DialogTitle>Valider la fiche ?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {due > 0
-              ? `${due} XP seront dépensés (${formatAmounts(xp.allocation.total)}).`
-              : 'Aucune XP à dépenser.'}{' '}
-            Ensuite, {scopeList(xp.unlocked)} ne se modifiera plus librement :
-            chaque amélioration sera un achat, et seul le MJ pourra baisser ou
-            retirer ce qui a été acquis.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmValidate(false)}
-            disabled={validating}
-          >
-            Annuler
-          </Button>
-          <BusyButton
-            variant="contained"
-            busy={validating}
-            onClick={async () => {
-              setValidating(true);
-              const ok = await validate();
-              setValidating(false);
-              if (ok) setConfirmValidate(false);
-            }}
-          >
-            Valider
-          </BusyButton>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText>
+          {due > 0
+            ? `${due} XP seront dépensés (${formatAmounts(xp.allocation.total)}).`
+            : 'Aucune XP à dépenser.'}{' '}
+          Ensuite, {scopeList(xp.unlocked)} ne se modifiera plus librement :
+          chaque amélioration sera un achat, et seul le MJ pourra baisser ou
+          retirer ce qui a été acquis.
+        </DialogContentText>
+      </ActionDialog>
       {isAdmin && (
         <>
           <XpGrantDialog
