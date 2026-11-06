@@ -25,6 +25,10 @@ MUI 9, Prisma 7 + PostgreSQL, Auth.js v5 (Google), SWR.
   (santé, équilibre, éclat, Maï, initiative, protection, encombrement, XP
   restante…) et distribution d'XP à plusieurs personnages.
 - **Whitelist** (MJ) : seules les adresses whitelistées peuvent se connecter.
+- **Export PDF** : une fiche complète (menu ⋯ de la fiche, pour tout le
+  monde), ou toutes les fiches d'une table avec sa vue d'ensemble (MJ).
+  Composé côté serveur avec `@react-pdf/renderer` (`src/lib/pdf/`, routes
+  `/api/sheets/[id]/pdf` et `/api/teams/[id]/pdf`).
 
 ## Règles calculées
 
@@ -153,7 +157,19 @@ yarn prisma:seed   # remplit les catalogues de règles
 yarn dev           # http://localhost:3000
 yarn test          # tests des règles et de la validation
 yarn lint
+node scripts/pdf-samples.mjs   # PDF d'exemple dans .pdf-samples/
 ```
+
+L'export PDF se relit sur des fiches fictives (`src/lib/pdf/fixtures.ts`) :
+`node scripts/pdf-samples.mjs` les compose, avec la table de test, dans
+`.pdf-samples/` (ignoré par git). Les composants du PDF n'ont ni état ni
+hook et commencent par `'use no memo';` : react-pdf a sa propre copie de
+React (paquet externe, `serverExternalPackages`), où les mémos du React
+Compiler planteraient. Les polices viennent des paquets `@fontsource`,
+lues sur le disque et embarquées avec la fonction
+(`outputFileTracingIncludes`). Le portrait et les images des notes sont
+lus par le serveur : `src/lib/pdf/safe-fetch.ts` refuse toute adresse
+interne.
 
 Pour devenir MJ : ajouter son email dans la table `Whitelist`, se connecter une
 première fois, puis passer `role` à `ADMIN` dans la table `users`

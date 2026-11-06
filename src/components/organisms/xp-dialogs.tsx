@@ -1,5 +1,6 @@
 'use client';
 
+import { formatAmounts } from '@/lib/sheet/display';
 import {
   Amounts,
   checkSplit,
@@ -95,14 +96,6 @@ type Pending =
 const XpDialogContext = createContext<XpDialogs | null>(null);
 
 export const useXpDialogs = () => useContext(XpDialogContext);
-
-/** Texte « Éprouver 10 · Vivre 5 » d'un montant. */
-// Espaces insécables : un montant reste collé à sa catégorie (« Vivre 160 »)
-// et le point médian ne commence jamais une ligne.
-export const formatAmounts = (amounts: Amounts, empty = '0') =>
-  POOLS.filter((p) => amounts[p.key])
-    .map((p) => `${p.label} ${amounts[p.key]}`)
-    .join(' · ') || empty;
 
 /** Saisie d'un montant par catégorie (attribution, répartition…). */
 export const AmountsFields = ({

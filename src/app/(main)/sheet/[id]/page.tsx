@@ -1,7 +1,7 @@
 import BackButton from '@/components/atoms/back-button';
 import HeaderSlot from '@/components/atoms/header-slot';
 import SWRFallback from '@/components/atoms/swr-fallback';
-import DeleteSheetButton from '@/components/molecules/delete-sheet-button';
+import SheetActions from '@/components/molecules/sheet-actions';
 import Sheet from '@/components/organisms/sheet';
 import { asJson, findSheet } from '@/lib/server/queries';
 import { getSession } from '@/lib/server/session';
@@ -31,7 +31,7 @@ const Page = async ({
         </HeaderSlot>
         <HeaderSlot side="title">Feuille de personnage</HeaderSlot>
         <HeaderSlot side="end">
-          <DeleteSheetButton id={params.id} />
+          <SheetActions id={params.id} />
         </HeaderSlot>
         <Sheet id={params.id} />
       </SWRFallback>

@@ -1,7 +1,17 @@
 'use client';
 
 import { FullSheet } from '@/lib/db/sheet';
-import { Amounts, POOLS, XpKind, zero } from '@/lib/rules/xp';
+import { Amounts, POOLS } from '@/lib/rules/xp';
+import {
+  batchTitle,
+  entryDate,
+  entryDetail,
+  formatSigned,
+  groupEntries,
+  JOURNAL_KINDS,
+  signedAmounts,
+  sumAmounts,
+} from '@/lib/sheet/journal';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -21,67 +31,6 @@ import { Fragment, useState } from 'react';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 
 type Entry = FullSheet['xpEntries'][number];
-
-const KINDS: Record<
-  XpKind,
-  {
-    label: string;
-    color: 'success' | 'primary' | 'info' | 'warning' | 'secondary';
-  }
-> = {
-  GAIN: { label: 'Attribution', color: 'success' },
-  SPEND: { label: 'Dépense', color: 'primary' },
-  REFUND: { label: 'Remboursement', color: 'info' },
-  LOSS: { label: 'XP perdue', color: 'warning' },
-  GIFT: { label: 'Offert', color: 'secondary' },
-};
-
-/** Effet d'une écriture sur l'XP restante. */
-const signed = (entry: Entry): Amounts => {
-  const sign = { GAIN: 1, SPEND: -1, REFUND: 1, LOSS: 0, GIFT: 0 }[entry.kind];
-  return {
-    feel: sign * entry.feel,
-    learn: sign * entry.learn,
-    live: sign * entry.live,
-  };
-};
-
-const formatSigned = (value: number) =>
-  value > 0 ? `+${value}` : value < 0 ? `−${-value}` : '';
-
-const BATCH_TITLES: [string, string][] = [
-  ['validation:', 'Validation'],
-  ['reset:', 'Reset accordé par le MJ'],
-  ['legacy-', 'Reprise de l’ancienne fiche'],
-];
-
-const batchTitle = (entries: Entry[]) =>
-  BATCH_TITLES.find(([prefix]) => entries[0].batch?.startsWith(prefix))?.[1] ??
-  entries[0].label;
-
-const date = (entry: Entry) =>
-  new Date(entry.createdAt).toLocaleDateString('fr-FR');
-
-const detail = (entry: Entry) => {
-  if (entry.kind === 'GIFT') return ` (valeur ${entry.offered} XP)`;
-  if (entry.kind === 'LOSS') {
-    const lost = entry.feel + entry.learn + entry.live;
-    return lost ? ` (${lost} XP perdus)` : '';
-  }
-  if (entry.offered) return ` (dont ${entry.offered} offerts)`;
-  return '';
-};
-
-/** Regroupe les écritures faites ensemble (validation, reset…). */
-const groups = (entries: Entry[]) => {
-  const result: Entry[][] = [];
-  for (const entry of [...entries].reverse()) {
-    const last = result[result.length - 1];
-    if (last && entry.batch && last[0].batch === entry.batch) last.push(entry);
-    else result.push([entry]);
-  }
-  return result;
-};
 
 const AmountCells = ({ amounts }: { amounts: Amounts }) => (
   <>
@@ -116,22 +65,22 @@ const EntryRow = ({
 }) => (
   <TableRow hover>
     <TableCell sx={{ whiteSpace: 'nowrap' }}>
-      {nested ? '' : date(entry)}
+      {nested ? '' : entryDate(entry)}
     </TableCell>
     <TableCell sx={{ pl: nested ? 4 : undefined }}>
       <Chip
         size="small"
         variant="outlined"
-        color={KINDS[entry.kind].color}
-        label={KINDS[entry.kind].label}
+        color={JOURNAL_KINDS[entry.kind].color}
+        label={JOURNAL_KINDS[entry.kind].label}
         sx={{ mr: 1 }}
       />
       {entry.label}
       <Typography component="span" variant="body2" color="textSecondary">
-        {detail(entry)}
+        {entryDetail(entry)}
       </Typography>
     </TableCell>
-    <AmountCells amounts={signed(entry)} />
+    <AmountCells amounts={signedAmounts(entry)} />
     <TableCell>
       <Typography variant="caption" color="textSecondary">
         {entry.author?.name ?? ''}
@@ -161,14 +110,7 @@ const GroupRows = ({
   onDelete?: (entry: Entry) => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const total = entries.map(signed).reduce(
-    (a, b) => ({
-      feel: a.feel + b.feel,
-      learn: a.learn + b.learn,
-      live: a.live + b.live,
-    }),
-    zero(),
-  );
+  const total = sumAmounts(entries.map(signedAmounts));
   return (
     <>
       <TableRow
@@ -177,7 +119,9 @@ const GroupRows = ({
         sx={{ cursor: 'pointer' }}
         aria-expanded={open}
       >
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{date(entries[0])}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {entryDate(entries[0])}
+        </TableCell>
         <TableCell>
           {open ? (
             <ExpandLessIcon fontSize="small" sx={{ verticalAlign: 'middle' }} />
@@ -244,7 +188,7 @@ const XpJournal = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {groups(entries).map((group) => (
+            {groupEntries(entries).map((group) => (
               <Fragment key={group[0].id}>
                 {group.length > 1 ? (
                   <GroupRows entries={group} onDelete={ask} />

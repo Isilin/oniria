@@ -3,8 +3,15 @@
 import { CatalogSkill } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { CollectionItem, useSheet } from '@/lib/hooks/use-sheet';
-import { SKILL_COSTS, skillScope } from '@/lib/rules/xp';
-import { SKILL_DEGREES, SKILL_TYPES } from '@/lib/sheet/fields';
+import { SKILL_COSTS, skillLabel, skillScope } from '@/lib/rules/xp';
+import {
+  DEGREE_COLORS,
+  DEGREE_LABELS,
+  SKILL_TYPE_LABELS,
+  type SkillType,
+} from '@/lib/sheet/display';
+import { skillTree } from '@/lib/sheet/skill-tree';
+import { SKILL_TYPES } from '@/lib/sheet/fields';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
@@ -30,43 +37,11 @@ import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
 import SectionCard from '../molecules/section-card';
 
 type SheetSkill = CollectionItem<'skills'>;
-type SkillType = (typeof SKILL_TYPES)[number];
-type SkillDegree = (typeof SKILL_DEGREES)[number];
-
-const TYPE_LABELS: Record<SkillType, string> = {
-  GENERAL: 'Générales',
-  SPYRAL: 'Spyrales',
-  MARTIAL: 'Martiales',
-};
-
 const ADD_LABELS: Record<SkillType, string> = {
   GENERAL: 'Compétence générale',
   SPYRAL: 'Compétence spyrale',
   MARTIAL: 'Compétence martiale',
 };
-
-const DEGREE_LABELS: Record<SkillDegree, string> = {
-  BASE: 'Base',
-  PRINCIPLE: 'Principe',
-  MASTERY: 'Maîtrise',
-  TECHNIQUE: 'Technique',
-  SEQUENCE: 'Enchaînement',
-};
-
-const DEGREE_COLORS: Record<
-  SkillDegree,
-  'default' | 'primary' | 'secondary' | 'success' | 'warning'
-> = {
-  BASE: 'primary',
-  PRINCIPLE: 'secondary',
-  MASTERY: 'success',
-  TECHNIQUE: 'success',
-  SEQUENCE: 'warning',
-};
-
-/** Dans le catalogue, une base « - » désigne la catégorie elle-même. */
-const skillName = (skill: { name: string; category: string }) =>
-  skill.name === '-' ? skill.category : skill.name;
 
 interface NodeProps {
   owned: SheetSkill;
@@ -103,7 +78,7 @@ const SkillNode = ({
       ?.prerequisites.filter((p) => ownedIds.has(p.id))
       .map((p) => byId.get(p.id)) ?? [];
   const kids = childrenOf.get(owned.skillId) ?? [];
-  const name = skillName(skill);
+  const name = skillLabel(skill);
 
   return (
     <Box>
@@ -172,7 +147,7 @@ const SkillNode = ({
             >
               {prerequisites.map((p) => (
                 <MenuItem key={p.id} value={p.id}>
-                  via {skillName(p)}
+                  via {skillLabel(p)}
                 </MenuItem>
               ))}
             </Select>
@@ -242,7 +217,7 @@ const AddSkill = ({
       return `Nécessite : ${skill.prerequisites
         .map((p) => byId.get(p.id))
         .filter(Boolean)
-        .map(skillName)
+        .map(skillLabel)
         .join(' ou ')}`;
     return skill.description ?? '';
   };
@@ -262,7 +237,7 @@ const AddSkill = ({
         options={skills}
         groupBy={(s) => s.category}
         getOptionLabel={(s) =>
-          `${skillName(s)} (${DEGREE_LABELS[s.degree]}, ${SKILL_COSTS[s.degree]} XP)`
+          `${skillLabel(s)} (${DEGREE_LABELS[s.degree]}, ${SKILL_COSTS[s.degree]} XP)`
         }
         getOptionDisabled={(s) => ownedIds.has(s.id) || missing(s)}
         renderOption={(props, s) => {
@@ -271,7 +246,7 @@ const AddSkill = ({
             <li key={key} {...rest}>
               <Box>
                 <Typography variant="body2">
-                  {skillName(s)}{' '}
+                  {skillLabel(s)}{' '}
                   <Typography component="span" variant="caption">
                     · {DEGREE_LABELS[s.degree]} · {SKILL_COSTS[s.degree]} XP
                   </Typography>
@@ -331,22 +306,9 @@ const SkillsCard = ({ id }: { id: string }) => {
   }
 
   const byId = new Map(catalog.skills.map((s) => [s.id, s]));
-  const ownedIds = new Set(sheet.skills.map((s) => s.skillId));
   const skillOf = (owned: SheetSkill) => byId.get(owned.skillId) ?? owned.skill;
-
   // Arbre : une compétence acquise est rangée sous le prérequis qui l'a permise.
-  const childrenOf = new Map<string, SheetSkill[]>();
-  const roots: SheetSkill[] = [];
-  for (const owned of sheet.skills) {
-    if (owned.prerequisiteId && ownedIds.has(owned.prerequisiteId)) {
-      childrenOf.set(owned.prerequisiteId, [
-        ...(childrenOf.get(owned.prerequisiteId) ?? []),
-        owned,
-      ]);
-    } else {
-      roots.push(owned);
-    }
-  }
+  const { roots, childrenOf, ownedIds } = skillTree(sheet.skills);
 
   const onUpdate = (owned: SheetSkill, patch: Record<string, unknown>) =>
     updateItem('skills', owned.id, patch);
@@ -367,7 +329,7 @@ const SkillsCard = ({ id }: { id: string }) => {
           return (
             <Grid key={type} size={{ xs: 12, md: 6, lg: 4 }}>
               <Typography variant="h5">
-                {TYPE_LABELS[type]}
+                {SKILL_TYPE_LABELS[type]}
                 <ScopeLock locked={isLocked(skillScope(type))} />
               </Typography>
               {categories.length === 0 && (

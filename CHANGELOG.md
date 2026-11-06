@@ -62,6 +62,15 @@ Première version complète des fiches de personnages d'Oniria.
     des tables ;
   - une page de notes vide invite à écrire, et la barre d'outils de
     l'éditeur est en français.
+- Export PDF : une fiche complète s'exporte depuis son menu ⋯ (« Exporter
+  en PDF »), pour tout le monde puisque chacun·e lit toutes les fiches ;
+  le MJ exporte toutes les fiches d'une table en un seul PDF
+  (« Exporter les fiches (PDF) »), précédées d'une page de garde avec la
+  vue d'ensemble. Le PDF est la fiche imprimée du carnet, en A4 sur le
+  papier Jour : la page de jeu (plaque, Existences en planètes,
+  Caractères, Facultés, Combat, Expérience), puis les traits, schémas,
+  compétences, sortilèges, golem, inventaire, notes et l'historique de
+  l'expérience. Les valeurs sont celles enregistrées.
 
 ### Modifié
 
