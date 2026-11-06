@@ -34,7 +34,7 @@ import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import LoadError from '../atoms/load-error';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
-import { formatAmounts } from './xp-dialogs';
+import { formatAmounts, xpListChip } from '@/lib/sheet/display';
 import XpGrantDialog from './xp-grant-dialog';
 
 /** Une Existence : la valeur, et son seuil en légende dessous. */
@@ -61,6 +61,7 @@ const MemberRow = ({
   const [confirm, setConfirm] = useState(false);
   const c = computeSheet(sheet);
   const xp = xpSummary(sheet);
+  const chip = xpListChip(xp);
 
   return (
     <TableRow hover>
@@ -99,12 +100,12 @@ const MemberRow = ({
       <TableCell>{c.damage}</TableCell>
       <TableCell sx={{ minWidth: '16ch' }}>
         {formatAmounts(xp.left)}
-        {xp.unlocked.length > 0 && (
+        {chip && (
           <Chip
             size="small"
             color="warning"
             variant="outlined"
-            label={xp.allocation.feasible ? 'à valider' : 'en création'}
+            label={chip}
             sx={{ ml: 1 }}
           />
         )}

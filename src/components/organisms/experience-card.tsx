@@ -28,7 +28,7 @@ import { useState } from 'react';
 import ActionDialog from '../molecules/_shared/action-dialog';
 import CreationSteps from '../molecules/creation-steps';
 import XpBar, { XpBarLegend, XpBarPart } from '../molecules/xp-bar';
-import { formatAmounts } from './xp-dialogs';
+import { formatAmounts, xpStatusLabel } from '@/lib/sheet/display';
 import XpGrantDialog from './xp-grant-dialog';
 import XpJournal from './xp-journal';
 import XpResetDialog from './xp-reset-dialog';
@@ -60,13 +60,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
 
   // Le tampon « Validée » s'abat quand la fiche est validée, puis à chaque
   // achat validé (l'XP dépensée augmente). Rien au premier affichage.
-  const status = !xp
-    ? null
-    : xp.unlocked.length === 0
-      ? 'Validée'
-      : xp.unlocked.length === ALL_SCOPES.length
-        ? 'En création'
-        : 'Reset en cours';
+  const status = xp ? xpStatusLabel(xp) : null;
   const spentTotal = xp ? sum(xp.spent) : 0;
   const [stamp, setStamp] = useState({ status, spentTotal, count: 0 });
   if (status !== stamp.status || spentTotal !== stamp.spentTotal) {

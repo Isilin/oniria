@@ -5,7 +5,7 @@ import { creationStep } from '@/lib/rules/xp';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { CREATION_STEP_SHORT } from '../molecules/creation-steps';
+import { CREATION_STEP_SHORT } from '@/lib/sheet/display';
 
 /**
  * Tant que la fiche est en création, une ligne sous les Existences dit où
