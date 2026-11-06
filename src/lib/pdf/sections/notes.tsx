@@ -152,7 +152,13 @@ const Block = ({
               </View>
               <View style={{ flexGrow: 1, flexBasis: 0 }}>
                 {item.blocks.map((child, j) => (
-                  <Block key={j} block={child} model={model} first={j === 0} />
+                  <Block
+                    key={j}
+                    block={child}
+                    model={model}
+                    first={j === 0}
+                    tight
+                  />
                 ))}
               </View>
             </View>
