@@ -4,7 +4,13 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
-import { litPath } from '../atoms/ornaments';
+import {
+  litPath,
+  PLANET,
+  planetArc,
+  planetDots,
+  planetFraction,
+} from '@/lib/sky';
 import { EASE, MEDIA, MOTION } from '@/theme/theme';
 import PreviewValue from '../atoms/preview-value';
 import Written from '../atoms/written';
@@ -34,29 +40,11 @@ interface Props {
   before?: { max: number; threshold?: number };
 }
 
-const C = 32;
-const DISC = 15;
-/** Les points sont posés sur un arc de trois quarts de tour, ouvert en bas. */
-const DOTS = 26;
-const ARC_START = 135;
-const ARC_SPAN = 270;
-/** Au-delà, les points se toucheraient : l'arc devient un trait continu. */
-const MAX_DOTS = 24;
+const { C, DISC, ARC_START, ARC_SPAN } = PLANET;
 
 const PRINT = 'var(--mui-palette-text-primary)';
 const PEN = 'var(--mui-palette-primary-main)';
 const PAPER = 'var(--mui-palette-background-paper)';
-
-const point = (angle: number, radius: number) => {
-  const rad = (angle * Math.PI) / 180;
-  return [C + radius * Math.cos(rad), C + radius * Math.sin(rad)] as const;
-};
-
-const arc = (from: number, to: number) => {
-  const [x1, y1] = point(from, DOTS);
-  const [x2, y2] = point(to, DOTS);
-  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${DOTS} ${DOTS} 0 ${to - from > 180 ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
-};
 
 /** − et + joints, dans le cadre imprimé des −|+ de toute la fiche. */
 const Stepper = ({
@@ -120,11 +108,9 @@ const MoonGauge = ({
     }
   }
 
-  const fraction = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0;
+  const fraction = planetFraction(current, max);
   const lit = litPath(fraction, C, C, DISC);
-  const dots = Math.max(0, Math.round(max));
-  const dotted = dots > 0 && dots <= MAX_DOTS;
-  const span = dotted ? ARC_SPAN / dots : ARC_SPAN;
+  const { dotted, dots } = planetDots(max, current);
   // Même boîte pour toutes les planètes (les valeurs restent sur une ligne) ;
   // le Maï est seulement dessiné plus petit à l'intérieur.
   const size = { xs: 40, md: 64 };
@@ -352,8 +338,7 @@ const MoonGauge = ({
           </g>
         )}
         {dotted ? (
-          Array.from({ length: dots }, (_, i) => {
-            const [x, y] = point(ARC_START + (i + 0.5) * span, DOTS);
+          dots.map(({ x, y, filled }, i) => {
             return (
               <g key={i}>
                 <circle
@@ -365,13 +350,13 @@ const MoonGauge = ({
                   strokeWidth="0.9"
                 />
                 <circle
-                  className={i < current ? 'moon-dot' : 'moon-dot off'}
+                  className={filled ? 'moon-dot' : 'moon-dot off'}
                   cx={x}
                   cy={y}
                   r="2.2"
                   fill={PEN}
                   filter="url(#oniria-ink)"
-                  opacity={i < current ? 1 : 0}
+                  opacity={filled ? 1 : 0}
                 />
               </g>
             );
@@ -379,7 +364,7 @@ const MoonGauge = ({
         ) : (
           <>
             <path
-              d={arc(ARC_START, ARC_START + ARC_SPAN)}
+              d={planetArc(ARC_START, ARC_START + ARC_SPAN)}
               fill="none"
               stroke={PRINT}
               strokeOpacity="0.3"
@@ -388,7 +373,7 @@ const MoonGauge = ({
             {fraction > 0 && (
               <path
                 className="moon-anim"
-                d={arc(ARC_START, ARC_START + ARC_SPAN * fraction)}
+                d={planetArc(ARC_START, ARC_START + ARC_SPAN * fraction)}
                 fill="none"
                 stroke={PEN}
                 strokeWidth="2.4"

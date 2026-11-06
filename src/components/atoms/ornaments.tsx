@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import { litPath, MOON_PHASES } from '@/lib/sky';
 import { SxProps, Theme } from '@mui/material/styles';
 
 /**
@@ -77,22 +78,6 @@ export const Fleuron = ({ sx }: Props) => (
   </Box>
 );
 
-/** Partie éclairée d'une lune de rayon r centrée en (cx, cy). */
-export const litPath = (
-  fraction: number,
-  cx: number,
-  cy: number,
-  r: number,
-) => {
-  if (fraction <= 0) return null;
-  if (fraction >= 1)
-    return `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx} ${cy + r} A ${r} ${r} 0 1 1 ${cx} ${cy - r} Z`;
-  const rx = r * Math.abs(1 - 2 * fraction);
-  return `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} A ${rx.toFixed(2)} ${r} 0 0 ${fraction > 0.5 ? 1 : 0} ${cx} ${cy - r} Z`;
-};
-
-const PHASES = [0, 0.2, 0.4, 0.6, 1, 0.6, 0.4, 0.2, 0];
-
 /** Les phases de la lune en frise, au bandeau-titre. */
 export const MoonPhases = ({ sx }: Props) => (
   <Box
@@ -104,7 +89,7 @@ export const MoonPhases = ({ sx }: Props) => (
       ...(Array.isArray(sx) ? sx : [sx]),
     ]}
   >
-    {PHASES.map((fraction, i) => {
+    {MOON_PHASES.map((fraction, i) => {
       const cx = 11 + i * 21;
       const lit = litPath(fraction, cx, 11, 6.5);
       return (
