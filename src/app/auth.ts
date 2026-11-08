@@ -18,8 +18,9 @@ declare module 'next-auth' {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ profile }) {
-      const dbUser = await prisma.whitelist.findUnique({
-        where: { email: profile.email },
+      if (!profile?.email) return false;
+      const dbUser = await prisma.whitelist.findFirst({
+        where: { email: { equals: profile.email, mode: 'insensitive' } },
       });
 
       return !!dbUser;
@@ -38,6 +39,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: 'database',
   },
+  // Un refus (adresse hors whitelist) ou un échec revient à l'accueil, qui
+  // l'explique dans le carnet (`?error=…`), au lieu de la page d'Auth.js.
+  pages: { error: '/' },
   adapter: PrismaAdapter(prisma),
   providers: [Google],
 });

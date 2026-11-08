@@ -1,73 +1,55 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSheets } from '@/lib/hooks/use-sheet';
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
-import { useSession } from 'next-auth/react';
+import { STRING_MAX } from '@/lib/sheet/fields';
+import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import ActionDialog from '../molecules/_shared/action-dialog';
 
-const CreateSheetDialog = ({ open, onClose }) => {
-  const { data: session } = useSession();
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+const CreateSheetDialog = ({ open, onClose }: Props) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createSheet } = useSheets();
 
+  const create = async (fields?: FormData) => {
+    try {
+      const sheet = await createSheet(fields?.get('name')?.toString() ?? '');
+      onClose();
+      enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
+      router.push(`/sheet/${sheet.id}`);
+    } catch (error) {
+      notifyError(error);
+    }
+  };
+
   return (
-    <Dialog
+    <ActionDialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: async (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          createSheet({
-            userId: session?.user.id,
-            name: formJson.name.toString(),
-          }).then(async (res) => {
-            const sheet = await res.json();
-
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Nouvelle fiche créée.', { variant: 'info' });
-            router.push(`/sheet/${sheet.id}`);
-          });
-        },
-      }}
+      title="Nouveau personnage"
+      confirmLabel="Créer"
+      onConfirm={create}
+      form
     >
-      <DialogTitle>Nouveau personnage</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="name"
-          name="name"
-          label="Nom"
-          type="text"
-          fullWidth
-          variant="standard"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          Annuler
-        </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Créer'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <TextField
+        autoFocus
+        required
+        margin="dense"
+        id="name"
+        name="name"
+        slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
+        label="Nom"
+        type="text"
+        fullWidth
+        variant="standard"
+      />
+    </ActionDialog>
   );
 };
 

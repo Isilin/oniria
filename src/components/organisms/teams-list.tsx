@@ -1,21 +1,46 @@
 'use client';
 
 import { useTeams } from '@/lib/hooks/use-team';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid2';
+import { CircularProgress, Container, Typography } from '@mui/material';
+import CardRow from '../atoms/card-row';
+import LoadError from '../atoms/load-error';
+import TeamAddButton from '../molecules/team-add-button';
 import TeamListElement from '../molecules/team-list-element';
 
+/**
+ * Les tables, rangées comme les fiches de l'accueil : des cartes alignées à
+ * gauche, et la carte en pointillés pour en créer une à la suite.
+ */
 const TeamsList = () => {
-  const { teams, isLoading } = useTeams();
+  const { teams, error, isLoading, retry } = useTeams();
 
-  if (isLoading) return <CircularProgress />;
+  if (!teams) {
+    // Une lecture en échec n'est pas une liste vide.
+    return isLoading || !error ? (
+      <CircularProgress />
+    ) : (
+      <LoadError
+        what="Les tables n'ont pas pu être lues."
+        error={error}
+        onRetry={retry}
+      />
+    );
+  }
 
   return (
-    <Grid container spacing={2}>
-      {teams.map((team, index) => (
-        <TeamListElement team={team} key={index} />
-      ))}
-    </Grid>
+    <Container>
+      {!teams.length && (
+        <Typography color="textSecondary" sx={{ mb: 2 }}>
+          Aucune table de jeu.
+        </Typography>
+      )}
+      <CardRow>
+        {teams.map((team) => (
+          <TeamListElement team={team} key={team.id} />
+        ))}
+        <TeamAddButton />
+      </CardRow>
+    </Container>
   );
 };
 

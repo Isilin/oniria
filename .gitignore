@@ -4,7 +4,7 @@
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-.yarnrc.yml
+!.yarnrc.yml
 
 # Ignore the standard Node.js folders
 node_modules/
@@ -41,3 +41,5 @@ next-env.d.ts
 # Environment files
 .env.*
 .env
+# Export PDF : échantillons générés en local (scripts/pdf-samples.mjs)
+/.pdf-samples/

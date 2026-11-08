@@ -1,66 +1,55 @@
+import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useTeams } from '@/lib/hooks/use-team';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { STRING_MAX } from '@/lib/sheet/fields';
 import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+import ActionDialog from '../molecules/_shared/action-dialog';
 
-const CreateTeamDialog = ({ open, onClose }) => {
-  const [loading, setLoading] = useState(false);
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+const CreateTeamDialog = ({ open, onClose }: Props) => {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const notifyError = useNotifyError();
   const { createTeam } = useTeams();
 
+  const create = async (fields?: FormData) => {
+    try {
+      const team = await createTeam(fields?.get('name')?.toString() ?? '');
+      onClose();
+      enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
+      router.push(`/team/${team.id}`);
+    } catch (error) {
+      notifyError(error);
+    }
+  };
+
   return (
-    <Dialog
+    <ActionDialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          createTeam({ name: formJson.name.toString() }).then(async (res) => {
-            const team = await res.json();
-
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Table de jeu créée.', { variant: 'info' });
-            router.push(`/team/${team.id}`);
-          });
-        },
-      }}
+      title="Nouvelle table de jeu"
+      confirmLabel="Ajouter"
+      onConfirm={create}
+      form
     >
-      <DialogTitle>Nouvelle table de jeu</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="name"
-          name="name"
-          label="Nom"
-          type="text"
-          fullWidth
-          variant="standard"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          Annuler
-        </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Ajouter'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <TextField
+        autoFocus
+        required
+        margin="dense"
+        id="name"
+        name="name"
+        slotProps={{ htmlInput: { maxLength: STRING_MAX } }}
+        label="Nom"
+        type="text"
+        fullWidth
+        variant="standard"
+      />
+    </ActionDialog>
   );
 };
 

@@ -1,0 +1,41 @@
+# Tag et release GitHub automatiques.
+#
+# À chaque arrivée sur main, si la version de package.json n'a pas encore de
+# tag (vX.Y.Z), on le crée sur ce commit avec une release GitHub dont le
+# texte est la section correspondante de CHANGELOG.md. Sinon, rien ne se
+# passe : relancer ce workflow est sans effet.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag et release de la version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "Le tag $TAG existe déjà : rien à faire."
+            exit 0
+          fi
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            /^## \[/ { found = 0 }
+            found
+          ' CHANGELOG.md > notes.md
+          [ -s notes.md ] || echo "Version $TAG" > notes.md
+          gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file notes.md
+          echo "Release $TAG créée."

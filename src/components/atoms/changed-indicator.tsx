@@ -6,7 +6,7 @@ interface Props {
 
 const ChangedIndicator = ({ changed }: Props) => {
   return changed ? (
-    <Typography variant="caption">Modifications non sauvegardées.</Typography>
+    <Typography variant="caption">Nouvelles modifications.</Typography>
   ) : (
     <></>
   );

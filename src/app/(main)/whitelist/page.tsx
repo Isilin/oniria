@@ -1,32 +1,37 @@
-import { auth } from '@/app/auth';
+import BackButton from '@/components/atoms/back-button';
+import HeaderSlot from '@/components/atoms/header-slot';
+import SWRFallback from '@/components/atoms/swr-fallback';
 import WhitelistAddButton from '@/components/molecules/whitelist-add-button';
 import WhitelistList from '@/components/organisms/whitelist-list';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Button from '@mui/material/Button';
+import { asJson, listWhitelist } from '@/lib/server/queries';
+import { getSession } from '@/lib/server/session';
 import Typography from '@mui/material/Typography';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 const Page = async () => {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user || session?.user.role !== 'ADMIN') redirect('/');
+  // La whitelist arrive avec la page.
+  const data = asJson(await listWhitelist());
 
   return (
     <Suspense>
-      <Link href="/">
-        <Button>
-          <ArrowBackIcon />
-        </Button>
-      </Link>
-      <Typography variant="h1" textAlign="center">
-        ONIRIA
-      </Typography>
-      <Typography variant="h3" textAlign="center">
-        Whitelist
-      </Typography>
-      <WhitelistList />
-      <WhitelistAddButton />
+      <SWRFallback fallback={{ '/api/whitelist': data }}>
+        <HeaderSlot side="start">
+          <BackButton href="/" />
+        </HeaderSlot>
+        <Typography
+          variant="h3"
+          sx={{
+            textAlign: 'center',
+          }}
+        >
+          Whitelist
+        </Typography>
+        <WhitelistList />
+        <WhitelistAddButton />
+      </SWRFallback>
     </Suspense>
   );
 };

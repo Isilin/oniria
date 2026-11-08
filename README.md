@@ -1,36 +1,292 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lunes d'Oniria — fiches de personnages
 
-## Getting Started
+Application de gestion des fiches de personnages et des tables de jeu pour le
+JdR **Oniria**. Elle reprend les règles du tableur de référence
+« Lunes d'Oniria - Fiches de personnages » (onglet _Modèle_).
 
-First, run the development server:
+Stack : Node.js 26, Next.js 16 (App Router), React 19 avec React Compiler,
+MUI 9, Prisma 7 + PostgreSQL, Auth.js v5 (Google), SWR.
+
+## Fonctionnalités
+
+- **Fiche de personnage** en 5 onglets :
+  - _Caractéristiques_ : Visage (nom, âge, Maï, aspect, devenir), Caractères,
+    Facultés, Existences (santé, équilibre, éclat), Expérience (éprouver,
+    apprendre, vivre ; voir [Expérience](#expérience)).
+  - _Traits_ : innés (avec balance et contrôle d'équilibre) et acquis.
+  - _Schémas & Compétences_ : Corpus, Spyrée, Âmée, compétences Générales /
+    Spyrales / Martiales en arbre (compétence › base › principe › maîtrise ou
+    technique), Sortilèges, Golems.
+  - _Inventaire_ : armes de mêlée, armes de tir, armures, objets.
+  - _Notes_ : éditeur Markdown.
+- **Droits** : chacun·e modifie ses fiches, consulte celles des autres en
+  lecture seule ; les MJ (rôle `ADMIN`) modifient tout.
+- **Tables de jeu** (MJ) : ajout/retrait de personnages, vue d'ensemble
+  (santé, équilibre, éclat, Maï, initiative, protection, encombrement, XP
+  restante…) et distribution d'XP à plusieurs personnages.
+- **Éléments rayés** (MJ) : un élément de la fiche (trait, aspect, potentiel,
+  compétence, équipement, points de caractéristique) peut être rayé au lieu
+  d'être supprimé ; voir [Éléments rayés](#éléments-rayés).
+- **Whitelist** (MJ) : seules les adresses whitelistées peuvent se connecter.
+- **Export PDF** : une fiche complète (menu ⋯ de la fiche, pour tout le
+  monde), ou toutes les fiches d'une table avec sa vue d'ensemble (MJ).
+  Composé côté serveur avec `@react-pdf/renderer` (`src/lib/pdf/`, routes
+  `/api/sheets/[id]/pdf` et `/api/teams/[id]/pdf`).
+
+## Règles calculées
+
+Toutes les règles sont dans [`src/lib/rules/index.ts`](src/lib/rules/index.ts)
+et testées avec des fiches réelles du tableur
+([`rules.test.ts`](src/lib/rules/rules.test.ts)).
+
+| Valeur                                    | Formule (comme dans le tableur)                                     |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| Corps / Esprit / Âme                      | somme des 4 caractères / 5                                          |
+| Coût XP d'un caractère                    | 1 par point jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, 8 au-delà       |
+| Faculté                                   | majeur + min(majeur, mineur)                                        |
+| Marge d'une faculté                       | (majeur − 50) / 5 si majeur > 50, + bonus du Corpus sur le majeur   |
+| Santé max                                 | Vigueur / 10 + bonus de santé du Corpus ; seuil : Vigueur / 5       |
+| Équilibre max                             | Entendement / 10 ; seuil : Entendement / 5                          |
+| Éclat max, Maï                            | Âme / 10 ; seuil d'éclat : Âme / 5                                  |
+| Dégâts                                    | Force / 10 − 5                                                      |
+| Initiative, Impact, Impulsion, Conduction | Vivacité, Raisonnement, Perception, Concentration / 10              |
+| Protection                                | armures portées : protection actuelle / maximale                    |
+| Encombrement                              | somme des encombrements (%) de l'équipement porté (armures + armes) |
+
+Chaque aspect du Corpus peut porter un bonus sur un caractère ou sur la santé
+(colonnes « Bonus » et « + »). Un bonus de +1 en Charisme ajoute 1 à la marge
+des facultés dont le Charisme est le majeur ; un bonus de +1 en Santé ajoute 1
+à la santé maximale, comme les effets « Cha +1 » ou « Santé +1 » du tableur.
+
+## Expérience
+
+Les règles sont dans [`src/lib/rules/xp.ts`](src/lib/rules/xp.ts) (testées
+dans [`xp.test.ts`](src/lib/rules/xp.test.ts)).
+
+**Trois catégories.** Chaque partie de la fiche se paie avec certaines
+catégories ; une dépense peut en combiner plusieurs.
+
+| Catégorie | Paie                                                        |
+| --------- | ----------------------------------------------------------- |
+| Éprouver  | Corps et Âme, compétences martiales et générales, le Corpus |
+| Apprendre | Esprit et Âme, compétences spyrales et générales, la Spyrée |
+| Vivre     | tout                                                        |
+
+**Coûts.**
+
+| Élément         | Coût                                                                   |
+| --------------- | ---------------------------------------------------------------------- |
+| Caractéristique | par point : 1 XP jusqu'à 25, 2 jusqu'à 50, 4 jusqu'à 75, 8 jusqu'à 100 |
+| Compétence      | base ou principe 10, maîtrise 30, technique 10, enchaînement 20        |
+| Corpus          | 5 XP le 1er aspect, 10 le 2e, 15 le 3e…                                |
+| Spyrée          | passage au rang I : 10, II : 30, III : 70, IV : 150, V : 310           |
+
+**Déroulement.**
+
+1. Une nouvelle fiche est _en création_ : tout s'y modifie librement. Le MJ
+   attribue l'XP de création (raccourci « Création : 700 Vivre »), depuis la
+   fiche ou pour toute une table. Le coût de la fiche est calculé en continu ;
+   on peut dépasser, mais pas valider tant qu'il manque de l'XP.
+2. Le joueur ou le MJ **valide** : le coût est payé (répartition qui garde
+   Vivre pour la fin) et la fiche est figée.
+3. Ensuite, chaque amélioration est un **achat** : une fenêtre propose une
+   répartition entre les catégories autorisées, que le joueur peut changer.
+   La dépense est définitive.
+4. Le MJ distribue l'XP de chaque session (fiche ou table), et peut :
+   - **offrir** un achat (aucune XP dépensée) ;
+   - **baisser ou retirer** un élément validé, en remboursant l'XP (dans les
+     catégories qui l'avaient payée, la dernière dépense en premier) ;
+   - **rayer** un élément : il reste sur la fiche, barré, et son XP est
+     perdue (voir [Éléments rayés](#éléments-rayés)) ;
+   - accorder un **reset**, complet ou d'une partie de la fiche (Corps,
+     Esprit, Âme, compétences générales / spyrales / martiales, Corpus,
+     Spyrée) : l'XP payée est rendue, la partie redevient libre jusqu'à la
+     prochaine validation, et ce qui avait été offert le reste ;
+   - retirer de l'XP (montant négatif) ou supprimer une attribution erronée.
+
+**Caractères, point par point.** Comme dans un jeu vidéo, on ne saisit pas la
+valeur d'un caractère : « + » lui ajoute un point (Maj+clic : 5, maintenir :
+répète) et devient « − n + » tant que des points sont en attente. Le reste de
+la fiche se met à jour en aperçu (Corps / Esprit / Âme, facultés et marges,
+dégâts, initiative…, maximums et seuils des existences, Maï, prérequis
+d'équipement, barres d'XP) : une valeur qui change est en vert si elle monte,
+en orange si elle baisse, l'ancienne en infobulle. Une barre en bas de l'écran
+résume les points et leur coût, avec **Valider** et **Annuler** :
+
+- dans une partie débloquée (création, reset), Valider enregistre sans rien
+  payer et « − » descend jusqu'à 0 ;
+- dans une partie validée, Valider est un achat groupé : la fenêtre propose
+  une répartition pour chaque partie (Corps, Esprit, Âme), modifiable, et
+  n'est possible qu'avec l'XP correspondante. Le MJ peut l'offrir, et lui seul
+  peut descendre sous la valeur actuelle : en remboursant, ou en rayant les
+  points. Le journal garde une écriture par caractère.
+
+Tant que des points sont en attente, la fiche ne peut pas être validée, et
+quitter la page demande confirmation.
+
+Tout est consigné dans l'**historique** de la fiche (attributions, achats,
+remboursements, XP perdue, éléments offerts). La fiche signale quand le compte
+n'est pas bon, c'est-à-dire quand la valeur des parties validées diffère de
+l'XP enregistrée pour elles (par exemple une fiche reprise de l'ancienne
+version, dont les dépenses ne sont pas détaillées) ; un reset complet
+recalcule tout.
+
+### Éléments rayés
+
+Le MJ peut **rayer** un élément au lieu de le supprimer (menu ⋮ de la ligne) :
+traits, aspects du Corpus, potentiels de la Spyrée, compétences, Âmée,
+sortilèges, golems, équipement et objets. L'élément reste sur la fiche, barré
+d'un trait rouge, et :
+
+- il n'a plus **aucun effet** : bonus du Corpus, balance des traits innés,
+  prérequis d'une compétence, protection et encombrement de l'équipement ;
+- dans une partie validée, l'XP payée pour lui est **perdue** : une écriture
+  « XP perdue » au journal, « N XP perdus » en rouge sous son nom, et
+  une part « Perdue » hachurée de rouge dans la barre d'XP ;
+- il ne compte plus dans la valeur de la fiche, ni dans le rang du Corpus :
+  avec trois aspects dont un rayé, le suivant coûte 15 XP ;
+- il ne se modifie plus, et seul le MJ peut le supprimer (rien n'est rendu).
+
+Une compétence dont d'autres compétences dépendent ne se raye pas ; une
+compétence ou un potentiel rayé ne se rachète pas : le MJ le **rétablit**,
+offert ou payé avec l'XP du personnage (dialogue d'achat). Une compétence ne
+revient que si l'un de ses prérequis est actif.
+
+**Points de caractéristique.** Quand le MJ baisse un caractère validé sans
+rembourser, les points sont rayés : Force 40 → 35, et « 5 » reste barré devant
+la valeur, même si des points sont rachetés ensuite. Un clic du MJ sur la
+rature les rétablit (offerts ou rachetés) et l'efface.
+
+Les fiches existantes avant ce système sont reprises telles quelles et
+considérées comme validées : l'XP gagnée et l'XP restante saisies à la main
+sont conservées (« XP reprise » et « Dépenses antérieures »).
+
+## Développement
+
+Prérequis : Node.js 26, PostgreSQL. Yarn 4 est fourni par le dépôt
+(`.yarn/releases`, déclaré dans `.yarnrc.yml`) : n'importe quel `yarn` installé
+l'utilise automatiquement.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Créer un fichier `.env` :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+POSTGRES_PRISMA_URL=postgresql://user:password@localhost:5432/oniria
+POSTGRES_URL_NON_POOLING=postgresql://user:password@localhost:5432/oniria
+AUTH_SECRET=...            # npx auth secret
+AUTH_GOOGLE_ID=...
+AUTH_GOOGLE_SECRET=...
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+yarn prisma:push   # crée / met à jour les tables
+yarn prisma:seed   # remplit les catalogues de règles
+yarn dev           # http://localhost:3000
+yarn test          # tests des règles et de la validation
+yarn lint
+node scripts/pdf-samples.mjs   # PDF d'exemple dans .pdf-samples/
+```
 
-## Learn More
+L'export PDF se relit sur des fiches fictives (`src/lib/pdf/fixtures.ts`) :
+`node scripts/pdf-samples.mjs` les compose, avec la table de test, dans
+`.pdf-samples/` (ignoré par git). Les composants du PDF n'ont ni état ni
+hook et commencent par `'use no memo';` : react-pdf a sa propre copie de
+React (paquet externe, `serverExternalPackages`), où les mémos du React
+Compiler planteraient. Les polices viennent des paquets `@fontsource`,
+lues sur le disque et embarquées avec la fonction
+(`outputFileTracingIncludes`). Le portrait et les images des notes sont
+lus par le serveur : `src/lib/pdf/safe-fetch.ts` refuse toute adresse
+interne.
 
-To learn more about Next.js, take a look at the following resources:
+Pour devenir MJ : ajouter son email dans la table `Whitelist`, se connecter une
+première fois, puis passer `role` à `ADMIN` dans la table `users`
+(`yarn prisma:studio`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Le React Compiler (`reactCompiler` dans `next.config.mjs`) mémorise les
+composants : un −/+ ne redessine que ce qui change. Il lit dès le rendu les
+valeurs qu'un gestionnaire d'événement utilise. Comme `strictNullChecks` est
+désactivé, TypeScript ne signale pas une valeur qui peut être nulle : dans un
+gestionnaire, la tester avant de lire ses champs (`if (!value) return;` avant
+`value.id`), sinon la page plante au rendu.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Déploiement (Vercel)
 
-## Deploy on Vercel
+La commande de build est définie dans [`vercel.json`](vercel.json)
+([`scripts/vercel-build.mjs`](scripts/vercel-build.mjs)). Par défaut, **un
+build ne modifie jamais la base de données**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Les fonctions tournent à Francfort (`"regions": ["fra1"]` dans
+`vercel.json`), dans la même région que la base Neon (`eu-central-1`) :
+chaque requête SQL est un aller-retour entre les deux, ils doivent rester
+côte à côte. Si la base change de région, changer `regions` en même temps.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Variables d'environnement (à définir par environnement dans Vercel) :
+
+| Variable                   | Effet                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| `POSTGRES_PRISMA_URL`      | Connexion de l'application (pooler).                                                      |
+| `POSTGRES_URL_NON_POOLING` | Connexion directe, utilisée par les migrations.                                           |
+| `RUN_MIGRATIONS=true`      | Applique les migrations Prisma pendant le build (`prisma migrate deploy`).                |
+| `SEED_CATALOG=true`        | Remplit/complète les catalogues de règles (upsert, ne supprime rien).                     |
+| `ENABLE_TEST_LOGIN=true`   | Aperçu uniquement : boutons de connexion avec des comptes fictifs (ignoré en production). |
+
+### Migrations
+
+Le schéma évolue par migrations Prisma (`prisma/migrations`), qui transforment
+les données existantes au lieu de les écraser. `0_baseline` correspond au
+schéma déjà en place sur une base existante (celui de la production, branche
+main, créé par Prisma 5 ; copié dans
+`prisma/baseline/schema.prisma`).
+
+Avec `RUN_MIGRATIONS=true`, le build :
+
+1. décrit la base dans les logs (nombre de lignes par table, aucun contenu) ;
+2. sur une base existante pas encore suivie, pose la baseline **seulement si
+   la base correspond exactement au schéma de référence** et **jamais en
+   production** ; sinon il s'arrête sans rien modifier et affiche l'écart ;
+3. applique les migrations (`prisma migrate deploy`).
+
+En production, la baseline n'est posée que si, en plus,
+`ALLOW_PRODUCTION_BASELINE=true` est défini (pour le premier déploiement
+seulement ; à retirer ensuite). On peut aussi la poser à la main :
+
+```bash
+npx prisma migrate resolve --applied 0_baseline
+```
+
+En développement : `yarn prisma:migrate` crée une nouvelle migration.
+
+### Connexion et données de test
+
+Sur un aperçu avec `ENABLE_TEST_LOGIN=true`, la page d'accueil propose de se
+connecter en « MJ de test », « Joueuse de test » ou « Joueur de test », sans
+Google. À la première connexion, des personnages fictifs (Lyse et Corwin,
+validés avec de l'XP à dépenser ; un PNJ resté en création) et une « Table de
+test » sont créés. En local :
+
+```bash
+yarn prisma:seed-test
+```
+
+## Catalogues de règles
+
+Les types de Corpus, les potentiels de la Spyrée (catégorie › type ›
+potentiel) et les compétences générales, spyrales et martiales (avec leurs
+descriptions et prérequis) sont des catalogues définis dans
+[`prisma/seeds`](prisma/seeds). Pour les créer ou les mettre à jour :
+
+```bash
+yarn prisma:seed
+```
+
+Le seed n'utilise que des `upsert` : on peut le relancer sans créer de
+doublons et sans toucher aux fiches. Les propriétés d'équipement
+(Pesante, Déployable…) sont un catalogue que les MJ enrichissent directement
+depuis l'onglet Inventaire.
+
+Une compétence ne peut être ajoutée à une fiche que si l'un de ses prérequis
+est déjà acquis ; et on ne peut pas retirer une compétence dont une autre
+dépend.

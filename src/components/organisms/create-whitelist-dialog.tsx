@@ -1,61 +1,49 @@
-import { useWhitelist } from '@/lib/hooks/use-whitelist';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import { useSnackbar } from 'notistack';
-import { FormEvent, useState } from 'react';
+'use client';
 
-const CreateWhitelistDialog = ({ open, onClose }) => {
-  const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+import { useWhitelist } from '@/lib/hooks/use-whitelist';
+import DialogContentText from '@mui/material/DialogContentText';
+import TextField from '@mui/material/TextField';
+import ActionDialog from '../molecules/_shared/action-dialog';
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+/** Ajout d'une adresse : le dialogue reste ouvert tant que le serveur refuse. */
+const CreateWhitelistDialog = ({ open, onClose }: Props) => {
   const { addToWhitelist } = useWhitelist();
 
+  const add = async (fields?: FormData) => {
+    if (await addToWhitelist(String(fields?.get('email') ?? ''))) onClose();
+  };
+
   return (
-    <Dialog
+    <ActionDialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          setLoading(true);
-          addToWhitelist({ email: formJson.email.toString() }).then(() => {
-            setLoading(false);
-            onClose();
-            enqueueSnackbar('Ajout à la whitelist.', { variant: 'info' });
-          });
-        },
-      }}
+      title="Autoriser une adresse"
+      confirmLabel="Ajouter"
+      onConfirm={add}
+      form
     >
-      <DialogTitle>Nouvel email</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="email"
-          name="email"
-          label="Email"
-          type="email"
-          fullWidth
-          variant="standard"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          Annuler
-        </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? <CircularProgress /> : 'Ajouter'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <DialogContentText variant="body2">
+        La personne pourra se connecter avec le compte Google de cette adresse.
+      </DialogContentText>
+      <TextField
+        autoFocus
+        required
+        margin="dense"
+        id="email"
+        name="email"
+        label="Adresse email"
+        type="email"
+        slotProps={{ htmlInput: { maxLength: 254 } }}
+        autoComplete="off"
+        fullWidth
+        variant="standard"
+      />
+    </ActionDialog>
   );
 };
 

@@ -1,50 +1,33 @@
-import { auth } from '@/app/auth';
 import prisma from '@/lib/db/prisma';
-import { SheetWithUser } from '@/lib/db/sheet';
-import { NextRequest, NextResponse } from 'next/server';
+import { SheetGetResult } from '@/lib/db/sheet';
+import { handle, readJson, requireUser } from '@/lib/server/api';
+import { listSheets } from '@/lib/server/queries';
+import { readName } from '@/lib/sheet/fields';
+import { NextRequest } from 'next/server';
 
-export interface SheetGetResult {
-  own: SheetWithUser[];
-  others: SheetWithUser[];
-}
-
-export async function GET(): Promise<NextResponse<SheetGetResult>> {
-  const session = await auth();
-
-  const sheets: SheetWithUser[] = await prisma.sheet.findMany({
-    where: { userId: session?.user.id },
-    include: { user: true },
+export const GET = () =>
+  handle(async (): Promise<SheetGetResult> => {
+    const user = await requireUser();
+    return listSheets(user.id);
   });
 
-  const others: SheetWithUser[] = await prisma.sheet.findMany({
-    where: {
-      userId: {
-        not: session?.user.id,
+export const POST = (req: NextRequest) =>
+  handle(async () => {
+    const user = await requireUser();
+    const { name } = await readJson(req);
+
+    return prisma.sheet.create({
+      data: {
+        user: { connect: { id: user.id } },
+        // Sans espaces autour ; vide (ou fait d'espaces) : « Sans nom ».
+        name: readName(name) ?? 'Sans nom',
+        // Une fiche neuve n'a pas d'Aspect : la valeur par défaut du schéma
+        // (« Type ») s'écrivait à l'encre bleue comme si le joueur l'avait
+        // choisie. Les fiches existantes gardent la leur.
+        aspect: null,
       },
-    },
-    include: { user: true },
+    });
   });
 
-  return NextResponse.json({
-    own: sheets,
-    others,
-  });
-}
-
-type CreateQueryParam = {
-  name: string;
-  userId: string;
-};
-
-export async function POST(req: NextRequest) {
-  const params: CreateQueryParam = await req.json();
-
-  const sheet = await prisma.sheet.create({
-    data: {
-      user: { connect: { id: params.userId } },
-      name: params.name,
-    },
-  });
-
-  return NextResponse.json(sheet);
-}
+// Réponses propres à l'utilisateur·ice connecté·e : jamais mises en cache.
+export const dynamic = 'force-dynamic';

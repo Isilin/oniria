@@ -10,8 +10,8 @@ const WhitelistAddButton = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} fullWidth>
-        <AddIcon />
+      <Button startIcon={<AddIcon />} onClick={() => setOpen(true)}>
+        Ajouter une adresse
       </Button>
       <CreateWhitelistDialog open={open} onClose={() => setOpen(false)} />
     </>

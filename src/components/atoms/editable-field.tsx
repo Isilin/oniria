@@ -1,75 +1,192 @@
 'use client';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { TextField, Typography } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { STRING_MAX, TEXT_MAX } from '@/lib/sheet/fields';
+import { MEDIA, MOTION } from '@/theme/theme';
+import { TextField, Typography, TypographyProps } from '@mui/material';
+import { KeyboardEvent, useState } from 'react';
+import Written from './written';
+
+export type EditableValue = string | number | null | undefined;
 
 interface Props {
-  value: string | number;
-  onChange?: (value: string | number) => void;
+  value: EditableValue;
+  onChange?: (value: string) => void;
+  type?: 'text' | 'number' | 'multiline';
+  placeholder?: string;
+  /** Si faux, la valeur est affichée en lecture seule. */
+  editable?: boolean;
+  /** Affichage (ex. chiffres romains) quand le champ n'est pas en édition. */
+  display?: string;
+  minWidth?: number;
+  fullWidth?: boolean;
+  /**
+   * Longueur maximale. Par défaut, celle que le serveur accepte : un champ
+   * court (200) sur une ligne, un texte sur plusieurs.
+   */
+  maxLength?: number;
+  'aria-label'?: string;
+  /**
+   * Style du texte affiché. Par défaut `hand` : ce que le joueur écrit est
+   * manuscrit, à l'encre bleue (voir DESIGN.md).
+   */
+  variant?: TypographyProps['variant'];
 }
 
-const EditableField = ({ value, onChange }: Props) => {
-  const [currentValue, setCurrentValue] = useState(value);
-  const [focused, setFocused] = useState(false);
+const EditableField = ({
+  value,
+  onChange,
+  type = 'text',
+  placeholder = '-',
+  editable = true,
+  display,
+  minWidth,
+  fullWidth,
+  maxLength,
+  'aria-label': ariaLabel,
+  variant = 'hand',
+}: Props) => {
+  const asString = value === null || value === undefined ? '' : `${value}`;
+  // Brouillon pendant l'édition ; null = on affiche la valeur reçue, qui
+  // reste donc à jour si elle change ailleurs (recalcul, autre onglet…).
+  const [draft, setDraft] = useState<string | null>(null);
+  const focused = draft !== null;
+  const currentValue = draft ?? asString;
+  const setFocused = (on: boolean) => setDraft(on ? asString : null);
+  const setCurrentValue = setDraft;
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentValue(e.target.value);
+  const commit = () => {
+    if (draft !== null && draft !== asString) onChange?.(draft);
+    setDraft(null);
   };
 
-  const handleBlur = () => {
-    setFocused(false);
-    if (value !== currentValue) {
-      onChange?.(currentValue);
-    }
+  const cancel = () => setDraft(null);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') cancel();
+    if (e.key === 'Enter' && (type !== 'multiline' || e.ctrlKey)) commit();
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      setFocused(false);
-      if (value !== currentValue) {
-        onChange?.(currentValue);
-      }
-    }
-  };
+  const shown = display ?? (asString || placeholder);
+  const handwritten = variant === 'hand';
+  // L'encre bleue pour ce qui est écrit ; le tiret d'une case vide reste pâle.
+  const ink = !asString
+    ? 'text.secondary'
+    : variant === 'inherit'
+      ? 'inherit'
+      : handwritten
+        ? 'primary.main'
+        : 'text.primary';
+
+  if (!editable) {
+    return (
+      <Typography
+        variant={variant}
+        component="span"
+        sx={{
+          color: ink,
+          whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+          // Un mot sans fin (une adresse, un nom collé) passe à la ligne au
+          // lieu de déborder, même dans une rangée « libellé : valeur » ; un
+          // tableau garde sa largeur et défile.
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
+        }}
+      >
+        <Written value={shown}>{shown}</Written>
+      </Typography>
+    );
+  }
+
+  if (!focused) {
+    // Au repos, une valeur modifiable se lit comme du texte : le crayon et le
+    // souligné n'apparaissent qu'au survol ou au focus. Tab passe d'une
+    // valeur à l'autre ; Entrée ou Espace ouvre l'édition.
+    return (
+      <Typography
+        variant={variant}
+        component="span"
+        role="button"
+        tabIndex={0}
+        aria-label={ariaLabel ? `Modifier ${ariaLabel}` : undefined}
+        onClick={() => setFocused(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setFocused(true);
+          }
+        }}
+        sx={{
+          color: ink,
+          cursor: 'pointer',
+          borderBottom: '1px dashed transparent',
+          whiteSpace: type === 'multiline' ? 'pre-line' : undefined,
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
+          '& .edit-mark': {
+            opacity: 0,
+            transition: `opacity ${MOTION.quick}ms ease-out`,
+          },
+          ':hover, :focus-visible': { borderBottomColor: 'text.secondary' },
+          ':hover .edit-mark, :focus-visible .edit-mark': { opacity: 0.7 },
+          // Au toucher, pas de crayon : un pointillé discret signale la valeur modifiable.
+          '@media (hover: none)': {
+            '& .edit-mark': { display: 'none' },
+            borderBottom: '1px dotted',
+            borderBottomColor:
+              'color-mix(in srgb, var(--mui-palette-text-secondary) 40%, transparent)',
+          },
+          // Au doigt, une zone de 44 px autour de la valeur, invisible : « 31 »
+          // ou « 38 » se touchent sans viser, sans rien déplacer.
+          [MEDIA.touch]: {
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              width: 'max(100%, 44px)',
+              height: 'max(100%, 44px)',
+              transform: 'translate(-50%, -50%)',
+            },
+          },
+        }}
+      >
+        <Written value={shown}>{shown}</Written>
+        <EditIcon
+          className="edit-mark"
+          aria-hidden
+          sx={{ fontSize: 11, verticalAlign: 'top', ml: 0.25 }}
+        />
+      </Typography>
+    );
+  }
 
   return (
-    <>
-      {!focused ? (
-        <Typography
-          display="inline"
-          onClick={() => setFocused(true)}
-          variant="body1"
-          sx={{
-            cursor: 'pointer',
-            ':hover': { borderBottom: '2px solid white' },
-          }}
-          color="textSecondary"
-        >
-          {currentValue}{' '}
-          <EditIcon sx={{ fontSize: 10, verticalAlign: 'top' }} />
-        </Typography>
-      ) : (
-        <TextField
-          autoFocus
-          id="value"
-          name="value"
-          type="text"
-          value={currentValue}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyPress}
-          variant="standard"
-          slotProps={{ htmlInput: { style: { padding: 0 } } }}
-          sx={{
-            width:
-              (typeof currentValue === 'string' ? currentValue.length + 1 : 3) *
-              7,
-            height: 10,
-          }}
-        />
-      )}
-    </>
+    <TextField
+      autoFocus
+      value={currentValue}
+      onChange={(e) => setCurrentValue(e.target.value)}
+      onBlur={commit}
+      onKeyDown={handleKeyDown}
+      variant="standard"
+      type={type === 'number' ? 'number' : 'text'}
+      multiline={type === 'multiline'}
+      fullWidth={fullWidth}
+      slotProps={{
+        htmlInput: {
+          'aria-label': ariaLabel,
+          maxLength:
+            type === 'number'
+              ? undefined
+              : (maxLength ?? (type === 'multiline' ? TEXT_MAX : STRING_MAX)),
+        },
+      }}
+      sx={{
+        minWidth: minWidth ?? (type === 'number' ? 60 : 120),
+        maxWidth: fullWidth ? undefined : 400,
+      }}
+    />
   );
 };
 
