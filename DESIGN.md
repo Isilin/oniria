@@ -367,7 +367,7 @@ Tables keep a handwritten name readable: the name column never narrows below 9re
 ### Struck Elements
 The MJ can strike out an element of the sheet instead of deleting it (a trait, an aspect, a potential, a skill, equipment, characteristic points). It stays on the paper, the way a line is crossed out on a paper sheet.
 - **Row menu:** each row of a list and each skill ends with a small ⋮ (`MoreActions`, small): "Rayer" and, on a struck row, "Rétablir" for the MJ; "Supprimer" ("Retirer" for a skill) in erreur ink. It replaces the bin. A struck row has no menu for a player.
-- **A struck row** (`Struck`): a 2px erreur strike line through its text, which turns pale (handwritten ink too); its values cannot be edited. Under the name, `LostNote` says "Rayé" in erreur ink, with "· 15 XP perdus" when XP was lost, and the date in its tooltip. A struck skill's degree chip turns pale and neutral.
+- **A struck row** (`Struck`): a 2px erreur strike line through its text, which turns pale (handwritten ink too); its values cannot be edited. The strike says it all, so no "Rayé" label: when XP was lost, `LostNote` says "15 XP perdus" under the name in erreur ink, with the date in its tooltip. A struck skill's degree chip turns pale and neutral.
 - **Struck characteristic points** (`LostPoints`): their number, typed small in erreur ink and struck, sits before the value ("~~5~~ 35"); the tooltip says how many points were struck. For the MJ it is a button that opens "Rétablir 5 points".
 - **Dialogs:** striking an element of a validated part asks first ("Rayer un élément", the lost XP in erreur, avertissement action "Rayer"). Taking back a validated element offers "Rembourser" or "Rayer"; restoring opens the purchase dialog titled "Rétablir un élément rayé" (or "Rétablir les points rayés"), where the MJ can offer it. Deleting a struck row always asks first.
 
@@ -379,7 +379,7 @@ The sheet is used beside Discord on a computer and on its own on a phone, so it 
   - an editable value keeps its size but gets an invisible 44px touch area, so "31" or "38" can be tapped without aiming;
   - below 520px, characteristic groups go one per row so that label, value and the larger −|+ sit side by side;
   - a rule tooltip opens on a tap, not a long press, and stays 5 seconds.
-- **Tables on a phone** (below 600px): each row becomes a block on the paper, with no box around it. The check boxes (Porté) and the handwritten name lead, the row menu is at the end of the line (with "Rayé" under a struck name), and the other columns follow as typed labels over their values, two per line; descriptions take the full line. Nothing scrolls sideways.
+- **Tables on a phone** (below 600px): each row becomes a block on the paper, with no box around it. The check boxes (Porté) and the handwritten name lead, the row menu is at the end of the line (with the lost XP under a struck name), and the other columns follow as typed labels over their values, two per line; descriptions take the full line. Nothing scrolls sideways.
 - **Tabs on a phone** have no arrows: they scroll under the finger, and the tab cut at the edge shows there is more.
 - **Wide screens** (from 1800px): the sheet widens from 1400px to 1680px, so the inventory tables (fifteen columns for a ranged weapon) fit without scrolling.
 
@@ -550,7 +550,7 @@ A sheet, or every sheet of a table, can leave the app as a PDF (`src/lib/pdf/`).
 - **Then the tabs, in screen order,** from a new page: Traits, Schémas, Compétences (types stacked, three categories per row, the tree indented), Sortilèges, Golem, Inventaire (ranged weapons as one block per weapon, like on a phone), Notes (on a new page when not empty, same notebook rhythm on 18pt lines) and the full XP history, batches expanded, its header repeated on each page.
 - **A table's export** opens on a cover: the table's name in the hand, the number of characters, the export date, and the overview table with its chips; each name links to its sheet.
 - **Never split a row:** table rows, stat rows and play-page blocks stay whole; a heading never ends a page.
-- **Struck elements** print as on screen: the row pales, a 0.9pt erreur line crosses it, "Rayé · N XP perdus" sits under its first column; struck characteristic points print struck in erreur before the value; the XP bars show the lost part hatched in erreur.
+- **Struck elements** print as on screen: the row pales, a 0.9pt erreur line crosses it, "N XP perdus" sits under its first column when XP was lost; struck characteristic points print struck in erreur before the value; the XP bars show the lost part hatched in erreur.
 - **What it shows:** the saved sheet, never pending points. No rules text (skill and potential descriptions stay in the app's tooltips).
 - **Remote images** (portrait, note images) are read by the server, never from an internal address, reduced to JPEG on the paper; one that cannot be read gives way to the tint moon or to "Image indisponible".
 

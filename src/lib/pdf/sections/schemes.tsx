@@ -174,7 +174,7 @@ const SkillNode = ({
         </Text>
         {lost && <StrikeLine top={6} />}
       </View>
-      {lost && (
+      {lost && !!owned.lostXp && (
         <View style={{ paddingLeft: depth * 9 + 26, marginTop: -1 }}>
           <LostNote lostXp={owned.lostXp} />
         </View>

@@ -268,12 +268,16 @@ export interface StruckRow {
   lostXp?: number | null;
 }
 
-/** Sous un élément rayé : « Rayé », et l'XP qu'il a fait perdre, en rouge. */
-export const LostNote = ({ lostXp }: { lostXp?: number | null }) => (
-  <Text style={[s.caption, { color: INK.error, fontSize: 6, marginTop: 1 }]}>
-    {`Rayé${lostXp ? ` · ${lostXp}\u00a0XP perdus` : ''}`}
-  </Text>
-);
+/**
+ * Sous un élément rayé : l'XP qu'il a fait perdre, en rouge. Le trait suffit
+ * à dire qu'il est rayé : rien quand aucune XP n'a été perdue.
+ */
+export const LostNote = ({ lostXp }: { lostXp?: number | null }) =>
+  lostXp ? (
+    <Text style={[s.caption, { color: INK.error, fontSize: 6, marginTop: 1 }]}>
+      {`${lostXp} XP perdus`}
+    </Text>
+  ) : null;
 
 /**
  * Le trait d'encre rouge qui raye une ligne, de bout en bout, à mi-hauteur

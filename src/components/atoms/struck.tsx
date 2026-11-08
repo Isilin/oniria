@@ -53,8 +53,9 @@ const lostDate = (lostAt: Date | string) =>
   });
 
 /**
- * Sous un élément rayé : « Rayé », et l'XP qu'il a fait perdre, en rouge.
- * La date est en infobulle.
+ * Sous un élément rayé : l'XP qu'il a fait perdre, en rouge, et la date en
+ * infobulle. Le trait suffit à dire qu'il est rayé : rien quand aucune XP
+ * n'a été perdue.
  */
 export const LostNote = ({
   lostAt,
@@ -62,19 +63,19 @@ export const LostNote = ({
 }: {
   lostAt: Date | string;
   lostXp?: number | null;
-}) => (
-  <Tooltip title={`Rayé par le MJ le ${lostDate(lostAt)}`} describeChild>
-    <Typography
-      variant="caption"
-      color="error"
-      tabIndex={0}
-      sx={{ display: 'block', cursor: 'help', lineHeight: 1.3 }}
-    >
-      Rayé
-      {lostXp ? ` · ${lostXp} XP perdus` : ''}
-    </Typography>
-  </Tooltip>
-);
+}) =>
+  lostXp ? (
+    <Tooltip title={`Rayé par le MJ le ${lostDate(lostAt)}`} describeChild>
+      <Typography
+        variant="caption"
+        color="error"
+        tabIndex={0}
+        sx={{ display: 'block', cursor: 'help', lineHeight: 1.3 }}
+      >
+        {lostXp}&nbsp;XP perdus
+      </Typography>
+    </Tooltip>
+  ) : null;
 
 /**
  * Les points d'une caractéristique rayés par le MJ : leur nombre, barré en

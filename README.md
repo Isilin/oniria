@@ -141,7 +141,7 @@ d'un trait rouge, et :
 - il n'a plus **aucun effet** : bonus du Corpus, balance des traits innés,
   prérequis d'une compétence, protection et encombrement de l'équipement ;
 - dans une partie validée, l'XP payée pour lui est **perdue** : une écriture
-  « XP perdue » au journal, « Rayé · N XP perdus » en rouge sous son nom, et
+  « XP perdue » au journal, « N XP perdus » en rouge sous son nom, et
   une part « Perdue » hachurée de rouge dans la barre d'XP ;
 - il ne compte plus dans la valeur de la fiche, ni dans le rang du Corpus :
   avec trois aspects dont un rayé, le suivant coûte 15 XP ;

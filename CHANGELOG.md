@@ -51,7 +51,7 @@ Première version complète des fiches de personnages d'Oniria.
   supprimer (traits, aspects du Corpus, potentiels, compétences, Âmée,
   sortilèges, golems, équipement, et des points de caractéristique). Il
   reste sur la fiche, barré d'un trait rouge et sans aucun effet, et l'XP
-  payée pour lui est perdue : « Rayé · 15 XP perdus » sous son nom, une
+  payée pour lui est perdue : « 15 XP perdus » sous son nom, une
   part « Perdue » hachurée de rouge dans la barre d'XP, une écriture « XP
   perdue » au journal. Les points rayés restent barrés devant la valeur.
   Le MJ peut rétablir un élément, offert ou racheté avec l'XP du
