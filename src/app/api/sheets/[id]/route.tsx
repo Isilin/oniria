@@ -9,7 +9,12 @@ import {
   requireUser,
 } from '@/lib/server/api';
 import { findSheet } from '@/lib/server/queries';
-import { chargePoints, lockSheet, readXpPayload } from '@/lib/server/xp';
+import {
+  chargePoints,
+  lockSheet,
+  readXpPayload,
+  withStruckPoints,
+} from '@/lib/server/xp';
 import { SHEET_FIELDS, sanitizeFields, STAT_KEYS } from '@/lib/sheet/fields';
 import { NextRequest } from 'next/server';
 
@@ -26,8 +31,9 @@ export const GET = (req: NextRequest, { params: paramsPromise }: Params) =>
 
 /**
  * Modifie la fiche. Changer des caractéristiques d'une partie validée est un
- * achat (ou, pour le MJ, une baisse avec remboursement ou perte) : son
- * paiement est dans `xp` (répartition par partie dans `xp.splits`).
+ * achat (ou, pour le MJ, une baisse avec remboursement, ou sans : les points
+ * sont alors rayés) : son paiement est dans `xp` (répartition par partie
+ * dans `xp.splits`).
  *
  * Renvoie seulement les champs de la fiche (pas ses listes) : le client les
  * fusionne avec ce qu'il a déjà, plus les écritures d'XP s'il y en a.
@@ -68,13 +74,16 @@ export const PATCH = (req: NextRequest, { params: paramsPromise }: Params) =>
       const target = Object.fromEntries(
         STAT_KEYS.filter((key) => key in data).map((key) => [key, data[key]]),
       ) as Partial<Record<CharacteristicKey, number | null>>;
-      const addedXpEntries = await chargePoints(
+      const { entries: addedXpEntries, struck } = await chargePoints(
         tx,
         params.id,
         { current, target },
         user,
         payload,
       );
+      if (Object.keys(struck).length) {
+        data.lostPoints = withStruckPoints(current?.lostPoints, struck);
+      }
       const sheet = await tx.sheet.update({ where: { id: params.id }, data });
       // Les écritures ajoutées au journal, que le client ajoute à la suite.
       return addedXpEntries.length ? { ...sheet, addedXpEntries } : sheet;
