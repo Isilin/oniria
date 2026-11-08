@@ -2,6 +2,7 @@
 
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { CHARACTERISTICS, characteristicCost, GROUPS } from '@/lib/rules';
+import { lostPointsOf } from '@/lib/rules/lost';
 import { CHARACTERISTIC_MAX } from '@/lib/rules/xp';
 import { MEDIA, RULES } from '@/theme/theme';
 import { Box, Tooltip } from '@mui/material';
@@ -9,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import PreviewValue from '../atoms/preview-value';
 import Written from '../atoms/written';
 import ScopeLock from '../atoms/scope-lock';
+import { LostPoints } from '../atoms/struck';
 import PointStepper, { PendingPoints } from '../molecules/point-stepper';
 import SectionCard from '../molecules/section-card';
 import StatRow from '../molecules/stat-row';
@@ -25,7 +27,18 @@ const nextPointCost = (value: number) =>
  * un par un, en aperçu, avant d'être validés (barre des points en attente).
  */
 const CharactersCard = ({ id }: { id: string }) => {
-  const { computed, base, canEdit, isLocked, points } = useSheet(id);
+  const {
+    sheet,
+    computed,
+    base,
+    canEdit,
+    isAdmin,
+    isLocked,
+    points,
+    restorePoints,
+  } = useSheet(id);
+  // Points rayés par le MJ : barrés devant la valeur.
+  const lost = lostPointsOf(sheet.lostPoints);
 
   return (
     <SectionCard title="Caractères" section="characters">
@@ -116,6 +129,15 @@ const CharactersCard = ({ id }: { id: string }) => {
                       ) : undefined
                     }
                   >
+                    {!!lost[c.key] && (
+                      <LostPoints
+                        points={lost[c.key]}
+                        label={c.label}
+                        onRestore={
+                          isAdmin ? () => restorePoints(c.key) : undefined
+                        }
+                      />
+                    )}
                     {canEdit && (
                       <PendingPoints
                         points={pending}

@@ -350,7 +350,7 @@ describe('éléments rayés', () => {
     corpus: [
       { id: 'c1', name: 'Origine' },
       { id: 'c2', name: 'Cicatrice', lostAt: '2026-11-08' },
-      { id: 'c3', name: 'Stature' },
+      { id: 'c3', name: 'Haute', type: { name: 'Stature' } },
     ],
     skills: [
       { id: 's1', skill: athletics },
@@ -376,11 +376,11 @@ describe('éléments rayés', () => {
       target: 'skill:s1',
       scope: 'general',
       delta: -10,
-      label: 'Compétence : Athlétisme (rayé)',
+      label: 'Compétence : Athlétisme (rayée)',
     });
     expect(itemChange(sheet, 'skills', 's2', 'restore')).toMatchObject({
       delta: 10,
-      label: 'Compétence : Athlétisme (rétabli)',
+      label: 'Compétence : Athlétisme (rétablie)',
     });
     expect(itemChange(sheet, 'spyree', 'p1', 'strike')).toMatchObject({
       target: 'spyree:p1',
@@ -398,7 +398,7 @@ describe('éléments rayés', () => {
     expect(itemChange(sheet, 'corpus', 'c3', 'strike')).toMatchObject({
       target: 'corpus',
       delta: -10,
-      label: 'Corpus : aspect « Stature » rayé (2 → 1)',
+      label: 'Corpus : aspect « Stature : Haute » rayé (2 → 1)',
     });
     expect(itemChange(sheet, 'corpus', 'c2', 'restore')).toMatchObject({
       delta: 15,

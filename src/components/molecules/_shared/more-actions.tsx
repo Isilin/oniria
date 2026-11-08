@@ -27,13 +27,20 @@ interface Props {
    * montre la petite roue et ne rouvre pas le menu.
    */
   busy?: boolean;
+  /** `small` : dans une ligne de tableau. */
+  size?: 'small' | 'medium';
 }
 
 /**
  * Actions rares ou destructrices, rangées hors de la ligne de navigation
  * pour qu'un clic sur « retour » ne tombe jamais dessus.
  */
-const MoreActions = ({ label, actions, busy = false }: Props) => {
+const MoreActions = ({
+  label,
+  actions,
+  busy = false,
+  size = 'medium',
+}: Props) => {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
   return (
@@ -43,6 +50,7 @@ const MoreActions = ({ label, actions, busy = false }: Props) => {
             pose sur son enveloppe. */}
         <span>
           <IconButton
+            size={size}
             aria-label={label}
             aria-haspopup="menu"
             aria-expanded={Boolean(anchor)}
@@ -61,7 +69,7 @@ const MoreActions = ({ label, actions, busy = false }: Props) => {
                 disableShrink
               />
             ) : (
-              <MoreIcon />
+              <MoreIcon fontSize={size} />
             )}
           </IconButton>
         </span>

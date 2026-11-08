@@ -3,11 +3,12 @@
 import { RULES } from '@/theme/theme';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import RestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import StrikeIcon from '@mui/icons-material/StrikethroughS';
 import {
   Box,
   Button,
   Checkbox,
-  IconButton,
   MenuItem,
   Select,
   Table,
@@ -23,7 +24,9 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { ReactNode, useState } from 'react';
 import EditableField from '../atoms/editable-field';
+import { LostNote, Struck } from '../atoms/struck';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
+import MoreActions, { MoreAction } from '../molecules/_shared/more-actions';
 
 type Row = { id: string } & Record<string, unknown>;
 
@@ -67,7 +70,16 @@ interface Props<R extends Row> {
   deletable?: boolean;
   /** Faux : pas de confirmation (un autre dialogue s'en charge). */
   confirmDelete?: boolean;
+  /**
+   * MJ : rayer un élément (il reste sur la fiche, barré et sans effet) et le
+   * rétablir. Seul le MJ supprime un élément rayé.
+   */
+  onStrike?: (id: string) => void;
+  onRestore?: (id: string) => void;
 }
+
+/** Rayé par le MJ (voir src/lib/rules/lost.ts). */
+const isStruck = (row: Row) => !!row.lostAt;
 
 const toValue = (type: Column<Row>['type'], raw: string) => {
   if (type === 'number') return raw === '' ? null : Number(raw);
@@ -88,6 +100,8 @@ function CollectionTable<R extends Row>({
   itemLabel,
   deletable = true,
   confirmDelete = true,
+  onStrike,
+  onRestore,
 }: Props<R>) {
   const [toDelete, setToDelete] = useState<R | null>(null);
   // Sur téléphone, un tableau de quinze colonnes ne se lit qu'en défilant de
@@ -95,7 +109,17 @@ function CollectionTable<R extends Row>({
   const theme = useTheme();
   const phone = useMediaQuery(theme.breakpoints.down('sm'));
 
+  /** Une ligne rayée ne se modifie plus : le MJ la rétablit d'abord. */
   const renderCell = (row: R, column: Column<R>) => {
+    const lost = isStruck(row);
+    return lost ? (
+      <Struck>{renderValue(row, column, false)}</Struck>
+    ) : (
+      renderValue(row, column, editable)
+    );
+  };
+
+  const renderValue = (row: R, column: Column<R>, editable: boolean) => {
     if (column.render) return column.render(row);
     const value = row[column.key] as string | number | boolean | null;
 
@@ -178,17 +202,69 @@ function CollectionTable<R extends Row>({
       column.label
     );
 
-  const deleteButton = (row: R) =>
-    editable &&
-    deletable && (
-      <IconButton
+  const label = (row: R) =>
+    (itemLabel?.(row) ?? (row.name as string)) || 'cet élément';
+
+  // Rayer et rétablir (MJ), supprimer : rangés dans le menu de la ligne.
+  // Un élément rayé garde la trace de ce qui a été perdu : seul le MJ le
+  // supprime, et toujours après confirmation.
+  const actionsFor = (row: R): MoreAction[] => {
+    const remove: MoreAction = {
+      label: 'Supprimer',
+      icon: <DeleteIcon fontSize="small" />,
+      danger: true,
+      onClick: () =>
+        confirmDelete || isStruck(row) ? setToDelete(row) : onDelete(row.id),
+    };
+    if (isStruck(row)) {
+      return [
+        ...(onRestore
+          ? [
+              {
+                label: 'Rétablir',
+                icon: <RestoreIcon fontSize="small" />,
+                onClick: () => onRestore(row.id),
+              },
+            ]
+          : []),
+        ...(onStrike && deletable ? [remove] : []),
+      ];
+    }
+    return [
+      ...(onStrike
+        ? [
+            {
+              label: 'Rayer',
+              icon: <StrikeIcon fontSize="small" />,
+              onClick: () => onStrike(row.id),
+            },
+          ]
+        : []),
+      ...(deletable ? [remove] : []),
+    ];
+  };
+
+  const hasActions = editable && (deletable || !!onStrike);
+
+  const rowActions = (row: R) => {
+    if (!editable) return null;
+    const actions = actionsFor(row);
+    return actions.length ? (
+      <MoreActions
         size="small"
-        aria-label="Supprimer"
-        onClick={() => (confirmDelete ? setToDelete(row) : onDelete(row.id))}
-        sx={{ flexShrink: 0 }}
-      >
-        <DeleteIcon fontSize="small" />
-      </IconButton>
+        label={`Actions sur « ${label(row)} »`}
+        actions={actions}
+      />
+    ) : null;
+  };
+
+  /** Sous le nom d'un élément rayé : ce qu'il a fait perdre. */
+  const lostNote = (row: R) =>
+    isStruck(row) && (
+      <LostNote
+        lostAt={row.lostAt as string}
+        lostXp={row.lostXp as number | null | undefined}
+      />
     );
 
   // Téléphone : le nom (ou la première colonne) en tête de bloc, les cases à
@@ -248,8 +324,9 @@ function CollectionTable<R extends Row>({
             ))}
             <Box sx={{ flex: 1, minWidth: 0 }}>
               {renderCell(row, titleColumn)}
+              {lostNote(row)}
             </Box>
-            {deleteButton(row)}
+            {rowActions(row)}
           </Box>
           {fieldColumns.length > 0 && (
             <Box
@@ -329,7 +406,7 @@ function CollectionTable<R extends Row>({
                     {columnLabel(column)}
                   </TableCell>
                 ))}
-                {editable && deletable && <TableCell sx={{ width: 40 }} />}
+                {hasActions && <TableCell sx={{ width: 40 }} />}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -347,10 +424,11 @@ function CollectionTable<R extends Row>({
                   {columns.map((column) => (
                     <TableCell key={column.key} align={column.align}>
                       {renderCell(row, column)}
+                      {column === titleColumn && lostNote(row)}
                     </TableCell>
                   ))}
-                  {editable && deletable && (
-                    <TableCell padding="none">{deleteButton(row)}</TableCell>
+                  {hasActions && (
+                    <TableCell padding="none">{rowActions(row)}</TableCell>
                   )}
                 </TableRow>
               ))}
@@ -370,10 +448,11 @@ function CollectionTable<R extends Row>({
         open={!!toDelete}
         onClose={() => setToDelete(null)}
         onValidated={() => toDelete && onDelete(toDelete.id)}
-        message={`Supprimer « ${
-          (toDelete && (itemLabel?.(toDelete) ?? (toDelete.name as string))) ||
-          'cet élément'
-        } » ?`}
+        message={
+          toDelete && isStruck(toDelete)
+            ? `Supprimer « ${label(toDelete)} » ? L'élément rayé disparaît de la fiche ; l'XP perdue reste au journal.`
+            : `Supprimer « ${toDelete ? label(toDelete) : 'cet élément'} » ?`
+        }
       />
     </Box>
   );

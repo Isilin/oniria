@@ -23,7 +23,10 @@ interface Props<K extends CollectionKey> {
   confirmDelete?: boolean;
 }
 
-/** Tableau éditable branché sur une liste de la fiche (Corpus, armes…). */
+/**
+ * Tableau éditable branché sur une liste de la fiche (Corpus, armes…). Le
+ * MJ peut y rayer un élément et le rétablir.
+ */
 function SheetCollection<K extends CollectionKey>({
   id,
   collection,
@@ -34,7 +37,16 @@ function SheetCollection<K extends CollectionKey>({
   footer,
   ...rest
 }: Props<K>) {
-  const { sheet, canEdit, createItem, updateItem, deleteItem } = useSheet(id);
+  const {
+    sheet,
+    canEdit,
+    isAdmin,
+    createItem,
+    updateItem,
+    deleteItem,
+    strikeItem,
+    restoreItem,
+  } = useSheet(id);
   if (!sheet) return null;
 
   const items = (sheet[collection] as CollectionItem<K>[]).filter(
@@ -51,6 +63,13 @@ function SheetCollection<K extends CollectionKey>({
       }
       onUpdate={(itemId, patch) => updateItem(collection, itemId, patch)}
       onDelete={(itemId) => deleteItem(collection, itemId)}
+      // Rayer et rétablir : le MJ seul.
+      onStrike={
+        isAdmin ? (itemId) => strikeItem(collection, itemId) : undefined
+      }
+      onRestore={
+        isAdmin ? (itemId) => restoreItem(collection, itemId) : undefined
+      }
       footer={
         <>
           {footer}

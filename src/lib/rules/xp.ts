@@ -468,7 +468,11 @@ export const allocate = (dues: Due[], balance: Amounts): Allocation => {
 
 /** Les listes d'une fiche qui coûtent de l'XP. */
 export interface XpItemsInput {
-  corpus?: (Strikable & { id?: string; name?: string | null })[];
+  corpus?: (Strikable & {
+    id?: string;
+    name?: string | null;
+    type?: { name: string } | null;
+  })[];
   skills?: (Strikable & {
     id: string;
     skill: {
@@ -738,7 +742,8 @@ export const itemChange = (
     const owned = sheet.skills?.find((s) => s.id === itemId);
     if (!owned || (removing && isLost(owned))) return null;
     const change = skillChange(owned.skill, removing, itemId);
-    return verb ? { ...change, label: `${change.label} (${verb})` } : change;
+    // « Compétence : Lois (rayée) ».
+    return verb ? { ...change, label: `${change.label} (${verb}e)` } : change;
   }
   if (collection === 'corpus') {
     const aspect = sheet.corpus?.find((c) => c.id === itemId);
@@ -746,7 +751,8 @@ export const itemChange = (
     const count = activeOnly(sheet.corpus).length;
     const change = corpusChange(count, removing);
     if (!verb) return change;
-    const name = aspect.name ? ` « ${aspect.name} »` : '';
+    const named = [aspect.type?.name, aspect.name].filter(Boolean).join(' : ');
+    const name = named ? ` « ${named} »` : '';
     return {
       ...change,
       label: `Corpus : aspect${name} ${verb} (${count} → ${

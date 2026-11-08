@@ -2,11 +2,13 @@
 
 import { XpAnswer, useXpDialogs } from '@/components/organisms/xp-dialogs';
 import { CharacteristicKey, ComputedSheet, computeSheet } from '@/lib/rules';
+import { activeOnly, lostPointsOf } from '@/lib/rules/lost';
 import {
   CHARACTERISTIC_MAX,
   CHARACTERISTIC_MIN,
   characteristicScope,
   corpusChange,
+  itemChange,
   planPoints,
   PointsPlan,
   Scope,
@@ -96,6 +98,16 @@ const withEntries = (current: FullSheet, entries: Entry[]): FullSheet => {
     ? { ...current, xpEntries: [...current.xpEntries, ...added] }
     : current;
 };
+
+/** Remplace un élément d'une liste de la fiche. */
+const replaceItem =
+  (collection: CollectionKey, itemId: string, next: (item: Item) => Item) =>
+  (current: FullSheet): FullSheet => ({
+    ...current,
+    [collection]: (current[collection] as Item[]).map((i) =>
+      i.id === itemId ? next(i) : i,
+    ),
+  });
 
 /** Les listes d'identifiants ne sont pas appliquées en optimiste. */
 const scalarPart = (patch: Fields) =>
@@ -241,7 +253,7 @@ export const useSheet = (id: string) => {
    * reprise pour le MJ. Rien à payer dans une partie débloquée.
    */
   const payFor = useCallback(
-    async (change: XpChange | null): Promise<Paid> => {
+    async (change: XpChange | null, title?: string): Promise<Paid> => {
       if (!sheet || !change || change.delta === 0 || !isLocked(change.scope)) {
         return {};
       }
@@ -259,6 +271,7 @@ export const useSheet = (id: string) => {
               change,
               balance: xp.left,
               isAdmin,
+              title,
             })
           : await dialogs.askRemoval({
               change,
@@ -394,7 +407,8 @@ export const useSheet = (id: string) => {
         return skill ? skillChange(skill, false) : null;
       }
       if (collection === 'corpus') {
-        return corpusChange(sheet.corpus.length, false);
+        // Le rang ne compte que les aspects actifs.
+        return corpusChange(activeOnly(sheet.corpus).length, false);
       }
       if (collection === 'spyree') {
         const potential = catalog?.potentials.find(
@@ -411,25 +425,13 @@ export const useSheet = (id: string) => {
     [sheet, catalog],
   );
 
-  /** Coût du retrait d'un élément d'une liste. */
+  /**
+   * Coût du retrait d'un élément d'une liste (rien pour un élément rayé :
+   * son XP a déjà été perdue).
+   */
   const changeForRemoval = useCallback(
-    (collection: CollectionKey, itemId: string) => {
-      if (!sheet) return null;
-      if (collection === 'skills') {
-        const owned = sheet.skills.find((s) => s.id === itemId);
-        return owned ? skillChange(owned.skill, true, itemId) : null;
-      }
-      if (collection === 'corpus') {
-        return corpusChange(sheet.corpus.length, true);
-      }
-      if (collection === 'spyree') {
-        const owned = sheet.spyree.find((s) => s.id === itemId);
-        return owned
-          ? spyreeChange(owned.potential.name, owned.level, 0, itemId)
-          : null;
-      }
-      return null;
-    },
+    (collection: CollectionKey, itemId: string) =>
+      sheet ? itemChange(sheet, collection, itemId, 'remove') : null,
     [sheet],
   );
 
@@ -524,11 +526,163 @@ export const useSheet = (id: string) => {
     [apply, fail, payFor, sheet, url],
   );
 
+  /**
+   * MJ : raye un élément. Il reste sur la fiche, barré et sans effet ; dans
+   * une partie validée, son XP est perdue (dialogue de confirmation, sauf
+   * quand le MJ vient de choisir « Rayer » en le reprenant).
+   */
+  const strikeItem = useCallback(
+    async (collection: CollectionKey, itemId: string, confirmed = false) => {
+      if (!sheet || !isAdmin) return false;
+      const change = itemChange(sheet, collection, itemId, 'strike');
+      if (!confirmed && change && change.delta < 0 && isLocked(change.scope)) {
+        if (!dialogs) return false;
+        const ok = await dialogs.askStrike({
+          change,
+          refund: suggestRefund(sheet.xpEntries, change.target, -change.delta),
+        });
+        if (!ok) return false;
+      }
+      let previous: Item | null = null;
+      await apply(
+        replaceItem(collection, itemId, (item) => {
+          previous = item;
+          return { ...item, lostAt: new Date().toISOString() };
+        }),
+      );
+      try {
+        const saved = await request<Fields>(
+          'POST',
+          `${url}/${collection}/${itemId}/lost`,
+        );
+        const { entries, rest } = splitEntries(saved);
+        await apply((current) =>
+          withEntries(
+            replaceItem(collection, itemId, () => rest as Item)(current),
+            entries,
+          ),
+        );
+        return true;
+      } catch (e) {
+        await fail(
+          e,
+          replaceItem(collection, itemId, (item) => previous ?? item),
+        );
+        return false;
+      }
+    },
+    [apply, dialogs, fail, isAdmin, isLocked, sheet, url],
+  );
+
+  /**
+   * MJ : rétablit un élément rayé. Dans une partie validée, sa valeur est un
+   * achat : offert, ou payé avec l'XP du personnage.
+   */
+  const restoreItem = useCallback(
+    async (collection: CollectionKey, itemId: string) => {
+      if (!sheet || !isAdmin) return false;
+      const paid = await payFor(
+        itemChange(sheet, collection, itemId, 'restore'),
+        'Rétablir un élément rayé',
+      );
+      if (!paid) return false;
+      let previous: Item | null = null;
+      await apply(
+        replaceItem(collection, itemId, (item) => {
+          previous = item;
+          return { ...item, lostAt: null, lostXp: null };
+        }),
+      );
+      try {
+        const saved = await request<Fields>(
+          'DELETE',
+          `${url}/${collection}/${itemId}/lost`,
+          paid,
+        );
+        const { entries, rest } = splitEntries(saved);
+        await apply((current) =>
+          withEntries(
+            replaceItem(collection, itemId, () => rest as Item)(current),
+            entries,
+          ),
+        );
+        return true;
+      } catch (e) {
+        await fail(
+          e,
+          replaceItem(collection, itemId, (item) => previous ?? item),
+        );
+        return false;
+      }
+    },
+    [apply, fail, isAdmin, payFor, sheet, url],
+  );
+
+  /**
+   * MJ : rétablit les points rayés d'une caractéristique. Ils reviennent
+   * (offerts ou rachetés, dans le dialogue des points) et la rature
+   * s'efface.
+   */
+  const restorePoints = useCallback(
+    async (key: CharacteristicKey) => {
+      if (!sheet || !isAdmin) return false;
+      const lost = lostPointsOf(sheet.lostPoints)[key] ?? 0;
+      if (!lost) return false;
+      const input = {
+        current: sheet,
+        target: {
+          [key]: Math.min(CHARACTERISTIC_MAX, (sheet[key] ?? 0) + lost),
+        },
+        unlocked: sheet.unlocked,
+        entries: sheet.xpEntries,
+      };
+      const plan = planPoints(input);
+      let paid: Paid = {};
+      if (plan.dues.length > 0) {
+        if (!dialogs) return false;
+        const answer = await dialogs.askPoints({
+          plan,
+          isAdmin,
+          evaluate: (options) => planPoints(input, options),
+          title: 'Rétablir les points rayés',
+        });
+        if (!answer) return false;
+        paid = { xp: { ...answer } };
+      }
+      try {
+        const saved = await request<Fields>(
+          'DELETE',
+          `${url}/lost-points/${key}`,
+          paid,
+        );
+        const { entries, rest } = splitEntries(saved);
+        await apply((current) =>
+          withEntries(
+            {
+              ...current,
+              [key]: rest[key] as number,
+              lostPoints: (rest.lostPoints ?? null) as FullSheet['lostPoints'],
+            },
+            entries,
+          ),
+        );
+        return true;
+      } catch (e) {
+        await fail(e);
+        return false;
+      }
+    },
+    [apply, dialogs, fail, isAdmin, sheet, url],
+  );
+
   const deleteItem = useCallback(
     async (collection: CollectionKey, itemId: string) => {
       const paid = await payFor(changeForRemoval(collection, itemId));
       if (!paid) return false;
-      const query = paid.xp?.refund === false ? '?refund=false' : '';
+      // « Rayer » plutôt que rembourser : l'élément reste, barré.
+      if (paid.xp?.refund === false) {
+        return strikeItem(collection, itemId, true);
+      }
       let removed: { item: Item; index: number } | null = null;
       await apply((current) => {
         const list = current[collection] as Item[];
@@ -542,7 +696,7 @@ export const useSheet = (id: string) => {
       try {
         const saved = await request<Fields | null>(
           'DELETE',
-          `${url}/${collection}/${itemId}${query}`,
+          `${url}/${collection}/${itemId}`,
         );
         const { entries } = splitEntries(saved);
         if (entries.length) {
@@ -559,7 +713,7 @@ export const useSheet = (id: string) => {
         return false;
       }
     },
-    [apply, changeForRemoval, fail, payFor, url],
+    [apply, changeForRemoval, fail, payFor, strikeItem, url],
   );
 
   /**
@@ -653,6 +807,11 @@ export const useSheet = (id: string) => {
     createItem,
     updateItem,
     deleteItem,
+    /** MJ : raye un élément (gardé, barré, sans effet) ou le rétablit. */
+    strikeItem,
+    restoreItem,
+    /** MJ : rétablit les points rayés d'une caractéristique. */
+    restorePoints,
     deleteSheet,
     /** MJ : attribue (ou retire) de l'XP. */
     grantXp: (grant: {

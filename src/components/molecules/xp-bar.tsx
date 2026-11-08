@@ -8,6 +8,7 @@ import { useState } from 'react';
 /** Variables CSS du thème : la couleur suit la nuit et le jour. */
 const PRIMARY = 'var(--mui-palette-primary-main)';
 const SUCCESS = 'var(--mui-palette-success-main)';
+const ERROR = 'var(--mui-palette-error-main)';
 const mix = (color: string, percent: number) =>
   `color-mix(in srgb, ${color} ${percent}%, transparent)`;
 const stripes = (color: string) =>
@@ -18,6 +19,14 @@ export const XP_BAR_PARTS = {
   spent: {
     label: 'Dépensée',
     sx: { bgcolor: 'primary.main' },
+  },
+  lost: {
+    // Rayée comme l'élément qu'elle payait : hachures d'encre rouge.
+    label: 'Perdue',
+    sx: {
+      bgcolor: mix(ERROR, 25),
+      backgroundImage: `repeating-linear-gradient(-45deg, ${ERROR} 0 2px, transparent 2px 6px)`,
+    },
   },
   pending: {
     label: 'À payer à la validation',
@@ -49,7 +58,10 @@ interface Props {
   description?: string;
   /** XP gagnée (le total). */
   gained: number;
+  /** XP dépensée, XP perdue comprise. */
   spent: number;
+  /** Part de la dépensée qui a été perdue (éléments rayés). */
+  lost?: number;
   /** XP restante (gagnée − dépensée), négative en cas de dépassement. */
   left: number;
   /** Part de la restante réservée à la validation de la création ou du reset. */
@@ -60,13 +72,15 @@ interface Props {
 
 /**
  * Une catégorie d'XP : le total, et une barre dont on survole chaque partie
- * (dépensée, à payer à la validation, restante) pour en voir la valeur.
+ * (dépensée, perdue, à payer à la validation, restante) pour en voir la
+ * valeur.
  */
 const XpBar = ({
   label,
   description,
   gained,
   spent,
+  lost = 0,
   left,
   pending = 0,
   draft = 0,
@@ -84,8 +98,11 @@ const XpBar = ({
   const negative = Math.max(0, -left);
   const reserved = Math.min(pending, Math.max(0, left));
   const drafted = Math.min(draft, Math.max(0, left - reserved));
+  const invested = Math.max(0, spent - negative);
+  const wasted = Math.min(Math.max(0, lost), invested);
   const parts: { part: XpBarPart; value: number }[] = [
-    { part: 'spent' as const, value: Math.max(0, spent - negative) },
+    { part: 'spent' as const, value: invested - wasted },
+    { part: 'lost' as const, value: wasted },
     { part: 'negative' as const, value: negative },
     { part: 'pending' as const, value: reserved },
     { part: 'draft' as const, value: drafted },

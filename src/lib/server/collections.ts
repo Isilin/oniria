@@ -241,7 +241,12 @@ const chargeItem = (
 const corpusOf = (tx: Tx, sheetId: string) =>
   tx.corpus.findMany({
     where: { sheetId },
-    select: { id: true, name: true, lostAt: true },
+    select: {
+      id: true,
+      name: true,
+      lostAt: true,
+      type: { select: { name: true } },
+    },
   });
 
 interface XpItems extends XpItemsInput {

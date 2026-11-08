@@ -83,6 +83,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
   const { consistency } = saved;
   const legend: XpBarPart[] = [
     'spent',
+    ...(sum(xp.lost) > 0 ? (['lost'] as const) : []),
     ...(sum(xp.allocation.total) > 0 ? (['pending'] as const) : []),
     ...(sum(points.plan.spending) > 0 ? (['draft'] as const) : []),
     'left',
@@ -161,6 +162,7 @@ const ExperienceCard = ({ id }: { id: string }) => {
                 description={pool.description}
                 gained={xp.gained[pool.key]}
                 spent={xp.spent[pool.key]}
+                lost={xp.lost[pool.key]}
                 left={xp.left[pool.key]}
                 pending={xp.allocation.total[pool.key]}
                 draft={points.plan.spending[pool.key]}
