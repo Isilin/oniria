@@ -1,5 +1,13 @@
 import type { Density } from '@/lib/preferences';
 import { alpha, createTheme, type TypographyStyle } from '@mui/material/styles';
+import {
+  CANDLE,
+  CANDLE_EXISTENCES,
+  CANDLE_INKS,
+  DAY,
+  DAY_EXISTENCES,
+  DAY_INKS,
+} from './palette';
 
 /**
  * « Le carnet d'Oniria » : la fiche est une feuille de personnage imprimée,
@@ -139,30 +147,6 @@ export const MEDIA = {
 /** Grain du papier, pour les encadrés opaques posés sur la feuille. */
 export const PAPER_GRAIN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
 
-/** Jour : la feuille sur une table claire. */
-const day = {
-  table: '#e4dcc8',
-  paper: '#efe6cf',
-  raised: '#f6efdc',
-  print: '#3b3328',
-  print2: '#665c4b',
-  pen: '#23336b',
-  guide: 'rgba(62, 79, 140, 0.12)',
-  margin: 'rgba(178, 70, 52, 0.32)',
-};
-
-/** Nuit : la même feuille à la bougie, papier sourd, table dans l'ombre. */
-const candle = {
-  table: '#0d0906',
-  paper: '#cfbc96',
-  raised: '#d9c8a3',
-  print: '#3a2a1a',
-  print2: '#4a3824',
-  pen: '#22305a',
-  guide: 'rgba(90, 52, 20, 0.13)',
-  margin: 'rgba(150, 60, 30, 0.34)',
-};
-
 /** Les états d'un élément d'interface, sur papier (les deux thèmes sont clairs). */
 const actions = (ink: string) => ({
   active: alpha(ink, 0.62),
@@ -173,7 +157,7 @@ const actions = (ink: string) => ({
   focus: alpha(ink, 0.12),
 });
 
-const sheet = (p: typeof day) => ({
+const sheet = (p: typeof DAY) => ({
   background: { default: p.table, paper: p.paper },
   text: {
     primary: p.print,
@@ -199,38 +183,31 @@ export const createOniriaTheme = (density: Density = 'comfortable') => {
       dark: {
         palette: {
           mode: 'dark',
-          ...sheet(candle),
-          primary: { main: candle.pen, contrastText: candle.raised },
+          ...sheet(CANDLE),
+          primary: { main: CANDLE.pen, contrastText: CANDLE.raised },
           // Encres d'état assombries : 4,5:1 au moins sur le papier à la bougie.
-          secondary: { main: '#77321a', contrastText: candle.raised },
-          error: { main: '#842a1c', contrastText: candle.raised },
-          warning: { main: '#78380e', contrastText: candle.raised },
-          info: { main: '#254a73', contrastText: candle.raised },
-          success: { main: '#22542f', contrastText: candle.raised },
-          existence: {
-            health: '#9a3a28',
-            stability: '#2f5a85',
-            radiance: '#86640c',
-            mai: '#5a4690',
+          secondary: {
+            main: CANDLE_INKS.secondary,
+            contrastText: CANDLE.raised,
           },
+          error: { main: CANDLE_INKS.error, contrastText: CANDLE.raised },
+          warning: { main: CANDLE_INKS.warning, contrastText: CANDLE.raised },
+          info: { main: CANDLE_INKS.info, contrastText: CANDLE.raised },
+          success: { main: CANDLE_INKS.success, contrastText: CANDLE.raised },
+          existence: { ...CANDLE_EXISTENCES },
         },
       },
       light: {
         palette: {
           mode: 'light',
-          ...sheet(day),
-          primary: { main: day.pen, contrastText: day.raised },
-          secondary: { main: '#9a4a2a', contrastText: day.raised },
-          error: { main: '#a63a2a' },
-          warning: { main: '#924716' },
-          info: { main: '#355d8a' },
-          success: { main: '#2f6640' },
-          existence: {
-            health: '#a8432f',
-            stability: '#3d6a99',
-            radiance: '#9a7414',
-            mai: '#6a55a0',
-          },
+          ...sheet(DAY),
+          primary: { main: DAY.pen, contrastText: DAY.raised },
+          secondary: { main: DAY_INKS.secondary, contrastText: DAY.raised },
+          error: { main: DAY_INKS.error },
+          warning: { main: DAY_INKS.warning },
+          info: { main: DAY_INKS.info },
+          success: { main: DAY_INKS.success },
+          existence: { ...DAY_EXISTENCES },
         },
       },
     },

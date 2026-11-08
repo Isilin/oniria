@@ -41,3 +41,5 @@ next-env.d.ts
 # Environment files
 .env.*
 .env
+# Export PDF : échantillons générés en local (scripts/pdf-samples.mjs)
+/.pdf-samples/

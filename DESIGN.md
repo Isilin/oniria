@@ -534,6 +534,17 @@ The notes editor always uses its light theme. It has a printed toolbar with a pr
 - a quote is the same hand with a 1px pen stroke in the margin;
 - inline code is typed (Courier Prime) at 0.75em, inside the line.
 
+### PDF Export (the printed sheet)
+A sheet, or every sheet of a table, can leave the app as a PDF (`src/lib/pdf/`). It is the same notebook page, printed on A4:
+- **Paper and furniture:** plain Jour paper (no grain), the double printed frame, the red margin, the title band (fleurons, stamped title, moon-phase frieze, ONIRIA) and a footer with the character's name in the hand and "p. N / M" typed, numbered per sheet. Raw colours come from `src/theme/palette.ts`; translucent inks are pre-blended on the paper.
+- **Scale:** 1px on screen ≈ 0.6pt. The three scripts keep their roles: the hand (Caveat) for what the player wrote, the typewriter (Courier Prime, roman only) for what the rules compute and for catalogue names, the stamp (Special Elite) for titles.
+- **Page one is the play page:** the plate (portrait or tint moon with the initial, tint wash as a flat radial gradient, second frame when transcendent), the Existences box with its planets (same geometry as the screen, `src/lib/sky.ts`), Caractères and Facultés beside a Combat column, then Expérience with its bars and notes (creation steps, reset, consistency check, without buttons).
+- **Then the tabs, in screen order,** from a new page: Traits, Schémas, Compétences (types stacked, three categories per row, the tree indented), Sortilèges, Golem, Inventaire (ranged weapons as one block per weapon, like on a phone), Notes (on a new page when not empty, same notebook rhythm on 18pt lines) and the full XP history, batches expanded, its header repeated on each page.
+- **A table's export** opens on a cover: the table's name in the hand, the number of characters, the export date, and the overview table with its chips; each name links to its sheet.
+- **Never split a row:** table rows, stat rows and play-page blocks stay whole; a heading never ends a page.
+- **What it shows:** the saved sheet, never pending points. No rules text (skill and potential descriptions stay in the app's tooltips).
+- **Remote images** (portrait, note images) are read by the server, never from an internal address, reduced to JPEG on the paper; one that cannot be read gives way to the tint moon or to "Image indisponible".
+
 ## Do's and Don'ts
 
 ### Do:

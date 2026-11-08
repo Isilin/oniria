@@ -4,26 +4,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 import { ReactNode } from 'react';
+import { CREATION_STEPS } from '@/lib/sheet/display';
 import Written from '../atoms/written';
 
 export type CreationStep = 1 | 2 | 3;
-
-/**
- * Les trois temps de la création, dans l'ordre (voir `creationStep`). Les
- * deux-points sont précédés d'une espace insécable : jamais en début de ligne.
- */
-export const CREATION_STEPS = [
-  "Recevoir l'XP de création du MJ",
-  'Répartir les points\u00a0: tout se modifie librement',
-  'Valider la fiche\u00a0: son coût est payé, puis elle se verrouille',
-] as const;
-
-/** Libellé court d'une étape, pour le rappel en haut de la fiche. */
-export const CREATION_STEP_SHORT = [
-  "recevoir l'XP de création du MJ",
-  'répartir les points',
-  'valider la fiche',
-] as const;
 
 type State = 'done' | 'current' | 'todo';
 

@@ -3,7 +3,11 @@
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useNotifyError } from '@/lib/hooks/use-notify-error';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { CHARACTERISTICS, meetsPrerequisite, normalizeStat } from '@/lib/rules';
+import {
+  ARMOR_TYPE_OPTIONS,
+  PREREQUISITE_STAT_OPTIONS,
+  prerequisiteOf,
+} from '@/lib/sheet/display';
 import WarningIcon from '@mui/icons-material/WarningAmber';
 import {
   Autocomplete,
@@ -32,12 +36,6 @@ type Equipment = {
 } & Record<string, unknown>;
 
 type EquipmentCollection = 'armors' | 'meleeWeapons' | 'rangeWeapons';
-
-const ARMOR_TYPES = [
-  { value: 'LOW', label: 'Légère' },
-  { value: 'PARTIAL', label: 'Partielle' },
-  { value: 'FULL', label: 'Complète' },
-];
 
 /**
  * Propriétés de l'équipement, choisies dans le catalogue. Les MJ peuvent
@@ -124,11 +122,6 @@ const Properties = ({
   );
 };
 
-const STAT_OPTIONS = CHARACTERISTICS.map((c) => ({
-  value: c.key,
-  label: c.abbr,
-}));
-
 const Prerequisite = ({
   id,
   row,
@@ -139,14 +132,7 @@ const Prerequisite = ({
   onChange: (patch: Partial<Equipment>) => void;
 }) => {
   const { computed, canEdit } = useSheet(id);
-  const met = meetsPrerequisite(
-    computed.values,
-    row.prerequisite_stat,
-    row.prerequisite_value,
-  );
-  const stat = CHARACTERISTICS.find(
-    (c) => c.key === normalizeStat(row.prerequisite_stat),
-  );
+  const { stat, text, met } = prerequisiteOf(row, computed.values);
 
   return (
     <Box
@@ -173,7 +159,7 @@ const Prerequisite = ({
                 -
               </Box>
             </MenuItem>
-            {STAT_OPTIONS.map((o) => (
+            {PREREQUISITE_STAT_OPTIONS.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
               </MenuItem>
@@ -191,7 +177,7 @@ const Prerequisite = ({
         </>
       ) : (
         <Typography variant="body1" component="span">
-          {stat ? `${stat.abbr} ${row.prerequisite_value ?? ''}` : '-'}
+          {text}
         </Typography>
       )}
       {!met && stat && (
@@ -390,7 +376,7 @@ const InventoryTab = ({ id }: { id: string }) => {
               key: 'type',
               label: 'Type',
               type: 'select',
-              options: ARMOR_TYPES,
+              options: ARMOR_TYPE_OPTIONS,
             },
             bulk,
             solidity,

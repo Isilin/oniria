@@ -3,8 +3,9 @@
 import { CatalogPotential } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
-import { CHARACTERISTICS, normalizeStat, toRoman } from '@/lib/rules';
+import { normalizeStat, toRoman } from '@/lib/rules';
 import { corpusAspectCost, SPYREE_STEPS, spyreeCost } from '@/lib/rules/xp';
+import { CORPUS_STAT_OPTIONS, potentialLabel } from '@/lib/sheet/display';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Autocomplete,
@@ -23,13 +24,6 @@ import SheetCollection from './sheet-collection';
 const SPYREE_TOOLTIP = `Prix de chaque passage de rang : ${SPYREE_STEPS.map(
   (step, i) => `${toRoman(i + 1)} ${step}`,
 ).join(', ')} XP.`;
-
-const STAT_OPTIONS = [
-  ...CHARACTERISTICS.map((c) => ({ value: c.key, label: c.label })),
-  { value: 'health', label: 'Santé' },
-];
-
-const potentialLabel = (p: CatalogPotential) => `${p.type.name} - ${p.name}`;
 
 /** Choix d'un potentiel dans le catalogue, classé par catégorie. */
 const AddPotential = ({ id }: { id: string }) => {
@@ -135,7 +129,7 @@ const SchemesCard = ({ id }: { id: string }) => {
                 key: 'stat',
                 label: 'Bonus',
                 type: 'select',
-                options: STAT_OPTIONS,
+                options: CORPUS_STAT_OPTIONS,
                 normalize: (v) => normalizeStat(v as string),
                 tooltip:
                   "Le bonus s'ajoute à la marge des facultés dont ce caractère est le majeur (ou à la santé maximale).",
