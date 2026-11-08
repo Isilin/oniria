@@ -27,10 +27,11 @@ import { LockIcon, StepMarker } from '../ornaments';
 import { Chip, InfoNote, SectionHeading } from '../primitives';
 import { CONTENT_WIDTH, INK, s } from '../styles';
 
-type Part = 'spent' | 'pending' | 'left' | 'negative';
+type Part = 'spent' | 'lost' | 'pending' | 'left' | 'negative';
 
 const PART_LABELS: Record<Part, string> = {
   spent: 'Dépensée',
+  lost: 'Perdue',
   pending: 'À payer à la validation',
   left: 'Restante',
   negative: 'Solde négatif',
@@ -76,17 +77,20 @@ const Segment = ({
       />
     );
   }
-  // Dû à la validation : rayures d'encre bleue.
+  // Dû à la validation : rayures d'encre bleue. Perdue : hachures d'encre
+  // rouge dans l'autre sens, comme l'élément rayé qu'elle payait.
+  const lost = part === 'lost';
+  const ink = lost ? INK.error : INK.pen;
   const lines = [];
   for (let k = -BAR_HEIGHT; k < width; k += 3) {
     lines.push(
       <Line
         key={k}
         x1={x + k}
-        y1={BAR_HEIGHT}
+        y1={lost ? 0 : BAR_HEIGHT}
         x2={x + k + BAR_HEIGHT}
-        y2={0}
-        stroke={INK.pen}
+        y2={lost ? BAR_HEIGHT : 0}
+        stroke={ink}
         strokeWidth={1}
       />,
     );
@@ -98,17 +102,35 @@ const Segment = ({
           <Rect x={x} y={0} width={width} height={BAR_HEIGHT} />
         </ClipPath>
       </Defs>
+      {lost && (
+        <Rect
+          x={x}
+          y={0}
+          width={width}
+          height={BAR_HEIGHT}
+          fill={INK.error}
+          fillOpacity={0.25}
+        />
+      )}
       <G clipPath={`url(#${id})`}>{lines}</G>
     </G>
   );
 };
 
-const barParts = (left: number, spent: number, pending: number) => {
+const barParts = (
+  left: number,
+  spent: number,
+  pending: number,
+  lost: number,
+) => {
   const negative = Math.max(0, -left);
   const reserved = Math.min(pending, Math.max(0, left));
+  const invested = Math.max(0, spent - negative);
+  const wasted = Math.min(Math.max(0, lost), invested);
   return (
     [
-      { part: 'spent', value: Math.max(0, spent - negative) },
+      { part: 'spent', value: invested - wasted },
+      { part: 'lost', value: wasted },
       { part: 'negative', value: negative },
       { part: 'pending', value: reserved },
       { part: 'left', value: Math.max(0, left - reserved) },
@@ -121,15 +143,19 @@ const XpBar = ({
   left,
   spent,
   pending,
+  lost = 0,
   id,
 }: {
   width: number;
   left: number;
+  /** XP dépensée, XP perdue comprise. */
   spent: number;
   pending: number;
+  /** Part de la dépensée qui a été perdue (éléments rayés). */
+  lost?: number;
   id: string;
 }) => {
-  const parts = barParts(left, spent, pending);
+  const parts = barParts(left, spent, pending, lost);
   const scale = parts.reduce((t, p) => t + p.value, 0);
   let x = 0;
   return (
@@ -179,8 +205,11 @@ const Swatch = ({ part }: { part: Part }) => (
                 ? 1
                 : 0
         }
-        spent={part === 'spent' ? 1 : part === 'negative' ? 1 : 0}
+        spent={
+          part === 'spent' || part === 'negative' || part === 'lost' ? 1 : 0
+        }
         pending={part === 'pending' ? 1 : 0}
+        lost={part === 'lost' ? 1 : 0}
       />
     </View>
     <Text style={[s.caption, { marginLeft: 3 }]}>{PART_LABELS[part]}</Text>
@@ -287,6 +316,7 @@ export const Experience = ({ model }: { model: SheetModel }) => {
   const color = draft ? INK.warning : INK.print;
   const legend: Part[] = [
     'spent',
+    ...(POOLS.some((p) => xp.lost[p.key] > 0) ? (['lost'] as const) : []),
     ...(POOLS.some((p) => xp.allocation.total[p.key] > 0)
       ? (['pending'] as const)
       : []),
@@ -345,6 +375,7 @@ export const Experience = ({ model }: { model: SheetModel }) => {
               id={`bar-${pool.key}`}
               left={xp.left[pool.key]}
               spent={xp.spent[pool.key]}
+              lost={xp.lost[pool.key]}
               pending={xp.allocation.total[pool.key]}
             />
           </View>

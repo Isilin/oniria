@@ -445,7 +445,39 @@ export const lyse = (): Sheet => {
     ],
     notes: LYSE_NOTES,
   });
-  return validated(sheet, { feel: 15, learn: 20, live: 35 });
+  // Ce que le MJ a rayé : 5 points de Force (achetés après la validation),
+  // la Technique « Esquive » (payée à la validation), une faveur perdue et
+  // un objet. L'XP payée pour eux est perdue ; la fiche reste sans écart.
+  const struck = at(20);
+  const done = validated(sheet, { feel: 15, learn: 20, live: 35 });
+  const char = { target: 'char:strength', scope: 'body' };
+  const dodge = { target: `skill:${esquive.id}`, scope: 'martial' };
+  return {
+    ...done,
+    lostPoints: { strength: 5 },
+    traits: done.traits.map((t) => (t.inborn ? t : { ...t, lostAt: struck })),
+    skills: done.skills.map((k) =>
+      k.id === esquive.id ? { ...k, lostAt: struck, lostXp: 10 } : k,
+    ),
+    items: done.items.map((i, n) => (n === 1 ? { ...i, lostAt: struck } : i)),
+    xpEntries: [
+      ...done.xpEntries,
+      entry('GAIN', 'Session 8', { live: 5 }, { day: 19 }),
+      entry('SPEND', 'Force 20 → 25', { live: 5 }, { ...char, day: 19 }),
+      entry(
+        'LOSS',
+        'Force 25 → 20 (points rayés)',
+        { live: 5 },
+        { ...char, day: 20 },
+      ),
+      entry(
+        'LOSS',
+        'Compétence : Esquive (rayée)',
+        { live: 10 },
+        { ...dodge, day: 20 },
+      ),
+    ],
+  } as Sheet;
 };
 
 /** Le Colosse : PNJ encore en création, sans rien d'autre. */
@@ -503,6 +535,7 @@ export const heavy = (): Sheet => {
       ...sheet.traits,
       ...many(14, (i) => ({
         ...sheet.traits[2],
+        lostAt: null,
         id: id('trait'),
         name: `Séquelle ${i + 1}`,
         description:

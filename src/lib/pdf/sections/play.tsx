@@ -7,6 +7,7 @@ import {
   FACULTY_COLUMNS,
   GROUPS,
 } from '@/lib/rules';
+import { lostPointsOf } from '@/lib/rules/lost';
 import { formatSigned } from '@/lib/sheet/journal';
 import type { SheetModel } from '../model';
 import { GroupTitle, SectionHeading, StatRow } from '../primitives';
@@ -17,6 +18,8 @@ const COMBAT_WIDTH = 116;
 /** Caractères : trois groupes de quatre, leur total et l'XP investie. */
 const Characters = ({ model }: { model: SheetModel }) => {
   const { computed } = model;
+  // Points rayés par le MJ : leur nombre barré en rouge, devant la valeur.
+  const lost = lostPointsOf(model.sheet.lostPoints);
   return (
     <View style={{ marginBottom: 12 }}>
       <SectionHeading title="Caractères" />
@@ -36,7 +39,25 @@ const Characters = ({ model }: { model: SheetModel }) => {
             />
             {CHARACTERISTICS.filter((c) => c.group === group.key).map((c) => (
               <StatRow key={c.key} label={c.label}>
-                <Text style={s.handValue}>{computed.values[c.key]}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                  {lost[c.key] ? (
+                    <Text
+                      style={[
+                        s.numeral,
+                        {
+                          color: INK.error,
+                          fontSize: 7.5,
+                          marginRight: 4,
+                          marginBottom: 2,
+                          textDecoration: 'line-through',
+                        },
+                      ]}
+                    >
+                      {lost[c.key]}
+                    </Text>
+                  ) : null}
+                  <Text style={s.handValue}>{computed.values[c.key]}</Text>
+                </View>
               </StatRow>
             ))}
             <Text style={[s.caption, { marginTop: 2 }]}>

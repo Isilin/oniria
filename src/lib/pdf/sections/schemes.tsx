@@ -15,7 +15,14 @@ import {
 import { rootsByType, skillTree } from '@/lib/sheet/skill-tree';
 import type { SheetModel } from '../model';
 import { SubArrow } from '../ornaments';
-import { Chip, GroupTitle, PdfTable, Section } from '../primitives';
+import {
+  Chip,
+  GroupTitle,
+  LostNote,
+  PdfTable,
+  Section,
+  StrikeLine,
+} from '../primitives';
 import { INK, s } from '../styles';
 import { pdfText } from '../text';
 
@@ -130,6 +137,7 @@ const SkillNode = ({
 }) => {
   const { skill } = owned;
   const degree = skill.degree as SkillDegree;
+  const lost = !!owned.lostAt;
   return (
     <View>
       <View
@@ -138,6 +146,7 @@ const SkillNode = ({
           alignItems: 'center',
           paddingLeft: depth * 9,
           paddingVertical: 1.2,
+          opacity: lost ? 0.55 : 1,
         }}
         wrap={false}
       >
@@ -163,7 +172,13 @@ const SkillNode = ({
             </Text>
           ) : null}
         </Text>
+        {lost && <StrikeLine top={6} />}
       </View>
+      {lost && (
+        <View style={{ paddingLeft: depth * 9 + 26, marginTop: -1 }}>
+          <LostNote lostXp={owned.lostXp} />
+        </View>
+      )}
       {(childrenOf.get(owned.skillId) ?? []).map((child) => (
         <SkillNode
           key={child.id}

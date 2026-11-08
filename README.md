@@ -24,6 +24,9 @@ MUI 9, Prisma 7 + PostgreSQL, Auth.js v5 (Google), SWR.
 - **Tables de jeu** (MJ) : ajout/retrait de personnages, vue d'ensemble
   (santé, équilibre, éclat, Maï, initiative, protection, encombrement, XP
   restante…) et distribution d'XP à plusieurs personnages.
+- **Éléments rayés** (MJ) : un élément de la fiche (trait, aspect, potentiel,
+  compétence, équipement, points de caractéristique) peut être rayé au lieu
+  d'être supprimé ; voir [Éléments rayés](#éléments-rayés).
 - **Whitelist** (MJ) : seules les adresses whitelistées peuvent se connecter.
 - **Export PDF** : une fiche complète (menu ⋯ de la fiche, pour tout le
   monde), ou toutes les fiches d'une table avec sa vue d'ensemble (MJ).
@@ -92,8 +95,9 @@ catégories ; une dépense peut en combiner plusieurs.
 4. Le MJ distribue l'XP de chaque session (fiche ou table), et peut :
    - **offrir** un achat (aucune XP dépensée) ;
    - **baisser ou retirer** un élément validé, en remboursant l'XP (dans les
-     catégories qui l'avaient payée, la dernière dépense en premier) ou en la
-     déclarant perdue ;
+     catégories qui l'avaient payée, la dernière dépense en premier) ;
+   - **rayer** un élément : il reste sur la fiche, barré, et son XP est
+     perdue (voir [Éléments rayés](#éléments-rayés)) ;
    - accorder un **reset**, complet ou d'une partie de la fiche (Corps,
      Esprit, Âme, compétences générales / spyrales / martiales, Corpus,
      Spyrée) : l'XP payée est rendue, la partie redevient libre jusqu'à la
@@ -114,8 +118,8 @@ résume les points et leur coût, avec **Valider** et **Annuler** :
 - dans une partie validée, Valider est un achat groupé : la fenêtre propose
   une répartition pour chaque partie (Corps, Esprit, Âme), modifiable, et
   n'est possible qu'avec l'XP correspondante. Le MJ peut l'offrir, et lui seul
-  peut descendre sous la valeur actuelle (remboursement ou perte). Le journal
-  garde une écriture par caractère.
+  peut descendre sous la valeur actuelle : en remboursant, ou en rayant les
+  points. Le journal garde une écriture par caractère.
 
 Tant que des points sont en attente, la fiche ne peut pas être validée, et
 quitter la page demande confirmation.
@@ -126,6 +130,32 @@ n'est pas bon, c'est-à-dire quand la valeur des parties validées diffère de
 l'XP enregistrée pour elles (par exemple une fiche reprise de l'ancienne
 version, dont les dépenses ne sont pas détaillées) ; un reset complet
 recalcule tout.
+
+### Éléments rayés
+
+Le MJ peut **rayer** un élément au lieu de le supprimer (menu ⋮ de la ligne) :
+traits, aspects du Corpus, potentiels de la Spyrée, compétences, Âmée,
+sortilèges, golems, équipement et objets. L'élément reste sur la fiche, barré
+d'un trait rouge, et :
+
+- il n'a plus **aucun effet** : bonus du Corpus, balance des traits innés,
+  prérequis d'une compétence, protection et encombrement de l'équipement ;
+- dans une partie validée, l'XP payée pour lui est **perdue** : une écriture
+  « XP perdue » au journal, « Rayé · N XP perdus » en rouge sous son nom, et
+  une part « Perdue » hachurée de rouge dans la barre d'XP ;
+- il ne compte plus dans la valeur de la fiche, ni dans le rang du Corpus :
+  avec trois aspects dont un rayé, le suivant coûte 15 XP ;
+- il ne se modifie plus, et seul le MJ peut le supprimer (rien n'est rendu).
+
+Une compétence dont d'autres compétences dépendent ne se raye pas ; une
+compétence ou un potentiel rayé ne se rachète pas : le MJ le **rétablit**,
+offert ou payé avec l'XP du personnage (dialogue d'achat). Une compétence ne
+revient que si l'un de ses prérequis est actif.
+
+**Points de caractéristique.** Quand le MJ baisse un caractère validé sans
+rembourser, les points sont rayés : Force 40 → 35, et « 5 » reste barré devant
+la valeur, même si des points sont rachetés ensuite. Un clic du MJ sur la
+rature les rétablit (offerts ou rachetés) et l'efface.
 
 Les fiches existantes avant ce système sont reprises telles quelles et
 considérées comme validées : l'XP gagnée et l'XP restante saisies à la main

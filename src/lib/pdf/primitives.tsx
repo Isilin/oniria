@@ -262,7 +262,37 @@ export const TYPED_CELL_OFFSET = 3;
  * Tableau imprimé : en-têtes tapés sur un filet de groupe, une ligne par
  * élément, jamais coupée entre deux pages.
  */
-export function PdfTable<T extends { id?: string }>({
+/** Rayé par le MJ : ce qu'il faut d'un élément pour l'imprimer barré. */
+export interface StruckRow {
+  lostAt?: Date | string | null;
+  lostXp?: number | null;
+}
+
+/** Sous un élément rayé : « Rayé », et l'XP qu'il a fait perdre, en rouge. */
+export const LostNote = ({ lostXp }: { lostXp?: number | null }) => (
+  <Text style={[s.caption, { color: INK.error, fontSize: 6, marginTop: 1 }]}>
+    {`Rayé${lostXp ? ` · ${lostXp}\u00a0XP perdus` : ''}`}
+  </Text>
+);
+
+/**
+ * Le trait d'encre rouge qui raye une ligne, de bout en bout, à mi-hauteur
+ * de la première ligne d'écriture.
+ */
+export const StrikeLine = ({ top = 7 }: { top?: number }) => (
+  <View
+    style={{
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top,
+      borderTopWidth: 0.9,
+      borderTopColor: INK.error,
+    }}
+  />
+);
+
+export function PdfTable<T extends { id?: string } & StruckRow>({
   columns,
   rows,
   empty,
@@ -292,28 +322,41 @@ export function PdfTable<T extends { id?: string }>({
           </View>
         ))}
       </View>
-      {rows.map((row, r) => (
-        <View
-          key={row.id ?? r}
-          style={[{ flexDirection: 'row', paddingVertical: 2.2 }, s.hairline]}
-          wrap={false}
-        >
-          {columns.map((column, i) => (
-            <View key={i} style={cellStyle(column)}>
-              {column.render ? (
-                column.render(row)
-              ) : column.hand ? (
-                <Hand value={column.value?.(row)} style={{ fontSize: size }} />
-              ) : (
-                <Typed
-                  value={column.value?.(row)}
-                  style={{ fontSize: 7.5, paddingTop: TYPED_CELL_OFFSET }}
-                />
-              )}
-            </View>
-          ))}
-        </View>
-      ))}
+      {rows.map((row, r) => {
+        // Un élément rayé : pâli, barré d'un trait rouge, avec ce qu'il a
+        // fait perdre sous la première colonne.
+        const lost = !!row.lostAt;
+        return (
+          <View
+            key={row.id ?? r}
+            style={[{ flexDirection: 'row', paddingVertical: 2.2 }, s.hairline]}
+            wrap={false}
+          >
+            {columns.map((column, i) => (
+              <View
+                key={i}
+                style={[cellStyle(column), lost ? { opacity: 0.55 } : {}]}
+              >
+                {column.render ? (
+                  column.render(row)
+                ) : column.hand ? (
+                  <Hand
+                    value={column.value?.(row)}
+                    style={{ fontSize: size }}
+                  />
+                ) : (
+                  <Typed
+                    value={column.value?.(row)}
+                    style={{ fontSize: 7.5, paddingTop: TYPED_CELL_OFFSET }}
+                  />
+                )}
+                {lost && i === 0 && <LostNote lostXp={row.lostXp} />}
+              </View>
+            ))}
+            {lost && <StrikeLine top={2.2 + size * 0.55} />}
+          </View>
+        );
+      })}
     </View>
   );
 }
