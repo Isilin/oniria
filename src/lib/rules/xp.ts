@@ -9,6 +9,8 @@
  *   Spyrée (prix de chaque passage de rang).
  * - Tout est consigné dans un journal : XP attribuée par le MJ, achats,
  *   remboursements, XP perdue, éléments offerts.
+ * - Un élément rayé par le MJ (voir lost.ts) reste sur la fiche mais ne
+ *   compte plus dans sa valeur : l'XP payée pour lui est perdue.
  * - Un périmètre « débloqué » (création ou reset du MJ) se modifie
  *   librement : son coût est calculé d'après la fiche et n'est payé qu'à la
  *   validation. Un périmètre validé ne fait que des achats ; baisser ou
@@ -32,6 +34,7 @@ import {
   CharacteristicKey,
   toRoman,
 } from '.';
+import { activeOnly, isLost, Strikable } from './lost';
 
 /* -------------------------------------------------------------------------- */
 /*                                Catégories                                  */
@@ -209,8 +212,10 @@ export interface XpEntryInput {
 export interface XpTotals {
   /** XP attribuée par le MJ (moins ce qu'il a retiré). */
   gained: Amounts;
-  /** XP dépensée (achats moins remboursements). */
+  /** XP dépensée (achats moins remboursements), XP perdue comprise. */
   spent: Amounts;
+  /** Part de l'XP dépensée qui a été perdue (élément rayé ou retiré). */
+  lost: Amounts;
   /** XP restante. */
   left: Amounts;
 }
@@ -224,12 +229,14 @@ export const amountsOf = (e: Pick<XpEntryInput, Pool>): Amounts => ({
 export const xpTotals = (entries: XpEntryInput[]): XpTotals => {
   let gained = zero();
   let spent = zero();
+  let lost = zero();
   for (const entry of entries) {
     if (entry.kind === 'GAIN') gained = add(gained, amountsOf(entry));
     if (entry.kind === 'SPEND') spent = add(spent, amountsOf(entry));
     if (entry.kind === 'REFUND') spent = sub(spent, amountsOf(entry));
+    if (entry.kind === 'LOSS') lost = add(lost, amountsOf(entry));
   }
-  return { gained, spent, left: sub(gained, spent) };
+  return { gained, spent, lost, left: sub(gained, spent) };
 };
 
 export interface Layer extends Amounts {
@@ -459,12 +466,10 @@ export const allocate = (dues: Due[], balance: Amounts): Allocation => {
 /*                             Éléments d'une fiche                           */
 /* -------------------------------------------------------------------------- */
 
-export interface XpSheetInput extends Partial<
-  Record<CharacteristicKey, number | null>
-> {
-  unlocked?: string[] | null;
-  corpus?: unknown[];
-  skills?: {
+/** Les listes d'une fiche qui coûtent de l'XP. */
+export interface XpItemsInput {
+  corpus?: (Strikable & { id?: string; name?: string | null })[];
+  skills?: (Strikable & {
     id: string;
     skill: {
       name: string;
@@ -472,12 +477,17 @@ export interface XpSheetInput extends Partial<
       type: SkillType;
       degree: SkillDegree;
     };
-  }[];
-  spyree?: {
+  })[];
+  spyree?: (Strikable & {
     id: string;
     level?: number | null;
     potential?: { name: string } | null;
-  }[];
+  })[];
+}
+
+export interface XpSheetInput
+  extends Partial<Record<CharacteristicKey, number | null>>, XpItemsInput {
+  unlocked?: string[] | null;
   xpEntries?: XpEntryInput[];
 }
 
@@ -492,8 +502,9 @@ export interface Element {
 const value = (v: number | null | undefined) =>
   typeof v === 'number' && Number.isFinite(v) ? v : 0;
 
+/** Les éléments de la fiche et leur valeur ; un élément rayé n'en a plus. */
 export const sheetElements = (sheet: XpSheetInput): Element[] => {
-  const corpusCount = sheet.corpus?.length ?? 0;
+  const corpusCount = activeOnly(sheet.corpus).length;
   return [
     ...CHARACTERISTICS.map((c) => ({
       target: charTarget(c.key),
@@ -501,7 +512,7 @@ export const sheetElements = (sheet: XpSheetInput): Element[] => {
       cost: characteristicCost(value(sheet[c.key])),
       label: `${c.label} ${value(sheet[c.key])}`,
     })),
-    ...(sheet.skills ?? []).map((s) => ({
+    ...activeOnly(sheet.skills).map((s) => ({
       target: skillTarget(s.id),
       scope: skillScope(s.skill.type),
       cost: SKILL_COSTS[s.skill.degree] ?? 0,
@@ -513,7 +524,7 @@ export const sheetElements = (sheet: XpSheetInput): Element[] => {
       cost: corpusCost(corpusCount),
       label: `Corpus : ${corpusCount} aspect${corpusCount > 1 ? 's' : ''}`,
     },
-    ...(sheet.spyree ?? []).map((s) => ({
+    ...activeOnly(sheet.spyree).map((s) => ({
       target: spyreeTarget(s.id),
       scope: 'spyree' as const,
       cost: spyreeCost(s.level),
@@ -701,6 +712,63 @@ export const spyreeChange = (
     value(to) ? toRoman(to) : '∅'
   }`,
 });
+
+/** Listes dont les éléments coûtent (ou rendent) de l'XP. */
+export type XpCollection = 'skills' | 'corpus' | 'spyree';
+
+/**
+ * Ce que coûte un élément d'une liste quand on le retire ou le raye (rend sa
+ * valeur : négatif) ou quand le MJ le rétablit (positif). Un élément déjà
+ * rayé ne rend plus rien : son XP a été perdue en le rayant. Le Corpus se
+ * paie au rang : le dernier aspect actif part, le suivant revient.
+ *
+ * `null` si l'élément n'est pas sur la fiche ou ne coûte pas d'XP.
+ */
+export const itemChange = (
+  sheet: XpItemsInput,
+  collection: string,
+  itemId: string,
+  action: 'remove' | 'strike' | 'restore',
+): XpChange | null => {
+  const removing = action !== 'restore';
+  const verb =
+    action === 'strike' ? 'rayé' : action === 'restore' ? 'rétabli' : null;
+
+  if (collection === 'skills') {
+    const owned = sheet.skills?.find((s) => s.id === itemId);
+    if (!owned || (removing && isLost(owned))) return null;
+    const change = skillChange(owned.skill, removing, itemId);
+    return verb ? { ...change, label: `${change.label} (${verb})` } : change;
+  }
+  if (collection === 'corpus') {
+    const aspect = sheet.corpus?.find((c) => c.id === itemId);
+    if (!aspect || (removing && isLost(aspect))) return null;
+    const count = activeOnly(sheet.corpus).length;
+    const change = corpusChange(count, removing);
+    if (!verb) return change;
+    const name = aspect.name ? ` « ${aspect.name} »` : '';
+    return {
+      ...change,
+      label: `Corpus : aspect${name} ${verb} (${count} → ${
+        removing ? count - 1 : count + 1
+      })`,
+    };
+  }
+  if (collection === 'spyree') {
+    const owned = sheet.spyree?.find((s) => s.id === itemId);
+    if (!owned || (removing && isLost(owned))) return null;
+    const name = owned.potential?.name ?? '?';
+    const change = removing
+      ? spyreeChange(name, owned.level, 0, itemId)
+      : spyreeChange(name, 0, owned.level, itemId);
+    if (!verb) return change;
+    return {
+      ...change,
+      label: `Spyrée : ${name} ${toRoman(owned.level)} (${verb})`,
+    };
+  }
+  return null;
+};
 
 /* -------------------------------------------------------------------------- */
 /*                         Points ajoutés aux caractères                      */
