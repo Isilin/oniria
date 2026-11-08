@@ -14,7 +14,8 @@ One private group playing Oniria, a French tabletop RPG.
 - **The MJ (game master)**, the app's `ADMIN` role. More than one account can hold it. The MJ can read and edit every sheet and has the final say on experience:
   - awards XP to a sheet or a whole table;
   - gifts purchases;
-  - lowers or removes validated elements, refunding the XP or declaring it lost;
+  - lowers or removes validated elements, refunding the XP;
+  - strikes out elements (traits, aspects, potentials, skills, equipment, characteristic points): they stay on the sheet, crossed out and without effect, and the XP paid for them is lost; the MJ can restore them, offered or bought back;
   - grants resets.
 
   The MJ also manages the whitelist of allowed Google accounts and the Tables de jeu.
@@ -75,7 +76,7 @@ The app isn't a generic sheet builder or a public product. It implements Oniria 
 
 - **Categories.** Éprouver pays for Corps and Âme, martial and general skills, and the Corpus. Apprendre pays for Esprit and Âme, spyral and general skills, and the Spyrée. Vivre pays for everything.
 - **Costs.** The costs of stats, skills, Corpus aspects and Spyrée ranks follow the spreadsheet.
-- **Lifecycle.** A sheet goes through creation, validation, then purchases. The MJ can gift a purchase, refund an element or declare its XP lost, and grant a full or partial reset (Corps, Esprit, Âme, each skill type, Corpus, Spyrée).
+- **Lifecycle.** A sheet goes through creation, validation, then purchases. The MJ can gift a purchase, refund an element or strike it out (its XP is lost), and grant a full or partial reset (Corps, Esprit, Âme, each skill type, Corpus, Spyrée).
 - **History.** Every movement is recorded per sheet: Attribution, Dépense, Remboursement, XP perdue, Offert.
 - **Consistency check.** The sheet flags it when the recorded XP and the value of its validated parts disagree ("écart").
 - **Older sheets.** Sheets created before the XP system are kept as they were and treated as validated ("XP reprise", "Dépenses antérieures").

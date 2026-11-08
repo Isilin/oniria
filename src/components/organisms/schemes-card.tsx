@@ -4,6 +4,7 @@ import { CatalogPotential } from '@/lib/db/sheet';
 import { useCatalog } from '@/lib/hooks/use-catalog';
 import { useSheet } from '@/lib/hooks/use-sheet';
 import { normalizeStat, toRoman } from '@/lib/rules';
+import { activeOnly } from '@/lib/rules/lost';
 import { corpusAspectCost, SPYREE_STEPS, spyreeCost } from '@/lib/rules/xp';
 import { CORPUS_STAT_OPTIONS, potentialLabel } from '@/lib/sheet/display';
 import AddIcon from '@mui/icons-material/Add';
@@ -31,6 +32,10 @@ const AddPotential = ({ id }: { id: string }) => {
   const { sheet, createItem } = useSheet(id);
   const [value, setValue] = useState<CatalogPotential | null>(null);
   const owned = new Set(sheet.spyree.map((s) => s.potentialId));
+  // Un potentiel rayé ne se rachète pas : le MJ le rétablit.
+  const struck = new Set(
+    sheet.spyree.filter((s) => s.lostAt).map((s) => s.potentialId),
+  );
 
   return (
     <Box
@@ -54,7 +59,9 @@ const AddPotential = ({ id }: { id: string }) => {
             <Box>
               <Typography variant="body2">{potentialLabel(p)}</Typography>
               <Typography variant="caption" color="textSecondary">
-                {p.description}
+                {struck.has(p.id)
+                  ? 'Rayé : le MJ peut le rétablir.'
+                  : p.description}
               </Typography>
             </Box>
           </li>
@@ -90,7 +97,9 @@ const SchemesCard = ({ id }: { id: string }) => {
   const corpusLocked = isLocked('corpus');
   const spyreeLocked = isLocked('spyree');
   const corpusTypes = catalog?.corpusTypes ?? [];
-  const usedTypes = new Set(sheet.corpus.map((c) => c.typeId));
+  // Le rang du Corpus (et son prix) ne compte que les aspects actifs.
+  const activeCorpus = activeOnly(sheet.corpus);
+  const usedTypes = new Set(activeCorpus.map((c) => c.typeId));
   const nextType =
     corpusTypes.find((t) => !usedTypes.has(t.id)) ?? corpusTypes[0];
 
@@ -108,7 +117,7 @@ const SchemesCard = ({ id }: { id: string }) => {
               </Typography>
             }
             defaults={nextType ? { typeId: nextType.id } : undefined}
-            addLabel={`Ajouter un aspect (${corpusAspectCost(sheet.corpus.length + 1)} XP)`}
+            addLabel={`Ajouter un aspect (${corpusAspectCost(activeCorpus.length + 1)} XP)`}
             deletable={!corpusLocked || isAdmin}
             confirmDelete={!corpusLocked}
             emptyLabel="Aucun aspect."

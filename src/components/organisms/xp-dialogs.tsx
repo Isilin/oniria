@@ -47,12 +47,28 @@ export interface PurchaseRequest {
   /** XP restante de la fiche. */
   balance: Amounts;
   isAdmin: boolean;
+  /** Titre du dialogue (« Rétablir un élément ») ; sinon, un achat. */
+  title?: string;
+}
+
+/** Ce que rend un élément retiré : payé (par catégorie) et offert. */
+export interface Refund {
+  amounts: Amounts;
+  offered: number;
+  missing: number;
 }
 
 export interface RemovalRequest {
   change: XpChange;
-  /** Ce qui serait rendu : payé (par catégorie) et offert. */
-  refund: { amounts: Amounts; offered: number; missing: number };
+  /** Ce qui serait rendu (ou perdu, si l'élément est rayé). */
+  refund: Refund;
+}
+
+/** MJ : rayer un élément d'une partie validée, dont l'XP sera perdue. */
+export interface StrikeRequest {
+  change: XpChange;
+  /** Ce qui sera perdu : payé (par catégorie) et offert. */
+  refund: Refund;
 }
 
 /** Réponse du dialogue des points : ce qu'on envoie à l'API dans `xp`. */
@@ -68,11 +84,14 @@ export interface PointsRequest {
   isAdmin: boolean;
   /** Recalcule le plan avec les choix faits dans le dialogue. */
   evaluate: (options: PointsOptions) => PointsPlan;
+  /** Titre du dialogue (« Rétablir les points rayés ») ; sinon, des points. */
+  title?: string;
 }
 
 interface XpDialogs {
   askPurchase: (request: PurchaseRequest) => Promise<XpAnswer | null>;
   askRemoval: (request: RemovalRequest) => Promise<XpAnswer | null>;
+  askStrike: (request: StrikeRequest) => Promise<boolean>;
   askPoints: (request: PointsRequest) => Promise<PointsAnswer | null>;
 }
 
@@ -86,6 +105,11 @@ type Pending =
       kind: 'removal';
       request: RemovalRequest;
       resolve: (a: XpAnswer | null) => void;
+    }
+  | {
+      kind: 'strike';
+      request: StrikeRequest;
+      resolve: (a: boolean) => void;
     }
   | {
       kind: 'points';
@@ -143,7 +167,7 @@ export const AmountsFields = ({
 );
 
 const PurchaseDialog = ({
-  request: { change, balance, isAdmin },
+  request: { change, balance, isAdmin, title },
   onClose,
 }: {
   request: PurchaseRequest;
@@ -164,7 +188,7 @@ const PurchaseDialog = ({
     <ActionDialog
       open
       onClose={() => onClose(null)}
-      title="Dépenser de l'expérience"
+      title={title ?? "Dépenser de l'expérience"}
       confirmLabel={gift ? 'Offrir' : `Dépenser ${sum(split)} XP`}
       onConfirm={() => onClose(gift ? { gift: true } : { split })}
       confirmDisabled={!!error}
@@ -229,7 +253,7 @@ const RemovalDialog = ({
       open
       onClose={() => onClose(null)}
       title="Reprendre un élément validé"
-      confirmLabel="Confirmer"
+      confirmLabel={mode === 'refund' ? 'Rembourser' : 'Rayer'}
       confirmColor="warning"
       onConfirm={() => onClose({ refund: mode === 'refund' })}
       maxWidth="sm"
@@ -256,7 +280,7 @@ const RemovalDialog = ({
         <FormControlLabel
           value="loss"
           control={<Radio />}
-          label="Ne pas rembourser : l'XP est perdue"
+          label="Rayer : l'élément reste sur la fiche, barré, et l'XP est perdue"
         />
       </RadioGroup>
       {refund.missing > 0 && (
@@ -266,6 +290,47 @@ const RemovalDialog = ({
           rendus.
         </Alert>
       )}
+    </ActionDialog>
+  );
+};
+
+/**
+ * Rayer un élément d'une partie validée : il reste sur la fiche, barré et
+ * sans effet, et ce qui a été payé pour lui est perdu.
+ */
+const StrikeDialog = ({
+  request: { change, refund },
+  onClose,
+}: {
+  request: StrikeRequest;
+  onClose: (answer: boolean) => void;
+}) => {
+  const paid = sum(refund.amounts);
+
+  return (
+    <ActionDialog
+      open
+      onClose={() => onClose(false)}
+      title="Rayer un élément"
+      confirmLabel="Rayer"
+      confirmColor="warning"
+      onConfirm={() => onClose(true)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <Typography variant="h6">{change.label}</Typography>
+      <Typography gutterBottom>
+        XP perdue :{' '}
+        <Typography component="strong" color="error" sx={{ fontWeight: 700 }}>
+          {paid > 0 ? formatAmounts(refund.amounts) : 'aucune'}
+        </Typography>
+        {refund.offered > 0 && ` (et ${refund.offered} XP offerts)`}
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        L&apos;élément reste sur la fiche, barré, et n&apos;a plus aucun effet.
+        Le MJ peut le rétablir : offert, ou racheté avec l&apos;XP du
+        personnage.
+      </Typography>
     </ActionDialog>
   );
 };
@@ -283,7 +348,7 @@ const lineCost = (line: PointsPlan['lines'][number]) =>
  * remboursement (ou perte) des baisses.
  */
 const PointsDialog = ({
-  request: { plan: initial, isAdmin, evaluate },
+  request: { plan: initial, isAdmin, evaluate, title },
   onClose,
 }: {
   request: PointsRequest;
@@ -312,7 +377,7 @@ const PointsDialog = ({
     <ActionDialog
       open
       onClose={() => onClose(null)}
-      title="Valider les points"
+      title={title ?? 'Valider les points'}
       confirmLabel={buying ? `Dépenser ${plan.cost} XP` : 'Valider'}
       onConfirm={() =>
         onClose({ splits: buying ? splits : undefined, gift, refund })
@@ -410,7 +475,7 @@ const PointsDialog = ({
             <FormControlLabel
               value="loss"
               control={<Radio />}
-              label="Ne pas rembourser : l'XP est perdue"
+              label="Rayer les points : ils restent barrés sur la fiche, et l'XP est perdue"
             />
           </RadioGroup>
           {unrecorded > 0 && (
@@ -428,8 +493,8 @@ const PointsDialog = ({
 
 /**
  * Fournit les dialogues de paiement : achat (répartition proposée,
- * modifiable), reprise par le MJ (remboursement ou perte) et validation des
- * points des caractères.
+ * modifiable), reprise par le MJ (remboursement ou rayure), rayure d'un
+ * élément validé et validation des points des caractères.
  */
 export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
   const [pending, setPending] = useState<Pending | null>(null);
@@ -448,6 +513,13 @@ export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
       ),
     [],
   );
+  const askStrike = useCallback(
+    (request: StrikeRequest) =>
+      new Promise<boolean>((resolve) =>
+        setPending({ kind: 'strike', request, resolve }),
+      ),
+    [],
+  );
   const askPoints = useCallback(
     (request: PointsRequest) =>
       new Promise<PointsAnswer | null>((resolve) =>
@@ -456,12 +528,16 @@ export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
   const value = useMemo(
-    () => ({ askPurchase, askRemoval, askPoints }),
-    [askPurchase, askRemoval, askPoints],
+    () => ({ askPurchase, askRemoval, askStrike, askPoints }),
+    [askPurchase, askRemoval, askStrike, askPoints],
   );
 
   const close = (answer: (XpAnswer & PointsAnswer) | null) => {
-    pending?.resolve(answer);
+    if (pending?.kind !== 'strike') pending?.resolve(answer);
+    setPending(null);
+  };
+  const closeStrike = (answer: boolean) => {
+    if (pending?.kind === 'strike') pending.resolve(answer);
     setPending(null);
   };
 
@@ -473,6 +549,9 @@ export const XpDialogProvider = ({ children }: { children: ReactNode }) => {
       )}
       {pending?.kind === 'removal' && (
         <RemovalDialog request={pending.request} onClose={close} />
+      )}
+      {pending?.kind === 'strike' && (
+        <StrikeDialog request={pending.request} onClose={closeStrike} />
       )}
       {pending?.kind === 'points' && (
         <PointsDialog request={pending.request} onClose={close} />

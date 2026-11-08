@@ -8,6 +8,7 @@ import {
   creationStep,
   corpusCost,
   investedIn,
+  itemChange,
   offeredTo,
   planPoints,
   SKILL_COSTS,
@@ -176,7 +177,7 @@ describe('répartition', () => {
 });
 
 describe('journal', () => {
-  it('additionne gains, dépenses et remboursements', () => {
+  it('additionne gains, dépenses, remboursements et XP perdue', () => {
     const totals = xpTotals([
       entry('GAIN', { live: 700 }),
       entry('GAIN', { feel: 20, learn: 10 }),
@@ -188,6 +189,7 @@ describe('journal', () => {
     expect(totals).toEqual({
       gained: { feel: 20, learn: 10, live: 700 },
       spent: { feel: 15, learn: 0, live: 80 },
+      lost: { feel: 15, learn: 0, live: 0 },
       left: { feel: 5, learn: 10, live: 620 },
     });
   });
@@ -334,6 +336,86 @@ describe('fiche', () => {
     expect(summary.dues).toEqual([
       expect.objectContaining({ target: 'spyree:a', amount: 30 }),
     ]);
+  });
+});
+
+describe('éléments rayés', () => {
+  const athletics = {
+    name: '-',
+    category: 'Athlétisme',
+    type: 'GENERAL' as const,
+    degree: 'BASE' as const,
+  };
+  const sheet = {
+    corpus: [
+      { id: 'c1', name: 'Origine' },
+      { id: 'c2', name: 'Cicatrice', lostAt: '2026-11-08' },
+      { id: 'c3', name: 'Haute', type: { name: 'Stature' } },
+    ],
+    skills: [
+      { id: 's1', skill: athletics },
+      { id: 's2', skill: athletics, lostAt: '2026-11-08' },
+    ],
+    spyree: [
+      { id: 'p1', level: 2, potential: { name: 'Flamme' } },
+      { id: 'p2', level: 1, potential: { name: 'Onde' }, lostAt: new Date() },
+    ],
+  };
+
+  it('ne comptent plus dans la valeur de la fiche', () => {
+    const elements = xpSummary({ ...stats(0), unlocked: ALL, ...sheet }).dues;
+    expect(elements.map((e) => [e.target, e.amount])).toEqual([
+      ['skill:s1', 10],
+      ['corpus', corpusCost(2)],
+      ['spyree:p1', 40],
+    ]);
+  });
+
+  it('rayer rend la valeur de l’élément, rétablir la redemande', () => {
+    expect(itemChange(sheet, 'skills', 's1', 'strike')).toMatchObject({
+      target: 'skill:s1',
+      scope: 'general',
+      delta: -10,
+      label: 'Compétence : Athlétisme (rayée)',
+    });
+    expect(itemChange(sheet, 'skills', 's2', 'restore')).toMatchObject({
+      delta: 10,
+      label: 'Compétence : Athlétisme (rétablie)',
+    });
+    expect(itemChange(sheet, 'spyree', 'p1', 'strike')).toMatchObject({
+      target: 'spyree:p1',
+      delta: -40,
+      label: 'Spyrée : Flamme II (rayé)',
+    });
+    expect(itemChange(sheet, 'spyree', 'p2', 'restore')).toMatchObject({
+      delta: 10,
+      label: 'Spyrée : Onde I (rétabli)',
+    });
+  });
+
+  it('le rang du Corpus ne compte que les aspects actifs', () => {
+    // Deux aspects actifs : rayer rend le 2ᵉ rang, rétablir paie le 3ᵉ.
+    expect(itemChange(sheet, 'corpus', 'c3', 'strike')).toMatchObject({
+      target: 'corpus',
+      delta: -10,
+      label: 'Corpus : aspect « Stature : Haute » rayé (2 → 1)',
+    });
+    expect(itemChange(sheet, 'corpus', 'c2', 'restore')).toMatchObject({
+      delta: 15,
+      label: 'Corpus : aspect « Cicatrice » rétabli (2 → 3)',
+    });
+    // Supprimer un aspect actif : même prix, libellé habituel.
+    expect(itemChange(sheet, 'corpus', 'c1', 'remove')).toEqual(
+      corpusChange(2, true),
+    );
+  });
+
+  it('un élément déjà rayé ne rend plus rien', () => {
+    expect(itemChange(sheet, 'skills', 's2', 'remove')).toBeNull();
+    expect(itemChange(sheet, 'corpus', 'c2', 'strike')).toBeNull();
+    expect(itemChange(sheet, 'spyree', 'p2', 'remove')).toBeNull();
+    expect(itemChange(sheet, 'skills', 'inconnu', 'strike')).toBeNull();
+    expect(itemChange(sheet, 'traits', 't1', 'strike')).toBeNull();
   });
 });
 

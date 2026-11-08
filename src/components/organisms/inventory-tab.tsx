@@ -50,7 +50,9 @@ const Properties = ({
   row: Equipment;
   onChange: (ids: string[]) => void;
 }) => {
-  const { canEdit } = useSheet(id);
+  const { canEdit: canEditSheet } = useSheet(id);
+  // Un équipement rayé ne se modifie plus : le MJ le rétablit d'abord.
+  const canEdit = canEditSheet && !row.lostAt;
   const { catalog, createProperty } = useCatalog();
   const { data: session } = useSession();
   const notifyError = useNotifyError();
@@ -131,7 +133,8 @@ const Prerequisite = ({
   row: Equipment;
   onChange: (patch: Partial<Equipment>) => void;
 }) => {
-  const { computed, canEdit } = useSheet(id);
+  const { computed, canEdit: canEditSheet } = useSheet(id);
+  const canEdit = canEditSheet && !row.lostAt;
   const { stat, text, met } = prerequisiteOf(row, computed.values);
 
   return (

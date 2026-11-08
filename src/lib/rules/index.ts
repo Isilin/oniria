@@ -349,18 +349,26 @@ export const FACULTIES: Faculty[] = [
 
 export type CharacteristicValues = Record<CharacteristicKey, number>;
 
-export interface CorpusInput {
+/** Un élément rayé par le MJ n'a plus aucun effet (voir lost.ts). */
+interface StrikableInput {
+  lostAt?: Date | string | null;
+}
+
+const active = <T extends StrikableInput>(items: T[] | undefined) =>
+  (items ?? []).filter((item) => !item.lostAt);
+
+export interface CorpusInput extends StrikableInput {
   /** Caractère concerné (clé, abréviation ou nom) ou « health » pour la santé. */
   stat?: string | null;
   bonus?: number | null;
 }
 
-export interface TraitInput {
+export interface TraitInput extends StrikableInput {
   inborn: boolean;
   balance?: number | null;
 }
 
-export interface EquipmentInput {
+export interface EquipmentInput extends StrikableInput {
   equipped?: boolean | null;
   bulk?: number | null;
 }
@@ -434,12 +442,15 @@ export const normalizeStat = (
   return found?.key ?? null;
 };
 
-/** Somme des bonus du Corpus portant sur un caractère (ou la santé). */
+/**
+ * Somme des bonus du Corpus portant sur un caractère (ou la santé). Un
+ * aspect rayé ne compte plus.
+ */
 export const corpusBonus = (
   corpus: CorpusInput[] | undefined,
   stat: CorpusStat,
 ): number =>
-  (corpus ?? []).reduce(
+  active(corpus).reduce(
     (sum, entry) =>
       normalizeStat(entry.stat) === stat ? sum + n(entry.bonus) : sum,
     0,
@@ -506,7 +517,7 @@ export interface ComputedSheet {
   protection: { current: number; max: number };
   /** Encombrement (en %) de l'équipement porté. */
   bulk: number;
-  /** Somme des balances des traits innés (0 = équilibré). */
+  /** Somme des balances des traits innés non rayés (0 = équilibré). */
   inbornTraitsBalance: number;
 }
 
@@ -531,11 +542,12 @@ export const computeSheet = (sheet: SheetInput): ComputedSheet => {
     FACULTIES.map((f) => [f.key, facultyValue(f, values, sheet.corpus)]),
   ) as Record<FacultyKey, FacultyValue>;
 
-  const equippedArmors = (sheet.armors ?? []).filter((a) => a.equipped);
+  // Un équipement rayé n'est plus porté, un trait rayé ne compte plus.
+  const equippedArmors = active(sheet.armors).filter((a) => a.equipped);
   const equipped = [
     ...equippedArmors,
-    ...(sheet.meleeWeapons ?? []).filter((w) => w.equipped),
-    ...(sheet.rangeWeapons ?? []).filter((w) => w.equipped),
+    ...active(sheet.meleeWeapons).filter((w) => w.equipped),
+    ...active(sheet.rangeWeapons).filter((w) => w.equipped),
   ];
 
   return {
@@ -565,7 +577,7 @@ export const computeSheet = (sheet: SheetInput): ComputedSheet => {
       max: equippedArmors.reduce((sum, a) => sum + n(a.protection), 0),
     },
     bulk: equipped.reduce((sum, e) => sum + n(e.bulk), 0),
-    inbornTraitsBalance: (sheet.traits ?? [])
+    inbornTraitsBalance: active(sheet.traits)
       .filter((t) => t.inborn)
       .reduce((sum, t) => sum + n(t.balance), 0),
   };

@@ -3,7 +3,9 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { colosse, corwin, empty, heavy, lyse, team } from './fixtures';
+import { sum } from '@/lib/rules/xp';
 import { type ImageLoader, normalizeImage } from './images';
+import { buildModel } from './model';
 import { renderSheetPdf, renderTeamPdf } from './render';
 
 /**
@@ -66,6 +68,14 @@ describe('export PDF', () => {
     expect(isPdf(pdf)).toBe(true);
     save('table-de-test.pdf', pdf);
   }, 60_000);
+
+  it('Lyse : des éléments rayés, de l’XP perdue, et aucun écart', () => {
+    const { xp, computed } = buildModel(lyse());
+    expect(sum(xp.lost)).toBe(15);
+    expect(xp.consistency.diff).toBe(0);
+    // La faveur rayée ne compte plus, la Force reste à 20.
+    expect(computed.values.strength).toBe(20);
+  });
 
   it('exporte sans images quand aucune ne se lit', async () => {
     const pdf = await renderSheetPdf(lyse(), { loadImage: async () => null });

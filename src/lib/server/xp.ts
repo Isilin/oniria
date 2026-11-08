@@ -1,9 +1,17 @@
 import prisma from '@/lib/db/prisma';
 import { XP_ENTRIES_ARGS } from '@/lib/db/sheet';
 import { HttpError } from '@/lib/server/errors';
+import { CharacteristicKey } from '@/lib/rules';
+import {
+  addLostPoints,
+  clearLostPoints,
+  LostPoints,
+  lostPointsOf,
+} from '@/lib/rules/lost';
 import {
   ALL_SCOPES,
   Amounts,
+  CHARACTERISTIC_MAX,
   buildLedger,
   checkSplit,
   investedIn,
@@ -232,6 +240,9 @@ export const chargeChange = async (
  * reprises du MJ d'abord, puis achats (ou cadeaux du MJ), une écriture par
  * caractère. Rien pour une partie débloquée.
  *
+ * Une baisse du MJ sans remboursement raye les points : ils sont renvoyés
+ * dans `struck`, à ajouter à la rature de la fiche (`lostPoints`).
+ *
  * À appeler dans une transaction, après `lockSheet`. Renvoie les écritures
  * ajoutées au journal (avec leur auteur), que l'API renvoie au client.
  */
@@ -241,7 +252,11 @@ export const chargePoints = async (
   { current, target }: Pick<PointsInput, 'current' | 'target'>,
   actor: Actor,
   payload: XpPayload,
-) => {
+  { restore = false }: { restore?: boolean } = {},
+): Promise<{
+  entries: Prisma.XpEntryGetPayload<{ include: typeof ENTRY_AUTHOR }>[];
+  struck: LostPoints;
+}> => {
   const sheet = await tx.sheet.findUnique({
     where: { id: sheetId },
     select: { unlocked: true, xpEntries: { select: ENTRY_SELECT } },
@@ -265,29 +280,39 @@ export const chargePoints = async (
   }
   if (plan.error) throw new HttpError(400, plan.error);
 
-  const base = (line: { target: string; scope: Scope; label: string }) => ({
+  const struck: LostPoints =
+    payload.refund === false
+      ? Object.fromEntries(
+          plan.removals.map(({ line }) => [line.key, line.from - line.to]),
+        )
+      : {};
+  const base = (
+    line: { target: string; scope: Scope; label: string },
+    tag?: string,
+  ) => ({
     sheetId,
     authorId: actor.id,
     target: line.target,
     scope: line.scope,
-    label: line.label,
+    label: tag ? `${line.label} (${tag})` : line.label,
   });
   const data: Prisma.XpEntryCreateManyInput[] = [
     ...plan.removals.map(({ line, taken }) => ({
-      ...base(line),
+      ...base(line, payload.refund === false ? 'points rayés' : undefined),
       kind: payload.refund === false ? ('LOSS' as const) : ('REFUND' as const),
       feel: taken.feel,
       learn: taken.learn,
       live: taken.live,
       offered: taken.offered,
     })),
-    ...plan.purchases.map(({ line, split }) =>
-      payload.gift
-        ? { ...base(line), kind: 'GIFT' as const, offered: line.delta }
-        : { ...base(line), kind: 'SPEND' as const, ...split },
-    ),
+    ...plan.purchases.map(({ line, split }) => {
+      const tag = restore ? 'points rétablis' : undefined;
+      return payload.gift
+        ? { ...base(line, tag), kind: 'GIFT' as const, offered: line.delta }
+        : { ...base(line, tag), kind: 'SPEND' as const, ...split };
+    }),
   ];
-  if (data.length === 0) return [];
+  if (data.length === 0) return { entries: [], struck };
   // Plusieurs caractères : regroupés dans l'historique.
   const batch = data.length > 1 ? `points:${randomUUID()}` : null;
   await tx.xpEntry.createMany({ data: data.map((e) => ({ ...e, batch })) });
@@ -298,7 +323,53 @@ export const chargePoints = async (
     take: data.length,
     include: ENTRY_AUTHOR,
   });
-  return added.reverse();
+  return { entries: added.reverse(), struck };
+};
+
+/** La rature des points de la fiche, avec les points rayés en plus. */
+export const withStruckPoints = (
+  lostPoints: unknown,
+  struck: LostPoints,
+): Prisma.InputJsonValue => addLostPoints(lostPointsOf(lostPoints), struck);
+
+/**
+ * Le MJ rétablit les points rayés d'une caractéristique : ils reviennent
+ * (offerts, ou rachetés avec l'XP du personnage) et la rature s'efface.
+ */
+export const restorePoints = async (
+  tx: Tx,
+  sheetId: string,
+  key: CharacteristicKey,
+  actor: Actor,
+  payload: XpPayload,
+) => {
+  if (!isAdmin(actor)) {
+    throw new HttpError(403, 'Seul le MJ peut rétablir des points rayés.');
+  }
+  await lockSheet(tx, sheetId);
+  const current = await tx.sheet.findUnique({ where: { id: sheetId } });
+  if (!current) throw new HttpError(404, 'Fiche introuvable.');
+  const lost = lostPointsOf(current.lostPoints);
+  const points = lost[key] ?? 0;
+  if (!points) throw new HttpError(400, 'Aucun point rayé à rétablir.');
+  const value = Math.min(CHARACTERISTIC_MAX, (current[key] ?? 0) + points);
+  const { entries } = await chargePoints(
+    tx,
+    sheetId,
+    { current, target: { [key]: value } },
+    actor,
+    payload,
+    { restore: true },
+  );
+  const rest = clearLostPoints(lost, [key]);
+  const sheet = await tx.sheet.update({
+    where: { id: sheetId },
+    data: {
+      [key]: value,
+      lostPoints: Object.keys(rest).length ? rest : Prisma.DbNull,
+    },
+  });
+  return entries.length ? { ...sheet, addedXpEntries: entries } : sheet;
 };
 
 /* -------------------------------------------------------------------------- */

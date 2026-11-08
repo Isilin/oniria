@@ -14,6 +14,8 @@ import { skillTree } from '@/lib/sheet/skill-tree';
 import { SKILL_TYPES } from '@/lib/sheet/fields';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import RestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import StrikeIcon from '@mui/icons-material/StrikethroughS';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import {
   Autocomplete,
@@ -21,7 +23,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -33,7 +34,9 @@ import { useState } from 'react';
 import EditableField from '../atoms/editable-field';
 import LoadError from '../atoms/load-error';
 import ScopeLock from '../atoms/scope-lock';
+import { LostNote, Struck } from '../atoms/struck';
 import DeleteConfirmation from '../molecules/_shared/delete-confirmation';
+import MoreActions, { MoreAction } from '../molecules/_shared/more-actions';
 import SectionCard from '../molecules/section-card';
 
 type SheetSkill = CollectionItem<'skills'>;
@@ -47,7 +50,8 @@ interface NodeProps {
   owned: SheetSkill;
   byId: Map<string, CatalogSkill>;
   childrenOf: Map<string, SheetSkill[]>;
-  ownedIds: Set<string>;
+  /** Compétences acquises et non rayées : les seuls prérequis possibles. */
+  activeIds: Set<string>;
   editable: boolean;
   /** Partie validée : seul le MJ retire, via le dialogue de reprise. */
   isLocked: (skill: CatalogSkill | SheetSkill['skill']) => boolean;
@@ -55,30 +59,72 @@ interface NodeProps {
   depth: number;
   onUpdate: (owned: SheetSkill, patch: Record<string, unknown>) => void;
   onDelete: (owned: SheetSkill) => void;
+  /** MJ : rayer la compétence (gardée, barrée, sans effet) et la rétablir. */
+  onStrike: (owned: SheetSkill) => void;
+  onRestore: (owned: SheetSkill) => void;
 }
 
 const SkillNode = ({
   owned,
   byId,
   childrenOf,
-  ownedIds,
-  editable,
+  activeIds,
+  editable: canEdit,
   isLocked,
   isAdmin,
   depth,
   onUpdate,
   onDelete,
+  onStrike,
+  onRestore,
 }: NodeProps) => {
   const [confirm, setConfirm] = useState(false);
   const skill = byId.get(owned.skillId) ?? owned.skill;
   const locked = isLocked(skill);
+  const lost = !!owned.lostAt;
+  // Une compétence rayée ne se modifie plus : le MJ la rétablit d'abord.
+  const editable = canEdit && !lost;
   const prerequisites =
     byId
       .get(owned.skillId)
-      ?.prerequisites.filter((p) => ownedIds.has(p.id))
+      ?.prerequisites.filter((p) => activeIds.has(p.id))
       .map((p) => byId.get(p.id)) ?? [];
   const kids = childrenOf.get(owned.skillId) ?? [];
   const name = skillLabel(skill);
+
+  // Rayer et rétablir (MJ), retirer : dans le menu de la ligne. Une
+  // compétence rayée garde la trace de l'XP perdue : seul le MJ la retire.
+  const remove: MoreAction = {
+    label: 'Retirer',
+    icon: <DeleteIcon fontSize="small" />,
+    danger: true,
+    onClick: () => (locked && !lost ? onDelete(owned) : setConfirm(true)),
+  };
+  const actions: MoreAction[] = !canEdit
+    ? []
+    : lost
+      ? isAdmin
+        ? [
+            {
+              label: 'Rétablir',
+              icon: <RestoreIcon fontSize="small" />,
+              onClick: () => onRestore(owned),
+            },
+            remove,
+          ]
+        : []
+      : [
+          ...(isAdmin
+            ? [
+                {
+                  label: 'Rayer',
+                  icon: <StrikeIcon fontSize="small" />,
+                  onClick: () => onStrike(owned),
+                },
+              ]
+            : []),
+          ...(!locked || isAdmin ? [remove] : []),
+        ];
 
   return (
     <Box>
@@ -99,8 +145,9 @@ const SkillNode = ({
         <Chip
           size="small"
           variant="outlined"
-          color={DEGREE_COLORS[skill.degree]}
+          color={lost ? 'default' : DEGREE_COLORS[skill.degree]}
           label={DEGREE_LABELS[skill.degree]}
+          sx={lost ? { opacity: 0.6 } : undefined}
         />
         <Box
           sx={{
@@ -112,29 +159,37 @@ const SkillNode = ({
             columnGap: 1,
           }}
         >
-          <Tooltip title={skill.description ?? ''} arrow>
-            <Typography
-              component="span"
-              sx={
-                skill.description
-                  ? { textDecoration: 'underline dotted', cursor: 'help' }
-                  : {}
-              }
-            >
-              {name}
-            </Typography>
-          </Tooltip>
-          {(editable || owned.suffixe) && (
-            <Typography component="span" variant="body2" color="textSecondary">
-              <EditableField
-                value={owned.suffixe}
-                editable={editable}
-                placeholder="+ précision"
-                aria-label={`Précision pour ${name}`}
-                onChange={(suffixe) => onUpdate(owned, { suffixe })}
-              />
-            </Typography>
-          )}
+          <Struck struck={lost}>
+            <Tooltip title={skill.description ?? ''} arrow>
+              <Typography
+                component="span"
+                sx={
+                  skill.description && !lost
+                    ? { textDecoration: 'underline dotted', cursor: 'help' }
+                    : {}
+                }
+              >
+                {name}
+              </Typography>
+            </Tooltip>
+            {(editable || owned.suffixe) && (
+              <Typography
+                component="span"
+                variant="body2"
+                color="textSecondary"
+              >
+                {' '}
+                <EditableField
+                  value={owned.suffixe}
+                  editable={editable}
+                  placeholder="+ précision"
+                  aria-label={`Précision pour ${name}`}
+                  onChange={(suffixe) => onUpdate(owned, { suffixe })}
+                />
+              </Typography>
+            )}
+          </Struck>
+          {lost && <LostNote lostAt={owned.lostAt} lostXp={owned.lostXp} />}
           {editable && prerequisites.length > 1 && (
             <Select
               size="small"
@@ -153,15 +208,12 @@ const SkillNode = ({
             </Select>
           )}
         </Box>
-        {editable && (!locked || isAdmin) && (
-          <IconButton
+        {actions.length > 0 && (
+          <MoreActions
             size="small"
-            aria-label={`Retirer ${name}`}
-            onClick={() => (locked ? onDelete(owned) : setConfirm(true))}
-            sx={{ flexShrink: 0 }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
+            label={`Actions sur « ${name} »`}
+            actions={actions}
+          />
         )}
       </Box>
       <DeleteConfirmation
@@ -169,7 +221,11 @@ const SkillNode = ({
         onClose={() => setConfirm(false)}
         onValidated={() => onDelete(owned)}
         title={`Retirer « ${name} » ?`}
-        message="La compétence est retirée de la fiche."
+        message={
+          lost
+            ? "La compétence rayée disparaît de la fiche ; l'XP perdue reste au journal."
+            : 'La compétence est retirée de la fiche.'
+        }
         confirmLabel="Retirer"
       />
       {kids.map((child) => (
@@ -178,13 +234,15 @@ const SkillNode = ({
           owned={child}
           byId={byId}
           childrenOf={childrenOf}
-          ownedIds={ownedIds}
-          editable={editable}
+          activeIds={activeIds}
+          editable={canEdit}
           isLocked={isLocked}
           isAdmin={isAdmin}
           depth={depth + 1}
           onUpdate={onUpdate}
           onDelete={onDelete}
+          onStrike={onStrike}
+          onRestore={onRestore}
         />
       ))}
     </Box>
@@ -197,21 +255,27 @@ const AddSkill = ({
   skills,
   byId,
   ownedIds,
+  activeIds,
   onAdd,
 }: {
   type: SkillType;
   skills: CatalogSkill[];
   byId: Map<string, CatalogSkill>;
+  /** Acquises, rayées ou non : on ne les ajoute pas une deuxième fois. */
   ownedIds: Set<string>;
+  /** Acquises et non rayées : les seuls prérequis possibles. */
+  activeIds: Set<string>;
   onAdd: (skill: CatalogSkill) => Promise<unknown>;
 }) => {
   const [value, setValue] = useState<CatalogSkill | null>(null);
 
   const missing = (skill: CatalogSkill) =>
     skill.prerequisites.length > 0 &&
-    !skill.prerequisites.some((p) => ownedIds.has(p.id));
+    !skill.prerequisites.some((p) => activeIds.has(p.id));
 
   const hint = (skill: CatalogSkill) => {
+    if (ownedIds.has(skill.id) && !activeIds.has(skill.id))
+      return 'Rayée : le MJ peut la rétablir';
     if (ownedIds.has(skill.id)) return 'Déjà acquise';
     if (missing(skill))
       return `Nécessite : ${skill.prerequisites
@@ -289,6 +353,8 @@ const SkillsCard = ({ id }: { id: string }) => {
     createItem,
     updateItem,
     deleteItem,
+    strikeItem,
+    restoreItem,
   } = useSheet(id);
 
   if (!catalog) {
@@ -308,11 +374,18 @@ const SkillsCard = ({ id }: { id: string }) => {
   const byId = new Map(catalog.skills.map((s) => [s.id, s]));
   const skillOf = (owned: SheetSkill) => byId.get(owned.skillId) ?? owned.skill;
   // Arbre : une compétence acquise est rangée sous le prérequis qui l'a permise.
+  // Une compétence rayée reste rangée dans l'arbre, mais n'est plus un
+  // prérequis.
   const { roots, childrenOf, ownedIds } = skillTree(sheet.skills);
+  const activeIds = new Set(
+    sheet.skills.filter((s) => !s.lostAt).map((s) => s.skillId),
+  );
 
   const onUpdate = (owned: SheetSkill, patch: Record<string, unknown>) =>
     updateItem('skills', owned.id, patch);
   const onDelete = (owned: SheetSkill) => deleteItem('skills', owned.id);
+  const onStrike = (owned: SheetSkill) => strikeItem('skills', owned.id);
+  const onRestore = (owned: SheetSkill) => restoreItem('skills', owned.id);
   const skillLocked = (skill: { type: SkillType }) =>
     isLocked(skillScope(skill.type));
 
@@ -355,13 +428,15 @@ const SkillsCard = ({ id }: { id: string }) => {
                         owned={owned}
                         byId={byId}
                         childrenOf={childrenOf}
-                        ownedIds={ownedIds}
+                        activeIds={activeIds}
                         editable={canEdit}
                         isLocked={skillLocked}
                         isAdmin={isAdmin}
                         depth={0}
                         onUpdate={onUpdate}
                         onDelete={onDelete}
+                        onStrike={onStrike}
+                        onRestore={onRestore}
                       />
                     ))}
                 </Box>
@@ -372,6 +447,7 @@ const SkillsCard = ({ id }: { id: string }) => {
                   skills={catalog.skills.filter((s) => s.type === type)}
                   byId={byId}
                   ownedIds={ownedIds}
+                  activeIds={activeIds}
                   onAdd={(skill) => createItem('skills', { skillId: skill.id })}
                 />
               )}

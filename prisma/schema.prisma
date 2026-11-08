@@ -119,6 +119,11 @@ model Sheet {
   current_stability Int?
   current_radiance  Int?
 
+  // Points de caractéristique rayés par le MJ (perdus), par caractéristique :
+  // { "strength": 5 }. La rature reste quand des points sont rachetés ; seul
+  // le MJ l'efface en rétablissant les points. Voir src/lib/rules/lost.ts.
+  lostPoints Json? @map("lost_points")
+
   // Expérience : journal des XP (attribuées, dépensées, remboursées…) et
   // parties de la fiche encore modifiables librement (création ou reset du
   // MJ), payées à la validation. Voir src/lib/rules/xp.ts.
@@ -278,6 +283,10 @@ model Property {
 model Corpus {
   id          String     @id @default(cuid())
   createdAt   DateTime   @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet ; l'XP payée
+  // pour lui est perdue (`lostXp`, consignée au journal).
+  lostAt      DateTime?  @map("lost_at")
+  lostXp      Int?       @map("lost_xp")
   typeId      String     @map("type_id")
   type        CorpusType @relation(fields: [typeId], references: [id])
   name        String?
@@ -291,6 +300,10 @@ model Corpus {
 model Spyree {
   id          String    @id @default(cuid())
   createdAt   DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet ; l'XP payée
+  // pour lui est perdue (`lostXp`, consignée au journal).
+  lostAt      DateTime? @map("lost_at")
+  lostXp      Int?      @map("lost_xp")
   level       Int?      @default(1)
   sheetId     String    @map("sheet_id")
   sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
@@ -299,60 +312,72 @@ model Spyree {
 }
 
 model Amee {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt      DateTime? @map("lost_at")
   name        String?
   description String?
-  sheetId     String   @map("sheet_id")
-  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId     String    @map("sheet_id")
+  sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Trait {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt      DateTime? @map("lost_at")
   name        String?
   description String?
   balance     Int?
-  inborn      Boolean  @default(true) // inné ou acquis
-  sheetId     String   @map("sheet_id")
-  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  inborn      Boolean   @default(true) // inné ou acquis
+  sheetId     String    @map("sheet_id")
+  sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 // Compétence acquise par un personnage. `prerequisite` indique par quel
 // prérequis elle a été obtenue quand la compétence en accepte plusieurs.
 model SheetSkill {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now()) @map("created_at")
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet ; l'XP payée
+  // pour lui est perdue (`lostXp`, consignée au journal).
+  lostAt         DateTime? @map("lost_at")
+  lostXp         Int?      @map("lost_xp")
   suffixe        String?
-  prerequisiteId String?  @map("prerequisite_id")
-  prerequisite   Skill?   @relation("prerequisiteSheet", fields: [prerequisiteId], references: [id])
-  skillId        String   @map("skill_id")
-  skill          Skill    @relation("sheets", fields: [skillId], references: [id])
-  sheetId        String   @map("sheet_id")
-  sheet          Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  prerequisiteId String?   @map("prerequisite_id")
+  prerequisite   Skill?    @relation("prerequisiteSheet", fields: [prerequisiteId], references: [id])
+  skillId        String    @map("skill_id")
+  skill          Skill     @relation("sheets", fields: [skillId], references: [id])
+  sheetId        String    @map("sheet_id")
+  sheet          Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Spell {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt      DateTime? @map("lost_at")
   name        String?
   incantation String?
   targeting   String?
   duration    String?
   effect      String?
-  sheetId     String   @map("sheet_id")
-  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId     String    @map("sheet_id")
+  sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 model Golem {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt    DateTime? @map("lost_at")
   name      String?
   artefact  String?
   symbiosis String?
   heart     String?
-  sheetId   String   @map("sheet_id")
-  sheet     Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId   String    @map("sheet_id")
+  sheet     Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }
 
 enum ArmorType {
@@ -364,6 +389,8 @@ enum ArmorType {
 model Armor {
   id                 String     @id @default(cuid())
   createdAt          DateTime   @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt             DateTime?  @map("lost_at")
   name               String?
   protection         Int? // protection maximale
   current_protection Int?
@@ -383,6 +410,8 @@ model Armor {
 model MeleeWeapon {
   id                 String     @id @default(cuid())
   createdAt          DateTime   @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt             DateTime?  @map("lost_at")
   name               String?
   damage             Int?
   extend             Int? // allonge
@@ -400,6 +429,8 @@ model MeleeWeapon {
 model RangeWeapon {
   id                 String     @id @default(cuid())
   createdAt          DateTime   @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt             DateTime?  @map("lost_at")
   name               String?
   damage             Int?
   penetration_damage Int?
@@ -422,11 +453,13 @@ model RangeWeapon {
 }
 
 model Item {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // Rayé par le MJ : gardé sur la fiche, barré et sans effet.
+  lostAt      DateTime? @map("lost_at")
   name        String?
   description String?
-  quantity    Int?     @default(1)
-  sheetId     String   @map("sheet_id")
-  sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  quantity    Int?      @default(1)
+  sheetId     String    @map("sheet_id")
+  sheet       Sheet     @relation(fields: [sheetId], references: [id], onDelete: Cascade)
 }

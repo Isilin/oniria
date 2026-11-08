@@ -349,6 +349,31 @@ describe('utilitaires', () => {
     expect(normalizeStat('magie')).toBeNull();
   });
 
+  it("un élément rayé n'a plus d'effet", () => {
+    const lostAt = new Date();
+    const computed = computeSheet({
+      vigour: 30,
+      corpus: [
+        { stat: 'health', bonus: 1 },
+        { stat: 'health', bonus: 2, lostAt },
+      ],
+      traits: [
+        { inborn: true, balance: 2 },
+        { inborn: true, balance: -1, lostAt },
+      ],
+      armors: [
+        { equipped: true, protection: 3, bulk: 10 },
+        { equipped: true, protection: 5, bulk: 20, lostAt },
+      ],
+      meleeWeapons: [{ equipped: true, bulk: 5, lostAt }],
+      rangeWeapons: [{ equipped: true, bulk: 7 }],
+    });
+    expect(computed.health).toBe(4);
+    expect(computed.inbornTraitsBalance).toBe(2);
+    expect(computed.protection).toEqual({ current: 3, max: 3 });
+    expect(computed.bulk).toBe(17);
+  });
+
   it('vérifie les prérequis', () => {
     const { values } = computeSheet({ strength: 40, vigour: 25 });
     expect(meetsPrerequisite(values, 'strength', 40)).toBe(true);
